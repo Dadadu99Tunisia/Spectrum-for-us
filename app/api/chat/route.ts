@@ -1,5 +1,5 @@
 import { OpenAI } from "openai"
-import { StreamingTextResponse } from "ai/stream"
+import { StreamingTextResponse } from "ai" // Correction de l'importation
 
 // Créer une instance OpenAI
 const openai = new OpenAI({
