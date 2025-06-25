@@ -22,11 +22,10 @@ const nextConfig = {
   },
   // Désactiver les sourcemaps en production pour réduire la taille du bundle
   productionBrowserSourceMaps: false,
-  // Optimisations expérimentales
+  // Optimisations expérimentales - Suppression des options problématiques
   experimental: {
-    optimizeCss: true,
+    // Suppression de toutes les options expérimentales problématiques
     scrollRestoration: true,
-    optimisticClientCache: true,
   },
   // Compression des assets
   compress: true,

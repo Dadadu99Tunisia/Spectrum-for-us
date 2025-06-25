@@ -2,46 +2,40 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Send, X, MessageSquare } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+type Message = {
+  role: "user" | "assistant"
+  content: string
+}
 
 export default function LiveChat() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [message, setMessage] = useState("")
-  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([])
+  const [input, setInput] = useState("")
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: "assistant",
+      content: "Bonjour ! Comment puis-je vous aider aujourd'hui sur Spectrum Marketplace ?",
+    },
+  ])
   const [isLoading, setIsLoading] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    checkIfMobile()
-    window.addEventListener("resize", checkIfMobile)
-    return () => window.removeEventListener("resize", checkIfMobile)
-  }, [])
-
-  // Si pas encore monté, ne rien afficher pour éviter les erreurs d'hydratation
-  if (!mounted) return null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!message.trim()) return
+    if (!input.trim()) return
 
-    const userMessage = { role: "user" as const, content: message }
+    // Ajouter le message de l'utilisateur
+    const userMessage = { role: "user" as const, content: input }
     setMessages((prev) => [...prev, userMessage])
-    setMessage("")
+    setInput("")
     setIsLoading(true)
 
     try {
+      // Appeler l'API de chat
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -53,16 +47,21 @@ export default function LiveChat() {
       })
 
       if (!response.ok) {
-        throw new Error("Failed to send message")
+        throw new Error("Erreur de communication avec l'assistant")
       }
 
-      const data = await response.text()
-      setMessages((prev) => [...prev, { role: "assistant", content: data }])
+      const data = await response.json()
+
+      // Ajouter la réponse de l'assistant
+      setMessages((prev) => [...prev, { role: "assistant", content: data.content }])
     } catch (error) {
-      console.error("Error sending message:", error)
+      console.error("Erreur:", error)
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Désolé, une erreur s'est produite. Veuillez réessayer plus tard." },
+        {
+          role: "assistant",
+          content: "Désolé, j'ai rencontré un problème. Veuillez réessayer ou contacter notre support.",
+        },
       ])
     } finally {
       setIsLoading(false)
@@ -70,86 +69,67 @@ export default function LiveChat() {
   }
 
   return (
-    <>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className={cn(
-              "fixed bottom-20 right-4 z-50 w-80 rounded-lg shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800",
-              isMobile && "w-[calc(100%-2rem)] mx-4",
-            )}
-          >
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                <h3 className="font-medium">Chat en direct</h3>
-              </div>
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="p-4 h-80 overflow-y-auto flex flex-col gap-3">
-              <div className="bg-muted p-3 rounded-lg rounded-tl-none max-w-[80%] self-start">
-                <p className="text-sm">
-                  Bonjour ! Comment puis-je vous aider aujourd'hui ? N'hésitez pas à me poser des questions sur
-                  Spectrum.
-                </p>
-              </div>
-
-              {messages.map((msg, index) => (
+    <Card className="w-full max-w-md mx-auto h-[500px] flex flex-col">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-green-500"></span>
+          Assistant Spectrum
+        </CardTitle>
+      </CardHeader>
+      <ScrollArea className="flex-1 p-4">
+        <CardContent className="space-y-4">
+          {messages.map((message, i) => (
+            <div key={i} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div className={`flex gap-2 max-w-[80%] ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={message.role === "user" ? "/images/user-avatar.png" : "/images/assistant-avatar.png"}
+                    alt={message.role === "user" ? "User" : "Assistant"}
+                  />
+                  <AvatarFallback>{message.role === "user" ? "U" : "A"}</AvatarFallback>
+                </Avatar>
                 <div
-                  key={index}
-                  className={cn(
-                    "p-3 rounded-lg max-w-[80%]",
-                    msg.role === "user"
-                      ? "bg-primary text-primary-foreground self-end rounded-tr-none"
-                      : "bg-muted self-start rounded-tl-none",
-                  )}
+                  className={`rounded-lg px-4 py-2 ${
+                    message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                  }`}
                 >
-                  <p className="text-sm">{msg.content}</p>
+                  {message.content}
                 </div>
-              ))}
-
-              {isLoading && (
-                <div className="bg-muted p-3 rounded-lg rounded-tl-none max-w-[80%] self-start">
+              </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="flex gap-2 max-w-[80%]">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>A</AvatarFallback>
+                </Avatar>
+                <div className="rounded-lg px-4 py-2 bg-muted">
                   <div className="flex gap-1">
-                    <span className="animate-bounce">.</span>
-                    <span className="animate-bounce delay-100">.</span>
-                    <span className="animate-bounce delay-200">.</span>
+                    <div className="h-2 w-2 rounded-full bg-gray-400 animate-bounce"></div>
+                    <div className="h-2 w-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.2s]"></div>
+                    <div className="h-2 w-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.4s]"></div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
-            <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200 dark:border-gray-800 flex gap-2">
-              <Input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Écrivez votre message..."
-                className="flex-1"
-              />
-              <Button type="submit" size="icon" disabled={isLoading}>
-                <Send className="h-4 w-4" />
-              </Button>
-            </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {!isOpen && (
-        <motion.button
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-20 right-4 z-50 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center"
-        >
-          <MessageSquare className="h-5 w-5" />
-        </motion.button>
-      )}
-    </>
+          )}
+        </CardContent>
+      </ScrollArea>
+      <CardFooter className="border-t p-4">
+        <form onSubmit={handleSubmit} className="flex w-full gap-2">
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Posez votre question..."
+            disabled={isLoading}
+            className="flex-1"
+          />
+          <Button type="submit" disabled={isLoading || !input.trim()}>
+            {isLoading ? "Envoi..." : "Envoyer"}
+          </Button>
+        </form>
+      </CardFooter>
+    </Card>
   )
 }

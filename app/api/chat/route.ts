@@ -1,5 +1,4 @@
 import { OpenAI } from "openai"
-import { StreamingTextResponse } from "ai" // Correction de l'importation
 
 // Créer une instance OpenAI
 const openai = new OpenAI({
@@ -23,7 +22,7 @@ export async function POST(req: Request) {
       )
     }
 
-    // Créer la complétion avec OpenAI
+    // Créer la complétion avec OpenAI (sans streaming pour éviter les problèmes)
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
@@ -36,11 +35,21 @@ export async function POST(req: Request) {
         },
         ...messages,
       ],
-      stream: true,
+      // Désactivation du streaming pour simplifier
+      stream: false,
     })
 
-    // Retourner la réponse en streaming
-    return new StreamingTextResponse(response.toReadableStream())
+    // Retourner la réponse standard (non streaming)
+    return new Response(
+      JSON.stringify({
+        content: response.choices[0]?.message?.content || "Désolé, je n'ai pas pu générer de réponse.",
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    )
   } catch (error) {
     console.error("Error in chat API:", error)
     return new Response(JSON.stringify({ error: "An error occurred during your request." }), { status: 500 })

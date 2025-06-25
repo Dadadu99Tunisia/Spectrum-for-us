@@ -12,6 +12,7 @@ import LiveChat from "@/components/live-chat"
 import { MobileNavigationBar } from "@/components/mobile-navigation-bar"
 import { Analytics } from "@/components/analytics"
 import { PreloadResources } from "@/components/preload-resources"
+import { Suspense } from "react"
 
 // Optimisation du chargement des polices
 const inter = Inter({
@@ -68,21 +69,44 @@ export default function RootLayout({
           <LocaleProvider>
             <LanguageRedirect />
             <div className="flex flex-col min-h-screen">
-              <Header />
+              {/* Header */}
+              <Suspense fallback={null}>
+                <Header />
+              </Suspense>
+
+              {/* Main content – leave as-is, pages will add their own Suspense if needed */}
               <main className="flex-grow pb-20 md:pb-0">{children}</main>
-              <Footer />
-              <LiveChat />
-              <MobileNavigationBar />
-              <Toaster />
+
+              {/* Footer */}
+              <Suspense fallback={null}>
+                <Footer />
+              </Suspense>
+
+              {/* Widgets that are definitely client components */}
+              <Suspense fallback={null}>
+                <LiveChat />
+              </Suspense>
+
+              <Suspense fallback={null}>
+                <MobileNavigationBar />
+              </Suspense>
+
+              {/* Toaster est déjà client, on le protège aussi */}
+              <Suspense fallback={null}>
+                <Toaster />
+              </Suspense>
             </div>
-            <PreloadResources />
+            {/* PreloadResources est un client component (useEffect) */}
+            <Suspense fallback={null}>
+              <PreloadResources />
+            </Suspense>
           </LocaleProvider>
         </ThemeProvider>
-        <Analytics />
+        {/* Analytics (client side) */}
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   )
 }
-
-
-import './globals.css'
