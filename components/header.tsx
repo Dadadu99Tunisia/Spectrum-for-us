@@ -1,9 +1,8 @@
 "use client"
 
-import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-
 import type React from "react"
 
+import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -11,22 +10,16 @@ import { Button } from "@/components/ui/button"
 import {
   Menu,
   X,
-  Sun,
-  Moon,
   Search,
   Heart,
   User,
   ShoppingBag,
-  Store,
   ChevronDown,
-  LogIn,
   Globe,
   Home,
   Sparkles,
   Users,
   Info,
-  Settings,
-  HelpCircle,
   Film,
 } from "lucide-react"
 import { useTheme } from "next-themes"
@@ -34,16 +27,11 @@ import { cn } from "@/lib/utils"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { AccessibilityMenu } from "./accessibility-menu"
 import { useLocale, currencies, languages } from "@/contexts/locale-context"
 import { motion, AnimatePresence } from "framer-motion"
-import { SpeechToggle } from "@/components/speech-toggle"
 
 // Navigation avec redirections directes
 const navigation = [
@@ -347,156 +335,101 @@ export default function Header() {
             </motion.div>
 
             {/* Desktop navigation */}
-            <div className="hidden lg:flex lg:gap-x-4">
+            <div className="hidden md:flex items-center space-x-6">
               {navigation.map((item) => (
-                <motion.div key={item.name} whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={cn(
-                      "text-sm font-medium transition-colors hover:text-purple-600 dark:hover:text-purple-400 h-9 px-3",
-                      pathname === item.href &&
-                        "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400",
-                    )}
-                    asChild
-                  >
-                    <Link href={item.href}>{t(item.name)}</Link>
-                  </Button>
-                </motion.div>
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`hover:text-purple-600 ${pathname === item.href ? "text-purple-600" : ""}`}
+                >
+                  {t(item.name)}
+                </Link>
               ))}
             </div>
-          </div>
 
-          {/* Desktop search and actions */}
-          <div className="hidden lg:flex items-center gap-x-2">
-            {/* Search bar */}
-            <form onSubmit={handleSearch} className="relative w-64">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-muted-foreground" />
-              </div>
-              <motion.input
-                whileFocus={{ scale: 1.02 }}
-                type="text"
-                placeholder={t("search")}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm rounded-full bg-muted border-none focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-            </form>
+            {/* Desktop search and actions */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/recherche">
+                  <Search className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/favoris">
+                  <Heart className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/panier">
+                  <ShoppingBag className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/connexion">
+                  <User className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link href="/devenir-vendeur">{t("sell")}</Link>
+              </Button>
+            </div>
 
-            {/* Theme toggle */}
+            {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </Button>
-
-            <AccessibilityMenu />
-            <SpeechToggle />
-
-            {/* Favorites */}
-            <Button variant="ghost" size="icon" className="h-9 w-9" asChild>
-              <Link href="/favoris">
-                <Heart className="h-4 w-4" />
-              </Link>
-            </Button>
-
-            {/* Cart */}
-            <Button variant="ghost" size="icon" className="h-9 w-9 relative" asChild>
-              <Link href="/panier">
-                <ShoppingBag className="h-4 w-4" />
-                {cartCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center bg-purple-600 text-[10px]">
-                    {cartCount}
-                  </Badge>
-                )}
-              </Link>
-            </Button>
-
-            {/* User menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <User className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link href="/connexion" className="cursor-pointer">
-                    <LogIn className="mr-2 h-4 w-4" />
-                    <span>{t("login")}</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/inscription" className="cursor-pointer">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>{t("register")}</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/parametres" className="cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>{t("settings")}</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/aide" className="cursor-pointer">
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    <span>{t("help")}</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/devenir-vendeur" className="cursor-pointer">
-                    <Store className="mr-2 h-4 w-4" />
-                    <span>{t("become_seller")}</span>
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Sell button */}
-            <Button
-              asChild
-              size="sm"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 ml-1"
-            >
-              <Link href="/devenir-vendeur">
-                <Store className="h-4 w-4 mr-2" />
-                {t("sell")}
-              </Link>
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
 
-          {/* Mobile menu button and quick actions */}
-          <div className="flex items-center gap-2 lg:hidden">
-            {/* Search toggle */}
-            <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setSearchOpen(!searchOpen)}>
-              <Search className="h-4 w-4" />
-            </Button>
-
-            {/* Cart */}
-            <Button variant="ghost" size="icon" className="h-9 w-9 relative" asChild>
-              <Link href="/panier">
-                <ShoppingBag className="h-4 w-4" />
-                {cartCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center bg-purple-600 text-[10px]">
-                    {cartCount}
-                  </Badge>
-                )}
-              </Link>
-            </Button>
-
-            {/* Menu toggle */}
-            <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setMobileMenuOpen(true)}>
-              <Menu className="h-5 w-5" />
-            </Button>
-          </div>
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t bg-white py-4">
+              <div className="flex flex-col space-y-4">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="block py-2 hover:text-purple-600"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {t(item.name)}
+                  </Link>
+                ))}
+                <Link
+                  href="/favoris"
+                  className="block py-2 hover:text-purple-600"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t("favorites")}
+                </Link>
+                <Link
+                  href="/panier"
+                  className="block py-2 hover:text-purple-600"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t("cart")}
+                </Link>
+                <Link
+                  href="/connexion"
+                  className="block py-2 hover:text-purple-600"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t("login")}
+                </Link>
+                <Link
+                  href="/devenir-vendeur"
+                  className="block py-2 bg-purple-600 text-white text-center rounded"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t("become_seller")}
+                </Link>
+              </div>
+            </div>
+          )}
         </nav>
 
         {/* Mobile search bar */}
@@ -527,146 +460,6 @@ export default function Header() {
           )}
         </AnimatePresence>
       </div>
-
-      {/* Mobile menu - Navigation directe sans dropdowns */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="lg:hidden fixed inset-0 z-50 bg-black/20 backdrop-blur-sm"
-              onClick={() => setMobileMenuOpen(false)}
-            />
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="lg:hidden fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-background px-6 py-4 sm:max-w-sm"
-            >
-              {/* Header du menu */}
-              <div className="flex items-center justify-between mb-6">
-                <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Spectrum For us
-                </span>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setMobileMenuOpen(false)}>
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-
-              {/* Navigation principale - liens directs */}
-              <div className="space-y-2 mb-6">
-                {navigation.map((item) => (
-                  <div key={item.name}>
-                    {/* Lien principal */}
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start h-12 text-base"
-                      onClick={() => handleMobileNavigation(item.href)}
-                    >
-                      {item.icon && <item.icon className="h-5 w-5 mr-3" />}
-                      {t(item.name)}
-                    </Button>
-
-                    {/* Sous-liens pour mobile (affichés directement) */}
-                    {item.mobileItems && (
-                      <div className="ml-8 space-y-1 mt-1">
-                        {item.mobileItems.map((subItem) => (
-                          <Button
-                            key={subItem.name}
-                            variant="ghost"
-                            size="sm"
-                            className="w-full justify-start text-sm text-muted-foreground hover:text-purple-600"
-                            onClick={() => handleMobileNavigation(subItem.href)}
-                          >
-                            {t(subItem.name)}
-                          </Button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Services rapides */}
-              <div className="border-t border-border pt-4 mb-6">
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-10 bg-gradient-to-r from-pink-500 to-purple-600 text-white border-none"
-                    onClick={() => handleMobileNavigation("/slay-plus")}
-                  >
-                    <Film className="h-4 w-4 mr-2" />
-                    Slay+
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-10 bg-gradient-to-r from-blue-500 to-teal-600 text-white border-none"
-                    onClick={() => handleMobileNavigation("/voyage-plus")}
-                  >
-                    <Globe className="h-4 w-4 mr-2" />
-                    Voyage+
-                  </Button>
-                </div>
-              </div>
-
-              {/* Actions utilisateur */}
-              <div className="border-t border-border pt-4 space-y-2">
-                <Button
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                  onClick={() => handleMobileNavigation("/connexion")}
-                >
-                  <LogIn className="h-4 w-4 mr-2" />
-                  {t("login")}
-                </Button>
-                <Button variant="outline" className="w-full" onClick={() => handleMobileNavigation("/inscription")}>
-                  <User className="h-4 w-4 mr-2" />
-                  {t("register")}
-                </Button>
-                <Button variant="outline" className="w-full" onClick={() => handleMobileNavigation("/devenir-vendeur")}>
-                  <Store className="h-4 w-4 mr-2" />
-                  {t("sell")}
-                </Button>
-              </div>
-
-              {/* Liens rapides */}
-              <div className="border-t border-border pt-4 mt-4 space-y-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start"
-                  onClick={() => handleMobileNavigation("/favoris")}
-                >
-                  <Heart className="h-4 w-4 mr-2" />
-                  {t("favorites")}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start"
-                  onClick={() => handleMobileNavigation("/parametres")}
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  {t("settings")}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start"
-                  onClick={() => handleMobileNavigation("/aide")}
-                >
-                  <HelpCircle className="h-4 w-4 mr-2" />
-                  {t("help")}
-                </Button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </motion.header>
   )
 }

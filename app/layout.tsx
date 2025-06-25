@@ -15,16 +15,11 @@ import { Suspense } from "react"
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  preload: true,
-  fallback: ["system-ui", "sans-serif"],
-  adjustFontFallback: true,
-  variable: "--font-inter",
 })
 
 export const metadata: Metadata = {
-  title: "Spectrum Marketplace | #1 Plateforme Queer & Inclusive en France 🏳️‍🌈",
-  description:
-    "🌟 Découvrez la marketplace #1 pour la communauté LGBTQ+ ! Produits uniques, créateurs talentueux, mode inclusive. Livraison gratuite dès 50€. Rejoignez 50,000+ membres !",
+  title: "Spectrum Marketplace | Plateforme Inclusive",
+  description: "La marketplace #1 pour la communauté LGBTQ+ en France",
   keywords: [
     // Mots-clés principaux
     "marketplace queer",
@@ -76,9 +71,8 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     alternateLocale: ["en_US"],
     url: "https://spectrum-marketplace.vercel.app/",
-    title: "Spectrum Marketplace | #1 Plateforme Queer & Inclusive 🏳️‍🌈",
-    description:
-      "🌟 La marketplace #1 pour la communauté LGBTQ+ ! Découvrez des produits uniques créés par des artistes queer talentueux. Mode inclusive, art, bijoux et plus encore !",
+    title: "Spectrum Marketplace | Plateforme Inclusive",
+    description: "La marketplace #1 pour la communauté LGBTQ+ en France",
     siteName: "Spectrum Marketplace",
     images: [
       {
@@ -99,9 +93,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@spectrumforus",
     creator: "@spectrumforus",
-    title: "Spectrum Marketplace | #1 Plateforme Queer & Inclusive 🏳️‍🌈",
-    description:
-      "🌟 La marketplace #1 pour la communauté LGBTQ+ ! Produits uniques, créateurs talentueux, mode inclusive.",
+    title: "Spectrum Marketplace | Plateforme Inclusive",
+    description: "La marketplace #1 pour la communauté LGBTQ+ en France",
     images: ["/images/og-image.jpg"],
   },
   verification: {
@@ -135,9 +128,9 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning className={inter.className}>
       <head>
-        <link rel="icon" href="/images/logo.png" />
+        <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/images/logo.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#7c3aed" />
 
         {/* SEO Technique Avancé */}
@@ -173,7 +166,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light">
           <LocaleProvider>
             <LanguageRedirect />
             <div className="flex flex-col min-h-screen">

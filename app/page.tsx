@@ -2,11 +2,10 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Search, Star, Users, ShoppingBag, Heart, Truck, Shield } from "lucide-react"
+import { ArrowRight, Users, ShoppingBag, Heart } from "lucide-react"
 import FeaturedProducts from "@/components/featured-products"
 import FeaturedSellers from "@/components/featured-sellers"
 import FeaturedCategories from "@/components/featured-categories"
-import Image from "next/image"
 import KeyStats from "@/components/key-stats"
 import BrandValues from "@/components/brand-values"
 import Testimonials from "@/components/testimonials"
@@ -15,6 +14,7 @@ import FeaturedEvents from "@/components/featured-events"
 import PartnersShowcase from "@/components/partners-showcase"
 import ServicesShowcase from "@/components/services-showcase"
 import { motion } from "framer-motion"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 // Animation variants
 const fadeIn = {
@@ -36,7 +36,7 @@ const staggerContainer = {
   },
 }
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
       {/* Schema.org pour la page d'accueil */}
@@ -84,101 +84,71 @@ export default function Home() {
 
       <main className="min-h-screen">
         {/* Hero Section avec contenu SEO optimisé */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-90"></div>
-          <div className="absolute inset-0 bg-[url('/placeholder.svg')] mix-blend-overlay opacity-20"></div>
-
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="relative container mx-auto px-4 py-24 md:py-32 flex flex-col items-center text-center"
-          >
-            <motion.div variants={fadeIn} className="mb-8">
-              <Image
-                src="/images/logo.png"
-                alt="Spectrum Marketplace - La plateforme #1 pour la communauté LGBTQ+ en France"
-                width={800}
-                height={240}
-                className="h-40 w-auto"
-                priority
-              />
-            </motion.div>
-
-            <motion.h1 variants={fadeIn} className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-md">
-              🏳️‍🌈 Marketplace Queer & Inclusive #1 en France
-            </motion.h1>
-
-            <motion.h2 variants={fadeIn} className="text-xl md:text-2xl text-white/90 max-w-4xl mb-4">
-              Découvrez des produits uniques créés par des artistes et entrepreneur·e·s LGBTQ+ talentueux·ses
-            </motion.h2>
-
-            <motion.div variants={fadeIn} className="flex flex-wrap justify-center gap-4 mb-8 text-white/90">
-              <div className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                <span className="font-semibold">50,000+ membres</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <ShoppingBag className="h-5 w-5" />
-                <span className="font-semibold">10,000+ produits</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 fill-yellow-400" />
-                <span className="font-semibold">4.8/5 (2,547 avis)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Truck className="h-5 w-5" />
-                <span className="font-semibold">Livraison gratuite dès 50€</span>
-              </div>
-            </motion.div>
-
-            {/* Barre de recherche SEO optimisée */}
-            <motion.div variants={fadeIn} className="w-full max-w-2xl mb-8 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-white/60" />
-              </div>
-              <input
-                type="text"
-                placeholder="Rechercher mode queer, bijoux inclusifs, art LGBTQ+..."
-                className="w-full pl-10 pr-4 py-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
-                aria-label="Rechercher des produits queer et inclusifs"
-              />
-            </motion.div>
-
-            <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="bg-white text-purple-600 hover:bg-white/90 transition-transform hover:scale-105"
-                asChild
-              >
-                <Link href="/boutique">🛍️ Explorer 10,000+ Produits Queer</Link>
+        <section className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-20">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">Bienvenue sur Spectrum</h1>
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+              La marketplace inclusive pour la communauté LGBTQ+. Découvrez des produits uniques créés par des artistes
+              talentueux.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="secondary" asChild>
+                <Link href="/categories">Explorer les produits</Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white/10 transition-transform hover:scale-105"
+                className="text-white border-white hover:bg-white hover:text-purple-600"
                 asChild
               >
-                <Link href="/devenir-vendeur">💼 Devenir Vendeur·euse (Gratuit)</Link>
+                <Link href="/devenir-vendeur">Devenir vendeur</Link>
               </Button>
-            </motion.div>
+            </div>
+          </div>
+        </section>
 
-            {/* Badges de confiance */}
-            <motion.div variants={fadeIn} className="mt-8 flex flex-wrap justify-center gap-4 text-white/80 text-sm">
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                <span>Paiement 100% sécurisé</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Heart className="h-4 w-4" />
-                <span>Communauté bienveillante</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Star className="h-4 w-4" />
-                <span>Qualité garantie</span>
-              </div>
-            </motion.div>
-          </motion.div>
+        {/* Categories Section */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-12">Nos Catégories</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle>Mode & Accessoires</CardTitle>
+                  <CardDescription>Vêtements inclusifs et accessoires uniques</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild className="w-full">
+                    <Link href="/categorie/mode">Découvrir</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle>Art & Créations</CardTitle>
+                  <CardDescription>Œuvres d'art et créations originales</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild className="w-full">
+                    <Link href="/categorie/art">Découvrir</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle>Bijoux & Beauté</CardTitle>
+                  <CardDescription>Bijoux artisanaux et produits de beauté</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild className="w-full">
+                    <Link href="/categorie/bijoux">Découvrir</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </section>
 
         {/* Section des avantages avec mots-clés SEO */}
