@@ -180,7 +180,9 @@ export default function RootLayout({
               <Suspense fallback={null}>
                 <Header />
               </Suspense>
-              <main className="flex-grow pb-20 md:pb-0">{children}</main>
+              <Suspense fallback={null}>
+                <main className="flex-grow pb-20 md:pb-0">{children}</main>
+              </Suspense>
               <Suspense fallback={null}>
                 <Footer />
               </Suspense>
