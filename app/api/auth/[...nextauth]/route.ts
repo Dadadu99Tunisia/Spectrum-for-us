@@ -1,58 +1,64 @@
-import NextAuth from "next-auth/next"
+import NextAuth from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { PrismaClient } from "@prisma/client"
+import { compare } from "bcryptjs"
 
-// Version simplifiée sans dépendances externes
+const prisma = new PrismaClient()
+
 export const authOptions = {
-  secret: "demo-secret-key-for-testing-only",
   session: {
     strategy: "jwt",
   },
-  pages: {
-    signIn: "/connexion",
-    signOut: "/",
-    error: "/connexion",
-    newUser: "/inscription",
-  },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
     CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        // Pour la démo, nous acceptons n'importe quelles identifiants
+      name: "credentials",
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) {
           return null
         }
 
-        // Utilisateur de démo
-        return {
-          id: "demo-user",
-          email: credentials.email,
-          name: "Utilisateur Démo",
-          image: "/placeholder.svg?height=100&width=100",
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        })
+
+        if (!user) {
+          return null
         }
+
+        const isPasswordCorrect = await compare(credentials.password, user.password)
+
+        if (!isPasswordCorrect) {
+          return null
+        }
+
+        return user
       },
     }),
   ],
   callbacks: {
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id || "demo-user"
-        session.user.name = token.name || "Utilisateur Démo"
-        session.user.email = token.email || "demo@example.com"
-        session.user.image = token.picture || "/placeholder.svg?height=100&width=100"
-      }
-      return session
-    },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id
+        token.email = user.email
       }
       return token
     },
+    async session({ session, token }: any) {
+      if (token) {
+        session.user.id = token.id
+        session.user.email = token.email
+      }
+      return session
+    },
   },
+  secret: process.env.NEXTAUTH_SECRET,
 }
 
 const handler = NextAuth(authOptions)
