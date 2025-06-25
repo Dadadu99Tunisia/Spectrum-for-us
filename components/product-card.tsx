@@ -10,10 +10,9 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import type { Product } from "@/lib/data/products"
-import { cn } from "@/lib/utils"
 
-// Importez le hook de détection mobile
-import { useMobileDetection } from "@/hooks/use-mobile-detection"
+// Supprimez l'import de useMobileDetection
+// import { useMobileDetection } from "@/hooks/use-mobile-detection"
 
 interface ProductCardProps {
   product: Product
@@ -25,8 +24,8 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
   const [isHovered, setIsHovered] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
 
-  // Dans la fonction ProductCard, ajoutez cette ligne après les autres hooks
-  const { isMobile } = useMobileDetection()
+  // Supprimez l'appel au hook
+  // const { isMobile } = useMobileDetection()
 
   // Calculer le prix avec remise si applicable
   const discountedPrice = product.discount ? product.price * (1 - product.discount / 100) : null
@@ -123,14 +122,9 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
           </motion.div>
         </div>
 
-        <CardContent className={cn("flex-grow", isMobile ? "p-3" : "p-4")}>
+        <CardContent className="flex-grow p-3 sm:p-4">
           <Link href={`/produit/${product.id}`} className="hover:underline">
-            <h3
-              className={cn(
-                "font-semibold line-clamp-2 group-hover:text-purple-600 transition-colors",
-                isMobile ? "text-base mb-0.5" : "mb-1",
-              )}
-            >
+            <h3 className="font-semibold line-clamp-2 group-hover:text-purple-600 transition-colors text-base sm:text-lg mb-0.5 sm:mb-1">
               {product.name}
             </h3>
           </Link>
@@ -139,28 +133,22 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
             {product.rating && (
               <>
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.3, delay: 0.2 }}>
-                  <Star className={cn("fill-yellow-400 text-yellow-400", isMobile ? "h-3 w-3" : "h-3.5 w-3.5")} />
+                  <Star className="fill-yellow-400 text-yellow-400 h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 </motion.div>
-                <span className={cn("text-muted-foreground", isMobile ? "text-xs" : "text-sm")}>
-                  {product.rating.toFixed(1)}
-                </span>
-                <span className={cn("text-muted-foreground", isMobile ? "text-xs" : "text-sm")}>
-                  ({product.reviews?.length || 0} avis)
-                </span>
+                <span className="text-muted-foreground text-xs sm:text-sm">{product.rating.toFixed(1)}</span>
+                <span className="text-muted-foreground text-xs sm:text-sm">({product.reviews?.length || 0} avis)</span>
               </>
             )}
           </div>
 
-          <p className={cn("text-muted-foreground line-clamp-2 mb-2", isMobile ? "text-xs" : "text-sm")}>
-            {product.description}
-          </p>
+          <p className="text-muted-foreground line-clamp-2 mb-2 text-xs sm:text-sm">{product.description}</p>
 
           {/* Prix */}
           <div className="flex items-center gap-2">
             {discountedPrice ? (
               <>
                 <motion.span
-                  className={cn("font-semibold", isMobile ? "text-base" : "text-lg")}
+                  className="font-semibold text-base sm:text-lg"
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 }}
@@ -168,7 +156,7 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
                   {discountedPrice.toFixed(2)} €
                 </motion.span>
                 <motion.span
-                  className={cn("text-muted-foreground line-through", isMobile ? "text-xs" : "text-sm")}
+                  className="text-muted-foreground line-through text-xs sm:text-sm"
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.4 }}
@@ -178,7 +166,7 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
               </>
             ) : (
               <motion.span
-                className={cn("font-semibold", isMobile ? "text-base" : "text-lg")}
+                className="font-semibold text-base sm:text-lg"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: 0.3 }}
@@ -189,18 +177,19 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
           </div>
         </CardContent>
 
-        <CardFooter className={cn(isMobile ? "p-3 pt-0" : "p-4 pt-0")}>
+        <CardFooter className="p-3 pt-0 sm:p-4 sm:pt-0">
           <motion.div className="w-full" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Button
               className="w-full gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-              size={isMobile ? "sm" : "default"}
+              size="sm"
               onClick={() => {
                 // Logique d'ajout au panier
                 console.log(`Ajout au panier: ${product.name}`)
               }}
             >
-              <ShoppingCart className={isMobile ? "h-3.5 w-3.5" : "h-4 w-4"} />
-              {isMobile ? "Ajouter" : "Ajouter au panier"}
+              <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="sm:hidden">Ajouter</span>
+              <span className="hidden sm:inline">Ajouter au panier</span>
             </Button>
           </motion.div>
         </CardFooter>

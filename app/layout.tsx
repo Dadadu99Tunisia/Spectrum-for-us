@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/toaster"
 import { LocaleProvider } from "@/contexts/locale-context"
 import LanguageRedirect from "./language-redirect"
-import LiveChat from "@/components/live-chat"
+import { ChatTrigger } from "@/components/chat-trigger" // Importer le nouveau composant
 import { MobileNavigationBar } from "@/components/mobile-navigation-bar"
 import { Analytics } from "@/components/analytics"
 import { PreloadResources } from "@/components/preload-resources"
@@ -73,12 +73,11 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <div className="flex flex-col min-h-screen">
                 <Header />
-
                 {/* zone de contenu des pages */}
                 <main className="flex-grow pb-20 md:pb-0">{children}</main>
-
                 <Footer />
-                <LiveChat />
+                <ChatTrigger /> {/* Utiliser le ChatTrigger ici */}
+                {/* <LiveChat /> Supprimer cette ligne */}
                 <MobileNavigationBar />
                 <Toaster />
                 <PreloadResources />

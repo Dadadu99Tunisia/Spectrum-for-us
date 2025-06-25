@@ -1,3 +1,4 @@
+import { OpenAIStream, StreamingTextResponse } from "ai"
 import { OpenAI } from "openai"
 
 // Créer une instance OpenAI
@@ -5,8 +6,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || "",
 })
 
-// Ne pas utiliser runtime = "edge" car cela peut causer des problèmes avec l'AI SDK
-export const runtime = "nodejs"
+export const runtime = "edge"
 
 export async function POST(req: Request) {
   try {
@@ -14,17 +14,13 @@ export async function POST(req: Request) {
 
     // Vérifier si l'API key est configurée
     if (!process.env.OPENAI_API_KEY) {
-      return new Response(
-        JSON.stringify({
-          error: "OpenAI API key not configured. Please set the OPENAI_API_KEY environment variable.",
-        }),
-        { status: 500 },
-      )
+      return new Response("OpenAI API key not configured.", { status: 500 })
     }
 
-    // Créer la complétion avec OpenAI (sans streaming pour éviter les problèmes)
+    // Créer la complétion avec OpenAI
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
+      stream: true,
       messages: [
         {
           role: "system",
@@ -35,23 +31,15 @@ export async function POST(req: Request) {
         },
         ...messages,
       ],
-      // Désactivation du streaming pour simplifier
-      stream: false,
     })
 
-    // Retourner la réponse standard (non streaming)
-    return new Response(
-      JSON.stringify({
-        content: response.choices[0]?.message?.content || "Désolé, je n'ai pas pu générer de réponse.",
-      }),
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    )
+    // Convertir la réponse en un flux de texte compatible
+    const stream = OpenAIStream(response)
+
+    // Répondre avec le flux
+    return new StreamingTextResponse(stream)
   } catch (error) {
     console.error("Error in chat API:", error)
-    return new Response(JSON.stringify({ error: "An error occurred during your request." }), { status: 500 })
+    return new Response("An error occurred during your request.", { status: 500 })
   }
 }
