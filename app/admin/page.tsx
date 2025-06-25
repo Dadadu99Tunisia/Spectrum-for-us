@@ -2,41 +2,37 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Users, Package, ShoppingCart, TrendingUp, LogOut } from "lucide-react"
+import Link from "next/link"
 
 export default function AdminPage() {
-  const [user, setUser] = useState<any>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userName, setUserName] = useState("")
   const router = useRouter()
 
   useEffect(() => {
-    // Vérifier si l'utilisateur est connecté
-    const userData = localStorage.getItem("user")
-    if (userData) {
-      const parsedUser = JSON.parse(userData)
-      if (parsedUser.role === "SUPER_ADMIN" || parsedUser.role === "ADMIN") {
-        setUser(parsedUser)
-      } else {
-        router.push("/connexion")
-      }
+    const loggedIn = localStorage.getItem("isLoggedIn")
+    const role = localStorage.getItem("userRole")
+    const name = localStorage.getItem("userName")
+
+    if (loggedIn === "true" && role === "SUPER_ADMIN") {
+      setIsAuthenticated(true)
+      setUserName(name || "Admin")
     } else {
       router.push("/connexion")
     }
   }, [router])
 
   const handleLogout = () => {
-    localStorage.removeItem("user")
+    localStorage.clear()
     router.push("/")
   }
 
-  if (!user) {
+  if (!isAuthenticated) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Chargement...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4">Vérification...</p>
         </div>
       </div>
     )
@@ -45,31 +41,30 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
-              <p className="text-gray-600">Bienvenue, {user.name}</p>
+              <h1 className="text-3xl font-bold text-gray-900">Dashboard Admin</h1>
+              <p className="text-gray-600">Bienvenue, {userName}</p>
             </div>
-            <div className="flex items-center gap-4">
-              <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                {user.role}
-              </Badge>
-              <Button variant="outline" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
+            <div className="flex items-center space-x-4">
+              <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                SUPER_ADMIN
+              </span>
+              <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
                 Déconnexion
-              </Button>
+              </button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Success Message */}
-        <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-center">
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {/* Success Alert */}
+        <div className="mb-8 bg-green-50 border border-green-200 rounded-md p-4">
+          <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
                 <path
@@ -82,90 +77,127 @@ export default function AdminPage() {
             <div className="ml-3">
               <h3 className="text-sm font-medium text-green-800">Connexion réussie !</h3>
               <div className="mt-2 text-sm text-green-700">
-                <p>Vous êtes maintenant connecté en tant que Super Administrateur de Spectrum Marketplace.</p>
+                <p>Vous êtes maintenant connecté en tant que Super Administrateur.</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Utilisateurs Total</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">1,234</div>
-              <p className="text-xs text-muted-foreground">+12% ce mois</p>
-            </CardContent>
-          </Card>
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Utilisateurs</dt>
+                    <dd className="text-lg font-medium text-gray-900">1,234</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Produits</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">567</div>
-              <p className="text-xs text-muted-foreground">+8% ce mois</p>
-            </CardContent>
-          </Card>
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Produits</dt>
+                    <dd className="text-lg font-medium text-gray-900">567</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Commandes</CardTitle>
-              <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">89</div>
-              <p className="text-xs text-muted-foreground">+23% ce mois</p>
-            </CardContent>
-          </Card>
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Commandes</dt>
+                    <dd className="text-lg font-medium text-gray-900">89</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Revenus</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">€12,345</div>
-              <p className="text-xs text-muted-foreground">+15% ce mois</p>
-            </CardContent>
-          </Card>
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Revenus</dt>
+                    <dd className="text-lg font-medium text-gray-900">€12,345</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Gestion des Produits</CardTitle>
-              <CardDescription>Gérer le catalogue de produits</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full">Voir les Produits</Button>
-            </CardContent>
-          </Card>
+        <div className="bg-white shadow rounded-lg">
+          <div className="px-4 py-5 sm:p-6">
+            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Actions Rapides</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Gérer les Produits</button>
+              <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Voir les Commandes
+              </button>
+              <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                Gérer les Utilisateurs
+              </button>
+            </div>
+          </div>
+        </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Gestion des Commandes</CardTitle>
-              <CardDescription>Suivre et gérer les commandes</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full">Voir les Commandes</Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Gestion des Utilisateurs</CardTitle>
-              <CardDescription>Administrer les comptes utilisateurs</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full">Voir les Utilisateurs</Button>
-            </CardContent>
-          </Card>
+        <div className="mt-8 text-center">
+          <Link href="/" className="text-indigo-600 hover:text-indigo-500">
+            ← Retour au site
+          </Link>
         </div>
       </main>
     </div>
