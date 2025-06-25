@@ -3,108 +3,98 @@
 import type React from "react"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChevronRight } from "lucide-react"
+import Image from "next/image"
 
 export default function ConnexionPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setError("")
 
-    // Vérification simple
-    if (email === "doudoma9@gmail.com" && password === "doudoma9(!") {
-      // Stocker dans localStorage
-      localStorage.setItem("isLoggedIn", "true")
-      localStorage.setItem("userRole", "SUPER_ADMIN")
-      localStorage.setItem("userName", "CEO Admin")
-      localStorage.setItem("userEmail", email)
-
-      // Rediriger vers admin
-      router.push("/admin")
-    } else {
-      setError("Email ou mot de passe incorrect")
-    }
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     setIsLoading(false)
+    // In a real app, this would redirect to dashboard or home page
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Connexion Admin</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">Spectrum Marketplace</p>
-        </div>
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">{error}</div>}
-
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email (doudoma9@gmail.com)"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Mot de passe
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Mot de passe (doudoma9(!)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {isLoading ? "Connexion..." : "Se connecter"}
-            </button>
-          </div>
-
-          <div className="text-center">
-            <Link href="/" className="text-indigo-600 hover:text-indigo-500">
-              ← Retour à l'accueil
-            </Link>
-          </div>
-        </form>
-
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-medium text-blue-900">Identifiants de test :</h3>
-          <p className="text-sm text-blue-700 mt-1">
-            Email: doudoma9@gmail.com
-            <br />
-            Mot de passe: doudoma9(!)
-          </p>
-        </div>
+    <main className="container mx-auto px-4 py-8">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+        <Link href="/" className="hover:text-foreground">
+          Accueil
+        </Link>
+        <ChevronRight className="h-4 w-4" />
+        <span className="text-foreground font-medium">Connexion</span>
       </div>
-    </div>
+
+      <div className="max-w-md mx-auto">
+        <div className="flex justify-center mb-6">
+          <Image src="/images/logo.png" alt="Spectrum Logo" width={600} height={180} className="h-32 w-auto" priority />
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Connexion</CardTitle>
+            <CardDescription>Connectez-vous à votre compte Spectrum</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin}>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" placeholder="votre@email.com" required />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Mot de passe</Label>
+                    <Link href="/mot-de-passe-oublie" className="text-xs text-primary hover:underline">
+                      Mot de passe oublié ?
+                    </Link>
+                  </div>
+                  <Input id="password" type="password" required />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="remember" />
+                  <Label htmlFor="remember" className="text-sm font-normal">
+                    Se souvenir de moi
+                  </Label>
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Connexion en cours..." : "Se connecter"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Ou continuer avec</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <Button variant="outline">Google</Button>
+              <Button variant="outline">Facebook</Button>
+            </div>
+            <div className="text-center text-sm text-muted-foreground mt-4">
+              Vous n'avez pas de compte ?{" "}
+              <Link href="/inscription" className="text-primary hover:underline">
+                Inscrivez-vous
+              </Link>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    </main>
   )
 }

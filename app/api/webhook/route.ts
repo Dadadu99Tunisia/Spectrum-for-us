@@ -87,3 +87,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Une erreur est survenue lors du traitement du webhook." }, { status: 400 })
   }
 }
+
+// Configure to accept larger payloads
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}

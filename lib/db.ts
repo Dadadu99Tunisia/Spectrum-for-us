@@ -1,15 +1,42 @@
-import { PrismaClient } from "@prisma/client"
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
-}
-
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
+// Version temporaire sans Prisma pour le déploiement
+// Note: Cette version utilise des données statiques et ne se connecte pas à une base de données
 
 // Type simplifié pour simuler Prisma
-// Note: Cette version utilise des données statiques et ne se connecte pas à une base de données
+export const prisma = {
+  user: {
+    findUnique: async () => null,
+    create: async () => ({ id: "mock-id", name: "Mock User", email: "mock@example.com" }),
+    findMany: async () => [],
+  },
+  product: {
+    findMany: async () => mockProducts,
+    findUnique: async () => mockProducts[0],
+    count: async () => mockProducts.length,
+    create: async (data: any) => ({ id: "new-product", ...data.data }),
+    update: async (data: any) => ({ id: data.where.id, ...data.data }),
+    delete: async () => ({ id: "deleted" }),
+  },
+  category: {
+    findMany: async () => mockCategories,
+  },
+  seller: {
+    findMany: async () => mockSellers,
+    findUnique: async () => mockSellers[0],
+    update: async (data: any) => ({ id: data.where.id, ...data.data }),
+  },
+  order: {
+    findMany: async () => [],
+    create: async (data: any) => ({ id: "new-order", ...data.data }),
+  },
+  cartItem: {
+    deleteMany: async () => ({ count: 0 }),
+  },
+  favorite: {
+    findUnique: async () => null,
+  },
+}
+
+// Données statiques pour la démo
 const mockProducts = [
   {
     id: "product-1",
@@ -116,44 +143,5 @@ const mockSellers = [
     location: "Lyon",
   },
 ]
-
-// Mock implementations for demonstration purposes
-prisma.user = {
-  findUnique: async () => null,
-  create: async () => ({ id: "mock-id", name: "Mock User", email: "mock@example.com" }),
-  findMany: async () => [],
-}
-
-prisma.product = {
-  findMany: async () => mockProducts,
-  findUnique: async () => mockProducts[0],
-  count: async () => mockProducts.length,
-  create: async (data: any) => ({ id: "new-product", ...data.data }),
-  update: async (data: any) => ({ id: data.where.id, ...data.data }),
-  delete: async () => ({ id: "deleted" }),
-}
-
-prisma.category = {
-  findMany: async () => mockCategories,
-}
-
-prisma.seller = {
-  findMany: async () => mockSellers,
-  findUnique: async () => mockSellers[0],
-  update: async (data: any) => ({ id: data.where.id, ...data.data }),
-}
-
-prisma.order = {
-  findMany: async () => [],
-  create: async (data: any) => ({ id: "new-order", ...data.data }),
-}
-
-prisma.cartItem = {
-  deleteMany: async () => ({ count: 0 }),
-}
-
-prisma.favorite = {
-  findUnique: async () => null,
-}
 
 export default prisma

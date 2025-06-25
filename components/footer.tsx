@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Facebook, Instagram, Youtube, Heart, Smartphone } from "lucide-react"
 import { Apple, ShoppingBag } from "lucide-react"
 import Image from "next/image"
@@ -28,57 +29,27 @@ export default function Footer() {
   // Si pas encore monté, utiliser une mise en page par défaut pour éviter les erreurs d'hydratation
   if (!mounted) {
     return (
-      <footer className="bg-gray-50 border-t">
-        <div className="container mx-auto px-4 py-8">
+      <footer className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30">
+        <div className="container mx-auto px-4 py-12">
           {/* Version simplifiée pour le rendu initial côté serveur */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid gap-8 grid-cols-1 md:grid-cols-4">
             {/* Contenu minimal pour éviter les sauts de mise en page */}
-            <div>
-              <h3 className="font-bold text-purple-600 mb-4">Spectrum</h3>
-              <p className="text-sm text-gray-600">La marketplace inclusive pour la communauté LGBTQ+</p>
+            <div className="md:col-span-1">
+              <div className="mb-2 h-24 w-auto"></div>
+              <p className="text-sm text-muted-foreground">
+                Un espace inclusif pour la communauté queer où l'expression, la créativité et la diversité sont
+                célébrées.
+              </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Navigation</h4>
-              <div className="space-y-2">
-                <Link href="/" className="block text-sm text-gray-600 hover:text-purple-600">
-                  Accueil
-                </Link>
-                <Link href="/categories" className="block text-sm text-gray-600 hover:text-purple-600">
-                  Catégories
-                </Link>
-                <Link href="/vendeurs" className="block text-sm text-gray-600 hover:text-purple-600">
-                  Vendeurs
-                </Link>
-              </div>
+              <h3 className="text-sm font-semibold mb-4">Découvrir</h3>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <div className="space-y-2">
-                <Link href="/aide" className="block text-sm text-gray-600 hover:text-purple-600">
-                  Aide
-                </Link>
-                <Link href="/contact" className="block text-sm text-gray-600 hover:text-purple-600">
-                  Contact
-                </Link>
-                <Link href="/a-propos" className="block text-sm text-gray-600 hover:text-purple-600">
-                  À propos
-                </Link>
-              </div>
+              <h3 className="text-sm font-semibold mb-4">Communauté</h3>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Légal</h4>
-              <div className="space-y-2">
-                <Link href="/privacy" className="block text-sm text-gray-600 hover:text-purple-600">
-                  Confidentialité
-                </Link>
-                <Link href="/terms" className="block text-sm text-gray-600 hover:text-purple-600">
-                  Conditions
-                </Link>
-              </div>
+              <h3 className="text-sm font-semibold mb-4">Newsletter</h3>
             </div>
-          </div>
-          <div className="border-t mt-8 pt-8 text-center text-sm text-gray-600">
-            © 2024 Spectrum Marketplace. Tous droits réservés.
           </div>
         </div>
       </footer>
@@ -86,8 +57,8 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-gray-50 border-t">
-      <div className="container mx-auto px-4 py-8">
+    <footer className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30">
+      <div className="container mx-auto px-4 py-12">
         {/* App Download Banner */}
         <div className="mb-12 p-6 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-xl border border-purple-200 dark:border-purple-800/30">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -138,7 +109,9 @@ export default function Footer() {
                 priority
               />
             </div>
-            <p className="text-sm text-muted-foreground">La marketplace inclusive pour la communauté LGBTQ+</p>
+            <p className="text-sm text-muted-foreground">
+              Un espace inclusif pour la communauté queer où l'expression, la créativité et la diversité sont célébrées.
+            </p>
             <div className="mt-4 flex space-x-3">
               <Button
                 variant="outline"
@@ -197,12 +170,9 @@ export default function Footer() {
                 variant="outline"
                 size="icon"
                 className="rounded-full bg-white dark:bg-background hover:bg-purple-100 dark:hover:bg-purple-900/20"
-                asChild
               >
-                <a href="https://www.youtube.com/channel/UCSpectrumForUs" target="_blank" rel="noopener noreferrer">
-                  <Youtube className="h-4 w-4" />
-                  <span className="sr-only">Youtube</span>
-                </a>
+                <Youtube className="h-4 w-4" />
+                <span className="sr-only">Youtube</span>
               </Button>
               <Button
                 variant="outline"
@@ -234,76 +204,135 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Navigation</h4>
+            <h3 className="text-sm font-semibold mb-4">Découvrir</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400">
-                  Accueil
+                <Link
+                  href="/artistes"
+                  className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400"
+                >
+                  Artistes
+                </Link>
+              </li>
+              <li>
+                <Link href="/mode" className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400">
+                  Mode & Style
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/categories"
+                  href="/culture"
                   className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400"
                 >
-                  Catégories
+                  Culture
+                </Link>
+              </li>
+              <li>
+                <Link href="/events" className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400">
+                  Événements
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/vendeurs"
+                  href="/boutique"
                   className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400"
                 >
-                  Vendeurs
+                  Boutique
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Support</h4>
+            <h3 className="text-sm font-semibold mb-4">Communauté</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/aide" className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400">
-                  Aide
+                <Link href="/forum" className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400">
+                  Forum
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/contact"
+                  href="/stories"
                   className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400"
                 >
-                  Contact
+                  Histoires
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/a-propos"
+                  href="/resources"
                   className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400"
                 >
-                  À propos
+                  Ressources
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/support"
+                  className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400"
+                >
+                  Support
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contribute"
+                  className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400"
+                >
+                  Contribuer
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Légal</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/privacy"
-                  className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400"
+            <h3 className="text-sm font-semibold mb-4">Newsletter</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Recevez nos actualités, événements et inspirations directement dans votre boîte mail.
+            </p>
+            <div className="flex space-x-2 mb-6">
+              <Input type="email" placeholder="Votre email" className="max-w-[200px] bg-white dark:bg-background" />
+              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                S'abonner
+              </Button>
+            </div>
+
+            {/* Section des moyens de paiement optimisée */}
+            <div>
+              <h4 className="text-sm font-semibold mb-2">Moyens de paiement</h4>
+              <div className={cn("flex flex-wrap gap-2 items-center", isMobile && "gap-1")}>
+                <div
+                  className={cn(
+                    "bg-white dark:bg-gray-800 px-2 py-1 rounded text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700",
+                    isMobile ? "text-[9px]" : "text-xs font-semibold",
+                  )}
                 >
-                  Confidentialité
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400">
-                  Conditions
-                </Link>
-              </li>
-            </ul>
+                  <span className="sr-only">Visa</span>
+                  VISA
+                </div>
+                <div className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-xs font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                  <span className="sr-only">Mastercard</span>
+                  MASTERCARD
+                </div>
+                <div className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-xs font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                  <span className="sr-only">American Express</span>
+                  AMEX
+                </div>
+                <div className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-xs font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                  <span className="sr-only">PayPal</span>
+                  PAYPAL
+                </div>
+                <div className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-xs font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                  <span className="sr-only">Klarna</span>
+                  KLARNA
+                </div>
+                <div className="bg-white dark:bg-gray-800 px-2 py-1 rounded text-xs font-semibold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                  <span className="sr-only">Floa</span>
+                  FLOA
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -341,7 +370,9 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-purple-200 dark:border-purple-800/30">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-muted-foreground">© 2024 Spectrum Marketplace. Tous droits réservés.</p>
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} Spectrum. Tous droits réservés.
+            </p>
             <div className="mt-4 md:mt-0 flex flex-wrap gap-4 text-sm">
               <Link href="/terms" className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400">
                 Conditions d'utilisation
