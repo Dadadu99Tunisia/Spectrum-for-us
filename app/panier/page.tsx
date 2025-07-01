@@ -1,28 +1,90 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { useCart } from "@/hooks/use-cart" // Importer le hook
+import { products } from "@/lib/data/products"
+
+// Simuler un panier avec quelques produits
+const initialCartItems = [
+  { productId: "prod-001", quantity: 1 },
+  { productId: "prod-006", quantity: 2 },
+  { productId: "prod-008", quantity: 1 },
+]
 
 export default function CartPage() {
-  const {
-    cartProducts,
-    promoCode,
-    setPromoCode,
-    promoApplied,
-    isApplyingPromo,
-    subtotal,
-    shippingCost,
-    discount,
-    total,
-    updateQuantity,
-    removeProduct,
-    applyPromoCode,
-  } = useCart() // Utiliser le hook
+  const [cartItems, setCartItems] = useState(initialCartItems)
+  const [promoCode, setPromoCode] = useState("")
+  const [promoApplied, setPromoApplied] = useState(false)
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false)
+
+  // Récupérer les détails des produits dans le panier
+  const cartProducts = cartItems
+    .map((item) => {
+      const product = products.find((p) => p.id === item.productId)
+      return {
+        ...item,
+        product,
+      }
+    })
+    .filter((item) => item.product) // Filtrer les produits qui n'existent pas
+
+  // Calculer les totaux
+  const subtotal = cartProducts.reduce((total, item) => {
+    const price = item.product?.discount
+      ? item.product.price * (1 - item.product.discount / 100)
+      : item.product?.price || 0
+    return total + price * item.quantity
+  }, 0)
+
+  const shippingCost = subtotal > 50 ? 0 : 4.99
+  const discount = promoApplied ? subtotal * 0.1 : 0 // 10% de réduction
+  const total = subtotal + shippingCost - discount
+
+  // Gérer la quantité
+  const updateQuantity = (productId: string, newQuantity: number) => {
+    if (newQuantity < 1) return
+
+    const product = products.find((p) => p.id === productId)
+    if (!product) return
+
+    // Vérifier le stock
+    if (newQuantity > product.stock) {
+      alert(`Désolé, il ne reste que ${product.stock} unités en stock.`)
+      return
+    }
+
+    setCartItems((prev) =>
+      prev.map((item) => (item.productId === productId ? { ...item, quantity: newQuantity } : item)),
+    )
+  }
+
+  // Supprimer un produit
+  const removeProduct = (productId: string) => {
+    setCartItems((prev) => prev.filter((item) => item.productId !== productId))
+  }
+
+  // Appliquer un code promo
+  const applyPromoCode = () => {
+    if (!promoCode) return
+
+    setIsApplyingPromo(true)
+
+    // Simuler une vérification de code promo
+    setTimeout(() => {
+      if (promoCode.toLowerCase() === "welcome10") {
+        setPromoApplied(true)
+        alert("Code promo appliqué avec succès !")
+      } else {
+        alert("Code promo invalide.")
+      }
+      setIsApplyingPromo(false)
+    }, 800)
+  }
 
   // Si le panier est vide
   if (cartProducts.length === 0) {

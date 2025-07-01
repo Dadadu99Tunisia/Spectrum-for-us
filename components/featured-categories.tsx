@@ -7,7 +7,7 @@ const featuredCategoryIds = ["clothing", "art", "jewelry", "beauty", "accessorie
 
 // Images de fond pour les catégories
 const categoryBackgrounds: { [key: string]: string } = {
-  clothing: "/placeholder.svg?height=600&width=800",
+  clothing: "/images/categories/calvin-klein-pride.jpg",
   jewelry: "/placeholder.svg?height=600&width=800",
   art: "/placeholder.svg?height=600&width=800",
   beauty: "/placeholder.svg?height=600&width=800",
@@ -53,7 +53,7 @@ export default function FeaturedCategories() {
               backgroundImage: `url(${categoryBackgrounds[category.id] || "/placeholder.svg?height=600&width=800"})`,
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
             <div className="flex items-center justify-between">

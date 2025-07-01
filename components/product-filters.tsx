@@ -25,7 +25,7 @@ const filterTags = [
   { id: "ethique", name: "Éthique", count: 31 },
 ]
 
-export default function ProductFilters() {
+function ProductFilters() {
   const [priceRange, setPriceRange] = useState([0, 100])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -121,3 +121,5 @@ export default function ProductFilters() {
     </div>
   )
 }
+
+export default ProductFilters

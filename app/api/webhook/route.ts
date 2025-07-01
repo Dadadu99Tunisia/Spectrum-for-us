@@ -88,5 +88,9 @@ export async function POST(request: Request) {
   }
 }
 
-// This route needs the full Node.js runtime for the Stripe SDK
-export const runtime = "nodejs"
+// Configure to accept larger payloads
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
