@@ -1,11 +1,20 @@
 "use client"
-
-import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
+
+interface FiltersState {
+  priceRange: [number, number]
+  selectedCategories: string[]
+  selectedTags: string[]
+}
+
+interface ProductFiltersProps {
+  filters: FiltersState
+  onFiltersChange: (f: FiltersState) => void
+}
 
 // Catégories simplifiées
 const filterCategories = [
@@ -25,33 +34,25 @@ const filterTags = [
   { id: "ethique", name: "Éthique", count: 31 },
 ]
 
-function ProductFilters() {
-  const [priceRange, setPriceRange] = useState([0, 100])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-
+export function ProductFilters({ filters, onFiltersChange }: ProductFiltersProps) {
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
     if (checked) {
-      setSelectedCategories([...selectedCategories, categoryId])
+      onFiltersChange({ ...filters, selectedCategories: [...filters.selectedCategories, categoryId] })
     } else {
-      setSelectedCategories(selectedCategories.filter((id) => id !== categoryId))
+      onFiltersChange({ ...filters, selectedCategories: filters.selectedCategories.filter((id) => id !== categoryId) })
     }
   }
 
   const handleTagChange = (tagId: string, checked: boolean) => {
     if (checked) {
-      setSelectedTags([...selectedTags, tagId])
+      onFiltersChange({ ...filters, selectedTags: [...filters.selectedTags, tagId] })
     } else {
-      setSelectedTags(selectedTags.filter((id) => id !== tagId))
+      onFiltersChange({ ...filters, selectedTags: filters.selectedTags.filter((id) => id !== tagId) })
     }
   }
 
   const applyFilters = () => {
-    console.log("Filtres appliqués:", {
-      priceRange,
-      selectedCategories,
-      selectedTags,
-    })
+    console.log("Filtres appliqués:", filters)
   }
 
   return (
@@ -67,7 +68,7 @@ function ProductFilters() {
                 <div key={category.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={`category-${category.id}`}
-                    checked={selectedCategories.includes(category.id)}
+                    checked={filters.selectedCategories.includes(category.id)}
                     onCheckedChange={(checked) => handleCategoryChange(category.id, checked === true)}
                   />
                   <Label htmlFor={`category-${category.id}`} className="text-sm font-normal cursor-pointer flex-1">
@@ -84,10 +85,18 @@ function ProductFilters() {
           <AccordionTrigger>Prix</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4">
-              <Slider defaultValue={[0, 100]} max={100} step={1} value={priceRange} onValueChange={setPriceRange} />
+              <Slider
+                defaultValue={filters.priceRange}
+                min={0}
+                max={1000}
+                step={10}
+                onValueChange={(val) =>
+                  onFiltersChange({ ...filters, priceRange: [val[0], val[1]] as [number, number] })
+                }
+              />
               <div className="flex items-center justify-between">
-                <span className="text-sm">{priceRange[0]} €</span>
-                <span className="text-sm">{priceRange[1]} €</span>
+                <span className="text-sm">{filters.priceRange[0]} €</span>
+                <span className="text-sm">{filters.priceRange[1]} €</span>
               </div>
             </div>
           </AccordionContent>
@@ -101,7 +110,7 @@ function ProductFilters() {
                 <div key={tag.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={`tag-${tag.id}`}
-                    checked={selectedTags.includes(tag.id)}
+                    checked={filters.selectedTags.includes(tag.id)}
                     onCheckedChange={(checked) => handleTagChange(tag.id, checked === true)}
                   />
                   <Label htmlFor={`tag-${tag.id}`} className="text-sm font-normal cursor-pointer flex-1">
@@ -121,5 +130,3 @@ function ProductFilters() {
     </div>
   )
 }
-
-export default ProductFilters

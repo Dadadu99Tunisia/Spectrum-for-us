@@ -3,32 +3,20 @@
 import { useEffect, useState } from "react"
 
 /**
- * A very tiny helper that returns `{ isMobile: boolean }`
- * based on the `(max-width: 640px)` media-query.
- *
- * It’s exported as a **named export** (`useMobile`)
- * because the build complained it was missing.
- *
- * Example:
- * ```tsx
- * const { isMobile } = useMobile()
- * ```
+ * Detects if the screen is <= 768 px.
  */
-export function useMobile() {
-  const [isMobile, setIsMobile] = useState(false)
+export function useMobile(): boolean {
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window === "undefined" ? false : window.matchMedia("(max-width: 768px)").matches,
+  )
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 640px)")
-
-    // Initial value
-    setIsMobile(mediaQuery.matches)
-
-    // Update on resize / orientation change
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
-    mediaQuery.addEventListener("change", handler)
-
-    return () => mediaQuery.removeEventListener("change", handler)
+    if (typeof window === "undefined") return
+    const media = window.matchMedia("(max-width: 768px)")
+    const listener = () => setIsMobile(media.matches)
+    media.addEventListener("change", listener)
+    return () => media.removeEventListener("change", listener)
   }, [])
 
-  return { isMobile }
+  return isMobile
 }
