@@ -1,51 +1,78 @@
 "use client"
 
-import Image, { type ImageProps } from "next/image"
-import { useMobileDetection } from "@/hooks/use-mobile-detection"
+import Image from "next/image"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 
-interface OptimizedImageProps extends Omit<ImageProps, "src"> {
+interface OptimizedImageProps {
   src: string
-  mobileSrc?: string
-  mobileWidth?: number
-  mobileHeight?: number
-  desktopWidth?: number
-  desktopHeight?: number
+  alt: string
+  width?: number
+  height?: number
+  fill?: boolean
   className?: string
+  priority?: boolean
+  sizes?: string
+  quality?: number
+  placeholder?: "blur" | "empty"
+  blurDataURL?: string
 }
 
-export function OptimizedImage({
+export default function OptimizedImage({
   src,
-  mobileSrc,
   alt,
-  mobileWidth,
-  mobileHeight,
-  desktopWidth,
-  desktopHeight,
+  width,
+  height,
+  fill = false,
   className,
-  ...props
+  priority = false,
+  sizes,
+  quality = 85,
+  placeholder = "empty",
+  blurDataURL,
 }: OptimizedImageProps) {
-  const { isMobile } = useMobileDetection()
+  const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
 
-  // Utiliser l'image mobile si disponible, sinon utiliser l'image par défaut
-  const imageSrc = isMobile && mobileSrc ? mobileSrc : src
+  const handleLoad = () => {
+    setIsLoading(false)
+  }
 
-  // Calculer les dimensions en fonction de l'appareil
-  const width = isMobile && mobileWidth ? mobileWidth : desktopWidth
-  const height = isMobile && mobileHeight ? mobileHeight : desktopHeight
+  const handleError = () => {
+    setIsLoading(false)
+    setHasError(true)
+  }
 
-  // Priorité plus élevée pour les images visibles sur mobile
-  const priority = isMobile ? props.priority || true : props.priority
+  if (hasError) {
+    return (
+      <div className={cn("bg-muted flex items-center justify-center", className)}>
+        <span className="text-muted-foreground text-sm">Image non disponible</span>
+      </div>
+    )
+  }
 
   return (
-    <Image
-      src={imageSrc || "/placeholder.svg"}
-      alt={alt}
-      width={width}
-      height={height}
-      className={cn("transition-opacity duration-300", className)}
-      priority={priority}
-      {...props}
-    />
+    <div className={cn("relative overflow-hidden", className)}>
+      {isLoading && <div className="absolute inset-0 bg-muted animate-pulse" />}
+      <Image
+        src={src || "/placeholder.svg"}
+        alt={alt}
+        width={width}
+        height={height}
+        fill={fill}
+        priority={priority}
+        sizes={sizes}
+        quality={quality}
+        placeholder={placeholder}
+        blurDataURL={blurDataURL}
+        className={cn(
+          "transition-opacity duration-300",
+          isLoading ? "opacity-0" : "opacity-100",
+          fill ? "object-cover" : "",
+        )}
+        onLoad={handleLoad}
+        onError={handleError}
+      />
+    </div>
   )
 }

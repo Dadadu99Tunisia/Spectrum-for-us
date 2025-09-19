@@ -4,57 +4,31 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Facebook, Instagram, Youtube, Heart, Smartphone } from "lucide-react"
+// Ajouter les imports pour les icônes
 import { Apple, ShoppingBag } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function Footer() {
-  // État pour le rendu côté client uniquement
-  const [mounted, setMounted] = useState(false)
+  // Utiliser useState et useEffect pour détecter la taille de l'écran au lieu du hook personnalisé
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-
+    // Fonction pour vérifier si l'écran est de taille mobile
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
 
+    // Vérifier au chargement initial
     checkIfMobile()
+
+    // Ajouter un écouteur d'événement pour les changements de taille
     window.addEventListener("resize", checkIfMobile)
+
+    // Nettoyer l'écouteur d'événement
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
-
-  // Si pas encore monté, utiliser une mise en page par défaut pour éviter les erreurs d'hydratation
-  if (!mounted) {
-    return (
-      <footer className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30">
-        <div className="container mx-auto px-4 py-12">
-          {/* Version simplifiée pour le rendu initial côté serveur */}
-          <div className="grid gap-8 grid-cols-1 md:grid-cols-4">
-            {/* Contenu minimal pour éviter les sauts de mise en page */}
-            <div className="md:col-span-1">
-              <div className="mb-2 h-24 w-auto"></div>
-              <p className="text-sm text-muted-foreground">
-                Un espace inclusif pour la communauté queer où l'expression, la créativité et la diversité sont
-                célébrées.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-4">Découvrir</h3>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-4">Communauté</h3>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-4">Newsletter</h3>
-            </div>
-          </div>
-        </div>
-      </footer>
-    )
-  }
 
   return (
     <footer className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30">
@@ -96,7 +70,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Grille du footer adaptée au mobile */}
+        {/* Modifiez la grille du footer pour être plus adaptée au mobile */}
+        {/* Remplacez la div de la grille principale par ceci: */}
         <div className={cn("grid gap-8", isMobile ? "grid-cols-2" : "grid-cols-1 md:grid-cols-4")}>
           <div className={cn(isMobile ? "col-span-2" : "md:col-span-1")}>
             <div className="mb-2">
@@ -298,7 +273,8 @@ export default function Footer() {
               </Button>
             </div>
 
-            {/* Section des moyens de paiement optimisée */}
+            {/* Optimisez la section des moyens de paiement pour mobile */}
+            {/* Remplacez la div des moyens de paiement par ceci: */}
             <div>
               <h4 className="text-sm font-semibold mb-2">Moyens de paiement</h4>
               <div className={cn("flex flex-wrap gap-2 items-center", isMobile && "gap-1")}>
@@ -336,7 +312,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Section téléchargement d'application */}
+        {/* Ajouter la section de téléchargement d'application dans le footer */}
+        {/* Chercher la div qui contient les réseaux sociaux (généralement une div avec des icônes comme Facebook, Twitter, etc.) */}
+        {/* Après cette div, ajouter la section suivante: */}
         <div className="mt-8 border-t border-gray-200 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="max-w-md">

@@ -1,136 +1,75 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
-export async function GET() {
-  // Version simplifiée pour le déploiement
-  const mockCategories = [
-    {
-      id: "clothing",
-      name: "Vêtements",
-      slug: "vetements",
-      description: "Tous types de vêtements",
-      icon: "Shirt",
-      subcategories: [
-        { id: "tops", name: "Hauts", slug: "hauts" },
-        { id: "bottoms", name: "Bas", slug: "bas" },
-        { id: "dresses", name: "Robes", slug: "robes" },
-        { id: "outerwear", name: "Vestes et manteaux", slug: "vestes-manteaux" },
-      ],
-    },
-    {
-      id: "accessories",
-      name: "Accessoires",
-      slug: "accessoires",
-      description: "Bijoux, sacs, et autres accessoires",
-      icon: "Gem",
-      subcategories: [
-        { id: "jewelry", name: "Bijoux", slug: "bijoux" },
-        { id: "bags", name: "Sacs", slug: "sacs" },
-        { id: "hats", name: "Chapeaux", slug: "chapeaux" },
-        { id: "scarves", name: "Écharpes", slug: "echarpes" },
-      ],
-    },
-    {
-      id: "home",
-      name: "Maison",
-      slug: "maison",
-      description: "Décoration et articles pour la maison",
-      icon: "Home",
-      subcategories: [
-        { id: "decor", name: "Décoration", slug: "decoration" },
-        { id: "kitchen", name: "Cuisine", slug: "cuisine" },
-        { id: "textiles", name: "Textiles", slug: "textiles" },
-      ],
-    },
-    {
-      id: "art",
-      name: "Art",
-      slug: "art",
-      description: "Œuvres d'art originales et impressions",
-      icon: "Palette",
-      subcategories: [
-        { id: "paintings", name: "Peintures", slug: "peintures" },
-        { id: "prints", name: "Impressions", slug: "impressions" },
-        { id: "sculptures", name: "Sculptures", slug: "sculptures" },
-      ],
-    },
-    {
-      id: "beauty",
-      name: "Beauté",
-      slug: "beaute",
-      description: "Produits de beauté et soins personnels",
-      icon: "Sparkles",
-      subcategories: [
-        { id: "skincare", name: "Soins de la peau", slug: "soins-peau" },
-        { id: "makeup", name: "Maquillage", slug: "maquillage" },
-        { id: "haircare", name: "Soins capillaires", slug: "soins-capillaires" },
-      ],
-    },
-  ]
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://backendspectrumforus.vercel.app"
 
-  return NextResponse.json(mockCategories)
+export async function GET(request: NextRequest) {
+  try {
+    // Appeler l'API backend
+    const response = await fetch(`${API_BASE_URL}/api/categories`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Backend API error: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return NextResponse.json({
+      success: true,
+      data: data.categories || data,
+      message: "Catégories récupérées avec succès",
+    })
+  } catch (error) {
+    console.error("Error fetching categories:", error)
+
+    // Fallback avec des données mockées
+    const mockCategories = [
+      {
+        id: "1",
+        name: "Mode Inclusive",
+        slug: "mode-inclusive",
+        description: "Vêtements et accessoires pour tous les corps et toutes les identités",
+        image: "/placeholder.svg?height=200&width=200&text=Mode",
+        icon: "Shirt",
+        productCount: 156,
+      },
+      {
+        id: "2",
+        name: "Art & Culture",
+        slug: "art-culture",
+        description: "Œuvres d'art et objets culturels diversifiés",
+        image: "/placeholder.svg?height=200&width=200&text=Art",
+        icon: "Palette",
+        productCount: 89,
+      },
+      {
+        id: "3",
+        name: "Bien-être",
+        slug: "bien-etre",
+        description: "Produits de bien-être inclusifs et accessibles",
+        image: "/placeholder.svg?height=200&width=200&text=Wellness",
+        icon: "Heart",
+        productCount: 67,
+      },
+      {
+        id: "4",
+        name: "Maison & Déco",
+        slug: "maison-deco",
+        description: "Décoration et objets pour un foyer inclusif",
+        image: "/placeholder.svg?height=200&width=200&text=Home",
+        icon: "Home",
+        productCount: 123,
+      },
+    ]
+
+    return NextResponse.json({
+      success: true,
+      data: mockCategories,
+      message: "Données de démonstration (backend indisponible)",
+    })
+  }
 }
-
-export const categories = [
-  {
-    id: "clothing",
-    name: "Vêtements",
-    slug: "vetements",
-    description: "Tous types de vêtements",
-    icon: "Shirt",
-    subcategories: [
-      { id: "tops", name: "Hauts", slug: "hauts" },
-      { id: "bottoms", name: "Bas", slug: "bas" },
-      { id: "dresses", name: "Robes", slug: "robes" },
-      { id: "outerwear", name: "Vestes et manteaux", slug: "vestes-manteaux" },
-    ],
-  },
-  {
-    id: "accessories",
-    name: "Accessoires",
-    slug: "accessoires",
-    description: "Bijoux, sacs, et autres accessoires",
-    icon: "Gem",
-    subcategories: [
-      { id: "jewelry", name: "Bijoux", slug: "bijoux" },
-      { id: "bags", name: "Sacs", slug: "sacs" },
-      { id: "hats", name: "Chapeaux", slug: "chapeaux" },
-      { id: "scarves", name: "Écharpes", slug: "echarpes" },
-    ],
-  },
-  {
-    id: "home",
-    name: "Maison",
-    slug: "maison",
-    description: "Décoration et articles pour la maison",
-    icon: "Home",
-    subcategories: [
-      { id: "decor", name: "Décoration", slug: "decoration" },
-      { id: "kitchen", name: "Cuisine", slug: "cuisine" },
-      { id: "textiles", name: "Textiles", slug: "textiles" },
-    ],
-  },
-  {
-    id: "art",
-    name: "Art",
-    slug: "art",
-    description: "Œuvres d'art originales et impressions",
-    icon: "Palette",
-    subcategories: [
-      { id: "paintings", name: "Peintures", slug: "peintures" },
-      { id: "prints", name: "Impressions", slug: "impressions" },
-      { id: "sculptures", name: "Sculptures", slug: "sculptures" },
-    ],
-  },
-  {
-    id: "beauty",
-    name: "Beauté",
-    slug: "beaute",
-    description: "Produits de beauté et soins personnels",
-    icon: "Sparkles",
-    subcategories: [
-      { id: "skincare", name: "Soins de la peau", slug: "soins-peau" },
-      { id: "makeup", name: "Maquillage", slug: "maquillage" },
-      { id: "haircare", name: "Soins capillaires", slug: "soins-capillaires" },
-    ],
-  },
-]
