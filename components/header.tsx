@@ -8,6 +8,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import {
   Menu,
   X,
@@ -39,7 +40,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
 import { AccessibilityMenu } from "./accessibility-menu"
 import { useLocale, currencies, languages } from "@/contexts/locale-context"
 import { motion, AnimatePresence } from "framer-motion"
@@ -178,6 +178,7 @@ export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
   const { theme, setTheme } = useTheme()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   // Détection mobile avec useState et useEffect au lieu du hook personnalisé
   const [isMobile, setIsMobile] = useState(false)
@@ -597,7 +598,7 @@ export default function Header() {
 
             {/* Menu toggle */}
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-              <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setMobileMenuOpen(true)}>
+              <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setIsMenuOpen(true)}>
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">{t("open_menu")}</span>
               </Button>
@@ -644,7 +645,7 @@ export default function Header() {
               exit="closed"
               variants={backdropVariants}
               className="lg:hidden fixed inset-0 z-50 bg-black/20 backdrop-blur-sm"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => setIsMenuOpen(false)}
             />
             <motion.div
               initial="closed"
@@ -656,7 +657,7 @@ export default function Header() {
               {/* Logo remplacé par un titre */}
               <div className="flex items-center justify-between mb-4">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link href="/" className="p-1.5" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/" className="p-1.5" onClick={() => setIsMenuOpen(false)}>
                     <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                       Spectrum For us
                     </span>
@@ -667,7 +668,7 @@ export default function Header() {
                   whileTap={{ scale: 0.9 }}
                   type="button"
                   className="-m-2.5 rounded-md p-2.5 text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   <span className="sr-only">{t("close_menu")}</span>
                   <X className="h-5 w-5" aria-hidden="true" />
@@ -678,7 +679,7 @@ export default function Header() {
               <motion.div variants={menuItemVariants} className="flex gap-2 mb-4">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex-1 gap-1 h-8 text-xs">
+                    <Button variant="outline" size="sm" className="flex-1 gap-1 h-8 text-xs bg-transparent">
                       <Globe className="h-3 w-3 mr-1" />
                       <span>{language.flag}</span>
                       <ChevronDown className="h-3 w-3 opacity-50" />
@@ -704,7 +705,7 @@ export default function Header() {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex-1 gap-1 h-8 text-xs">
+                    <Button variant="outline" size="sm" className="flex-1 gap-1 h-8 text-xs bg-transparent">
                       <span>{currency.symbol}</span>
                       <ChevronDown className="h-3 w-3 opacity-50" />
                     </Button>
@@ -736,7 +737,7 @@ export default function Header() {
                   className="flex-1 h-8 text-xs bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 border-none"
                   asChild
                 >
-                  <Link href="/slay-plus" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/slay-plus" onClick={() => setIsMenuOpen(false)}>
                     <Film className="h-3 w-3 mr-2" />
                     <span>Slay+</span>
                   </Link>
@@ -748,7 +749,7 @@ export default function Header() {
                   className="flex-1 h-8 text-xs bg-gradient-to-r from-blue-500 to-teal-600 text-white hover:from-blue-600 hover:to-teal-700 border-none"
                   asChild
                 >
-                  <Link href="/voyage-plus" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/voyage-plus" onClick={() => setIsMenuOpen(false)}>
                     <Globe className="h-3 w-3 mr-2" />
                     <span>Voyage+</span>
                   </Link>
@@ -760,7 +761,7 @@ export default function Header() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 h-8 text-xs"
+                  className="flex-1 h-8 text-xs bg-transparent"
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 >
                   <Sun className="h-3 w-3 mr-2 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
@@ -790,7 +791,7 @@ export default function Header() {
                                   ? "font-medium text-purple-600 dark:text-purple-400"
                                   : "text-muted-foreground",
                               )}
-                              onClick={() => setMobileMenuOpen(false)}
+                              onClick={() => setIsMenuOpen(false)}
                             >
                               {t(subItem.name)}
                             </Link>
@@ -808,7 +809,7 @@ export default function Header() {
                             ? "bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400"
                             : "text-foreground hover:bg-muted",
                         )}
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={() => setIsMenuOpen(false)}
                       >
                         {item.icon && <item.icon className="h-4 w-4 mr-2" />}
                         {t(item.name)}
@@ -822,16 +823,16 @@ export default function Header() {
               <motion.div variants={menuItemVariants} className="border-t border-border pt-4">
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Link href="/favoris" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="outline" size="sm" className="w-full h-9">
+                    <Link href="/favoris" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" size="sm" className="w-full h-9 bg-transparent">
                         <Heart className="h-3.5 w-3.5 mr-2" />
                         {t("favorites")}
                       </Button>
                     </Link>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Link href="/panier" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="outline" size="sm" className="w-full h-9 relative">
+                    <Link href="/panier" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" size="sm" className="w-full h-9 relative bg-transparent">
                         <ShoppingBag className="h-3.5 w-3.5 mr-2" />
                         {t("cart")}
                         {cartCount > 0 && (
@@ -850,15 +851,15 @@ export default function Header() {
                       size="sm"
                       className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 h-9"
                     >
-                      <Link href="/connexion" onClick={() => setMobileMenuOpen(false)}>
+                      <Link href="/connexion" onClick={() => setIsMenuOpen(false)}>
                         <LogIn className="h-3.5 w-3.5 mr-2" />
                         {t("login")}
                       </Link>
                     </Button>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button asChild variant="outline" size="sm" className="w-full h-9">
-                      <Link href="/inscription" onClick={() => setMobileMenuOpen(false)}>
+                    <Button asChild variant="outline" size="sm" className="w-full h-9 bg-transparent">
+                      <Link href="/inscription" onClick={() => setIsMenuOpen(false)}>
                         <User className="h-3.5 w-3.5 mr-2" />
                         {t("register")}
                       </Link>
@@ -866,7 +867,7 @@ export default function Header() {
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                     <Button asChild size="sm" className="w-full h-9">
-                      <Link href="/devenir-vendeur" onClick={() => setMobileMenuOpen(false)}>
+                      <Link href="/devenir-vendeur" onClick={() => setIsMenuOpen(false)}>
                         <Store className="h-3.5 w-3.5 mr-2" />
                         {t("sell")}
                       </Link>

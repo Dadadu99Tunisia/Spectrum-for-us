@@ -3,35 +3,28 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Facebook, Instagram, Youtube, Heart, Smartphone } from "lucide-react"
-// Ajouter les imports pour les icônes
-import { Apple, ShoppingBag } from "lucide-react"
+import { Facebook, Instagram, Youtube, Heart, Smartphone, Apple, ShoppingBag } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { useEffect, useState } from "react"
 
 export default function Footer() {
-  // Utiliser useState et useEffect pour détecter la taille de l'écran au lieu du hook personnalisé
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    // Fonction pour vérifier si l'écran est de taille mobile
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
 
-    // Vérifier au chargement initial
     checkIfMobile()
 
-    // Ajouter un écouteur d'événement pour les changements de taille
     window.addEventListener("resize", checkIfMobile)
 
-    // Nettoyer l'écouteur d'événement
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
 
   return (
-    <footer className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30">
+    <footer className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30 border-t bg-background">
       <div className="container mx-auto px-4 py-12">
         {/* App Download Banner */}
         <div className="mb-12 p-6 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-xl border border-purple-200 dark:border-purple-800/30">
@@ -71,8 +64,65 @@ export default function Footer() {
         </div>
 
         {/* Modifiez la grille du footer pour être plus adaptée au mobile */}
-        {/* Remplacez la div de la grille principale par ceci: */}
         <div className={cn("grid gap-8", isMobile ? "grid-cols-2" : "grid-cols-1 md:grid-cols-4")}>
+          {/* Logo et description */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <div className="h-6 w-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-600" />
+              <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Spectrum
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              La première marketplace inclusive dédiée à la diversité et à l'inclusion.
+            </p>
+          </div>
+
+          {/* Navigation */}
+          <div>
+            <h3 className="font-semibold mb-4">Navigation</h3>
+            <div className="space-y-2">
+              <Link href="/categories" className="block text-sm text-muted-foreground hover:text-foreground">
+                Catégories
+              </Link>
+              <Link href="/vendeurs" className="block text-sm text-muted-foreground hover:text-foreground">
+                Vendeurs
+              </Link>
+              <Link href="/nouveautes" className="block text-sm text-muted-foreground hover:text-foreground">
+                Nouveautés
+              </Link>
+            </div>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h3 className="font-semibold mb-4">Support</h3>
+            <div className="space-y-2">
+              <Link href="/aide" className="block text-sm text-muted-foreground hover:text-foreground">
+                Centre d'aide
+              </Link>
+              <Link href="/contact" className="block text-sm text-muted-foreground hover:text-foreground">
+                Contact
+              </Link>
+              <Link href="/a-propos" className="block text-sm text-muted-foreground hover:text-foreground">
+                À propos
+              </Link>
+            </div>
+          </div>
+
+          {/* Légal */}
+          <div>
+            <h3 className="font-semibold mb-4">Légal</h3>
+            <div className="space-y-2">
+              <Link href="/privacy" className="block text-sm text-muted-foreground hover:text-foreground">
+                Confidentialité
+              </Link>
+              <Link href="/terms" className="block text-sm text-muted-foreground hover:text-foreground">
+                Conditions
+              </Link>
+            </div>
+          </div>
+
           <div className={cn(isMobile ? "col-span-2" : "md:col-span-1")}>
             <div className="mb-2">
               <Image
@@ -145,9 +195,12 @@ export default function Footer() {
                 variant="outline"
                 size="icon"
                 className="rounded-full bg-white dark:bg-background hover:bg-purple-100 dark:hover:bg-purple-900/20"
+                asChild
               >
-                <Youtube className="h-4 w-4" />
-                <span className="sr-only">Youtube</span>
+                <a href="https://www.youtube.com/channel/UCSpectrumForUs" target="_blank" rel="noopener noreferrer">
+                  <Youtube className="h-4 w-4" />
+                  <span className="sr-only">Youtube</span>
+                </a>
               </Button>
               <Button
                 variant="outline"
@@ -274,7 +327,6 @@ export default function Footer() {
             </div>
 
             {/* Optimisez la section des moyens de paiement pour mobile */}
-            {/* Remplacez la div des moyens de paiement par ceci: */}
             <div>
               <h4 className="text-sm font-semibold mb-2">Moyens de paiement</h4>
               <div className={cn("flex flex-wrap gap-2 items-center", isMobile && "gap-1")}>
@@ -313,8 +365,6 @@ export default function Footer() {
         </div>
 
         {/* Ajouter la section de téléchargement d'application dans le footer */}
-        {/* Chercher la div qui contient les réseaux sociaux (généralement une div avec des icônes comme Facebook, Twitter, etc.) */}
-        {/* Après cette div, ajouter la section suivante: */}
         <div className="mt-8 border-t border-gray-200 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="max-w-md">

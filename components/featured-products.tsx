@@ -1,64 +1,128 @@
 "use client"
 
-import { useProducts } from "@/hooks/use-api"
-import { ProductCard } from "@/components/product-card"
-import { ApiErrorHandler } from "@/components/api-error-handler"
+import { useState, useEffect } from "react"
+import ProductCard from "@/components/product-card"
 import { Skeleton } from "@/components/ui/skeleton"
 
-export function FeaturedProducts() {
-  const { products, loading, error } = useProducts({ limit: 8 })
+interface Product {
+  id: string
+  name: string
+  price: number
+  image: string
+  seller: {
+    name: string
+    verified: boolean
+  }
+  rating: number
+  reviews: number
+}
 
-  if (error) {
+export default function FeaturedProducts() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Simuler un chargement de données
+    const loadProducts = async () => {
+      try {
+        // Simuler un délai de chargement
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+
+        const mockProducts: Product[] = [
+          {
+            id: "1",
+            name: "T-shirt Pride Arc-en-ciel",
+            price: 29.99,
+            image: "/placeholder.svg?height=300&width=300&text=T-shirt+Pride",
+            seller: {
+              name: "Atelier Inclusif",
+              verified: true,
+            },
+            rating: 4.8,
+            reviews: 124,
+          },
+          {
+            id: "2",
+            name: "Bracelet Diversité",
+            price: 15.99,
+            image: "/placeholder.svg?height=300&width=300&text=Bracelet",
+            seller: {
+              name: "Créations Uniques",
+              verified: true,
+            },
+            rating: 4.9,
+            reviews: 89,
+          },
+          {
+            id: "3",
+            name: "Sac Tote Inclusif",
+            price: 24.99,
+            image: "/placeholder.svg?height=300&width=300&text=Sac+Tote",
+            seller: {
+              name: "Mode Pour Tous",
+              verified: false,
+            },
+            rating: 4.7,
+            reviews: 67,
+          },
+          {
+            id: "4",
+            name: "Pin's Collection Pride",
+            price: 12.99,
+            image: "/placeholder.svg?height=300&width=300&text=Pins",
+            seller: {
+              name: "Art & Fierté",
+              verified: true,
+            },
+            rating: 4.6,
+            reviews: 156,
+          },
+        ]
+
+        setProducts(mockProducts)
+      } catch (error) {
+        console.error("Erreur lors du chargement des produits:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadProducts()
+  }, [])
+
+  if (loading) {
     return (
-      <section className="py-12 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Produits en Vedette</h2>
-          <ApiErrorHandler
-            error={new Error(error)}
-            title="Erreur de chargement des produits"
-            description="Impossible de charger les produits en vedette"
-          />
+      <section>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Produits Vedettes</h2>
+          <p className="text-muted-foreground">Découvrez nos produits les plus populaires</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="space-y-4">
+              <Skeleton className="aspect-square w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          ))}
         </div>
       </section>
     )
   }
 
   return (
-    <section className="py-12 bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Produits en Vedette</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Découvrez notre sélection de produits inclusifs créés par et pour notre communauté diversifiée
-          </p>
-        </div>
+    <section>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold mb-4">Produits Vedettes</h2>
+        <p className="text-muted-foreground">Découvrez nos produits les plus populaires</p>
+      </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="h-64 w-full rounded-lg" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
-
-        <div className="text-center mt-12">
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-            Voir tous les produits
-          </button>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
       </div>
     </section>
   )
 }
-
-export default FeaturedProducts

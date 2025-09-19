@@ -1,5 +1,5 @@
 // Configuration de l'API
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://backendspectrumforus.vercel.app"
+const API_BASE_URL = "https://backendspectrumforus.vercel.app"
 
 // Types pour l'API
 export interface ApiResponse<T> {
@@ -66,7 +66,6 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
-    public code?: string,
   ) {
     super(message)
     this.name = "ApiError"
@@ -74,25 +73,23 @@ export class ApiError extends Error {
 }
 
 // Fonction utilitaire pour les appels API
-async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`
 
-  const defaultOptions: RequestInit = {
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  }
-
   try {
-    const response = await fetch(url, { ...defaultOptions, ...options })
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+      ...options,
+    })
 
     if (!response.ok) {
       throw new ApiError(`HTTP error! status: ${response.status}`, response.status)
     }
 
-    const data = await response.json()
-    return data
+    return await response.json()
   } catch (error) {
     if (error instanceof ApiError) {
       throw error
@@ -116,40 +113,40 @@ export const productsApi = {
     if (params?.offset) searchParams.set("offset", params.offset.toString())
 
     const query = searchParams.toString()
-    return apiCall<Product[]>(`/api/products${query ? `?${query}` : ""}`)
+    return apiRequest<Product[]>(`/api/products${query ? `?${query}` : ""}`)
   },
 
-  getById: (id: string) => apiCall<Product>(`/api/products/${id}`),
+  getById: (id: string) => apiRequest<Product>(`/api/products/${id}`),
 
-  getFeatured: () => apiCall<Product[]>("/api/products/featured"),
+  getFeatured: () => apiRequest<Product[]>("/api/products/featured"),
 
-  getByCategory: (categoryId: string) => apiCall<Product[]>(`/api/products/category/${categoryId}`),
+  getByCategory: (categoryId: string) => apiRequest<Product[]>(`/api/products/category/${categoryId}`),
 
   create: (product: Omit<Product, "id" | "createdAt" | "updatedAt">) =>
-    apiCall<Product>("/api/products", {
+    apiRequest<Product>("/api/products", {
       method: "POST",
       body: JSON.stringify(product),
     }),
 
   update: (id: string, product: Partial<Product>) =>
-    apiCall<Product>(`/api/products/${id}`, {
+    apiRequest<Product>(`/api/products/${id}`, {
       method: "PUT",
       body: JSON.stringify(product),
     }),
 
   delete: (id: string) =>
-    apiCall<void>(`/api/products/${id}`, {
+    apiRequest<void>(`/api/products/${id}`, {
       method: "DELETE",
     }),
 }
 
 // API des catégories
 export const categoriesApi = {
-  getAll: () => apiCall<Category[]>("/api/categories"),
+  getAll: () => apiRequest<Category[]>("/api/categories"),
 
-  getById: (id: string) => apiCall<Category>(`/api/categories/${id}`),
+  getById: (id: string) => apiRequest<Category>(`/api/categories/${id}`),
 
-  getFeatured: () => apiCall<Category[]>("/api/categories/featured"),
+  getFeatured: () => apiRequest<Category[]>("/api/categories/featured"),
 }
 
 // API des vendeurs
@@ -160,78 +157,78 @@ export const sellersApi = {
     if (params?.offset) searchParams.set("offset", params.offset.toString())
 
     const query = searchParams.toString()
-    return apiCall<Seller[]>(`/api/sellers${query ? `?${query}` : ""}`)
+    return apiRequest<Seller[]>(`/api/sellers${query ? `?${query}` : ""}`)
   },
 
-  getById: (id: string) => apiCall<Seller>(`/api/sellers/${id}`),
+  getById: (id: string) => apiRequest<Seller>(`/api/sellers/${id}`),
 
-  getFeatured: () => apiCall<Seller[]>("/api/sellers/featured"),
+  getFeatured: () => apiRequest<Seller[]>("/api/sellers/featured"),
 
-  getProducts: (sellerId: string) => apiCall<Product[]>(`/api/sellers/${sellerId}/products`),
+  getProducts: (sellerId: string) => apiRequest<Product[]>(`/api/sellers/${sellerId}/products`),
 }
 
 // API du panier
 export const cartApi = {
-  get: () => apiCall<{ items: OrderProduct[]; total: number }>("/api/cart"),
+  get: () => apiRequest<{ items: OrderProduct[]; total: number }>("/api/cart"),
 
   add: (productId: string, quantity = 1) =>
-    apiCall<void>("/api/cart", {
+    apiRequest<void>("/api/cart", {
       method: "POST",
       body: JSON.stringify({ productId, quantity }),
     }),
 
   update: (productId: string, quantity: number) =>
-    apiCall<void>(`/api/cart/${productId}`, {
+    apiRequest<void>(`/api/cart/${productId}`, {
       method: "PUT",
       body: JSON.stringify({ quantity }),
     }),
 
   remove: (productId: string) =>
-    apiCall<void>(`/api/cart/${productId}`, {
+    apiRequest<void>(`/api/cart/${productId}`, {
       method: "DELETE",
     }),
 
   clear: () =>
-    apiCall<void>("/api/cart", {
+    apiRequest<void>("/api/cart", {
       method: "DELETE",
     }),
 }
 
 // API des favoris
 export const favoritesApi = {
-  get: () => apiCall<Product[]>("/api/favorites"),
+  get: () => apiRequest<Product[]>("/api/favorites"),
 
   add: (productId: string) =>
-    apiCall<void>("/api/favorites", {
+    apiRequest<void>("/api/favorites", {
       method: "POST",
       body: JSON.stringify({ productId }),
     }),
 
   remove: (productId: string) =>
-    apiCall<void>(`/api/favorites/${productId}`, {
+    apiRequest<void>(`/api/favorites/${productId}`, {
       method: "DELETE",
     }),
 
   toggle: (productId: string) =>
-    apiCall<{ added: boolean }>(`/api/favorites/${productId}/toggle`, {
+    apiRequest<{ added: boolean }>(`/api/favorites/${productId}/toggle`, {
       method: "POST",
     }),
 }
 
 // API des commandes
 export const ordersApi = {
-  getAll: () => apiCall<Order[]>("/api/orders"),
+  getAll: () => apiRequest<Order[]>("/api/orders"),
 
-  getById: (id: string) => apiCall<Order>(`/api/orders/${id}`),
+  getById: (id: string) => apiRequest<Order>(`/api/orders/${id}`),
 
   create: (orderData: Omit<Order, "id" | "createdAt" | "updatedAt">) =>
-    apiCall<Order>("/api/orders", {
+    apiRequest<Order>("/api/orders", {
       method: "POST",
       body: JSON.stringify(orderData),
     }),
 
   updateStatus: (id: string, status: Order["status"]) =>
-    apiCall<Order>(`/api/orders/${id}/status`, {
+    apiRequest<Order>(`/api/orders/${id}/status`, {
       method: "PUT",
       body: JSON.stringify({ status }),
     }),
@@ -240,7 +237,7 @@ export const ordersApi = {
 // API de recherche
 export const searchApi = {
   global: (query: string) =>
-    apiCall<{
+    apiRequest<{
       products: Product[]
       sellers: Seller[]
       categories: Category[]
@@ -261,14 +258,14 @@ export const searchApi = {
     if (filters?.maxPrice) searchParams.set("maxPrice", filters.maxPrice.toString())
     if (filters?.inStock !== undefined) searchParams.set("inStock", filters.inStock.toString())
 
-    return apiCall<Product[]>(`/api/search/products?${searchParams.toString()}`)
+    return apiRequest<Product[]>(`/api/search/products?${searchParams.toString()}`)
   },
 }
 
 // API d'authentification
 export const authApi = {
   login: (email: string, password: string) =>
-    apiCall<{ user: any; token: string }>("/api/auth/login", {
+    apiRequest<{ user: any; token: string }>("/api/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     }),
@@ -279,17 +276,39 @@ export const authApi = {
     name: string
     phone?: string
   }) =>
-    apiCall<{ user: any; token: string }>("/api/auth/register", {
+    apiRequest<{ user: any; token: string }>("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(userData),
     }),
 
   logout: () =>
-    apiCall<void>("/api/auth/logout", {
+    apiRequest<void>("/api/auth/logout", {
       method: "POST",
     }),
 
-  me: () => apiCall<any>("/api/auth/me"),
+  me: () => apiRequest<any>("/api/auth/me"),
+}
+
+// API générique
+export const api = {
+  // Products
+  getProducts: (params?: Record<string, string>) => {
+    const searchParams = new URLSearchParams(params)
+    return apiRequest(`/api/products?${searchParams.toString()}`)
+  },
+
+  getProduct: (id: string) => apiRequest(`/api/products/${id}`),
+
+  // Categories
+  getCategories: () => apiRequest("/api/categories"),
+
+  // Sellers
+  getSellers: (params?: Record<string, string>) => {
+    const searchParams = new URLSearchParams(params)
+    return apiRequest(`/api/sellers?${searchParams.toString()}`)
+  },
+
+  getSeller: (id: string) => apiRequest(`/api/sellers/${id}`),
 }
 
 // Export par défaut
@@ -302,4 +321,5 @@ export default {
   orders: ordersApi,
   search: searchApi,
   auth: authApi,
+  api: api,
 }

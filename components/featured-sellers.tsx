@@ -1,114 +1,160 @@
 "use client"
 
-import { useSellers } from "@/hooks/use-api"
-import { ApiErrorHandler } from "@/components/api-error-handler"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
-import { Star, MapPin, Package } from "lucide-react"
+import { useState, useEffect } from "react"
+import Image from "next/image"
 import Link from "next/link"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Star, MapPin } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
 
-export function FeaturedSellers() {
-  const { sellers, loading, error } = useSellers({ limit: 6 })
+interface Seller {
+  id: string
+  name: string
+  avatar: string
+  rating: number
+  verified: boolean
+  description: string
+  location: string
+  productCount: number
+}
 
-  if (error) {
+export default function FeaturedSellers() {
+  const [sellers, setSellers] = useState<Seller[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadSellers = async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 800))
+
+        const mockSellers: Seller[] = [
+          {
+            id: "1",
+            name: "Atelier Inclusif",
+            avatar: "/placeholder.svg?height=100&width=100&text=Seller1",
+            rating: 4.9,
+            verified: true,
+            description: "Créations artisanales inclusives et durables",
+            location: "Paris, France",
+            productCount: 45,
+          },
+          {
+            id: "2",
+            name: "Pride Creations",
+            avatar: "/placeholder.svg?height=100&width=100&text=Seller2",
+            rating: 4.8,
+            verified: true,
+            description: "Produits LGBTQ+ authentiques et fiers",
+            location: "Lyon, France",
+            productCount: 32,
+          },
+          {
+            id: "3",
+            name: "Diversité & Style",
+            avatar: "/placeholder.svg?height=100&width=100&text=Seller3",
+            rating: 4.7,
+            verified: true,
+            description: "Mode accessible pour tous les corps",
+            location: "Marseille, France",
+            productCount: 67,
+          },
+          {
+            id: "4",
+            name: "Art Queer",
+            avatar: "/placeholder.svg?height=100&width=100&text=Seller4",
+            rating: 4.9,
+            verified: false,
+            description: "Art contemporain et expression queer",
+            location: "Toulouse, France",
+            productCount: 28,
+          },
+        ]
+
+        setSellers(mockSellers)
+      } catch (error) {
+        console.error("Erreur lors du chargement des vendeurs:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadSellers()
+  }, [])
+
+  if (loading) {
     return (
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Vendeurs en Vedette</h2>
-          <ApiErrorHandler
-            error={new Error(error)}
-            title="Erreur de chargement des vendeurs"
-            description="Impossible de charger les vendeurs en vedette"
-          />
+      <section>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Vendeurs Vedettes</h2>
+          <p className="text-muted-foreground">Découvrez nos créateurs talentueux</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i} className="p-6">
+              <div className="flex flex-col items-center text-center space-y-4">
+                <Skeleton className="w-16 h-16 rounded-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            </Card>
+          ))}
         </div>
       </section>
     )
   }
 
   return (
-    <section className="py-12">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Vendeurs en Vedette</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Rencontrez nos créateurs passionnés qui font de Spectrum une marketplace unique et inclusive
-          </p>
-        </div>
+    <section>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold mb-4">Vendeurs Vedettes</h2>
+        <p className="text-muted-foreground">Découvrez nos créateurs talentueux</p>
+      </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm space-y-4">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-16 w-16 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-3 w-24" />
-                  </div>
-                </div>
-                <Skeleton className="h-16 w-full" />
-                <div className="flex justify-between">
-                  <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-4 w-16" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sellers.map((seller) => (
-              <Link key={seller.id} href={`/vendeur/${seller.id}`}>
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <img
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {sellers.map((seller) => (
+          <Link key={seller.id} href={`/vendeur/${seller.id}`}>
+            <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="p-6">
+                <div className="flex flex-col items-center text-center">
+                  <div className="relative mb-4">
+                    <Image
                       src={seller.avatar || "/placeholder.svg"}
                       alt={seller.name}
-                      className="h-16 w-16 rounded-full object-cover"
+                      width={64}
+                      height={64}
+                      className="rounded-full"
                     />
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <h3 className="font-semibold text-lg">{seller.name}</h3>
-                        {seller.verified && (
-                          <Badge variant="secondary" className="text-xs">
-                            Vérifié
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span>{seller.rating}</span>
-                      </div>
-                    </div>
+                    {seller.verified && (
+                      <Badge className="absolute -bottom-1 -right-1 bg-green-500 hover:bg-green-600 text-xs px-1 py-0">
+                        ✓
+                      </Badge>
+                    )}
                   </div>
 
-                  <p className="text-muted-foreground mb-4 line-clamp-2">{seller.description}</p>
+                  <h3 className="font-semibold mb-2 group-hover:text-purple-600 transition-colors">{seller.name}</h3>
 
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <div className="flex items-center space-x-1">
-                      <MapPin className="h-4 w-4" />
-                      <span>{seller.location}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Package className="h-4 w-4" />
-                      <span>{seller.productCount} produits</span>
-                    </div>
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{seller.description}</p>
+
+                  <div className="flex items-center gap-1 mb-2">
+                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-medium">{seller.rating}</span>
                   </div>
+
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+                    <MapPin className="h-3 w-3" />
+                    {seller.location}
+                  </div>
+
+                  <p className="text-xs text-muted-foreground">{seller.productCount} produits</p>
                 </div>
-              </Link>
-            ))}
-          </div>
-        )}
-
-        <div className="text-center mt-12">
-          <Link href="/vendeurs">
-            <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-              Découvrir tous les vendeurs
-            </button>
+              </CardContent>
+            </Card>
           </Link>
-        </div>
+        ))}
       </div>
     </section>
   )
 }
-
-export default FeaturedSellers

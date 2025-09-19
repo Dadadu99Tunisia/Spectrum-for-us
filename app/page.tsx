@@ -1,6 +1,9 @@
 "use client"
 import { Button } from "@/components/ui/button"
+import Header from "@/components/header"
+import Hero from "@/components/hero"
 import FeaturedProducts from "@/components/featured-products"
+import Categories from "@/components/categories"
 import FeaturedSellers from "@/components/featured-sellers"
 import KeyStats from "@/components/key-stats"
 import BrandValues from "@/components/brand-values"
@@ -12,8 +15,6 @@ import ServicesShowcase from "@/components/services-showcase"
 import { motion } from "framer-motion"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
-import ModernHero from "@/components/modern-hero"
-import ModernCategoryShowcase from "@/components/modern-category-showcase"
 import CommunityHighlights from "@/components/community-highlights"
 import HowItWorks from "@/components/how-it-works"
 import { ErrorBoundary } from "@/components/error-boundary"
@@ -59,36 +60,20 @@ function SectionSkeleton() {
 export default function HomePage() {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <ErrorBoundary fallback={<HeroSkeleton />}>
-        <Suspense fallback={<HeroSkeleton />}>
-          <ModernHero />
-        </Suspense>
-      </ErrorBoundary>
+      <Header />
+
+      <main>
+        <Hero />
+
+        <div className="container mx-auto px-4 py-16 space-y-16">
+          <FeaturedProducts />
+          <Categories />
+          <FeaturedSellers />
+        </div>
+      </main>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 space-y-16 py-16">
-        {/* Featured Products */}
-        <ErrorBoundary fallback={<SectionSkeleton />}>
-          <Suspense fallback={<SectionSkeleton />}>
-            <FeaturedProducts />
-          </Suspense>
-        </ErrorBoundary>
-
-        {/* Categories */}
-        <ErrorBoundary fallback={<SectionSkeleton />}>
-          <Suspense fallback={<SectionSkeleton />}>
-            <ModernCategoryShowcase />
-          </Suspense>
-        </ErrorBoundary>
-
-        {/* Featured Sellers */}
-        <ErrorBoundary fallback={<SectionSkeleton />}>
-          <Suspense fallback={<SectionSkeleton />}>
-            <FeaturedSellers />
-          </Suspense>
-        </ErrorBoundary>
-
         {/* How It Works */}
         <ErrorBoundary fallback={<SectionSkeleton />}>
           <Suspense fallback={<SectionSkeleton />}>
