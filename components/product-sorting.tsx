@@ -2,62 +2,53 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, ArrowUpDown } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { ChevronDown } from "lucide-react"
 
 interface ProductSortingProps {
   onSortChange?: (sortBy: string) => void
 }
 
-export function ProductSorting({ onSortChange }: ProductSortingProps) {
-  const [selectedSort, setSelectedSort] = useState("featured")
-  const [isOpen, setIsOpen] = useState(false)
+export default function ProductSorting({ onSortChange }: ProductSortingProps) {
+  const [currentSort, setCurrentSort] = useState("newest")
 
   const sortOptions = [
-    { value: "featured", label: "Mis en avant" },
     { value: "newest", label: "Plus récents" },
-    { value: "price-low", label: "Prix croissant" },
-    { value: "price-high", label: "Prix décroissant" },
+    { value: "oldest", label: "Plus anciens" },
+    { value: "price_low", label: "Prix croissant" },
+    { value: "price_high", label: "Prix décroissant" },
+    { value: "name_asc", label: "Nom A-Z" },
+    { value: "name_desc", label: "Nom Z-A" },
     { value: "popular", label: "Plus populaires" },
     { value: "rating", label: "Mieux notés" },
   ]
 
   const handleSortChange = (sortValue: string) => {
-    setSelectedSort(sortValue)
-    setIsOpen(false)
+    setCurrentSort(sortValue)
     onSortChange?.(sortValue)
   }
 
-  const selectedOption = sortOptions.find((option) => option.value === selectedSort)
+  const currentSortLabel = sortOptions.find((option) => option.value === currentSort)?.label || "Trier par"
 
   return (
-    <div className="relative">
-      <Button
-        variant="outline"
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 min-w-[200px] justify-between"
-      >
-        <div className="flex items-center gap-2">
-          <ArrowUpDown className="h-4 w-4" />
-          <span>Trier par: {selectedOption?.label}</span>
-        </div>
-        <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-      </Button>
-
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-background border rounded-md shadow-lg z-50">
-          {sortOptions.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => handleSortChange(option.value)}
-              className={`w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground transition-colors ${
-                selectedSort === option.value ? "bg-accent text-accent-foreground" : ""
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="min-w-[150px] justify-between bg-transparent">
+          {currentSortLabel}
+          <ChevronDown className="ml-2 h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[200px]">
+        {sortOptions.map((option) => (
+          <DropdownMenuItem
+            key={option.value}
+            onClick={() => handleSortChange(option.value)}
+            className={currentSort === option.value ? "bg-accent" : ""}
+          >
+            {option.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
