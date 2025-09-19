@@ -1,21 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useMobile } from "./use-mobile"
 
-export function useMobileDetection(): { isMobile: boolean } {
-  const [isMobile, setIsMobile] = useState<boolean>(false)
-
-  useEffect(() => {
-    function handleResize() {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    if (typeof window !== "undefined") {
-      setIsMobile(window.innerWidth < 768)
-      window.addEventListener("resize", handleResize)
-      return () => window.removeEventListener("resize", handleResize)
-    }
-  }, [])
-
+export function useMobileDetection() {
+  const isMobile = useMobile()
   return { isMobile }
 }

@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,7 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ChevronRight } from "lucide-react"
 import Image from "next/image"
 
-export default function ConnexionPage() {
+function ConnexionForm() {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -96,5 +95,13 @@ export default function ConnexionPage() {
         </Card>
       </div>
     </main>
+  )
+}
+
+export default function ConnexionPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Chargement...</div>}>
+      <ConnexionForm />
+    </Suspense>
   )
 }

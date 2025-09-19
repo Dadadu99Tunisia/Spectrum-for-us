@@ -1,29 +1,44 @@
 "use client"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import { ArrowUpDown } from "lucide-react"
 
 interface ProductSortingProps {
-  sortBy: string
-  onSortChange: (value: string) => void
+  onSortChange?: (sortBy: string) => void
+  defaultValue?: string
 }
 
-export function ProductSorting({ sortBy, onSortChange }: ProductSortingProps) {
+export function ProductSorting({ onSortChange, defaultValue = "featured" }: ProductSortingProps) {
+  const sortOptions = [
+    { value: "featured", label: "Mis en avant" },
+    { value: "newest", label: "Plus récents" },
+    { value: "price-low", label: "Prix croissant" },
+    { value: "price-high", label: "Prix décroissant" },
+    { value: "name-asc", label: "Nom A-Z" },
+    { value: "name-desc", label: "Nom Z-A" },
+    { value: "rating", label: "Mieux notés" },
+    { value: "popularity", label: "Plus populaires" },
+  ]
+
   return (
-    <Select value={sortBy} onValueChange={onSortChange}>
-      <SelectTrigger className="w-48">
-        <SelectValue placeholder="Trier par" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="newest">Plus récent</SelectItem>
-        <SelectItem value="oldest">Plus ancien</SelectItem>
-        <SelectItem value="price-low">Prix croissant</SelectItem>
-        <SelectItem value="price-high">Prix décroissant</SelectItem>
-        <SelectItem value="name">Nom A-Z</SelectItem>
-        <SelectItem value="rating">Mieux noté</SelectItem>
-        <SelectItem value="popular">Popularité</SelectItem>
-      </SelectContent>
-    </Select>
+    <div className="flex items-center gap-2">
+      <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+      <Label htmlFor="sort-select" className="text-sm font-medium whitespace-nowrap">
+        Trier par:
+      </Label>
+      <Select defaultValue={defaultValue} onValueChange={onSortChange}>
+        <SelectTrigger id="sort-select" className="w-[180px]">
+          <SelectValue placeholder="Choisir un tri" />
+        </SelectTrigger>
+        <SelectContent>
+          {sortOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   )
 }
-
-export default ProductSorting
