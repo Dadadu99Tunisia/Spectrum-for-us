@@ -1,132 +1,114 @@
 "use client"
+
+import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 
-interface FiltersState {
-  priceRange: [number, number]
-  selectedCategories: string[]
-  selectedTags: string[]
-}
-
 interface ProductFiltersProps {
-  filters: FiltersState
-  onFiltersChange: (f: FiltersState) => void
+  filters: {
+    priceRange: number[]
+    colors: string[]
+    sizes: string[]
+    brands: string[]
+  }
+  onFiltersChange: (filters: any) => void
 }
-
-// Catégories simplifiées
-const filterCategories = [
-  { id: "vetements", name: "Vêtements", count: 42 },
-  { id: "accessoires", name: "Accessoires", count: 38 },
-  { id: "bijoux", name: "Bijoux", count: 24 },
-  { id: "maison", name: "Maison", count: 18 },
-  { id: "beaute", name: "Beauté", count: 15 },
-]
-
-// Tags simplifiés
-const filterTags = [
-  { id: "inclusif", name: "Inclusif", count: 65 },
-  { id: "non-genre", name: "Non genré", count: 42 },
-  { id: "queer", name: "Queer", count: 38 },
-  { id: "fait-main", name: "Fait main", count: 27 },
-  { id: "ethique", name: "Éthique", count: 31 },
-]
 
 export function ProductFilters({ filters, onFiltersChange }: ProductFiltersProps) {
-  const handleCategoryChange = (categoryId: string, checked: boolean) => {
-    if (checked) {
-      onFiltersChange({ ...filters, selectedCategories: [...filters.selectedCategories, categoryId] })
-    } else {
-      onFiltersChange({ ...filters, selectedCategories: filters.selectedCategories.filter((id) => id !== categoryId) })
-    }
+  const [localFilters, setLocalFilters] = useState(filters)
+
+  const colors = ["Rouge", "Bleu", "Vert", "Noir", "Blanc", "Rose", "Violet"]
+  const sizes = ["XS", "S", "M", "L", "XL", "XXL"]
+  const brands = ["Calvin Klein", "Pride Collection", "Spectrum", "Inclusive"]
+
+  const handlePriceChange = (value: number[]) => {
+    const newFilters = { ...localFilters, priceRange: value }
+    setLocalFilters(newFilters)
+    onFiltersChange(newFilters)
   }
 
-  const handleTagChange = (tagId: string, checked: boolean) => {
-    if (checked) {
-      onFiltersChange({ ...filters, selectedTags: [...filters.selectedTags, tagId] })
-    } else {
-      onFiltersChange({ ...filters, selectedTags: filters.selectedTags.filter((id) => id !== tagId) })
-    }
-  }
-
-  const applyFilters = () => {
-    console.log("Filtres appliqués:", filters)
+  const handleColorChange = (color: string, checked: boolean) => {
+    const newColors = checked ? [...localFilters.colors, color] : localFilters.colors.filter((c) => c !== color)
+    const newFilters = { ...localFilters, colors: newColors }
+    setLocalFilters(newFilters)
+    onFiltersChange(newFilters)
   }
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold">Filtres</h3>
-
-      <Accordion type="multiple" defaultValue={["categories", "price", "tags"]}>
-        <AccordionItem value="categories">
-          <AccordionTrigger>Catégories</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-2">
-              {filterCategories.map((category) => (
-                <div key={category.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`category-${category.id}`}
-                    checked={filters.selectedCategories.includes(category.id)}
-                    onCheckedChange={(checked) => handleCategoryChange(category.id, checked === true)}
-                  />
-                  <Label htmlFor={`category-${category.id}`} className="text-sm font-normal cursor-pointer flex-1">
-                    {category.name}
-                  </Label>
-                  <span className="text-xs text-muted-foreground">({category.count})</span>
-                </div>
-              ))}
+      <Card>
+        <CardHeader>
+          <CardTitle>Prix</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <Slider
+              value={localFilters.priceRange}
+              onValueChange={handlePriceChange}
+              max={1000}
+              min={0}
+              step={10}
+              className="w-full"
+            />
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>{localFilters.priceRange[0]}€</span>
+              <span>{localFilters.priceRange[1]}€</span>
             </div>
-          </AccordionContent>
-        </AccordionItem>
+          </div>
+        </CardContent>
+      </Card>
 
-        <AccordionItem value="price">
-          <AccordionTrigger>Prix</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-4">
-              <Slider
-                defaultValue={filters.priceRange}
-                min={0}
-                max={1000}
-                step={10}
-                onValueChange={(val) =>
-                  onFiltersChange({ ...filters, priceRange: [val[0], val[1]] as [number, number] })
-                }
-              />
-              <div className="flex items-center justify-between">
-                <span className="text-sm">{filters.priceRange[0]} €</span>
-                <span className="text-sm">{filters.priceRange[1]} €</span>
+      <Card>
+        <CardHeader>
+          <CardTitle>Couleurs</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {colors.map((color) => (
+              <div key={color} className="flex items-center space-x-2">
+                <Checkbox
+                  id={color}
+                  checked={localFilters.colors.includes(color)}
+                  onCheckedChange={(checked) => handleColorChange(color, checked as boolean)}
+                />
+                <Label htmlFor={color}>{color}</Label>
               </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
-        <AccordionItem value="tags">
-          <AccordionTrigger>Tags</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-2">
-              {filterTags.map((tag) => (
-                <div key={tag.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`tag-${tag.id}`}
-                    checked={filters.selectedTags.includes(tag.id)}
-                    onCheckedChange={(checked) => handleTagChange(tag.id, checked === true)}
-                  />
-                  <Label htmlFor={`tag-${tag.id}`} className="text-sm font-normal cursor-pointer flex-1">
-                    {tag.name}
-                  </Label>
-                  <span className="text-xs text-muted-foreground">({tag.count})</span>
-                </div>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <Button onClick={applyFilters} className="w-full">
-        Appliquer les filtres
-      </Button>
+      <Card>
+        <CardHeader>
+          <CardTitle>Tailles</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 gap-2">
+            {sizes.map((size) => (
+              <Button
+                key={size}
+                variant={localFilters.sizes.includes(size) ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  const newSizes = localFilters.sizes.includes(size)
+                    ? localFilters.sizes.filter((s) => s !== size)
+                    : [...localFilters.sizes, size]
+                  const newFilters = { ...localFilters, sizes: newSizes }
+                  setLocalFilters(newFilters)
+                  onFiltersChange(newFilters)
+                }}
+              >
+                {size}
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
+
+export default ProductFilters

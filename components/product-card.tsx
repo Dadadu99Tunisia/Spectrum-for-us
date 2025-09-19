@@ -11,9 +11,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import type { Product } from "@/lib/data/products"
 import { cn } from "@/lib/utils"
-
-// Importez le hook de détection mobile
-import { useMobileDetection } from "@/hooks/use-mobile-detection"
+import { useMobile } from "@/hooks/use-mobile"
 
 interface ProductCardProps {
   product: Product
@@ -21,22 +19,23 @@ interface ProductCardProps {
   index?: number
   viewMode?: "grid" | "list"
   isMobileProp?: boolean
+  className?: string
 }
 
-export default function ProductCard({
+export function ProductCard({
   product,
   featured = false,
   index = 0,
   viewMode = "grid",
   isMobileProp,
+  className,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
+  const isMobile = useMobile()
 
   // Calculer le prix avec remise si applicable
   const discountedPrice = product.discount ? product.price * (1 - product.discount / 100) : null
-
-  const { isMobile } = useMobileDetection()
 
   return (
     <motion.div
@@ -220,3 +219,5 @@ export default function ProductCard({
     </motion.div>
   )
 }
+
+export default ProductCard

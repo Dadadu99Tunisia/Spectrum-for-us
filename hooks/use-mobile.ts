@@ -2,20 +2,19 @@
 
 import { useEffect, useState } from "react"
 
-/**
- * Detects if the screen is <= 768 px.
- */
 export function useMobile(): boolean {
-  const [isMobile, setIsMobile] = useState<boolean>(() =>
-    typeof window === "undefined" ? false : window.matchMedia("(max-width: 768px)").matches,
-  )
+  const [isMobile, setIsMobile] = useState<boolean>(false)
 
   useEffect(() => {
-    if (typeof window === "undefined") return
-    const media = window.matchMedia("(max-width: 768px)")
-    const listener = () => setIsMobile(media.matches)
-    media.addEventListener("change", listener)
-    return () => media.removeEventListener("change", listener)
+    function handleResize() {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    if (typeof window !== "undefined") {
+      setIsMobile(window.innerWidth < 768)
+      window.addEventListener("resize", handleResize)
+      return () => window.removeEventListener("resize", handleResize)
+    }
   }, [])
 
   return isMobile

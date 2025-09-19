@@ -48,7 +48,7 @@ export const metadata: Metadata = {
       "Une marketplace inclusive et diversifiée célébrant la communauté queer avec des produits uniques et créatifs.",
   },
   manifest: "/manifest.json",
-    generator: 'v0.dev'
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
