@@ -1,16 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    scrollRestoration: true,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    scrollRestoration: true,
-  },
   images: {
-    domains: ['images.unsplash.com', 'placeholder.svg'],
+    domains: ['placeholder.svg', 'blob.v0.app'],
     remotePatterns: [
       {
         protocol: 'https',
