@@ -6,17 +6,18 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    scrollRestoration: true,
+  },
   images: {
+    domains: ['images.unsplash.com', 'placeholder.svg'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'blob.v0.app',
+        hostname: '**',
       },
     ],
+    unoptimized: true,
   },
 }
 

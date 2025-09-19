@@ -27,15 +27,6 @@ async function sendOrderConfirmationEmail(email: string, orderId: string, amount
   console.log(`Sending confirmation email to ${email} for order ${orderId} with amount ${amount}€`)
 
   // In a real application, you would use a service like SendGrid, Mailgun, etc.
-  // Example with SendGrid would be:
-  // await sendgrid.send({
-  //   to: email,
-  //   from: 'your-store@example.com',
-  //   subject: `Order Confirmation #${orderId}`,
-  //   text: `Thank you for your order! Your order #${orderId} for ${amount}€ has been confirmed.`,
-  //   html: `<p>Thank you for your order!</p><p>Your order <strong>#${orderId}</strong> for <strong>${amount}€</strong> has been confirmed.</p>`,
-  // });
-
   return true
 }
 
@@ -86,11 +77,4 @@ export async function POST(request: Request) {
     console.error("Webhook error:", error)
     return NextResponse.json({ error: "Une erreur est survenue lors du traitement du webhook." }, { status: 400 })
   }
-}
-
-// Configure to accept larger payloads
-export const config = {
-  api: {
-    bodyParser: false,
-  },
 }
