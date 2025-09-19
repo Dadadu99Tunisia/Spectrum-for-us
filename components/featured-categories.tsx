@@ -1,74 +1,102 @@
+"use client"
+
+import { motion } from "framer-motion"
 import Link from "next/link"
-import { categories } from "@/app/api/categories/route"
-import { ArrowRight } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Palette, Shirt, Coffee, Music, Camera, Sparkles } from "lucide-react"
 
-// Sélection des catégories à mettre en avant
-const featuredCategoryIds = ["clothing", "art", "jewelry", "beauty", "accessories", "craft", "tech", "wellness"]
+const categories = [
+  {
+    name: "Art & Design",
+    slug: "art-design",
+    icon: Palette,
+    count: "1,200+ produits",
+    color: "from-purple-500 to-pink-500",
+  },
+  {
+    name: "Mode & Style",
+    slug: "mode-style",
+    icon: Shirt,
+    count: "800+ produits",
+    color: "from-blue-500 to-cyan-500",
+  },
+  {
+    name: "Lifestyle",
+    slug: "lifestyle",
+    icon: Coffee,
+    count: "600+ produits",
+    color: "from-green-500 to-teal-500",
+  },
+  {
+    name: "Musique",
+    slug: "musique",
+    icon: Music,
+    count: "400+ produits",
+    color: "from-orange-500 to-red-500",
+  },
+  {
+    name: "Photographie",
+    slug: "photographie",
+    icon: Camera,
+    count: "300+ produits",
+    color: "from-indigo-500 to-purple-500",
+  },
+  {
+    name: "Beauté",
+    slug: "beaute",
+    icon: Sparkles,
+    count: "500+ produits",
+    color: "from-pink-500 to-rose-500",
+  },
+]
 
-// Images de fond pour les catégories
-const categoryBackgrounds: { [key: string]: string } = {
-  clothing: "/placeholder.svg?height=600&width=800",
-  jewelry: "/placeholder.svg?height=600&width=800",
-  art: "/placeholder.svg?height=600&width=800",
-  beauty: "/placeholder.svg?height=600&width=800",
-  accessories: "/placeholder.svg?height=600&width=800",
-  craft: "/placeholder.svg?height=600&width=800",
-  tech: "/placeholder.svg?height=600&width=800",
-  wellness: "/placeholder.svg?height=600&width=800",
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
 }
 
-// Icônes pour les catégories
-const categoryIcons: { [key: string]: string } = {
-  clothing: "👕",
-  jewelry: "💍",
-  art: "🎨",
-  beauty: "💄",
-  home: "🏠",
-  books: "📚",
-  accessories: "👜",
-  craft: "🧶",
-  tech: "📱",
-  wellness: "🧘",
-  food: "🍽️",
-  music: "🎵",
-  events: "🎪",
-  services: "🛠️",
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5 },
+  },
 }
 
 export default function FeaturedCategories() {
-  // Filtrer les catégories à mettre en avant
-  const featuredCategories = categories.filter((cat) => featuredCategoryIds.includes(cat.id))
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {featuredCategories.map((category) => (
-        <Link
-          href={`/categorie/${category.id}`}
-          key={category.id}
-          className="group relative overflow-hidden rounded-xl aspect-square"
-        >
-          <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-            style={{
-              backgroundImage: `url(${categoryBackgrounds[category.id] || "/placeholder.svg?height=600&width=800"})`,
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-
-          <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-3xl mb-2 inline-block">{categoryIcons[category.id] || "🛍️"}</span>
-                <h3 className="text-xl font-bold mb-1">{category.name}</h3>
-                <p className="text-sm text-white/80">{category.subcategories.length} sous-catégories</p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm transition-transform duration-300 group-hover:translate-x-1">
-                <ArrowRight className="h-5 w-5 text-white" />
-              </div>
-            </div>
-          </div>
-        </Link>
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={containerVariants}
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      {categories.map((category) => (
+        <motion.div key={category.slug} variants={itemVariants}>
+          <Link href={`/categorie/${category.slug}`}>
+            <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden">
+              <CardContent className="p-6">
+                <div
+                  className={`w-16 h-16 rounded-full bg-gradient-to-r ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+                >
+                  <category.icon className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-600 transition-colors">
+                  {category.name}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">{category.count}</p>
+              </CardContent>
+            </Card>
+          </Link>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   )
 }

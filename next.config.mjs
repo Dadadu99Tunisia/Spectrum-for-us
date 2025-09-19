@@ -1,33 +1,46 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Performance optimizations
+  // Configuration optimisée pour le déploiement
   experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
+    // Désactiver les fonctionnalités expérimentales qui peuvent causer des problèmes
+    serverComponentsExternalPackages: ['stripe']
   },
-
-  // Image optimization
+  
+  // Images configuration
   images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'blob.v0.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.placeholder.com',
+      }
+    ],
+    // Optimisation des images
     formats: ['image/webp', 'image/avif'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    domains: ['placeholder.svg', 'images.unsplash.com', 'via.placeholder.com'],
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    unoptimized: true, // Added from updates
   },
 
-  // Compression
-  compress: true,
+  // Optimisations de build
+  swcMinify: true,
+  
+  // Configuration pour éviter les erreurs de build
+  typescript: {
+    // En production, ne pas échouer sur les erreurs TypeScript mineures
+    ignoreBuildErrors: false,
+  },
+  
+  eslint: {
+    // En production, ne pas échouer sur les warnings ESLint
+    ignoreDuringBuilds: false,
+  },
 
-  // Headers for security and performance
+  // Headers de sécurité
   async headers() {
     return [
       {
@@ -45,34 +58,12 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin',
           },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
-          },
-        ],
-      },
-      {
-        source: '/api/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=300, stale-while-revalidate=60',
-          },
-        ],
-      },
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
         ],
       },
     ]
   },
 
-  // Redirects for SEO
+  // Redirections pour les anciennes URLs
   async redirects() {
     return [
       {
@@ -80,38 +71,7 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
-      {
-        source: '/products',
-        destination: '/shop',
-        permanent: true,
-      },
     ]
-  },
-
-  // Bundle analyzer (only in development)
-  ...(process.env.ANALYZE === 'true' && {
-    webpack: (config) => {
-      config.plugins.push(
-        new (require('@next/bundle-analyzer'))({
-          enabled: true,
-        })
-      )
-      return config
-    },
-  }),
-
-  // PWA configuration
-  ...(process.env.NODE_ENV === 'production' && {
-    swcMinify: true,
-    poweredByHeader: false,
-  }),
-
-  // ESLint and TypeScript configurations
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
   },
 }
 

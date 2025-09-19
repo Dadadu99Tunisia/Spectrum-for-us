@@ -1,96 +1,82 @@
-import { NextResponse } from "next/server"
-import stripe from "@/lib/stripe"
 import { headers } from "next/headers"
+import { NextResponse } from "next/server"
+import { stripe } from "@/lib/stripe"
+import { supabaseAdmin } from "@/lib/supabase-admin"
 
-// This would be a real function in your application
-async function processOrder(session: any) {
-  const orderId = session.metadata.orderId
-  const customerEmail = session.customer_details?.email
-  const amount = session.amount_total / 100 // Convert from cents to euros
+export const runtime = "nodejs"
 
-  console.log(`Processing order ${orderId} for ${customerEmail} with amount ${amount}€`)
-
-  // In a real application, you would:
-  // 1. Save the order to your database
-  // 2. Update inventory
-  // 3. Send confirmation email
-  // 4. Update seller balances
-
-  // Example of sending an email (mock implementation)
-  await sendOrderConfirmationEmail(customerEmail, orderId, amount)
-
-  return true
-}
-
-// Mock email sending function
-async function sendOrderConfirmationEmail(email: string, orderId: string, amount: number) {
-  console.log(`Sending confirmation email to ${email} for order ${orderId} with amount ${amount}€`)
-
-  // In a real application, you would use a service like SendGrid, Mailgun, etc.
-  // Example with SendGrid would be:
-  // await sendgrid.send({
-  //   to: email,
-  //   from: 'your-store@example.com',
-  //   subject: `Order Confirmation #${orderId}`,
-  //   text: `Thank you for your order! Your order #${orderId} for ${amount}€ has been confirmed.`,
-  //   html: `<p>Thank you for your order!</p><p>Your order <strong>#${orderId}</strong> for <strong>${amount}€</strong> has been confirmed.</p>`,
-  // });
-
-  return true
-}
-
-export async function POST(request: Request) {
-  const body = await request.text()
-  const signature = headers().get("stripe-signature") as string
+export async function POST(req: Request) {
+  const body = await req.text()
+  const headersList = await headers()
+  const sig = headersList.get("stripe-signature") as string
 
   let event
 
   try {
-    // Verify the webhook signature
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
+  } catch (err: any) {
+    console.error(`Webhook signature verification failed:`, err.message)
+    return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 })
+  }
 
-    if (!webhookSecret) {
-      console.warn("Webhook secret not configured. Skipping signature verification.")
-      // For development, parse the event without verification
-      event = JSON.parse(body)
-    } else {
-      // For production, verify the signature
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-    }
-
-    // Handle the event
+  try {
     switch (event.type) {
-      case "checkout.session.completed":
-        const session = event.data.object
+      case "payment_intent.succeeded": {
+        const paymentIntent = event.data.object as any
+        const orderId = paymentIntent.metadata?.order_id
 
-        // Process the order
-        await processOrder(session)
+        if (orderId) {
+          await supabaseAdmin
+            .from("orders")
+            .update({
+              status: "paid",
+              stripe_payment_intent: paymentIntent.id,
+            })
+            .eq("id", orderId)
 
-        console.log(`Payment succeeded for order ${session.metadata.orderId}`)
+          await supabaseAdmin.from("payments").insert({
+            order_id: orderId,
+            amount_cents: paymentIntent.amount_received,
+            stripe_charge_id: paymentIntent.latest_charge,
+            status: "succeeded",
+          })
+        }
         break
+      }
 
-      case "payment_intent.payment_failed":
-        const paymentIntent = event.data.object
-        console.log(`Payment failed for intent ${paymentIntent.id}`)
+      case "customer.subscription.created":
+      case "customer.subscription.updated": {
+        const subscription = event.data.object as any
+        const vendorId = subscription.metadata?.vendor_id
 
-        // You might want to notify the customer or update your database
+        if (vendorId) {
+          await supabaseAdmin.from("vendor_subscriptions").upsert({
+            vendor_id: vendorId,
+            status: subscription.status,
+            stripe_customer_id: subscription.customer,
+            stripe_subscription_id: subscription.id,
+            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+          })
+        }
         break
+      }
+
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object as any
+        await supabaseAdmin
+          .from("vendor_subscriptions")
+          .update({ status: "canceled" })
+          .eq("stripe_subscription_id", subscription.id)
+        break
+      }
 
       default:
-        // Unexpected event type
         console.log(`Unhandled event type ${event.type}`)
     }
 
     return NextResponse.json({ received: true })
   } catch (error) {
-    console.error("Webhook error:", error)
-    return NextResponse.json({ error: "Une erreur est survenue lors du traitement du webhook." }, { status: 400 })
+    console.error("Webhook handler failed:", error)
+    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 })
   }
-}
-
-// Configure to accept larger payloads
-export const config = {
-  api: {
-    bodyParser: false,
-  },
 }

@@ -1,41 +1,97 @@
 "use client"
 
-import { useState } from "react"
-import Image, { type ImageProps } from "next/image"
-import { useMobileDetection } from "@/hooks/use-mobile-detection"
+import { useState, useEffect } from "react"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 
-interface LazyImageProps extends Omit<ImageProps, "onLoad"> {
-  lowQualitySrc?: string
+interface LazyImageProps {
+  src: string
+  alt: string
+  width: number
+  height: number
   className?: string
-  containerClassName?: string
+  priority?: boolean
+  quality?: number
+  sizes?: string
 }
 
-export function LazyImage({ src, alt, lowQualitySrc, className, containerClassName, ...props }: LazyImageProps) {
+export default function LazyImage({
+  src,
+  alt,
+  width,
+  height,
+  className,
+  priority = false,
+  quality = 75,
+  sizes = "100vw",
+}: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false)
-  const { isMobile } = useMobileDetection()
+  const [isIntersecting, setIsIntersecting] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-  // Utiliser une version basse qualité pour le chargement initial sur mobile
-  const placeholderSrc =
-    lowQualitySrc ||
-    (typeof src === "string" && src.includes("/placeholder.svg") ? src : "/placeholder.svg?height=20&width=20")
+  useEffect(() => {
+    setMounted(true)
 
-  // Réduire la qualité sur mobile pour améliorer les performances
-  const quality = isMobile ? (props.quality || 75) - 15 : props.quality
+    if (priority) {
+      setIsIntersecting(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsIntersecting(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: "200px" },
+    )
+
+    const element = document.getElementById(`lazy-image-${src.replace(/\W/g, "")}`)
+    if (element) {
+      observer.observe(element)
+    }
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [src, priority])
+
+  // Si pas encore monté, retourner un placeholder
+  if (!mounted) {
+    return (
+      <div className={cn("bg-muted animate-pulse", className)} style={{ width: `${width}px`, height: `${height}px` }} />
+    )
+  }
 
   return (
-    <div className={cn("relative overflow-hidden", containerClassName)}>
-      {!isLoaded && <div className="absolute inset-0 bg-muted animate-pulse" />}
-
-      <Image
-        src={src || "/placeholder.svg"}
-        alt={alt}
-        quality={quality}
-        className={cn("transition-opacity duration-500", isLoaded ? "opacity-100" : "opacity-0", className)}
-        onLoad={() => setIsLoaded(true)}
-        loading={isMobile ? "lazy" : props.loading || "lazy"}
-        {...props}
-      />
+    <div
+      id={`lazy-image-${src.replace(/\W/g, "")}`}
+      className={cn("relative overflow-hidden", className)}
+      style={{ width: `${width}px`, height: `${height}px` }}
+    >
+      {isIntersecting && (
+        <>
+          <div
+            className={cn(
+              "absolute inset-0 bg-muted animate-pulse transition-opacity duration-300",
+              isLoaded ? "opacity-0" : "opacity-100",
+            )}
+          />
+          <Image
+            src={src || "/placeholder.svg"}
+            alt={alt}
+            width={width}
+            height={height}
+            quality={quality}
+            sizes={sizes}
+            className={cn("transition-opacity duration-300", isLoaded ? "opacity-100" : "opacity-0", className)}
+            onLoad={() => setIsLoaded(true)}
+            loading={priority ? "eager" : "lazy"}
+            priority={priority}
+          />
+        </>
+      )}
     </div>
   )
 }

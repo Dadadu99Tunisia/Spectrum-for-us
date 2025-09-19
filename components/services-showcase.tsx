@@ -1,133 +1,128 @@
+"use client"
+
+import { motion } from "framer-motion"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import {
-  ArrowRight,
-  Palette,
-  Camera,
-  Code,
-  BookOpen,
-  Headphones,
-  Mic,
-  Heart,
-  Sparkles,
-  MessageSquare,
-  Briefcase,
-} from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Camera, Palette, Music, Code, Scissors, Coffee } from "lucide-react"
 
-// Définition des services
 const services = [
   {
-    id: "design",
-    name: "Design & Création",
-    description: "Logos, illustrations, design graphique et création visuelle sur mesure",
-    icon: Palette,
-    color: "from-pink-500 to-rose-500",
-    textColor: "text-pink-600 dark:text-pink-400",
-  },
-  {
-    id: "photo",
-    name: "Photographie",
-    description: "Séances photo, retouches et édition d'images professionnelles",
     icon: Camera,
-    color: "from-purple-500 to-indigo-500",
-    textColor: "text-purple-600 dark:text-purple-400",
-  },
-  {
-    id: "web",
-    name: "Développement Web",
-    description: "Sites web, applications et solutions numériques inclusives",
-    icon: Code,
+    title: "Photographie",
+    description: "Portraits, événements, shooting produits",
+    providers: "45+ photographes",
+    priceRange: "À partir de 80€",
     color: "from-blue-500 to-cyan-500",
-    textColor: "text-blue-600 dark:text-blue-400",
+    category: "Créatif",
   },
   {
-    id: "education",
-    name: "Éducation & Formation",
-    description: "Ateliers, cours et formations sur des sujets variés",
-    icon: BookOpen,
-    color: "from-amber-500 to-orange-500",
-    textColor: "text-amber-600 dark:text-amber-400",
+    icon: Palette,
+    title: "Design Graphique",
+    description: "Logos, identité visuelle, illustrations",
+    providers: "60+ designers",
+    priceRange: "À partir de 50€",
+    color: "from-purple-500 to-pink-500",
+    category: "Design",
   },
   {
-    id: "music",
-    name: "Musique & Audio",
-    description: "Production musicale, mixage, mastering et création sonore",
-    icon: Headphones,
-    color: "from-green-500 to-emerald-500",
-    textColor: "text-green-600 dark:text-green-400",
+    icon: Music,
+    title: "Production Musicale",
+    description: "Composition, mixage, mastering",
+    providers: "25+ producteur·rice·s",
+    priceRange: "À partir de 100€",
+    color: "from-orange-500 to-red-500",
+    category: "Audio",
   },
   {
-    id: "events",
-    name: "Animation d'Événements",
-    description: "DJ, performances, spectacles et animations pour vos événements",
-    icon: Mic,
-    color: "from-violet-500 to-purple-500",
-    textColor: "text-violet-600 dark:text-violet-400",
+    icon: Code,
+    title: "Développement Web",
+    description: "Sites web, applications, e-commerce",
+    providers: "30+ développeur·euse·s",
+    priceRange: "À partir de 200€",
+    color: "from-green-500 to-teal-500",
+    category: "Tech",
   },
   {
-    id: "wellness",
-    name: "Bien-être & Santé",
-    description: "Coaching, thérapies alternatives et soins personnalisés",
-    icon: Heart,
-    color: "from-red-500 to-rose-500",
-    textColor: "text-red-600 dark:text-red-400",
+    icon: Scissors,
+    title: "Couture & Mode",
+    description: "Créations sur mesure, retouches",
+    providers: "35+ couturier·ère·s",
+    priceRange: "À partir de 60€",
+    color: "from-indigo-500 to-purple-500",
+    category: "Mode",
   },
   {
-    id: "creative",
-    name: "Services Créatifs",
-    description: "Rédaction, traduction et autres services créatifs sur mesure",
-    icon: Sparkles,
-    color: "from-fuchsia-500 to-pink-500",
-    textColor: "text-fuchsia-600 dark:text-fuchsia-400",
-  },
-  {
-    id: "consulting",
-    name: "Conseil & Mentorat",
-    description: "Accompagnement professionnel, stratégie et développement",
-    icon: MessageSquare,
-    color: "from-teal-500 to-cyan-500",
-    textColor: "text-teal-600 dark:text-teal-400",
-  },
-  {
-    id: "business",
-    name: "Services Professionnels",
-    description: "Comptabilité, juridique et autres services pour entrepreneur·e·s",
-    icon: Briefcase,
-    color: "from-indigo-500 to-blue-500",
-    textColor: "text-indigo-600 dark:text-indigo-400",
+    icon: Coffee,
+    title: "Conseil & Coaching",
+    description: "Business, personnel, créatif",
+    providers: "40+ coachs",
+    priceRange: "À partir de 70€",
+    color: "from-yellow-500 to-orange-500",
+    category: "Conseil",
   },
 ]
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5 },
+  },
+}
+
 export default function ServicesShowcase() {
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {services.map((service) => (
-          <Link href={`/services/${service.id}`} key={service.id} className="block h-full">
-            <Card className="h-full transition-all hover:shadow-md hover:scale-105 group">
-              <CardContent className="p-6 flex flex-col items-center text-center h-full">
-                <div
-                  className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-gradient-to-br ${service.color} text-white`}
-                >
-                  <service.icon className="h-7 w-7" />
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={containerVariants}
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      {services.map((service, index) => (
+        <motion.div key={index} variants={itemVariants}>
+          <Link href={`/services/${service.title.toLowerCase().replace(/\s+/g, "-")}`}>
+            <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden h-full">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div
+                    className={`w-12 h-12 rounded-lg bg-gradient-to-r ${service.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+                  >
+                    <service.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <Badge variant="outline">{service.category}</Badge>
                 </div>
-                <h3 className={`font-semibold text-lg mb-2 group-hover:${service.textColor}`}>{service.name}</h3>
-                <p className="text-sm text-muted-foreground flex-grow">{service.description}</p>
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-600 transition-colors">
+                  {service.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">{service.description}</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Prestataires:</span>
+                    <span className="font-medium">{service.providers}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Prix:</span>
+                    <span className="font-medium text-green-600">{service.priceRange}</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </Link>
-        ))}
-      </div>
-
-      <div className="text-center mt-8">
-        <Button asChild variant="outline" size="lg" className="group">
-          <Link href="/services">
-            Tous les Services
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </Button>
-      </div>
-    </div>
+        </motion.div>
+      ))}
+    </motion.div>
   )
 }

@@ -3,28 +3,61 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Facebook, Instagram, Youtube, Heart, Smartphone, Apple, ShoppingBag } from "lucide-react"
+import { Facebook, Instagram, Youtube, Heart, Smartphone } from "lucide-react"
+import { Apple, ShoppingBag } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function Footer() {
+  // État pour le rendu côté client uniquement
+  const [mounted, setMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
 
     checkIfMobile()
-
     window.addEventListener("resize", checkIfMobile)
-
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
 
+  // Si pas encore monté, utiliser une mise en page par défaut pour éviter les erreurs d'hydratation
+  if (!mounted) {
+    return (
+      <footer className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30">
+        <div className="container mx-auto px-4 py-12">
+          {/* Version simplifiée pour le rendu initial côté serveur */}
+          <div className="grid gap-8 grid-cols-1 md:grid-cols-4">
+            {/* Contenu minimal pour éviter les sauts de mise en page */}
+            <div className="md:col-span-1">
+              <div className="mb-2 h-24 w-auto"></div>
+              <p className="text-sm text-muted-foreground">
+                Un espace inclusif pour la communauté queer où l'expression, la créativité et la diversité sont
+                célébrées.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold mb-4">Découvrir</h3>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold mb-4">Communauté</h3>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold mb-4">Newsletter</h3>
+            </div>
+          </div>
+        </div>
+      </footer>
+    )
+  }
+
   return (
-    <footer className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30 border-t bg-background">
+    <footer className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30">
       <div className="container mx-auto px-4 py-12">
         {/* App Download Banner */}
         <div className="mb-12 p-6 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-xl border border-purple-200 dark:border-purple-800/30">
@@ -63,66 +96,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Modifiez la grille du footer pour être plus adaptée au mobile */}
+        {/* Grille du footer adaptée au mobile */}
         <div className={cn("grid gap-8", isMobile ? "grid-cols-2" : "grid-cols-1 md:grid-cols-4")}>
-          {/* Logo et description */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="h-6 w-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-600" />
-              <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Spectrum
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              La première marketplace inclusive dédiée à la diversité et à l'inclusion.
-            </p>
-          </div>
-
-          {/* Navigation */}
-          <div>
-            <h3 className="font-semibold mb-4">Navigation</h3>
-            <div className="space-y-2">
-              <Link href="/categories" className="block text-sm text-muted-foreground hover:text-foreground">
-                Catégories
-              </Link>
-              <Link href="/vendeurs" className="block text-sm text-muted-foreground hover:text-foreground">
-                Vendeurs
-              </Link>
-              <Link href="/nouveautes" className="block text-sm text-muted-foreground hover:text-foreground">
-                Nouveautés
-              </Link>
-            </div>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h3 className="font-semibold mb-4">Support</h3>
-            <div className="space-y-2">
-              <Link href="/aide" className="block text-sm text-muted-foreground hover:text-foreground">
-                Centre d'aide
-              </Link>
-              <Link href="/contact" className="block text-sm text-muted-foreground hover:text-foreground">
-                Contact
-              </Link>
-              <Link href="/a-propos" className="block text-sm text-muted-foreground hover:text-foreground">
-                À propos
-              </Link>
-            </div>
-          </div>
-
-          {/* Légal */}
-          <div>
-            <h3 className="font-semibold mb-4">Légal</h3>
-            <div className="space-y-2">
-              <Link href="/privacy" className="block text-sm text-muted-foreground hover:text-foreground">
-                Confidentialité
-              </Link>
-              <Link href="/terms" className="block text-sm text-muted-foreground hover:text-foreground">
-                Conditions
-              </Link>
-            </div>
-          </div>
-
           <div className={cn(isMobile ? "col-span-2" : "md:col-span-1")}>
             <div className="mb-2">
               <Image
@@ -195,12 +170,9 @@ export default function Footer() {
                 variant="outline"
                 size="icon"
                 className="rounded-full bg-white dark:bg-background hover:bg-purple-100 dark:hover:bg-purple-900/20"
-                asChild
               >
-                <a href="https://www.youtube.com/channel/UCSpectrumForUs" target="_blank" rel="noopener noreferrer">
-                  <Youtube className="h-4 w-4" />
-                  <span className="sr-only">Youtube</span>
-                </a>
+                <Youtube className="h-4 w-4" />
+                <span className="sr-only">Youtube</span>
               </Button>
               <Button
                 variant="outline"
@@ -326,7 +298,7 @@ export default function Footer() {
               </Button>
             </div>
 
-            {/* Optimisez la section des moyens de paiement pour mobile */}
+            {/* Section des moyens de paiement optimisée */}
             <div>
               <h4 className="text-sm font-semibold mb-2">Moyens de paiement</h4>
               <div className={cn("flex flex-wrap gap-2 items-center", isMobile && "gap-1")}>
@@ -364,7 +336,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Ajouter la section de téléchargement d'application dans le footer */}
+        {/* Section téléchargement d'application */}
         <div className="mt-8 border-t border-gray-200 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="max-w-md">

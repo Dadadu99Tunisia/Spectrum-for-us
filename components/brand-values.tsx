@@ -1,46 +1,78 @@
-import { Shield, Heart, Users, Sparkles } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+"use client"
+
+import { motion } from "framer-motion"
+import { Heart, Users, Shield, Leaf } from "lucide-react"
 
 const values = [
   {
-    icon: Shield,
-    title: "Sécurité & Confiance",
-    description: "Transactions sécurisées et protection des données personnelles pour tou·te·s nos utilisateur·rice·s.",
-  },
-  {
     icon: Heart,
     title: "Inclusivité",
-    description: "Un espace où chacun·e est respecté·e, valorisé·e et célébré·e pour son authenticité.",
+    description: "Nous célébrons la diversité et créons un espace sûr pour tous·tes.",
+    color: "text-pink-600",
+    bgColor: "bg-pink-100 dark:bg-pink-900/30",
   },
   {
     icon: Users,
     title: "Communauté",
-    description: "Nous construisons des liens forts entre créateur·rice·s et client·e·s partageant les mêmes valeurs.",
+    description: "Nous soutenons les créateur·rice·s et favorisons les connexions authentiques.",
+    color: "text-blue-600",
+    bgColor: "bg-blue-100 dark:bg-blue-900/30",
   },
   {
-    icon: Sparkles,
-    title: "Créativité",
-    description: "Nous mettons en avant l'originalité et l'expression artistique unique de notre communauté.",
+    icon: Shield,
+    title: "Sécurité",
+    description: "Nous garantissons des transactions sécurisées et protégeons vos données.",
+    color: "text-green-600",
+    bgColor: "bg-green-100 dark:bg-green-900/30",
+  },
+  {
+    icon: Leaf,
+    title: "Durabilité",
+    description: "Nous promouvons une consommation responsable et des pratiques éthiques.",
+    color: "text-teal-600",
+    bgColor: "bg-teal-100 dark:bg-teal-900/30",
   },
 ]
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6 },
+  },
+}
+
 export default function BrandValues() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {values.map((value, index) => {
-        const Icon = value.icon
-        return (
-          <Card key={index} className="border-none shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-6 flex flex-col items-center text-center">
-              <div className="h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
-                <Icon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">{value.title}</h3>
-              <p className="text-sm text-muted-foreground">{value.description}</p>
-            </CardContent>
-          </Card>
-        )
-      })}
-    </div>
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={containerVariants}
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+    >
+      {values.map((value, index) => (
+        <motion.div key={index} variants={itemVariants} className="text-center group">
+          <div
+            className={`w-16 h-16 ${value.bgColor} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}
+          >
+            <value.icon className={`h-8 w-8 ${value.color}`} />
+          </div>
+          <h3 className="text-xl font-semibold mb-3">{value.title}</h3>
+          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{value.description}</p>
+        </motion.div>
+      ))}
+    </motion.div>
   )
 }

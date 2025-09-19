@@ -3,13 +3,17 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/toaster"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
+import ChatTrigger from "@/components/chat-trigger"
+import { Providers } from "./providers"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Spectrum - Marketplace Inclusif",
-  description: "La première marketplace inclusive dédiée à la diversité et à l'inclusion.",
+  title: "Spectrum - Marketplace Inclusive",
+  description: "La marketplace qui célèbre la diversité créative",
     generator: 'v0.app'
 }
 
@@ -19,12 +23,19 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
-          <div className="min-h-screen bg-background">{children}</div>
-          <Toaster />
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+            <ChatTrigger />
+            <Toaster />
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   )

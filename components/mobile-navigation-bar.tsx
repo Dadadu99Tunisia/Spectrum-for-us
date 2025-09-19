@@ -29,7 +29,7 @@ const inclusiveTranslations = {
   },
 }
 
-function MobileNavigationBar() {
+export function MobileNavigationBar() {
   const pathname = usePathname()
   const { language } = useLocale()
   const [cartCount, setCartCount] = useState(2)
@@ -160,5 +160,3 @@ function NavItem({ href, icon, label, isActive }: NavItemProps) {
     </Link>
   )
 }
-
-export default MobileNavigationBar
