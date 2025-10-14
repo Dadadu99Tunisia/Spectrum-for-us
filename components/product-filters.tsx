@@ -9,65 +9,90 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown } from "lucide-react"
 
+interface FilterOptions {
+  priceRange: number[]
+  colors: string[]
+  sizes: string[]
+  brands: string[]
+  inclusive?: boolean
+}
+
 interface ProductFiltersProps {
-  filters?: {
-    priceRange: number[]
-    colors: string[]
-    sizes: string[]
-    brands: string[]
-  }
-  onFiltersChange?: (filters: any) => void
+  filters?: FilterOptions
+  onFiltersChange?: (filters: FilterOptions) => void
 }
 
 export function ProductFilters({ filters: initialFilters, onFiltersChange }: ProductFiltersProps) {
-  const [priceRange, setPriceRange] = useState(initialFilters?.priceRange || [0, 100])
+  const [priceRange, setPriceRange] = useState<number[]>(initialFilters?.priceRange || [0, 1000])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedColors, setSelectedColors] = useState<string[]>(initialFilters?.colors || [])
   const [selectedSizes, setSelectedSizes] = useState<string[]>(initialFilters?.sizes || [])
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(initialFilters?.brands || [])
 
   const categories = ["Vêtements", "Bijoux", "Art", "Maison", "Beauté", "Accessoires", "Livres", "Électronique"]
 
   const colors = ["Rouge", "Bleu", "Vert", "Jaune", "Rose", "Violet", "Orange", "Noir", "Blanc", "Arc-en-ciel"]
 
-  const sizes = ["XS", "S", "M", "L", "XL", "XXL"]
+  const sizes = ["XS", "S", "M", "L", "XL", "XXL", "Unique"]
+
+  const brands = [
+    "Pride Collection",
+    "Rainbow Fashion",
+    "Inclusive Wear",
+    "Queer Art Co",
+    "Spectrum Style",
+    "Unity Designs",
+  ]
 
   const handleCategoryChange = (category: string, checked: boolean) => {
-    if (checked) {
-      setSelectedCategories([...selectedCategories, category])
-    } else {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category))
-    }
+    const newCategories = checked ? [...selectedCategories, category] : selectedCategories.filter((c) => c !== category)
+    setSelectedCategories(newCategories)
   }
 
   const handleColorChange = (color: string, checked: boolean) => {
-    if (checked) {
-      setSelectedColors([...selectedColors, color])
-    } else {
-      setSelectedColors(selectedColors.filter((c) => c !== color))
-    }
+    const newColors = checked ? [...selectedColors, color] : selectedColors.filter((c) => c !== color)
+    setSelectedColors(newColors)
   }
 
   const handleSizeChange = (size: string, checked: boolean) => {
-    if (checked) {
-      setSelectedSizes([...selectedSizes, size])
-    } else {
-      setSelectedSizes(selectedSizes.filter((s) => s !== size))
-    }
+    const newSizes = checked ? [...selectedSizes, size] : selectedSizes.filter((s) => s !== size)
+    setSelectedSizes(newSizes)
+  }
+
+  const handleBrandChange = (brand: string, checked: boolean) => {
+    const newBrands = checked ? [...selectedBrands, brand] : selectedBrands.filter((b) => b !== brand)
+    setSelectedBrands(newBrands)
   }
 
   const clearFilters = () => {
-    setPriceRange([0, 100])
+    setPriceRange([0, 1000])
     setSelectedCategories([])
     setSelectedColors([])
     setSelectedSizes([])
+    setSelectedBrands([])
+    onFiltersChange?.({
+      priceRange: [0, 1000],
+      colors: [],
+      sizes: [],
+      brands: [],
+    })
+  }
+
+  const applyFilters = () => {
+    onFiltersChange?.({
+      priceRange,
+      colors: selectedColors,
+      sizes: selectedSizes,
+      brands: selectedBrands,
+    })
   }
 
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          Filtres
-          <Button variant="ghost" size="sm" onClick={clearFilters}>
+          <span className="text-lg font-semibold">Filtres</span>
+          <Button variant="ghost" size="sm" onClick={clearFilters} className="text-sm">
             Effacer
           </Button>
         </CardTitle>
@@ -76,7 +101,7 @@ export function ProductFilters({ filters: initialFilters, onFiltersChange }: Pro
         {/* Prix */}
         <div className="space-y-3">
           <Label className="text-sm font-medium">Prix (€)</Label>
-          <Slider value={priceRange} onValueChange={setPriceRange} max={200} step={5} className="w-full" />
+          <Slider value={priceRange} onValueChange={setPriceRange} max={1000} min={0} step={10} className="w-full" />
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>{priceRange[0]}€</span>
             <span>{priceRange[1]}€</span>
@@ -85,19 +110,19 @@ export function ProductFilters({ filters: initialFilters, onFiltersChange }: Pro
 
         {/* Catégories */}
         <Collapsible defaultOpen>
-          <CollapsibleTrigger className="flex w-full items-center justify-between py-2">
-            <Label className="text-sm font-medium">Catégories</Label>
-            <ChevronDown className="h-4 w-4" />
+          <CollapsibleTrigger className="flex w-full items-center justify-between py-2 hover:bg-gray-50 rounded px-2">
+            <Label className="text-sm font-medium cursor-pointer">Catégories</Label>
+            <ChevronDown className="h-4 w-4 transition-transform duration-200" />
           </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-2">
+          <CollapsibleContent className="space-y-2 pt-2">
             {categories.map((category) => (
-              <div key={category} className="flex items-center space-x-2">
+              <div key={category} className="flex items-center space-x-2 px-2">
                 <Checkbox
-                  id={category}
+                  id={`category-${category}`}
                   checked={selectedCategories.includes(category)}
                   onCheckedChange={(checked) => handleCategoryChange(category, checked as boolean)}
                 />
-                <Label htmlFor={category} className="text-sm">
+                <Label htmlFor={`category-${category}`} className="text-sm cursor-pointer">
                   {category}
                 </Label>
               </div>
@@ -107,19 +132,19 @@ export function ProductFilters({ filters: initialFilters, onFiltersChange }: Pro
 
         {/* Couleurs */}
         <Collapsible defaultOpen>
-          <CollapsibleTrigger className="flex w-full items-center justify-between py-2">
-            <Label className="text-sm font-medium">Couleurs</Label>
-            <ChevronDown className="h-4 w-4" />
+          <CollapsibleTrigger className="flex w-full items-center justify-between py-2 hover:bg-gray-50 rounded px-2">
+            <Label className="text-sm font-medium cursor-pointer">Couleurs</Label>
+            <ChevronDown className="h-4 w-4 transition-transform duration-200" />
           </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-2">
+          <CollapsibleContent className="space-y-2 pt-2">
             {colors.map((color) => (
-              <div key={color} className="flex items-center space-x-2">
+              <div key={color} className="flex items-center space-x-2 px-2">
                 <Checkbox
-                  id={color}
+                  id={`color-${color}`}
                   checked={selectedColors.includes(color)}
                   onCheckedChange={(checked) => handleColorChange(color, checked as boolean)}
                 />
-                <Label htmlFor={color} className="text-sm">
+                <Label htmlFor={`color-${color}`} className="text-sm cursor-pointer">
                   {color}
                 </Label>
               </div>
@@ -129,19 +154,19 @@ export function ProductFilters({ filters: initialFilters, onFiltersChange }: Pro
 
         {/* Tailles */}
         <Collapsible>
-          <CollapsibleTrigger className="flex w-full items-center justify-between py-2">
-            <Label className="text-sm font-medium">Tailles</Label>
-            <ChevronDown className="h-4 w-4" />
+          <CollapsibleTrigger className="flex w-full items-center justify-between py-2 hover:bg-gray-50 rounded px-2">
+            <Label className="text-sm font-medium cursor-pointer">Tailles</Label>
+            <ChevronDown className="h-4 w-4 transition-transform duration-200" />
           </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-2">
+          <CollapsibleContent className="space-y-2 pt-2">
             {sizes.map((size) => (
-              <div key={size} className="flex items-center space-x-2">
+              <div key={size} className="flex items-center space-x-2 px-2">
                 <Checkbox
-                  id={size}
+                  id={`size-${size}`}
                   checked={selectedSizes.includes(size)}
                   onCheckedChange={(checked) => handleSizeChange(size, checked as boolean)}
                 />
-                <Label htmlFor={size} className="text-sm">
+                <Label htmlFor={`size-${size}`} className="text-sm cursor-pointer">
                   {size}
                 </Label>
               </div>
@@ -149,17 +174,29 @@ export function ProductFilters({ filters: initialFilters, onFiltersChange }: Pro
           </CollapsibleContent>
         </Collapsible>
 
-        <Button
-          className="w-full"
-          onClick={() =>
-            onFiltersChange?.({
-              priceRange,
-              categories: selectedCategories,
-              colors: selectedColors,
-              sizes: selectedSizes,
-            })
-          }
-        >
+        {/* Marques */}
+        <Collapsible>
+          <CollapsibleTrigger className="flex w-full items-center justify-between py-2 hover:bg-gray-50 rounded px-2">
+            <Label className="text-sm font-medium cursor-pointer">Marques</Label>
+            <ChevronDown className="h-4 w-4 transition-transform duration-200" />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-2 pt-2">
+            {brands.map((brand) => (
+              <div key={brand} className="flex items-center space-x-2 px-2">
+                <Checkbox
+                  id={`brand-${brand}`}
+                  checked={selectedBrands.includes(brand)}
+                  onCheckedChange={(checked) => handleBrandChange(brand, checked as boolean)}
+                />
+                <Label htmlFor={`brand-${brand}`} className="text-sm cursor-pointer">
+                  {brand}
+                </Label>
+              </div>
+            ))}
+          </CollapsibleContent>
+        </Collapsible>
+
+        <Button className="w-full" onClick={applyFilters}>
           Appliquer les filtres
         </Button>
       </CardContent>
