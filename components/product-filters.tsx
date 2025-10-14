@@ -6,72 +6,90 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
-// Catégories simplifiées
-const filterCategories = [
-  { id: "vetements", name: "Vêtements", count: 42 },
-  { id: "accessoires", name: "Accessoires", count: 38 },
-  { id: "bijoux", name: "Bijoux", count: 24 },
-  { id: "maison", name: "Maison", count: 18 },
-  { id: "beaute", name: "Beauté", count: 15 },
+const categories = [
+  { id: "vetements", label: "Vêtements", count: 120 },
+  { id: "bijoux", label: "Bijoux", count: 85 },
+  { id: "art", label: "Art", count: 64 },
+  { id: "beaute", label: "Beauté", count: 42 },
+  { id: "decoration", label: "Décoration", count: 56 },
+  { id: "livres", label: "Livres", count: 38 },
+  { id: "accessoires", label: "Accessoires", count: 72 },
+  { id: "artisanat", label: "Artisanat", count: 45 },
 ]
 
-// Tags simplifiés
-const filterTags = [
-  { id: "inclusif", name: "Inclusif", count: 65 },
-  { id: "non-genre", name: "Non genré", count: 42 },
-  { id: "queer", name: "Queer", count: 38 },
-  { id: "fait-main", name: "Fait main", count: 27 },
-  { id: "ethique", name: "Éthique", count: 31 },
+const sellers = [
+  { id: "seller1", label: "QueerApparel", count: 45 },
+  { id: "seller2", label: "PrideJewelry", count: 32 },
+  { id: "seller3", label: "QueerArtists", count: 28 },
+  { id: "seller4", label: "InclusiveBeauty", count: 18 },
+  { id: "seller5", label: "PrideFlagShop", count: 24 },
 ]
 
 export default function ProductFilters() {
-  const [priceRange, setPriceRange] = useState([0, 100])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [priceRange, setPriceRange] = useState([0, 200])
+  const [activeFilters, setActiveFilters] = useState<string[]>([])
 
-  const handleCategoryChange = (categoryId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedCategories([...selectedCategories, categoryId])
-    } else {
-      setSelectedCategories(selectedCategories.filter((id) => id !== categoryId))
+  const addFilter = (filter: string) => {
+    if (!activeFilters.includes(filter)) {
+      setActiveFilters([...activeFilters, filter])
     }
   }
 
-  const handleTagChange = (tagId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedTags([...selectedTags, tagId])
-    } else {
-      setSelectedTags(selectedTags.filter((id) => id !== tagId))
-    }
+  const removeFilter = (filter: string) => {
+    setActiveFilters(activeFilters.filter((f) => f !== filter))
   }
 
-  const applyFilters = () => {
-    console.log("Filtres appliqués:", {
-      priceRange,
-      selectedCategories,
-      selectedTags,
-    })
+  const clearAllFilters = () => {
+    setActiveFilters([])
+    setPriceRange([0, 200])
   }
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold">Filtres</h3>
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Filtres</h3>
 
-      <Accordion type="multiple" defaultValue={["categories", "price", "tags"]}>
+        {activeFilters.length > 0 && (
+          <div className="mb-4">
+            <div className="flex flex-wrap gap-2 mb-2">
+              {activeFilters.map((filter) => (
+                <Badge key={filter} variant="secondary" className="flex items-center gap-1">
+                  {filter}
+                  <button className="ml-1 hover:text-destructive" onClick={() => removeFilter(filter)}>
+                    ×
+                  </button>
+                </Badge>
+              ))}
+            </div>
+            <Button variant="outline" size="sm" className="w-full" onClick={clearAllFilters}>
+              Effacer Tout
+            </Button>
+          </div>
+        )}
+      </div>
+
+      <Accordion type="multiple" defaultValue={["categories", "price", "sellers"]}>
         <AccordionItem value="categories">
           <AccordionTrigger>Catégories</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
-              {filterCategories.map((category) => (
+              {categories.map((category) => (
                 <div key={category.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={`category-${category.id}`}
-                    checked={selectedCategories.includes(category.id)}
-                    onCheckedChange={(checked) => handleCategoryChange(category.id, checked === true)}
+                    checked={activeFilters.includes(category.label)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        addFilter(category.label)
+                      } else {
+                        removeFilter(category.label)
+                      }
+                    }}
                   />
                   <Label htmlFor={`category-${category.id}`} className="text-sm font-normal cursor-pointer flex-1">
-                    {category.name}
+                    {category.label}
                   </Label>
                   <span className="text-xs text-muted-foreground">({category.count})</span>
                 </div>
@@ -84,40 +102,62 @@ export default function ProductFilters() {
           <AccordionTrigger>Prix</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4">
-              <Slider defaultValue={[0, 100]} max={100} step={1} value={priceRange} onValueChange={setPriceRange} />
+              <Slider defaultValue={[0, 200]} max={200} step={1} value={priceRange} onValueChange={setPriceRange} />
               <div className="flex items-center justify-between">
                 <span className="text-sm">{priceRange[0]} €</span>
                 <span className="text-sm">{priceRange[1]} €</span>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={() => {
+                  const priceFilter = `${priceRange[0]}€ - ${priceRange[1]}€`
+                  const existingPriceFilter = activeFilters.find((f) => f.includes("€"))
+
+                  if (existingPriceFilter) {
+                    removeFilter(existingPriceFilter)
+                  }
+
+                  if (priceRange[0] > 0 || priceRange[1] < 200) {
+                    addFilter(priceFilter)
+                  }
+                }}
+              >
+                Appliquer
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="tags">
-          <AccordionTrigger>Tags</AccordionTrigger>
+        <AccordionItem value="sellers">
+          <AccordionTrigger>Vendeurs</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
-              {filterTags.map((tag) => (
-                <div key={tag.id} className="flex items-center space-x-2">
+              {sellers.map((seller) => (
+                <div key={seller.id} className="flex items-center space-x-2">
                   <Checkbox
-                    id={`tag-${tag.id}`}
-                    checked={selectedTags.includes(tag.id)}
-                    onCheckedChange={(checked) => handleTagChange(tag.id, checked === true)}
+                    id={`seller-${seller.id}`}
+                    checked={activeFilters.includes(seller.label)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        addFilter(seller.label)
+                      } else {
+                        removeFilter(seller.label)
+                      }
+                    }}
                   />
-                  <Label htmlFor={`tag-${tag.id}`} className="text-sm font-normal cursor-pointer flex-1">
-                    {tag.name}
+                  <Label htmlFor={`seller-${seller.id}`} className="text-sm font-normal cursor-pointer flex-1">
+                    {seller.label}
                   </Label>
-                  <span className="text-xs text-muted-foreground">({tag.count})</span>
+                  <span className="text-xs text-muted-foreground">({seller.count})</span>
                 </div>
               ))}
             </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-
-      <Button onClick={applyFilters} className="w-full">
-        Appliquer les filtres
-      </Button>
     </div>
   )
 }
+

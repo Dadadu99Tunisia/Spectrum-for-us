@@ -3,11 +3,11 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Star, Store, MapPin, Calendar, MessageCircle, Facebook, Instagram, Twitter } from "lucide-react"
+import { Star, Store, MapPin, Calendar, MessageCircle } from "lucide-react"
 import ProductGrid from "@/components/product-grid"
 import { Skeleton } from "@/components/ui/skeleton"
 
-export default function VendeurPage({ params }: { params: { id: string } }) {
+export default function SellerPage({ params }: { params: { id: string } }) {
   // Dans une application réelle, vous récupéreriez les données du vendeur à partir de l'API
   const seller = {
     id: params.id,
@@ -23,16 +23,6 @@ export default function VendeurPage({ params }: { params: { id: string } }) {
     location: "Paris, France",
     joinDate: "Janvier 2022",
     verified: true,
-    socialMedia: {
-      instagram: "queerapparel",
-      facebook: "queerapparel",
-      twitter: "queerapparel",
-    },
-    policies: {
-      shipping: "Livraison gratuite à partir de 50€. Délai de livraison: 3-5 jours ouvrés.",
-      returns: "Retours gratuits sous 30 jours. Les articles doivent être dans leur état d'origine.",
-      payment: "Nous acceptons les cartes de crédit, PayPal et les virements bancaires.",
-    },
   }
 
   return (
@@ -80,26 +70,9 @@ export default function VendeurPage({ params }: { params: { id: string } }) {
               <MessageCircle className="h-4 w-4 mr-2" />
               Contacter
             </Button>
-            <div className="flex gap-1">
-              {seller.socialMedia.instagram && (
-                <Button variant="outline" size="icon" className="rounded-full bg-white/20 hover:bg-white/30 text-white">
-                  <Instagram className="h-4 w-4" />
-                  <span className="sr-only">Instagram</span>
-                </Button>
-              )}
-              {seller.socialMedia.facebook && (
-                <Button variant="outline" size="icon" className="rounded-full bg-white/20 hover:bg-white/30 text-white">
-                  <Facebook className="h-4 w-4" />
-                  <span className="sr-only">Facebook</span>
-                </Button>
-              )}
-              {seller.socialMedia.twitter && (
-                <Button variant="outline" size="icon" className="rounded-full bg-white/20 hover:bg-white/30 text-white">
-                  <Twitter className="h-4 w-4" />
-                  <span className="sr-only">Twitter</span>
-                </Button>
-              )}
-            </div>
+            <Button variant="outline" className="border-white text-white hover:bg-white/10">
+              Suivre
+            </Button>
           </div>
         </div>
       </div>
@@ -115,7 +88,7 @@ export default function VendeurPage({ params }: { params: { id: string } }) {
         <TabsList>
           <TabsTrigger value="products">Produits</TabsTrigger>
           <TabsTrigger value="reviews">Avis</TabsTrigger>
-          <TabsTrigger value="policies">Politiques</TabsTrigger>
+          <TabsTrigger value="about">Informations</TabsTrigger>
         </TabsList>
         <TabsContent value="products" className="mt-6">
           <Suspense fallback={<ProductGridSkeleton />}>
@@ -127,20 +100,9 @@ export default function VendeurPage({ params }: { params: { id: string } }) {
             <p className="text-muted-foreground">Les avis seront bientôt disponibles.</p>
           </div>
         </TabsContent>
-        <TabsContent value="policies">
-          <div className="space-y-6 max-w-3xl">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Politique de livraison</h3>
-              <p className="text-muted-foreground">{seller.policies.shipping}</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Politique de retours</h3>
-              <p className="text-muted-foreground">{seller.policies.returns}</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Politique de paiement</h3>
-              <p className="text-muted-foreground">{seller.policies.payment}</p>
-            </div>
+        <TabsContent value="about">
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Informations supplémentaires à venir.</p>
           </div>
         </TabsContent>
       </Tabs>
@@ -161,3 +123,4 @@ function ProductGridSkeleton() {
     </div>
   )
 }
+
