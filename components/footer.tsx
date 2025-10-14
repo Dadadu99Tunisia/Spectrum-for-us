@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Facebook, Instagram, Twitter, Youtube, Heart } from "lucide-react"
+import Image from "next/image"
 
 export default function Footer() {
   return (
@@ -9,8 +10,15 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
-            <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 mb-2">
-              Espace Queer
+            <div className="mb-2">
+              <Image
+                src="/images/logo.png"
+                alt="Spectrum Logo"
+                width={600}
+                height={180}
+                className="h-24 w-auto"
+                priority
+              />
             </div>
             <p className="text-sm text-muted-foreground">
               Un espace inclusif pour la communauté queer où l'expression, la créativité et la diversité sont célébrées.
@@ -151,7 +159,7 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-purple-200 dark:border-purple-800/30">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Espace Queer. Tous droits réservés.
+              © {new Date().getFullYear()} Spectrum. Tous droits réservés.
             </p>
             <div className="mt-4 md:mt-0 flex flex-wrap gap-4 text-sm">
               <Link href="/terms" className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400">
@@ -161,7 +169,7 @@ export default function Footer() {
                 Politique de confidentialité
               </Link>
               <Link
-                href="/accessibility"
+                href="/accessibilite"
                 className="text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400"
               >
                 Accessibilité
