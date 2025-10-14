@@ -1,16 +1,13 @@
 import { createClient } from "@supabase/supabase-js"
 
-// Récupérer les variables d'environnement
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ""
 
-// Vérifier si Supabase est configuré
 export function isSupabaseConfigured(): boolean {
   return Boolean(supabaseUrl && supabaseAnonKey && supabaseUrl !== "")
 }
 
-// Mock client pour le développement sans Supabase
 const mockClient = {
   from: (table: string) => ({
     select: (query?: string) => ({
@@ -65,25 +62,19 @@ const mockClient = {
   },
 } as any
 
-// Client Supabase pour le côté client
 export const supabase = isSupabaseConfigured() ? createClient(supabaseUrl, supabaseAnonKey) : mockClient
 
-// Client Supabase pour le côté serveur avec service role key
 export const supabaseAdmin =
   isSupabaseConfigured() && supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : supabase
 
-// Fonction helper pour créer un client Supabase serveur
 export function createServerSupabaseClient() {
   return supabaseAdmin
 }
 
-// Log pour le développement
 if (process.env.NODE_ENV === "development") {
   if (!isSupabaseConfigured()) {
     console.warn("⚠️ Supabase n'est pas configuré. Utilisation du client mock.")
-    console.warn("📝 Ajoutez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY dans .env.local")
   } else {
     console.log("✅ Supabase configuré avec succès")
-    console.log("🔗 URL:", supabaseUrl)
   }
 }
