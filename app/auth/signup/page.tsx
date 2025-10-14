@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
+export const dynamic = "force-dynamic"
+
 export default function SignUpPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -19,7 +21,6 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const router = useRouter()
-  const supabase = createClient()
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,6 +28,7 @@ export default function SignUpPage() {
     setLoading(true)
 
     try {
+      const supabase = createClient()
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
