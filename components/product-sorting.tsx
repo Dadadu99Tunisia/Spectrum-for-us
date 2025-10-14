@@ -6,11 +6,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ChevronDown } from "lucide-react"
 
 interface ProductSortingProps {
+  sortBy?: string
   onSortChange?: (sortBy: string) => void
 }
 
-export default function ProductSorting({ onSortChange }: ProductSortingProps) {
-  const [currentSort, setCurrentSort] = useState("newest")
+export function ProductSorting({ sortBy: initialSort, onSortChange }: ProductSortingProps) {
+  const [currentSort, setCurrentSort] = useState(initialSort || "newest")
 
   const sortOptions = [
     { value: "newest", label: "Plus récents" },

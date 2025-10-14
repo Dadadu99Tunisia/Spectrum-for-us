@@ -10,14 +10,20 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown } from "lucide-react"
 
 interface ProductFiltersProps {
+  filters?: {
+    priceRange: number[]
+    colors: string[]
+    sizes: string[]
+    brands: string[]
+  }
   onFiltersChange?: (filters: any) => void
 }
 
-export default function ProductFilters({ onFiltersChange }: ProductFiltersProps) {
-  const [priceRange, setPriceRange] = useState([0, 100])
+export function ProductFilters({ filters: initialFilters, onFiltersChange }: ProductFiltersProps) {
+  const [priceRange, setPriceRange] = useState(initialFilters?.priceRange || [0, 100])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedColors, setSelectedColors] = useState<string[]>([])
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([])
+  const [selectedColors, setSelectedColors] = useState<string[]>(initialFilters?.colors || [])
+  const [selectedSizes, setSelectedSizes] = useState<string[]>(initialFilters?.sizes || [])
 
   const categories = ["Vêtements", "Bijoux", "Art", "Maison", "Beauté", "Accessoires", "Livres", "Électronique"]
 
