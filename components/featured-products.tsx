@@ -1,148 +1,111 @@
 "use client"
 
-import { motion } from "framer-motion"
-import Link from "next/link"
-import Image from "next/image"
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Heart, ShoppingCart, Star } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
-const products = [
-  {
-    id: 1,
-    title: "T-shirt Pride Artistique",
-    price: "29.99€",
-    originalPrice: "39.99€",
-    rating: 4.8,
-    reviews: 124,
-    image: "/placeholder.svg?height=300&width=300&text=T-shirt+Pride",
-    vendor: "Alex Art Studio",
-    category: "Mode",
-    isNew: true,
-    isFavorite: false,
-  },
-  {
-    id: 2,
-    title: "Illustration Personnalisée",
-    price: "45.00€",
-    rating: 5.0,
-    reviews: 89,
-    image: "/placeholder.svg?height=300&width=300&text=Illustration",
-    vendor: "Sam Creative",
-    category: "Art",
-    isNew: false,
-    isFavorite: true,
-  },
-  {
-    id: 3,
-    title: "Bijoux Inclusifs Handmade",
-    price: "35.50€",
-    rating: 4.9,
-    reviews: 67,
-    image: "/placeholder.svg?height=300&width=300&text=Bijoux",
-    vendor: "Jordan Jewelry",
-    category: "Accessoires",
-    isNew: true,
-    isFavorite: false,
-  },
-  {
-    id: 4,
-    title: "Mug Motivationnel Queer",
-    price: "18.99€",
-    originalPrice: "24.99€",
-    rating: 4.7,
-    reviews: 156,
-    image: "/placeholder.svg?height=300&width=300&text=Mug+Queer",
-    vendor: "Riley Designs",
-    category: "Lifestyle",
-    isNew: false,
-    isFavorite: false,
-  },
-]
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 },
-  },
+type Product = {
+  id: string
+  name: string
+  price: number
+  image: string
+  seller: {
+    name: string
+    id: string
+  }
+  category: string
 }
 
 export default function FeaturedProducts() {
-  return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      variants={containerVariants}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-    >
-      {products.map((product) => (
-        <motion.div key={product.id} variants={itemVariants}>
-          <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
-            <div className="relative aspect-square overflow-hidden">
-              <Image
-                src={product.image || "/placeholder.svg"}
-                alt={product.title}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute top-3 left-3 flex gap-2">
-                {product.isNew && <Badge className="bg-green-500 hover:bg-green-600">Nouveau</Badge>}
-                {product.originalPrice && <Badge variant="destructive">Promo</Badge>}
-              </div>
-              <Button
-                size="icon"
-                variant="ghost"
-                className={`absolute top-3 right-3 bg-white/80 hover:bg-white ${
-                  product.isFavorite ? "text-red-500" : "text-gray-600"
-                }`}
-              >
-                <Heart className={`h-4 w-4 ${product.isFavorite ? "fill-current" : ""}`} />
-              </Button>
-            </div>
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Données statiques pour éviter les erreurs de fetch
+    const mockProducts: Product[] = [
+      {
+        id: "1",
+        name: "T-shirt Pride Arc-en-ciel",
+        price: 29.99,
+        image: "/placeholder.svg?height=300&width=300&text=T-shirt+Pride",
+        seller: { name: "Pride Apparel", id: "seller1" },
+        category: "Vêtements",
+      },
+      {
+        id: "2",
+        name: "Boucles d'oreilles Diversité",
+        price: 24.99,
+        image: "/placeholder.svg?height=300&width=300&text=Bijoux",
+        seller: { name: "Queer Jewelry", id: "seller2" },
+        category: "Bijoux",
+      },
+      {
+        id: "3",
+        name: "Poster Art Inclusif",
+        price: 19.99,
+        image: "/placeholder.svg?height=300&width=300&text=Art+Poster",
+        seller: { name: "Inclusive Art", id: "seller3" },
+        category: "Art",
+      },
+      {
+        id: "4",
+        name: "Mug Rainbow",
+        price: 15.99,
+        image: "/placeholder.svg?height=300&width=300&text=Mug+Rainbow",
+        seller: { name: "Home Pride", id: "seller4" },
+        category: "Maison",
+      },
+    ]
+
+    setTimeout(() => {
+      setProducts(mockProducts)
+      setLoading(false)
+    }, 500)
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <Card key={i} className="animate-pulse">
+            <div className="h-48 bg-muted rounded-t-lg"></div>
             <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <Badge variant="outline">{product.category}</Badge>
-                <div className="flex items-center text-sm text-gray-500">
-                  <Star className="h-4 w-4 text-yellow-400 fill-current mr-1" />
-                  {product.rating} ({product.reviews})
-                </div>
-              </div>
-              <Link href={`/produit/${product.id}`}>
-                <h3 className="font-semibold mb-2 group-hover:text-purple-600 transition-colors cursor-pointer">
-                  {product.title}
-                </h3>
-              </Link>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">par {product.vendor}</p>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-lg">{product.price}</span>
-                  {product.originalPrice && (
-                    <span className="text-sm text-gray-500 line-through">{product.originalPrice}</span>
-                  )}
-                </div>
-                <Button size="sm" className="gap-2">
-                  <ShoppingCart className="h-4 w-4" />
-                  Ajouter
-                </Button>
-              </div>
+              <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+              <div className="h-4 bg-muted rounded w-1/2"></div>
             </CardContent>
           </Card>
-        </motion.div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {products.map((product) => (
+        <Card key={product.id} className="group hover:shadow-lg transition-shadow">
+          <div className="relative overflow-hidden rounded-t-lg">
+            <Image
+              src={product.image || "/placeholder.svg"}
+              alt={product.name}
+              width={300}
+              height={300}
+              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+          <CardContent className="p-4">
+            <h3 className="font-semibold text-lg mb-2 line-clamp-2">{product.name}</h3>
+            <p className="text-sm text-muted-foreground mb-2">par {product.seller.name}</p>
+            <div className="flex items-center justify-between">
+              <span className="text-xl font-bold text-primary">{product.price}€</span>
+              <Button size="sm" asChild>
+                <Link href={`/produit/${product.id}`}>Voir</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       ))}
-    </motion.div>
+    </div>
   )
 }

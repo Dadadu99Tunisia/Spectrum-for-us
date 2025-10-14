@@ -1,90 +1,135 @@
 "use client"
 
-import { useChat } from "ai/react"
+import type React from "react"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Send, Bot, User } from "lucide-react"
-import { useEffect, useRef } from "react"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+type Message = {
+  role: "user" | "assistant"
+  content: string
+}
 
 export default function LiveChat() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: "/api/chat",
-    initialMessages: [
-      {
-        id: "welcome",
-        role: "assistant",
-        content: "Bonjour ! Je suis votre assistant Spectrum. Comment puis-je vous aider aujourd'hui ?",
-      },
-    ],
-  })
+  const [input, setInput] = useState("")
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: "assistant",
+      content: "Bonjour ! Comment puis-je vous aider aujourd'hui sur Spectrum Marketplace ?",
+    },
+  ])
+  const [isLoading, setIsLoading] = useState(false)
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!input.trim()) return
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    // Ajouter le message de l'utilisateur
+    const userMessage = { role: "user" as const, content: input }
+    setMessages((prev) => [...prev, userMessage])
+    setInput("")
+    setIsLoading(true)
+
+    try {
+      // Appeler l'API de chat
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [...messages, userMessage],
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Erreur de communication avec l'assistant")
+      }
+
+      const data = await response.json()
+
+      // Ajouter la réponse de l'assistant
+      setMessages((prev) => [...prev, { role: "assistant", content: data.content }])
+    } catch (error) {
+      console.error("Erreur:", error)
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Désolé, j'ai rencontré un problème. Veuillez réessayer ou contacter notre support.",
+        },
+      ])
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex items-start gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
-          >
-            <div
-              className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                message.role === "user" ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-600"
-              }`}
-            >
-              {message.role === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
-            </div>
-            <div
-              className={`max-w-[80%] p-3 rounded-lg ${
-                message.role === "user" ? "bg-purple-600 text-white" : "bg-gray-100 text-gray-900"
-              }`}
-            >
-              <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-            </div>
-          </div>
-        ))}
-        {isLoading && (
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center">
-              <Bot className="h-4 w-4" />
-            </div>
-            <div className="bg-gray-100 p-3 rounded-lg">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+    <Card className="w-full max-w-md mx-auto h-[500px] flex flex-col">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-green-500"></span>
+          Assistant Spectrum
+        </CardTitle>
+      </CardHeader>
+      <ScrollArea className="flex-1 p-4">
+        <CardContent className="space-y-4">
+          {messages.map((message, i) => (
+            <div key={i} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div className={`flex gap-2 max-w-[80%] ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={message.role === "user" ? "/images/user-avatar.png" : "/images/assistant-avatar.png"}
+                    alt={message.role === "user" ? "User" : "Assistant"}
+                  />
+                  <AvatarFallback>{message.role === "user" ? "U" : "A"}</AvatarFallback>
+                </Avatar>
                 <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.1s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.2s" }}
-                ></div>
+                  className={`rounded-lg px-4 py-2 ${
+                    message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                  }`}
+                >
+                  {message.content}
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-
-      <form onSubmit={handleSubmit} className="p-4 border-t">
-        <div className="flex gap-2">
+          ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="flex gap-2 max-w-[80%]">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>A</AvatarFallback>
+                </Avatar>
+                <div className="rounded-lg px-4 py-2 bg-muted">
+                  <div className="flex gap-1">
+                    <div className="h-2 w-2 rounded-full bg-gray-400 animate-bounce"></div>
+                    <div className="h-2 w-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.2s]"></div>
+                    <div className="h-2 w-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.4s]"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </ScrollArea>
+      <CardFooter className="border-t p-4">
+        <form onSubmit={handleSubmit} className="flex w-full gap-2">
           <Input
             value={input}
-            onChange={handleInputChange}
-            placeholder="Tapez votre message..."
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Posez votre question..."
             disabled={isLoading}
             className="flex-1"
           />
-          <Button type="submit" disabled={isLoading || !input.trim()} size="icon">
-            <Send className="h-4 w-4" />
+          <Button type="submit" disabled={isLoading || !input.trim()}>
+            {isLoading ? "Envoi..." : "Envoyer"}
           </Button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </CardFooter>
+    </Card>
   )
 }

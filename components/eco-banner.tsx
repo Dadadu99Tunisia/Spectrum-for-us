@@ -1,40 +1,21 @@
-"use client"
-
-import { motion } from "framer-motion"
-import { Leaf, Recycle, Heart } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Leaf, Globe, Home } from "lucide-react"
 
 export default function EcoBanner() {
   return (
-    <section className="py-16 bg-gradient-to-r from-green-500 to-teal-600 text-white">
+    <div className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-950/30 dark:to-teal-950/30 py-6">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
-          <div className="flex justify-center items-center gap-4 mb-6">
-            <Leaf className="h-8 w-8" />
-            <Recycle className="h-8 w-8" />
-            <Heart className="h-8 w-8" />
+        <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left gap-4">
+          <div className="flex items-center">
+            <Leaf className="h-6 w-6 text-green-600 dark:text-green-400 mr-2" />
+            <Home className="h-6 w-6 text-teal-600 dark:text-teal-400 mr-2" />
+            <Globe className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-4" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Consommation Responsable</h2>
-          <p className="text-xl max-w-2xl mx-auto mb-8">
-            Chaque achat sur Spectrum soutient des créateur·rice·s locaux·ales et des pratiques durables. Ensemble,
-            construisons un avenir plus éthique.
+          <p className="text-sm md:text-base font-medium">
+            Spectrum fonctionne à 100% en télétravail : une marketplace queer, flexible et sans bureaux, qui réduit son
+            empreinte carbone
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-green-600 hover:bg-white/90">
-              Découvrir nos Engagements
-            </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 bg-transparent">
-              Devenir Partenaire Éco
-            </Button>
-          </div>
-        </motion.div>
+        </div>
       </div>
-    </section>
+    </div>
   )
 }

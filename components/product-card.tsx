@@ -10,22 +10,29 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import type { Product } from "@/lib/data/products"
-
-// Supprimez l'import de useMobileDetection
-// import { useMobileDetection } from "@/hooks/use-mobile-detection"
+import { cn } from "@/lib/utils"
+import { useMobile } from "@/hooks/use-mobile"
 
 interface ProductCardProps {
   product: Product
   featured?: boolean
   index?: number
+  viewMode?: "grid" | "list"
+  isMobileProp?: boolean
+  className?: string
 }
 
-export default function ProductCard({ product, featured = false, index = 0 }: ProductCardProps) {
+export function ProductCard({
+  product,
+  featured = false,
+  index = 0,
+  viewMode = "grid",
+  isMobileProp,
+  className,
+}: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
-
-  // Supprimez l'appel au hook
-  // const { isMobile } = useMobileDetection()
+  const isMobile = useMobile()
 
   // Calculer le prix avec remise si applicable
   const discountedPrice = product.discount ? product.price * (1 - product.discount / 100) : null
@@ -43,7 +50,12 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
       onHoverEnd={() => setIsHovered(false)}
       className="h-full"
     >
-      <Card className="overflow-hidden h-full flex flex-col shadow-md hover:shadow-xl transition-shadow duration-300">
+      <Card
+        className={cn(
+          "overflow-hidden h-full flex flex-col shadow-md hover:shadow-xl transition-shadow duration-300",
+          viewMode === "list" && "flex",
+        )}
+      >
         <div className="relative">
           <Link href={`/produit/${product.id}`}>
             <div className="aspect-[4/5] overflow-hidden relative bg-muted">
@@ -122,9 +134,14 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
           </motion.div>
         </div>
 
-        <CardContent className="flex-grow p-3 sm:p-4">
+        <CardContent className={cn("flex-grow", isMobileProp ? "p-3" : "p-4")}>
           <Link href={`/produit/${product.id}`} className="hover:underline">
-            <h3 className="font-semibold line-clamp-2 group-hover:text-purple-600 transition-colors text-base sm:text-lg mb-0.5 sm:mb-1">
+            <h3
+              className={cn(
+                "font-semibold line-clamp-2 group-hover:text-purple-600 transition-colors",
+                isMobileProp ? "text-base mb-0.5" : "mb-1",
+              )}
+            >
               {product.name}
             </h3>
           </Link>
@@ -133,22 +150,28 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
             {product.rating && (
               <>
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.3, delay: 0.2 }}>
-                  <Star className="fill-yellow-400 text-yellow-400 h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                  <Star className={cn("fill-yellow-400 text-yellow-400", isMobileProp ? "h-3 w-3" : "h-3.5 w-3.5")} />
                 </motion.div>
-                <span className="text-muted-foreground text-xs sm:text-sm">{product.rating.toFixed(1)}</span>
-                <span className="text-muted-foreground text-xs sm:text-sm">({product.reviews?.length || 0} avis)</span>
+                <span className={cn("text-muted-foreground", isMobileProp ? "text-xs" : "text-sm")}>
+                  {product.rating.toFixed(1)}
+                </span>
+                <span className={cn("text-muted-foreground", isMobileProp ? "text-xs" : "text-sm")}>
+                  ({product.reviews?.length || 0} avis)
+                </span>
               </>
             )}
           </div>
 
-          <p className="text-muted-foreground line-clamp-2 mb-2 text-xs sm:text-sm">{product.description}</p>
+          <p className={cn("text-muted-foreground line-clamp-2 mb-2", isMobileProp ? "text-xs" : "text-sm")}>
+            {product.description}
+          </p>
 
           {/* Prix */}
           <div className="flex items-center gap-2">
             {discountedPrice ? (
               <>
                 <motion.span
-                  className="font-semibold text-base sm:text-lg"
+                  className={cn("font-semibold", isMobileProp ? "text-base" : "text-lg")}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 }}
@@ -156,7 +179,7 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
                   {discountedPrice.toFixed(2)} €
                 </motion.span>
                 <motion.span
-                  className="text-muted-foreground line-through text-xs sm:text-sm"
+                  className={cn("text-muted-foreground line-through", isMobileProp ? "text-xs" : "text-sm")}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.4 }}
@@ -166,7 +189,7 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
               </>
             ) : (
               <motion.span
-                className="font-semibold text-base sm:text-lg"
+                className={cn("font-semibold", isMobileProp ? "text-base" : "text-lg")}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: 0.3 }}
@@ -177,19 +200,18 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
           </div>
         </CardContent>
 
-        <CardFooter className="p-3 pt-0 sm:p-4 sm:pt-0">
+        <CardFooter className={cn(isMobileProp ? "p-3 pt-0" : "p-4 pt-0")}>
           <motion.div className="w-full" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Button
               className="w-full gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-              size="sm"
+              size={isMobileProp ? "sm" : "default"}
               onClick={() => {
                 // Logique d'ajout au panier
                 console.log(`Ajout au panier: ${product.name}`)
               }}
             >
-              <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="sm:hidden">Ajouter</span>
-              <span className="hidden sm:inline">Ajouter au panier</span>
+              <ShoppingCart className={isMobileProp ? "h-3.5 w-3.5" : "h-4 w-4"} />
+              {isMobileProp ? "Ajouter" : "Ajouter au panier"}
             </Button>
           </motion.div>
         </CardFooter>
@@ -197,3 +219,5 @@ export default function ProductCard({ product, featured = false, index = 0 }: Pr
     </motion.div>
   )
 }
+
+export default ProductCard
