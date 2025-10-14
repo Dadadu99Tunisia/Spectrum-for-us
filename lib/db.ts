@@ -88,10 +88,34 @@ const mockUsers = [
 ]
 
 const mockCategories = [
-  { id: "vetements", name: "Vêtements", slug: "vetements", description: "Vêtements inclusifs et Pride" },
-  { id: "accessoires", name: "Accessoires", slug: "accessoires", description: "Accessoires Pride et inclusifs" },
-  { id: "maison", name: "Maison", slug: "maison", description: "Décoration et articles pour la maison" },
-  { id: "art", name: "Art & Culture", slug: "art", description: "Art et culture LGBTQ+" },
+  {
+    id: "vetements",
+    name: "Vêtements",
+    slug: "vetements",
+    description: "Vêtements inclusifs et Pride",
+    image: "/placeholder.svg?height=200&width=200",
+  },
+  {
+    id: "accessoires",
+    name: "Accessoires",
+    slug: "accessoires",
+    description: "Accessoires Pride et inclusifs",
+    image: "/placeholder.svg?height=200&width=200",
+  },
+  {
+    id: "maison",
+    name: "Maison",
+    slug: "maison",
+    description: "Décoration et articles pour la maison",
+    image: "/placeholder.svg?height=200&width=200",
+  },
+  {
+    id: "art",
+    name: "Art & Culture",
+    slug: "art",
+    description: "Art et culture LGBTQ+",
+    image: "/placeholder.svg?height=200&width=200",
+  },
 ]
 
 // Wrapper Prisma-like pour Supabase
@@ -660,7 +684,7 @@ export const prisma = {
         return item
       } catch (error) {
         console.error("Error in cartItem.update:", error)
-        throw error
+        return null
       }
     },
 
@@ -680,7 +704,7 @@ export const prisma = {
         return { id: where.id }
       } catch (error) {
         console.error("Error in cartItem.delete:", error)
-        throw error
+        return null
       }
     },
 
@@ -813,11 +837,7 @@ export async function query(sql: string, params?: any[]) {
       params: params || [],
     })
 
-    if (error) {
-      console.error("Database query error:", error)
-      return { rows: [] }
-    }
-
+    if (error) throw error
     return { rows: data || [] }
   } catch (error) {
     console.error("Database query exception:", error)
@@ -825,7 +845,105 @@ export async function query(sql: string, params?: any[]) {
   }
 }
 
-export default {
-  prisma,
-  query,
+export interface Product {
+  id: string
+  name: string
+  description: string
+  price: number
+  image: string
+  category: string
+  seller_id: string
+  created_at: string
+  updated_at: string
 }
+
+export interface Seller {
+  id: string
+  name: string
+  email: string
+  description: string
+  logo: string
+  verified: boolean
+  created_at: string
+}
+
+export interface Category {
+  id: string
+  name: string
+  slug: string
+  description: string
+  image: string
+  created_at: string
+}
+
+export const db = {
+  products: {
+    getAll: async () => {
+      const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false })
+
+      if (error) throw error
+      return data as Product[]
+    },
+
+    getById: async (id: string) => {
+      const { data, error } = await supabase.from("products").select("*").eq("id", id).single()
+
+      if (error) throw error
+      return data as Product
+    },
+
+    create: async (product: Omit<Product, "id" | "created_at" | "updated_at">) => {
+      const { data, error } = await supabase.from("products").insert(product).select().single()
+
+      if (error) throw error
+      return data as Product
+    },
+
+    update: async (id: string, updates: Partial<Product>) => {
+      const { data, error } = await supabase.from("products").update(updates).eq("id", id).select().single()
+
+      if (error) throw error
+      return data as Product
+    },
+
+    delete: async (id: string) => {
+      const { error } = await supabase.from("products").delete().eq("id", id)
+
+      if (error) throw error
+    },
+  },
+
+  sellers: {
+    getAll: async () => {
+      const { data, error } = await supabase.from("sellers").select("*").order("created_at", { ascending: false })
+
+      if (error) throw error
+      return data as Seller[]
+    },
+
+    getById: async (id: string) => {
+      const { data, error } = await supabase.from("sellers").select("*").eq("id", id).single()
+
+      if (error) throw error
+      return data as Seller
+    },
+  },
+
+  categories: {
+    getAll: async () => {
+      const { data, error } = await supabase.from("categories").select("*").order("name", { ascending: true })
+
+      if (error) throw error
+      return data as Category[]
+    },
+
+    getBySlug: async (slug: string) => {
+      const { data, error } = await supabase.from("categories").select("*").eq("slug", slug).single()
+
+      if (error) throw error
+      return data as Category
+    },
+  },
+}
+
+export default { prisma, query, db }

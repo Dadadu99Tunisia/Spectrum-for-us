@@ -88,9 +88,7 @@ export function createServerSupabaseClient() {
 if (process.env.NODE_ENV === "development") {
   if (!isSupabaseConfigured()) {
     console.warn("⚠️ Supabase n'est pas configuré. Utilisation du client mock.")
-    console.warn("📝 Ajoutez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY dans .env.local")
   } else {
     console.log("✅ Supabase configuré avec succès")
-    console.log("🔗 URL:", supabaseUrl)
   }
 }
