@@ -3,8 +3,8 @@ import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import ProductGrid from "@/components/product-grid"
-import ProductFilters from "@/components/product-filters"
-import ProductSorting from "@/components/product-sorting"
+import { ProductFilters } from "@/components/product-filters"
+import { ProductSorting } from "@/components/product-sorting"
 
 export default function NewArrivalsPage() {
   return (
@@ -23,13 +23,13 @@ export default function NewArrivalsPage() {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Filtres */}
         <div className="w-full md:w-64 shrink-0">
-          <ProductFilters />
+          <ProductFilters filters={{}} onFilterChange={() => {}} onClearFilters={() => {}} />
         </div>
 
         {/* Produits */}
         <div className="flex-1">
           <div className="mb-6">
-            <ProductSorting />
+            <ProductSorting currentSort="newest" onSortChange={() => {}} />
           </div>
 
           <Suspense fallback={<ProductGridSkeleton />}>

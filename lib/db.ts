@@ -1,188 +1,140 @@
-// Supabase-only database implementation
-// NO Neon, NO Postgres, NO Prisma
-import { supabase, supabaseAdmin } from "./supabaseClient"
+import { supabase, createServerSupabaseClient } from "./supabaseClient"
 
-// Product operations using Supabase
-export const productsDB = {
-  async getAll(filters?: {
-    categoryId?: string
-    subcategoryId?: string
-    featured?: boolean
-    limit?: number
-  }) {
-    let query = supabase.from("products").select("*")
-
-    if (filters?.categoryId) {
-      query = query.eq("categoryId", filters.categoryId)
-    }
-
-    if (filters?.subcategoryId) {
-      query = query.eq("subcategoryId", filters.subcategoryId)
-    }
-
-    if (filters?.featured) {
-      query = query.eq("featured", true)
-    }
-
-    if (filters?.limit) {
-      query = query.limit(filters.limit)
-    }
-
-    const { data, error } = await query
-
-    if (error) {
-      console.error("Error fetching products:", error)
-      throw error
-    }
-
-    return data || []
+// Client-side database operations
+export const db = {
+  // Products
+  async getProducts() {
+    const { data, error } = await supabase.from("products").select("*")
+    if (error) throw error
+    return data
   },
 
-  async getById(id: string) {
+  async getProduct(id: string) {
     const { data, error } = await supabase.from("products").select("*").eq("id", id).single()
-
-    if (error) {
-      console.error("Error fetching product:", error)
-      throw error
-    }
-
+    if (error) throw error
     return data
   },
 
-  async create(productData: any) {
-    const { data, error } = await supabaseAdmin.from("products").insert(productData).select().single()
-
-    if (error) {
-      console.error("Error creating product:", error)
-      throw error
-    }
-
+  // Users
+  async getUser(id: string) {
+    const { data, error } = await supabase.from("users").select("*").eq("id", id).single()
+    if (error) throw error
     return data
   },
 
-  async update(id: string, productData: any) {
-    const { data, error } = await supabaseAdmin.from("products").update(productData).eq("id", id).select().single()
-
-    if (error) {
-      console.error("Error updating product:", error)
-      throw error
-    }
-
+  async getUserByEmail(email: string) {
+    const { data, error } = await supabase.from("users").select("*").eq("email", email).single()
+    if (error) throw error
     return data
   },
 
-  async delete(id: string) {
-    const { error } = await supabaseAdmin.from("products").delete().eq("id", id)
-
-    if (error) {
-      console.error("Error deleting product:", error)
-      throw error
-    }
-
-    return true
-  },
-}
-
-// Seller operations using Supabase
-export const sellersDB = {
-  async getAll(filters?: { featured?: boolean }) {
-    let query = supabase.from("sellers").select("*")
-
-    if (filters?.featured) {
-      query = query.eq("featured", true)
-    }
-
-    const { data, error } = await query
-
-    if (error) {
-      console.error("Error fetching sellers:", error)
-      throw error
-    }
-
-    return data || []
-  },
-
-  async getById(id: string) {
-    const { data, error } = await supabase.from("sellers").select("*").eq("id", id).single()
-
-    if (error) {
-      console.error("Error fetching seller:", error)
-      throw error
-    }
-
+  // Cart
+  async getCartItems(userId: string) {
+    const { data, error } = await supabase.from("cart_items").select("*").eq("user_id", userId)
+    if (error) throw error
     return data
   },
-}
 
-// Order operations using Supabase
-export const ordersDB = {
-  async getByUserId(userId: string) {
+  async addToCart(userId: string, productId: string, quantity: number) {
     const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("userId", userId)
-      .order("createdAt", { ascending: false })
-
-    if (error) {
-      console.error("Error fetching orders:", error)
-      throw error
-    }
-
-    return data || []
+      .from("cart_items")
+      .insert({ user_id: userId, product_id: productId, quantity })
+      .select()
+      .single()
+    if (error) throw error
+    return data
   },
 
-  async getById(id: string) {
+  // Favorites
+  async getFavorites(userId: string) {
+    const { data, error } = await supabase.from("favorites").select("*").eq("user_id", userId)
+    if (error) throw error
+    return data
+  },
+
+  async addFavorite(userId: string, productId: string) {
+    const { data, error } = await supabase
+      .from("favorites")
+      .insert({ user_id: userId, product_id: productId })
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  },
+
+  async removeFavorite(userId: string, productId: string) {
+    const { error } = await supabase.from("favorites").delete().eq("user_id", userId).eq("product_id", productId)
+    if (error) throw error
+  },
+
+  // Orders
+  async getOrders(userId: string) {
+    const { data, error } = await supabase.from("orders").select("*").eq("user_id", userId)
+    if (error) throw error
+    return data
+  },
+
+  async getOrder(id: string) {
     const { data, error } = await supabase.from("orders").select("*").eq("id", id).single()
-
-    if (error) {
-      console.error("Error fetching order:", error)
-      throw error
-    }
-
+    if (error) throw error
     return data
   },
 
-  async create(orderData: any) {
-    const { data, error } = await supabaseAdmin.from("orders").insert(orderData).select().single()
-
-    if (error) {
-      console.error("Error creating order:", error)
-      throw error
-    }
-
+  async createOrder(orderData: any) {
+    const { data, error } = await supabase.from("orders").insert(orderData).select().single()
+    if (error) throw error
     return data
   },
-}
 
-// Category operations using Supabase
-export const categoriesDB = {
-  async getAll() {
-    const { data, error } = await supabase.from("categories").select("*").order("name", { ascending: true })
-
-    if (error) {
-      console.error("Error fetching categories:", error)
-      throw error
-    }
-
-    return data || []
+  // Sellers
+  async getSellers() {
+    const { data, error } = await supabase.from("sellers").select("*")
+    if (error) throw error
+    return data
   },
 
-  async getById(id: string) {
-    const { data, error } = await supabase.from("categories").select("*").eq("id", id).single()
-
-    if (error) {
-      console.error("Error fetching category:", error)
-      throw error
-    }
-
+  async getSeller(id: string) {
+    const { data, error } = await supabase.from("sellers").select("*").eq("id", id).single()
+    if (error) throw error
     return data
   },
 }
 
-// Export default object with all DB operations
-export default {
-  products: productsDB,
-  sellers: sellersDB,
-  orders: ordersDB,
-  categories: categoriesDB,
+// Server-side database operations (use in API routes and server components)
+export const serverDb = {
+  async getProducts() {
+    const supabase = createServerSupabaseClient()
+    const { data, error } = await supabase.from("products").select("*")
+    if (error) throw error
+    return data
+  },
+
+  async getProduct(id: string) {
+    const supabase = createServerSupabaseClient()
+    const { data, error } = await supabase.from("products").select("*").eq("id", id).single()
+    if (error) throw error
+    return data
+  },
+
+  async createProduct(productData: any) {
+    const supabase = createServerSupabaseClient()
+    const { data, error } = await supabase.from("products").insert(productData).select().single()
+    if (error) throw error
+    return data
+  },
+
+  async updateProduct(id: string, productData: any) {
+    const supabase = createServerSupabaseClient()
+    const { data, error } = await supabase.from("products").update(productData).eq("id", id).select().single()
+    if (error) throw error
+    return data
+  },
+
+  async deleteProduct(id: string) {
+    const supabase = createServerSupabaseClient()
+    const { error } = await supabase.from("products").delete().eq("id", id)
+    if (error) throw error
+  },
 }
+
+export default db
