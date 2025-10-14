@@ -1,448 +1,258 @@
-"use client"
-
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Search } from "lucide-react"
-import FeaturedProducts from "@/components/featured-products"
-import FeaturedSellers from "@/components/featured-sellers"
-import FeaturedCategories from "@/components/featured-categories"
-import Image from "next/image"
-import KeyStats from "@/components/key-stats"
-import BrandValues from "@/components/brand-values"
-import Testimonials from "@/components/testimonials"
-import EcoBanner from "@/components/eco-banner"
-import FeaturedEvents from "@/components/featured-events"
-import PartnersShowcase from "@/components/partners-showcase"
-import ServicesShowcase from "@/components/services-showcase"
-import { motion } from "framer-motion"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Heart, ShoppingCart, Star } from "lucide-react"
 
-// Animation variants
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6 },
+const featuredProducts = [
+  {
+    id: 1,
+    name: "Pride Rainbow Tee",
+    price: 29.99,
+    image: "/rainbow-pride-t-shirt.jpg",
+    category: "Clothing",
+    rating: 4.8,
+    reviews: 124,
   },
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
+  {
+    id: 2,
+    name: "Trans Flag Pin Set",
+    price: 12.99,
+    image: "/transgender-flag-pins.jpg",
+    category: "Accessories",
+    rating: 4.9,
+    reviews: 89,
   },
-}
+  {
+    id: 3,
+    name: "Bi Pride Hoodie",
+    price: 49.99,
+    image: "/bisexual-pride-hoodie.jpg",
+    category: "Clothing",
+    rating: 4.7,
+    reviews: 156,
+  },
+  {
+    id: 4,
+    name: "Lesbian Flag Sticker Pack",
+    price: 8.99,
+    image: "/lesbian-pride-stickers.jpg",
+    category: "Accessories",
+    rating: 4.6,
+    reviews: 203,
+  },
+]
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="min-h-screen">
-      {/* Hero Section with Gradient Background */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-90"></div>
-        <div className="absolute inset-0 bg-[url('/placeholder.svg')] mix-blend-overlay opacity-20"></div>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      {/* Header */}
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-pink-500 via-purple-500 to-blue-500" />
+              <span className="text-xl font-bold">Spectrum</span>
+            </Link>
 
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-          className="relative container mx-auto px-4 py-24 md:py-32 flex flex-col items-center text-center"
-        >
-          <motion.div variants={fadeIn} className="mb-8">
-            <Image
-              src="/images/logo.png"
-              alt="Spectrum Logo"
-              width={800}
-              height={240}
-              className="h-40 w-auto"
-              priority
-            />
-          </motion.div>
-          <motion.h1 variants={fadeIn} className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-md">
-            Marketplace Queer & Inclusive
-          </motion.h1>
-          <motion.p variants={fadeIn} className="text-xl md:text-2xl text-white/90 max-w-2xl mb-8">
-            Découvrez des produits uniques créés par des artistes et entrepreneur·e·s de la communauté queer.
-          </motion.p>
+            <nav className="hidden md:flex items-center gap-6">
+              <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors">
+                Products
+              </Link>
+              <Link href="/categories" className="text-sm font-medium hover:text-primary transition-colors">
+                Categories
+              </Link>
+              <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
+                About
+              </Link>
+            </nav>
 
-          {/* Search Bar */}
-          <motion.div variants={fadeIn} className="w-full max-w-2xl mb-8 relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-white/60" />
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon">
+                <Heart className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-5 w-5" />
+              </Button>
+              <Link href="/auth/login">
+                <Button variant="default">Sign In</Button>
+              </Link>
             </div>
-            <input
-              type="text"
-              placeholder="Rechercher des produits, boutiques ou catégories..."
-              className="w-full pl-10 pr-4 py-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50"
-            />
-          </motion.div>
+          </div>
+        </div>
+      </header>
 
-          <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4">
-            <Button
-              size="lg"
-              className="bg-white text-purple-600 hover:bg-white/90 transition-transform hover:scale-105"
-            >
-              Explorer les Produits
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white/10 transition-transform hover:scale-105"
-            >
-              Devenir Vendeur·euse
-            </Button>
-          </motion.div>
-        </motion.div>
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-16 md:py-24">
+        <div className="text-center max-w-3xl mx-auto">
+          <Badge className="mb-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white border-0">
+            New Collection Available
+          </Badge>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-balance">Celebrate Your True Colors</h1>
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 text-pretty">
+            Discover pride merchandise that represents every shade of the LGBTQ+ spectrum. Quality products, authentic
+            designs, and a portion of proceeds support LGBTQ+ organizations.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/products">
+              <Button size="lg" className="w-full sm:w-auto">
+                Shop Now
+              </Button>
+            </Link>
+            <Link href="/categories">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto bg-transparent">
+                Browse Categories
+              </Button>
+            </Link>
+          </div>
+        </div>
       </section>
 
-      {/* Key Stats Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-12 bg-white dark:bg-background"
-      >
-        <div className="container mx-auto px-4">
-          <KeyStats />
-        </div>
-      </motion.section>
-
-      {/* Featured Categories */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-16 bg-gradient-to-b from-white to-purple-50 dark:from-background dark:to-purple-950/10"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center mb-12"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300 text-sm font-medium mb-4">
-              Catégories Populaires
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Explorez Nos Univers
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Découvrez nos catégories les plus populaires et trouvez des produits qui correspondent à votre style.
-            </p>
-          </motion.div>
-
-          <FeaturedCategories />
-        </div>
-      </motion.section>
-
-      {/* Services Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-16 bg-white dark:bg-background"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center mb-12"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300 text-sm font-medium mb-4">
-              Services
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
-              Services Proposés par nos Créateur·rice·s
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Découvrez la diversité des services offerts par notre communauté de professionnel·le·s talentueux·ses.
-            </p>
-          </motion.div>
-
-          <ServicesShowcase />
-        </div>
-      </motion.section>
-
-      {/* Brand Values */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-16 bg-white dark:bg-background"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center mb-12"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 text-sm font-medium mb-4">
-              Nos Valeurs
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Ce Qui Nous Définit</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Spectrum est bien plus qu'une marketplace - c'est un engagement envers notre communauté.
-            </p>
-          </motion.div>
-
-          <BrandValues />
-        </div>
-      </motion.section>
-
       {/* Featured Products */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-16 bg-gradient-to-b from-white to-pink-50 dark:from-background dark:to-pink-950/10"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center mb-12"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-300 text-sm font-medium mb-4">
-              Produits Tendance
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-              Nos Coups de Cœur
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Découvrez notre sélection de produits uniques créés par des artistes et entrepreneur·e·s de la communauté.
-            </p>
-          </motion.div>
-
-          <FeaturedProducts />
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-12 text-center"
-          >
-            <Button asChild variant="outline" size="lg" className="group transition-transform hover:scale-105">
-              <Link href="/boutique">
-                Voir Tous les Produits
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </motion.div>
+      <section className="container mx-auto px-4 py-16">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">Featured Products</h2>
+            <p className="text-muted-foreground">Handpicked items from our collection</p>
+          </div>
+          <Link href="/products">
+            <Button variant="ghost">View All</Button>
+          </Link>
         </div>
-      </motion.section>
 
-      {/* Testimonials */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-16 bg-white dark:bg-background"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center mb-12"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 text-sm font-medium mb-4">
-              Témoignages
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Ce Que Dit Notre Communauté</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Découvrez les expériences de nos vendeur·euse·s et client·e·s sur Spectrum.
-            </p>
-          </motion.div>
-
-          <Testimonials />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {featuredProducts.map((product) => (
+            <Card key={product.id} className="group overflow-hidden hover:shadow-lg transition-shadow">
+              <CardContent className="p-0">
+                <div className="relative aspect-square overflow-hidden bg-muted">
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
+                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Heart className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="p-4">
+                  <Badge variant="secondary" className="mb-2">
+                    {product.category}
+                  </Badge>
+                  <h3 className="font-semibold mb-2 line-clamp-1">{product.name}</h3>
+                  <div className="flex items-center gap-1 mb-2">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-medium">{product.rating}</span>
+                    <span className="text-sm text-muted-foreground">({product.reviews})</span>
+                  </div>
+                  <p className="text-lg font-bold">${product.price}</p>
+                </div>
+              </CardContent>
+              <CardFooter className="p-4 pt-0">
+                <Button className="w-full bg-transparent" variant="outline">
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  Add to Cart
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
         </div>
-      </motion.section>
+      </section>
 
-      {/* Événements Mis en Avant */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-16 bg-white dark:bg-background"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center mb-12"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 text-sm font-medium mb-4">
-              Événements à la Une
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Événements Incontournables
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Ne manquez pas ces événements majeurs organisés par et pour notre communauté.
-            </p>
-          </motion.div>
-
-          <FeaturedEvents />
+      {/* Categories */}
+      <section className="container mx-auto px-4 py-16 bg-muted/30 rounded-3xl my-16">
+        <h2 className="text-3xl font-bold mb-8 text-center">Shop by Category</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {["Clothing", "Accessories", "Home & Living", "Art & Prints"].map((category) => (
+            <Link key={category} href={`/categories/${category.toLowerCase().replace(" & ", "-")}`}>
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-pink-500 via-purple-500 to-blue-500" />
+                  <h3 className="font-semibold">{category}</h3>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
         </div>
-      </motion.section>
+      </section>
 
-      {/* Partenaires */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-16 bg-gradient-to-b from-white to-indigo-50 dark:from-background dark:to-indigo-950/10"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center mb-12"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300 text-sm font-medium mb-4">
-              Nos Partenaires
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Ils Soutiennent Spectrum</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Découvrez les organisations et entreprises qui partagent nos valeurs et soutiennent notre mission.
-            </p>
-          </motion.div>
-
-          <PartnersShowcase />
+      {/* Footer */}
+      <footer className="border-t bg-muted/50 mt-16">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-pink-500 via-purple-500 to-blue-500" />
+                <span className="text-xl font-bold">Spectrum</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Celebrating diversity and pride through quality merchandise.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Shop</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="/products" className="hover:text-foreground">
+                    All Products
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/categories" className="hover:text-foreground">
+                    Categories
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/new" className="hover:text-foreground">
+                    New Arrivals
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="/contact" className="hover:text-foreground">
+                    Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq" className="hover:text-foreground">
+                    FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shipping" className="hover:text-foreground">
+                    Shipping
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="/privacy" className="hover:text-foreground">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="hover:text-foreground">
+                    Terms of Service
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
+            <p>&copy; 2025 Spectrum Marketplace. All rights reserved.</p>
+          </div>
         </div>
-      </motion.section>
-
-      {/* Featured Sellers */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-16 bg-gradient-to-b from-white to-purple-50 dark:from-background dark:to-purple-950/10"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center mb-12"
-          >
-            <span className="inline-block px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-300 text-sm font-medium mb-4">
-              Vendeur·euse·s
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
-              Vendeur·euse·s à Découvrir
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Rencontrez les créateur·rice·s et entrepreneur·e·s qui font vivre notre marketplace.
-            </p>
-          </motion.div>
-
-          <FeaturedSellers />
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-12 text-center"
-          >
-            <Button asChild variant="outline" size="lg" className="group transition-transform hover:scale-105">
-              <Link href="/vendeurs">
-                Tou·te·s les Vendeur·euse·s
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* CTA Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="py-20 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white"
-      >
-        <div className="container mx-auto px-4 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-3xl md:text-4xl font-bold mb-6"
-          >
-            Rejoignez Notre Marketplace
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-xl max-w-2xl mx-auto mb-8"
-          >
-            Vous êtes un·e artiste ou entrepreneur·e queer ? Vendez vos créations sur notre plateforme et rejoignez une
-            communauté dynamique.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Button
-              size="lg"
-              className="bg-white text-purple-600 hover:bg-white/90 transition-transform hover:scale-105"
-            >
-              Devenir Vendeur·euse
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white/10 transition-transform hover:scale-105"
-            >
-              En Savoir Plus
-            </Button>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Eco Banner */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        <EcoBanner />
-      </motion.div>
-    </main>
+      </footer>
+    </div>
   )
 }
