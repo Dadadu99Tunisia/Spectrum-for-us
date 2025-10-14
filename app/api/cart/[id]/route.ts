@@ -1,38 +1,35 @@
 import { type NextRequest, NextResponse } from "next/server"
+import prisma from "@/lib/db"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../../auth/[...nextauth]/route"
-import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabaseClient"
 
+// PUT /api/cart/[id] - Mettre à jour la quantité d'un élément du panier
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    if (!isSupabaseConfigured()) {
-      return NextResponse.json(
-        { error: "Database not configured. Please set up Supabase environment variables." },
-        { status: 503 },
-      )
-    }
-
     const id = params.id
+
+    // Vérifier l'authentification
     const session = await getServerSession(authOptions)
 
     if (!session) {
       return NextResponse.json({ error: "Vous devez être connecté pour modifier votre panier" }, { status: 401 })
     }
 
-    const { data: cartItem, error: fetchError } = await supabaseAdmin
-      .from("cart_items")
-      .select("*")
-      .eq("id", id)
-      .single()
+    // Récupérer l'élément du panier
+    const cartItem = await prisma.cartItem.findUnique({
+      where: { id },
+    })
 
-    if (fetchError || !cartItem) {
+    if (!cartItem) {
       return NextResponse.json({ error: "Élément du panier non trouvé" }, { status: 404 })
     }
 
-    if (cartItem.user_id !== session.user.id) {
+    // Vérifier si l'élément appartient à l'utilisateur
+    if (cartItem.userId !== session.user.id) {
       return NextResponse.json({ error: "Vous n'êtes pas autorisé à modifier cet élément" }, { status: 403 })
     }
 
+    // Récupérer les données
     const data = await request.json()
     const { quantity } = data
 
@@ -40,65 +37,53 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Quantité invalide" }, { status: 400 })
     }
 
-    const { data: updatedItem, error: updateError } = await supabaseAdmin
-      .from("cart_items")
-      .update({ quantity })
-      .eq("id", id)
-      .select()
-      .single()
-
-    if (updateError) {
-      console.error("Error updating cart item:", updateError)
-      return NextResponse.json({ error: "Erreur lors de la mise à jour" }, { status: 500 })
-    }
+    // Mettre à jour la quantité
+    const updatedItem = await prisma.cartItem.update({
+      where: { id },
+      data: { quantity },
+    })
 
     return NextResponse.json(updatedItem)
   } catch (error) {
-    console.error("Error in PUT /api/cart/[id]:", error)
+    console.error("Erreur lors de la mise à jour du panier:", error)
     return NextResponse.json({ error: "Une erreur est survenue lors de la mise à jour du panier" }, { status: 500 })
   }
 }
 
+// DELETE /api/cart/[id] - Supprimer un élément du panier
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    if (!isSupabaseConfigured()) {
-      return NextResponse.json(
-        { error: "Database not configured. Please set up Supabase environment variables." },
-        { status: 503 },
-      )
-    }
-
     const id = params.id
+
+    // Vérifier l'authentification
     const session = await getServerSession(authOptions)
 
     if (!session) {
       return NextResponse.json({ error: "Vous devez être connecté pour modifier votre panier" }, { status: 401 })
     }
 
-    const { data: cartItem, error: fetchError } = await supabaseAdmin
-      .from("cart_items")
-      .select("*")
-      .eq("id", id)
-      .single()
+    // Récupérer l'élément du panier
+    const cartItem = await prisma.cartItem.findUnique({
+      where: { id },
+    })
 
-    if (fetchError || !cartItem) {
+    if (!cartItem) {
       return NextResponse.json({ error: "Élément du panier non trouvé" }, { status: 404 })
     }
 
-    if (cartItem.user_id !== session.user.id) {
+    // Vérifier si l'élément appartient à l'utilisateur
+    if (cartItem.userId !== session.user.id) {
       return NextResponse.json({ error: "Vous n'êtes pas autorisé à modifier cet élément" }, { status: 403 })
     }
 
-    const { error: deleteError } = await supabaseAdmin.from("cart_items").delete().eq("id", id)
-
-    if (deleteError) {
-      console.error("Error deleting cart item:", deleteError)
-      return NextResponse.json({ error: "Erreur lors de la suppression" }, { status: 500 })
-    }
+    // Supprimer l'élément
+    await prisma.cartItem.delete({
+      where: { id },
+    })
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error in DELETE /api/cart/[id]:", error)
+    console.error("Erreur lors de la suppression de l'élément du panier:", error)
     return NextResponse.json(
       { error: "Une erreur est survenue lors de la suppression de l'élément du panier" },
       { status: 500 },

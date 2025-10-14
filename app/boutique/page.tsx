@@ -5,8 +5,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ArrowRight } from "lucide-react"
 import ProductGrid from "@/components/product-grid"
-import { ProductFilters } from "@/components/product-filters"
-import { ProductSorting } from "@/components/product-sorting"
+import ProductFilters from "@/components/product-filters"
+import ProductSorting from "@/components/product-sorting"
 import { categories } from "@/app/api/categories/route"
 
 export default function ShopPage() {
@@ -45,13 +45,13 @@ export default function ShopPage() {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Filtres */}
         <div className="w-full md:w-64 shrink-0">
-          <ProductFilters filters={{}} onFilterChange={() => {}} onClearFilters={() => {}} />
+          <ProductFilters />
         </div>
 
         {/* Produits */}
         <div className="flex-1">
           <div className="mb-6">
-            <ProductSorting currentSort="newest" onSortChange={() => {}} />
+            <ProductSorting />
           </div>
 
           <Suspense fallback={<ProductGridSkeleton />}>
