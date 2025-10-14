@@ -1,0 +1,16 @@
+[
+  {
+    "id": "seller-1",
+    "userId": "user-1",
+    "storeName": "QueerApparel",
+    "description": "Vêtements et accessoires inclusifs pour toutes les identités",
+    "logo": "/placeholder.svg?height=100&width=100&text=QueerApparel",
+    "verified": true,
+    "featured": true,
+    "rating": 4.8,
+    "reviewCount": 156,
+    "productCount": 45,
+    "createdAt": "2024-01-10T10:00:00.000Z",
+    "updatedAt": "2024-01-10T10:00:00.000Z"
+  }
+]

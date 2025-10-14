@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    scrollRestoration: true,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -7,6 +10,13 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    domains: ['placeholder.svg', 'blob.v0.app'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
     unoptimized: true,
   },
 }
