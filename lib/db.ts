@@ -1,147 +1,188 @@
-// Version temporaire sans Prisma pour le déploiement
-// Note: Cette version utilise des données statiques et ne se connecte pas à une base de données
+// Supabase-only database implementation
+// NO Neon, NO Postgres, NO Prisma
+import { supabase, supabaseAdmin } from "./supabaseClient"
 
-// Type simplifié pour simuler Prisma
-export const prisma = {
-  user: {
-    findUnique: async () => null,
-    create: async () => ({ id: "mock-id", name: "Mock User", email: "mock@example.com" }),
-    findMany: async () => [],
+// Product operations using Supabase
+export const productsDB = {
+  async getAll(filters?: {
+    categoryId?: string
+    subcategoryId?: string
+    featured?: boolean
+    limit?: number
+  }) {
+    let query = supabase.from("products").select("*")
+
+    if (filters?.categoryId) {
+      query = query.eq("categoryId", filters.categoryId)
+    }
+
+    if (filters?.subcategoryId) {
+      query = query.eq("subcategoryId", filters.subcategoryId)
+    }
+
+    if (filters?.featured) {
+      query = query.eq("featured", true)
+    }
+
+    if (filters?.limit) {
+      query = query.limit(filters.limit)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error("Error fetching products:", error)
+      throw error
+    }
+
+    return data || []
   },
-  product: {
-    findMany: async () => mockProducts,
-    findUnique: async () => mockProducts[0],
-    count: async () => mockProducts.length,
-    create: async (data: any) => ({ id: "new-product", ...data.data }),
-    update: async (data: any) => ({ id: data.where.id, ...data.data }),
-    delete: async () => ({ id: "deleted" }),
+
+  async getById(id: string) {
+    const { data, error } = await supabase.from("products").select("*").eq("id", id).single()
+
+    if (error) {
+      console.error("Error fetching product:", error)
+      throw error
+    }
+
+    return data
   },
-  category: {
-    findMany: async () => mockCategories,
+
+  async create(productData: any) {
+    const { data, error } = await supabaseAdmin.from("products").insert(productData).select().single()
+
+    if (error) {
+      console.error("Error creating product:", error)
+      throw error
+    }
+
+    return data
   },
-  seller: {
-    findMany: async () => mockSellers,
-    findUnique: async () => mockSellers[0],
-    update: async (data: any) => ({ id: data.where.id, ...data.data }),
+
+  async update(id: string, productData: any) {
+    const { data, error } = await supabaseAdmin.from("products").update(productData).eq("id", id).select().single()
+
+    if (error) {
+      console.error("Error updating product:", error)
+      throw error
+    }
+
+    return data
   },
-  order: {
-    findMany: async () => [],
-    create: async (data: any) => ({ id: "new-order", ...data.data }),
-  },
-  cartItem: {
-    deleteMany: async () => ({ count: 0 }),
-  },
-  favorite: {
-    findUnique: async () => null,
+
+  async delete(id: string) {
+    const { error } = await supabaseAdmin.from("products").delete().eq("id", id)
+
+    if (error) {
+      console.error("Error deleting product:", error)
+      throw error
+    }
+
+    return true
   },
 }
 
-// Données statiques pour la démo
-const mockProducts = [
-  {
-    id: "product-1",
-    name: "T-shirt Pride",
-    description: "T-shirt avec motif arc-en-ciel",
-    price: 29.99,
-    slug: "t-shirt-pride",
-    inventory: 100,
-    sellerId: "seller-1",
-    seller: {
-      id: "seller-1",
-      storeName: "Pride Boutique",
-      logo: "/placeholder.svg?height=100&width=100",
-      verified: true,
-    },
-    images: [
-      {
-        url: "/placeholder.svg?height=400&width=400",
-        alt: "T-shirt Pride",
-      },
-    ],
-    categories: [
-      {
-        category: {
-          id: "clothing",
-          name: "Vêtements",
-        },
-      },
-    ],
-  },
-  {
-    id: "product-2",
-    name: "Bracelet Rainbow",
-    description: "Bracelet aux couleurs de l'arc-en-ciel",
-    price: 12.99,
-    slug: "bracelet-rainbow",
-    inventory: 50,
-    sellerId: "seller-2",
-    seller: {
-      id: "seller-2",
-      storeName: "Accessoires Queer",
-      logo: "/placeholder.svg?height=100&width=100",
-      verified: true,
-    },
-    images: [
-      {
-        url: "/placeholder.svg?height=400&width=400",
-        alt: "Bracelet Rainbow",
-      },
-    ],
-    categories: [
-      {
-        category: {
-          id: "jewelry",
-          name: "Bijoux",
-        },
-      },
-    ],
-  },
-]
+// Seller operations using Supabase
+export const sellersDB = {
+  async getAll(filters?: { featured?: boolean }) {
+    let query = supabase.from("sellers").select("*")
 
-const mockCategories = [
-  {
-    id: "clothing",
-    name: "Vêtements",
-    subCategories: [
-      { id: "tops", name: "Hauts" },
-      { id: "bottoms", name: "Bas" },
-    ],
-  },
-  {
-    id: "jewelry",
-    name: "Bijoux",
-    subCategories: [
-      { id: "necklaces", name: "Colliers" },
-      { id: "bracelets", name: "Bracelets" },
-    ],
-  },
-]
+    if (filters?.featured) {
+      query = query.eq("featured", true)
+    }
 
-const mockSellers = [
-  {
-    id: "seller-1",
-    storeName: "Pride Boutique",
-    description: "Boutique spécialisée dans les vêtements Pride",
-    logo: "/placeholder.svg?height=100&width=100",
-    verified: true,
-    featured: true,
-    rating: 4.8,
-    reviewCount: 120,
-    productCount: 45,
-    location: "Paris",
-  },
-  {
-    id: "seller-2",
-    storeName: "Accessoires Queer",
-    description: "Accessoires et bijoux pour la communauté LGBTQ+",
-    logo: "/placeholder.svg?height=100&width=100",
-    verified: true,
-    featured: true,
-    rating: 4.6,
-    reviewCount: 85,
-    productCount: 30,
-    location: "Lyon",
-  },
-]
+    const { data, error } = await query
 
-export default prisma
+    if (error) {
+      console.error("Error fetching sellers:", error)
+      throw error
+    }
+
+    return data || []
+  },
+
+  async getById(id: string) {
+    const { data, error } = await supabase.from("sellers").select("*").eq("id", id).single()
+
+    if (error) {
+      console.error("Error fetching seller:", error)
+      throw error
+    }
+
+    return data
+  },
+}
+
+// Order operations using Supabase
+export const ordersDB = {
+  async getByUserId(userId: string) {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("userId", userId)
+      .order("createdAt", { ascending: false })
+
+    if (error) {
+      console.error("Error fetching orders:", error)
+      throw error
+    }
+
+    return data || []
+  },
+
+  async getById(id: string) {
+    const { data, error } = await supabase.from("orders").select("*").eq("id", id).single()
+
+    if (error) {
+      console.error("Error fetching order:", error)
+      throw error
+    }
+
+    return data
+  },
+
+  async create(orderData: any) {
+    const { data, error } = await supabaseAdmin.from("orders").insert(orderData).select().single()
+
+    if (error) {
+      console.error("Error creating order:", error)
+      throw error
+    }
+
+    return data
+  },
+}
+
+// Category operations using Supabase
+export const categoriesDB = {
+  async getAll() {
+    const { data, error } = await supabase.from("categories").select("*").order("name", { ascending: true })
+
+    if (error) {
+      console.error("Error fetching categories:", error)
+      throw error
+    }
+
+    return data || []
+  },
+
+  async getById(id: string) {
+    const { data, error } = await supabase.from("categories").select("*").eq("id", id).single()
+
+    if (error) {
+      console.error("Error fetching category:", error)
+      throw error
+    }
+
+    return data
+  },
+}
+
+// Export default object with all DB operations
+export default {
+  products: productsDB,
+  sellers: sellersDB,
+  orders: ordersDB,
+  categories: categoriesDB,
+}
