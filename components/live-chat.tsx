@@ -1,135 +1,214 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ScrollArea } from "@/components/ui/scroll-area"
-
-type Message = {
-  role: "user" | "assistant"
-  content: string
-}
+import { Avatar } from "@/components/ui/avatar"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { MessageCircle, X, Send, Minimize2, Maximize2, Volume2, VolumeX } from "lucide-react"
+import { Translate } from "@/components/translate"
+import { cn } from "@/lib/utils"
+import { useChat } from "ai/react"
+// Correction de l'importation du hook de détection mobile
+import { useMobileDetection } from "@/hooks/use-mobile-detection"
 
 export default function LiveChat() {
-  const [input, setInput] = useState("")
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "Bonjour ! Comment puis-je vous aider aujourd'hui sur Spectrum Marketplace ?",
-    },
-  ])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [isMinimized, setIsMinimized] = useState(false)
+  const [speechEnabled, setSpeechEnabled] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const synth = typeof window !== "undefined" ? window.speechSynthesis : null
+  // Dans la fonction LiveChat, ajoutez cette ligne après les autres hooks
+  const { isMobile } = useMobileDetection()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim()) return
-
-    // Ajouter le message de l'utilisateur
-    const userMessage = { role: "user" as const, content: input }
-    setMessages((prev) => [...prev, userMessage])
-    setInput("")
-    setIsLoading(true)
-
-    try {
-      // Appeler l'API de chat
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: [...messages, userMessage],
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Erreur de communication avec l'assistant")
+  // Utiliser le hook useChat de l'AI SDK avec la bonne configuration
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
+    api: "/api/chat",
+    initialMessages: [
+      {
+        id: "1",
+        content: "Bonjour ! Comment puis-je vous aider aujourd'hui ?",
+        role: "assistant",
+      },
+    ],
+    onFinish: (message) => {
+      // Lire la réponse si la synthèse vocale est activée
+      if (speechEnabled && synth) {
+        const utterance = new SpeechSynthesisUtterance(message.content)
+        utterance.lang = "fr-FR"
+        synth.speak(utterance)
       }
+    },
+  })
 
-      const data = await response.json()
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
 
-      // Ajouter la réponse de l'assistant
-      setMessages((prev) => [...prev, { role: "assistant", content: data.content }])
-    } catch (error) {
-      console.error("Erreur:", error)
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Désolé, j'ai rencontré un problème. Veuillez réessayer ou contacter notre support.",
-        },
-      ])
-    } finally {
-      setIsLoading(false)
+  const toggleChat = () => {
+    setIsOpen((prev) => !prev)
+    setIsMinimized(false)
+  }
+
+  const toggleMinimize = () => {
+    setIsMinimized((prev) => !prev)
+  }
+
+  const toggleSpeech = () => {
+    setSpeechEnabled((prev) => !prev)
+    if (speechEnabled && synth) {
+      synth.cancel() // Arrêter toute lecture en cours
     }
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto h-[500px] flex flex-col">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-green-500"></span>
-          Assistant Spectrum
-        </CardTitle>
-      </CardHeader>
-      <ScrollArea className="flex-1 p-4">
-        <CardContent className="space-y-4">
-          {messages.map((message, i) => (
-            <div key={i} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`flex gap-2 max-w-[80%] ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={message.role === "user" ? "/images/user-avatar.png" : "/images/assistant-avatar.png"}
-                    alt={message.role === "user" ? "User" : "Assistant"}
-                  />
-                  <AvatarFallback>{message.role === "user" ? "U" : "A"}</AvatarFallback>
-                </Avatar>
-                <div
-                  className={`rounded-lg px-4 py-2 ${
-                    message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
-                  }`}
-                >
-                  {message.content}
-                </div>
-              </div>
-            </div>
-          ))}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="flex gap-2 max-w-[80%]">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>A</AvatarFallback>
-                </Avatar>
-                <div className="rounded-lg px-4 py-2 bg-muted">
-                  <div className="flex gap-1">
-                    <div className="h-2 w-2 rounded-full bg-gray-400 animate-bounce"></div>
-                    <div className="h-2 w-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.2s]"></div>
-                    <div className="h-2 w-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.4s]"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
+      {isOpen && (
+        <Card
+          className={cn(
+            "transition-all duration-300 transform mb-2",
+            isMinimized ? "h-16" : isMobile ? "h-[400px] w-full" : "h-[450px] w-80 md:w-96",
+            isMobile && isOpen && !isMinimized ? "fixed bottom-0 left-0 right-0 m-0 rounded-b-none" : "",
           )}
-        </CardContent>
-      </ScrollArea>
-      <CardFooter className="border-t p-4">
-        <form onSubmit={handleSubmit} className="flex w-full gap-2">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Posez votre question..."
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button type="submit" disabled={isLoading || !input.trim()}>
-            {isLoading ? "Envoi..." : "Envoyer"}
-          </Button>
-        </form>
-      </CardFooter>
-    </Card>
+        >
+          <CardHeader className="p-3 border-b flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <div className="relative">
+                <Avatar className="h-8 w-8">
+                  <img
+                    src="/images/support-agent.jpg"
+                    alt="Support Agent"
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = "/placeholder.svg?height=32&width=32"
+                    }}
+                  />
+                </Avatar>
+                <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-green-500"></span>
+              </div>
+              <div>
+                <p className="text-sm font-medium">
+                  <Translate text="Support Spectrum" />
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  <Translate text="En ligne" />
+                </p>
+              </div>
+            </div>
+            <div className="flex space-x-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                onClick={toggleSpeech}
+                aria-label={speechEnabled ? "Désactiver la lecture vocale" : "Activer la lecture vocale"}
+              >
+                {speechEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                onClick={toggleMinimize}
+                aria-label={isMinimized ? "Maximize chat" : "Minimize chat"}
+              >
+                {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+              </Button>
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={toggleChat} aria-label="Close chat">
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardHeader>
+
+          {!isMinimized && (
+            <>
+              <CardContent className="p-3 overflow-y-auto flex-grow h-[330px]">
+                <div className="space-y-4">
+                  {messages.map((msg) => (
+                    <div key={msg.id} className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}>
+                      <div
+                        className={cn(
+                          "max-w-[80%] rounded-lg p-3",
+                          msg.role === "user"
+                            ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                            : "bg-gray-100 dark:bg-gray-800",
+                        )}
+                      >
+                        <p className="text-sm">{msg.content}</p>
+                        <p className="text-xs opacity-70 mt-1">
+                          {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 max-w-[80%]">
+                        <div className="flex space-x-1">
+                          <span className="animate-bounce">•</span>
+                          <span className="animate-bounce" style={{ animationDelay: "0.2s" }}>
+                            •
+                          </span>
+                          <span className="animate-bounce" style={{ animationDelay: "0.4s" }}>
+                            •
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {error && (
+                    <div className="flex justify-center">
+                      <div className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-lg p-3 max-w-[90%]">
+                        <p className="text-sm">Une erreur s'est produite. Veuillez réessayer.</p>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+              </CardContent>
+
+              <CardFooter className="p-3 pt-0 border-t">
+                <form onSubmit={handleSubmit} className="flex w-full space-x-2">
+                  <Input
+                    value={input}
+                    onChange={handleInputChange}
+                    placeholder="Écrivez votre message..."
+                    className="flex-grow"
+                    disabled={isLoading}
+                  />
+                  <Button
+                    type="submit"
+                    size="icon"
+                    disabled={!input.trim() || isLoading}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </form>
+              </CardFooter>
+            </>
+          )}
+        </Card>
+      )}
+
+      <Button
+        onClick={toggleChat}
+        className={cn(
+          "rounded-full shadow-lg",
+          "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700",
+          isMobile ? "h-12 w-12" : "h-14 w-14",
+          isMobile && "fixed bottom-4 right-4 z-50",
+        )}
+        aria-label="Chat with support"
+      >
+        {isOpen ? (
+          <X className={isMobile ? "h-5 w-5" : "h-6 w-6"} />
+        ) : (
+          <MessageCircle className={isMobile ? "h-5 w-5" : "h-6 w-6"} />
+        )}
+      </Button>
+    </div>
   )
 }

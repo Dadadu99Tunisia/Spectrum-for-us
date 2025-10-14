@@ -1,46 +1,70 @@
-"use client"
-
 import Link from "next/link"
-import { CategoryIcon } from "@/components/category-icons"
-import { categories } from "@/lib/data/categories"
+import { categories } from "@/app/api/categories/route"
+import { ArrowRight } from "lucide-react"
 
+// Sélection des catégories à mettre en avant
+const featuredCategoryIds = ["clothing", "art", "jewelry", "beauty", "accessories", "craft", "tech", "wellness"]
+
+// Images de fond pour les catégories
 const categoryBackgrounds: { [key: string]: string } = {
-  "vetements-mode": "/images/categories/calvin-klein-pride.jpg",
-  chaussures: "/placeholder-xx3ua.png",
-  "accessoires-mode": "/placeholder-0ph8r.png",
-  capillaire: "/assorted-hair-products.png",
-  "identite-lgbtqia": "/placeholder-wj61b.png",
-  "produits-pmr": "/placeholder-zg43s.png",
-  "hygiene-beaute": "/beauty-products-collection.png",
-  "maison-decoration": "/cozy-living-room.png",
-  "art-artisanat": "/placeholder-hlz4f.png",
-  "culture-education": "/placeholder-0pmu4.png",
-  "jeux-loisirs": "/colorful-toys-and-games.png",
-  "technologie-adaptee": "/placeholder-w69w3.png",
-  "alimentation-boissons": "/placeholder-42874.png",
-  "sport-bien-etre": "/placeholder-wgban.png",
-  "cadeaux-personnalises": "/personalized-gifts.png",
+  clothing: "/placeholder.svg?height=600&width=800",
+  jewelry: "/placeholder.svg?height=600&width=800",
+  art: "/placeholder.svg?height=600&width=800",
+  beauty: "/placeholder.svg?height=600&width=800",
+  accessories: "/placeholder.svg?height=600&width=800",
+  craft: "/placeholder.svg?height=600&width=800",
+  tech: "/placeholder.svg?height=600&width=800",
+  wellness: "/placeholder.svg?height=600&width=800",
+}
+
+// Icônes pour les catégories
+const categoryIcons: { [key: string]: string } = {
+  clothing: "👕",
+  jewelry: "💍",
+  art: "🎨",
+  beauty: "💄",
+  home: "🏠",
+  books: "📚",
+  accessories: "👜",
+  craft: "🧶",
+  tech: "📱",
+  wellness: "🧘",
+  food: "🍽️",
+  music: "🎵",
+  events: "🎪",
+  services: "🛠️",
 }
 
 export default function FeaturedCategories() {
+  // Filtrer les catégories à mettre en avant
+  const featuredCategories = categories.filter((cat) => featuredCategoryIds.includes(cat.id))
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {categories.slice(0, 8).map((category) => (
-        <Link key={category.id} href={`/categorie/${category.id}`}>
-          <div className="relative rounded-lg overflow-hidden aspect-square group">
-            <div
-              className="absolute inset-0 bg-cover bg-center transform scale-105 transition-transform duration-500 group-hover:scale-100"
-              style={{
-                backgroundImage: `url(${categoryBackgrounds[category.id] || "/placeholder.svg?height=600&width=800"})`,
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">{category.name}</h3>
-                <CategoryIcon category={category.icon || "Shirt"} className="h-6 w-6" />
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {featuredCategories.map((category) => (
+        <Link
+          href={`/categorie/${category.id}`}
+          key={category.id}
+          className="group relative overflow-hidden rounded-xl aspect-square"
+        >
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+            style={{
+              backgroundImage: `url(${categoryBackgrounds[category.id] || "/placeholder.svg?height=600&width=800"})`,
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+
+          <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-3xl mb-2 inline-block">{categoryIcons[category.id] || "🛍️"}</span>
+                <h3 className="text-xl font-bold mb-1">{category.name}</h3>
+                <p className="text-sm text-white/80">{category.subcategories.length} sous-catégories</p>
               </div>
-              <p className="text-sm mt-1 line-clamp-2">{category.description}</p>
+              <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm transition-transform duration-300 group-hover:translate-x-1">
+                <ArrowRight className="h-5 w-5 text-white" />
+              </div>
             </div>
           </div>
         </Link>

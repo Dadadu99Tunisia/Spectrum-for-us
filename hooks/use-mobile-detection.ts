@@ -1,21 +1,34 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 
-export function useMobileDetection(): { isMobile: boolean } {
-  const [isMobile, setIsMobile] = useState<boolean>(false)
+export function useMobileDetection() {
+  const [isMobile, setIsMobile] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    function handleResize() {
-      setIsMobile(window.innerWidth < 768)
+    const checkMobile = () => {
+      if (typeof window !== "undefined") {
+        const mobile = window.innerWidth < 768
+        setIsMobile(mobile)
+        setIsLoading(false)
+      }
     }
 
-    if (typeof window !== "undefined") {
-      setIsMobile(window.innerWidth < 768)
-      window.addEventListener("resize", handleResize)
-      return () => window.removeEventListener("resize", handleResize)
+    // Vérification initiale
+    checkMobile()
+
+    // Écouter les changements de taille d'écran
+    const handleResize = () => {
+      checkMobile()
+    }
+
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
     }
   }, [])
 
-  return { isMobile }
+  return { isMobile, isLoading }
 }

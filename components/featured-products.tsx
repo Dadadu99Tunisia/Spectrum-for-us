@@ -1,161 +1,64 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Product3DCard } from "./product-card-3d"
-import { Card } from "@/components/ui/card"
-import { motion } from "framer-motion"
+import { useProducts } from "@/hooks/use-api"
+import { ProductCard } from "@/components/product-card"
+import { ApiErrorHandler } from "@/components/api-error-handler"
+import { Skeleton } from "@/components/ui/skeleton"
 
-type Product = {
-  id: string
-  name: string
-  price: number
-  image: string
-  seller: {
-    name: string
-    id: string
-  }
-  category: string
-  isFavorite: boolean
-}
+export function FeaturedProducts() {
+  const { products, loading, error } = useProducts({ limit: 8 })
 
-export default function FeaturedProducts() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Simuler un appel API
-    const fetchProducts = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      setProducts([
-        {
-          id: "1",
-          name: "T-shirt Spectre Collection",
-          price: 29.99,
-          image: "/placeholder.svg?height=300&width=300",
-          seller: { name: "QueerApparel", id: "seller1" },
-          category: "Vêtements",
-          isFavorite: false,
-        },
-        {
-          id: "2",
-          name: "Boucles d'oreilles Horizon",
-          price: 34.99,
-          image: "/placeholder.svg?height=300&width=300",
-          seller: { name: "PrideJewelry", id: "seller2" },
-          category: "Bijoux",
-          isFavorite: true,
-        },
-        {
-          id: "3",
-          name: "Impression d'Art Diversité",
-          price: 24.99,
-          image: "/placeholder.svg?height=300&width=300",
-          seller: { name: "QueerArtists", id: "seller3" },
-          category: "Art",
-          isFavorite: false,
-        },
-        {
-          id: "4",
-          name: "Kit de Soins Versatile",
-          price: 49.99,
-          image: "/placeholder.svg?height=300&width=300",
-          seller: { name: "InclusiveBeauty", id: "seller4" },
-          category: "Beauté",
-          isFavorite: false,
-        },
-        {
-          id: "5",
-          name: "Bannière Horizon",
-          price: 19.99,
-          image: "/placeholder.svg?height=300&width=300",
-          seller: { name: "PrideFlagShop", id: "seller5" },
-          category: "Décoration",
-          isFavorite: true,
-        },
-        {
-          id: "6",
-          name: "Bracelet Personnalisable Écho",
-          price: 15.99,
-          image: "/placeholder.svg?height=300&width=300",
-          seller: { name: "IdentityJewels", id: "seller6" },
-          category: "Bijoux",
-          isFavorite: false,
-        },
-        {
-          id: "7",
-          name: "Livre 'Chroniques Contemporaines'",
-          price: 22.99,
-          image: "/placeholder.svg?height=300&width=300",
-          seller: { name: "QueerBooks", id: "seller7" },
-          category: "Livres",
-          isFavorite: false,
-        },
-        {
-          id: "8",
-          name: "Masque Facial Élégance",
-          price: 12.99,
-          image: "/placeholder.svg?height=300&width=300",
-          seller: { name: "QueerApparel", id: "seller1" },
-          category: "Accessoires",
-          isFavorite: false,
-        },
-      ])
-      setLoading(false)
-    }
-
-    fetchProducts()
-  }, [])
-
-  const toggleFavorite = (productId: string) => {
-    setProducts(
-      products.map((product) => (product.id === productId ? { ...product, isFavorite: !product.isFavorite } : product)),
-    )
-  }
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  if (loading) {
+  if (error) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: i * 0.05 }}
-          >
-            <Card className="animate-pulse">
-              <div className="h-48 bg-muted rounded-t-lg"></div>
-              <div className="p-4">
-                <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-muted rounded w-1/2"></div>
-              </div>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+      <section className="py-12 bg-gray-50 dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">Produits en Vedette</h2>
+          <ApiErrorHandler
+            error={new Error(error)}
+            title="Erreur de chargement des produits"
+            description="Impossible de charger les produits en vedette"
+          />
+        </div>
+      </section>
     )
   }
 
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-    >
-      {products.map((product, index) => (
-        <Product3DCard key={product.id} product={product} onToggleFavorite={toggleFavorite} index={index} />
-      ))}
-    </motion.div>
+    <section className="py-12 bg-gray-50 dark:bg-gray-900">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Produits en Vedette</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Découvrez notre sélection de produits inclusifs créés par et pour notre communauté diversifiée
+          </p>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-64 w-full rounded-lg" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+
+        <div className="text-center mt-12">
+          <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+            Voir tous les produits
+          </button>
+        </div>
+      </div>
+    </section>
   )
 }
+
+export default FeaturedProducts

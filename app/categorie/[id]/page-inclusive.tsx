@@ -1,163 +1,114 @@
-"use client"
+import Link from "next/link"
+import { ChevronRight } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Suspense } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
+import ProductGrid from "@/components/product-grid"
+import ProductFilters from "@/components/product-filters"
+import ProductSorting from "@/components/product-sorting"
+import { categories } from "@/lib/data/categories"
+import { CategoryIcon } from "@/components/category-icons"
 
-import { useState } from "react"
-import { notFound } from "next/navigation"
-import { categories } from "@/app/api/categories/route"
-import { products } from "@/lib/data/products"
-import { ProductCard } from "@/components/product-card"
-import { ProductFilters } from "@/components/product-filters"
-import { ProductSorting } from "@/components/product-sorting"
-import { Button } from "@/components/ui/button"
-import { ChevronDown, Filter, Grid, List, Heart, Users, Sparkles } from "lucide-react"
-import { useMobile } from "@/hooks/use-mobile"
-
-interface InclusiveCategoryPageProps {
-  params: {
-    id: string
-  }
+export async function generateStaticParams() {
+  return categories.map((category) => ({
+    id: category.id,
+  }))
 }
 
-export default function InclusiveCategoryPage({ params }: InclusiveCategoryPageProps) {
-  const isMobile = useMobile()
-  const [showFilters, setShowFilters] = useState(false)
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [sortBy, setSortBy] = useState("newest")
-  const [filters, setFilters] = useState({
-    priceRange: [0, 1000],
-    colors: [],
-    sizes: [],
-    brands: [],
-    inclusive: true,
-  })
-
+export default function CategoryPageInclusive({ params }: { params: { id: string } }) {
+  // Trouver la catégorie correspondante
   const category = categories.find((cat) => cat.id === params.id)
 
   if (!category) {
-    notFound()
+    return (
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8">Catégorie non trouvée</h1>
+        <p className="text-muted-foreground mb-4">
+          Désolé·e, la catégorie que vous recherchez n'existe pas ou a été déplacée.
+        </p>
+        <Link href="/categories-inclusives" className="text-primary hover:underline">
+          Voir toutes les catégories
+        </Link>
+      </main>
+    )
   }
 
-  // Filtrer les produits inclusifs par catégorie
-  const inclusiveProducts = products.filter(
-    (product) => product.category === params.id && product.tags?.includes("inclusive"),
-  )
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
-      {/* Header inclusif */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-purple-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <Heart className="h-6 w-6 text-pink-500" />
-              <Users className="h-6 w-6 text-purple-500" />
-              <Sparkles className="h-6 w-6 text-orange-500" />
-            </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
-              {category.name} Inclusif
-            </h1>
-            <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Découvrez notre sélection de produits {category.name.toLowerCase()} conçus pour célébrer la diversité et
-              l'inclusion. Chaque article raconte une histoire d'authenticité et d'acceptation.
-            </p>
-            <p className="mt-2 text-purple-600 font-medium">
-              {inclusiveProducts.length} produits inclusifs disponibles
-            </p>
-          </div>
+    <main className="container mx-auto px-4 py-8">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+        <Link href="/" className="hover:text-foreground">
+          Accueil
+        </Link>
+        <ChevronRight className="h-4 w-4" />
+        <Link href="/categories-inclusives" className="hover:text-foreground">
+          Catégories
+        </Link>
+        <ChevronRight className="h-4 w-4" />
+        <span className="text-foreground font-medium">{category.name}</span>
+      </div>
+
+      <div className="flex items-center gap-4 mb-8">
+        <div className="bg-primary/10 p-3 rounded-full">
+          <CategoryIcon category={category.id} className="w-8 h-8 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold">{category.name}</h1>
+          {category.description && <p className="text-muted-foreground mt-1">{category.description}</p>}
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Bannière inclusive */}
-        <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-2xl p-8 mb-8 text-white text-center">
-          <h2 className="text-2xl font-bold mb-2">🏳️‍🌈 Collection Inclusive</h2>
-          <p className="text-purple-100">
-            Produits créés par et pour la communauté LGBTQ+. Chaque achat soutient des créateurs queer.
-          </p>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filtres inclusifs */}
-          {showFilters && (
-            <div className="lg:w-64 flex-shrink-0">
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-purple-100">
-                <h3 className="font-semibold text-gray-900 mb-4">Filtres Inclusifs</h3>
-                <ProductFilters filters={filters} onFiltersChange={setFilters} />
-              </div>
-            </div>
-          )}
-
-          {/* Contenu principal */}
-          <div className="flex-1">
-            {/* Contrôles */}
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-sm text-gray-600">
-                {inclusiveProducts.length} produit{inclusiveProducts.length > 1 ? "s" : ""} inclusif
-                {inclusiveProducts.length > 1 ? "s" : ""}
-              </p>
-
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant={viewMode === "grid" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewMode("grid")}
-                  >
-                    <Grid className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === "list" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewMode("list")}
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <Button
-                  variant="outline"
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center space-x-2"
-                >
-                  <Filter className="h-4 w-4" />
-                  <span>Filtres</span>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
-                </Button>
-
-                <ProductSorting sortBy={sortBy} onSortChange={setSortBy} />
-              </div>
-            </div>
-
-            {/* Grille de produits inclusifs */}
-            <div
-              className={`grid gap-6 ${
-                viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"
-              }`}
-            >
-              {inclusiveProducts.map((product) => (
-                <div key={product.id} className="relative">
-                  <div className="absolute -top-2 -right-2 z-10 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full">
-                    🏳️‍🌈 Inclusif
-                  </div>
-                  <ProductCard product={product} viewMode={viewMode} />
-                </div>
-              ))}
-            </div>
-
-            {/* Message si aucun produit */}
-            {inclusiveProducts.length === 0 && (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">🏳️‍🌈</div>
-                <p className="text-gray-500 text-lg">
-                  Aucun produit inclusif trouvé dans cette catégorie pour le moment.
-                </p>
-                <p className="text-gray-400 mt-2">
-                  Notre équipe travaille à enrichir cette collection. Revenez bientôt !
-                </p>
-              </div>
-            )}
-          </div>
+      {/* Sous-catégories */}
+      <div className="mb-12">
+        <h2 className="text-xl font-semibold mb-6">Parcourir les sous-catégories</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {category.subcategories.map((subcategory) => (
+            <Link key={subcategory.id} href={`/categorie/${category.id}/${subcategory.id}`}>
+              <Card className="h-full transition-all hover:shadow-md hover:bg-gradient-to-br hover:from-purple-500/20 hover:to-pink-500/20 group">
+                <CardContent className="flex flex-col items-center justify-center p-4 text-center">
+                  <h3 className="font-semibold text-sm mb-1">{subcategory.name}</h3>
+                  {subcategory.description && (
+                    <p className="text-xs text-muted-foreground group-hover:text-foreground/80 line-clamp-2">
+                      {subcategory.description}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
         </div>
       </div>
+
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Filtres */}
+        <div className="w-full md:w-64 shrink-0">
+          <ProductFilters />
+        </div>
+
+        {/* Produits */}
+        <div className="flex-1">
+          <div className="mb-6">
+            <ProductSorting />
+          </div>
+
+          <Suspense fallback={<ProductGridSkeleton />}>
+            <ProductGrid />
+          </Suspense>
+        </div>
+      </div>
+    </main>
+  )
+}
+
+function ProductGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {[...Array(9)].map((_, i) => (
+        <div key={i} className="space-y-3">
+          <Skeleton className="h-48 w-full rounded-lg" />
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
+        </div>
+      ))}
     </div>
   )
 }
