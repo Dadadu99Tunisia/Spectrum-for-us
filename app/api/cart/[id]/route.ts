@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "../../auth/[...nextauth]/route"
 import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabaseClient"
 
-// PUT /api/cart/[id] - Update cart item quantity
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     if (!isSupabaseConfigured()) {
@@ -14,15 +13,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     const id = params.id
-
-    // Check authentication
     const session = await getServerSession(authOptions)
 
     if (!session) {
       return NextResponse.json({ error: "Vous devez être connecté pour modifier votre panier" }, { status: 401 })
     }
 
-    // Get cart item
     const { data: cartItem, error: fetchError } = await supabaseAdmin
       .from("cart_items")
       .select("*")
@@ -33,12 +29,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Élément du panier non trouvé" }, { status: 404 })
     }
 
-    // Check if item belongs to user
     if (cartItem.user_id !== session.user.id) {
       return NextResponse.json({ error: "Vous n'êtes pas autorisé à modifier cet élément" }, { status: 403 })
     }
 
-    // Get data
     const data = await request.json()
     const { quantity } = data
 
@@ -46,7 +40,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Quantité invalide" }, { status: 400 })
     }
 
-    // Update quantity
     const { data: updatedItem, error: updateError } = await supabaseAdmin
       .from("cart_items")
       .update({ quantity })
@@ -66,7 +59,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-// DELETE /api/cart/[id] - Remove cart item
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     if (!isSupabaseConfigured()) {
@@ -77,15 +69,12 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
 
     const id = params.id
-
-    // Check authentication
     const session = await getServerSession(authOptions)
 
     if (!session) {
       return NextResponse.json({ error: "Vous devez être connecté pour modifier votre panier" }, { status: 401 })
     }
 
-    // Get cart item
     const { data: cartItem, error: fetchError } = await supabaseAdmin
       .from("cart_items")
       .select("*")
@@ -96,12 +85,10 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: "Élément du panier non trouvé" }, { status: 404 })
     }
 
-    // Check if item belongs to user
     if (cartItem.user_id !== session.user.id) {
       return NextResponse.json({ error: "Vous n'êtes pas autorisé à modifier cet élément" }, { status: 403 })
     }
 
-    // Delete item
     const { error: deleteError } = await supabaseAdmin.from("cart_items").delete().eq("id", id)
 
     if (deleteError) {
