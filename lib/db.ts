@@ -795,10 +795,37 @@ export const prisma = {
         return {}
       } catch (error) {
         console.error("Error in favorite.delete:", error)
-        throw error
+        return null
       }
     },
   },
 }
 
-export default prisma
+export async function query(sql: string, params?: any[]) {
+  if (!isSupabaseConfigured()) {
+    console.warn("Supabase not configured, returning empty result")
+    return { rows: [] }
+  }
+
+  try {
+    const { data, error } = await supabase.rpc("execute_sql", {
+      query: sql,
+      params: params || [],
+    })
+
+    if (error) {
+      console.error("Database query error:", error)
+      return { rows: [] }
+    }
+
+    return { rows: data || [] }
+  } catch (error) {
+    console.error("Database query exception:", error)
+    return { rows: [] }
+  }
+}
+
+export default {
+  prisma,
+  query,
+}

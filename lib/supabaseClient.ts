@@ -62,10 +62,24 @@ const mockClient = {
   },
 } as any
 
-export const supabase = isSupabaseConfigured() ? createClient(supabaseUrl, supabaseAnonKey) : mockClient
+export const supabase = isSupabaseConfigured()
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+      },
+    })
+  : mockClient
 
 export const supabaseAdmin =
-  isSupabaseConfigured() && supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : supabase
+  isSupabaseConfigured() && supabaseServiceKey
+    ? createClient(supabaseUrl, supabaseServiceKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+      })
+    : supabase
 
 export function createServerSupabaseClient() {
   return supabaseAdmin
@@ -74,7 +88,9 @@ export function createServerSupabaseClient() {
 if (process.env.NODE_ENV === "development") {
   if (!isSupabaseConfigured()) {
     console.warn("⚠️ Supabase n'est pas configuré. Utilisation du client mock.")
+    console.warn("📝 Ajoutez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY dans .env.local")
   } else {
     console.log("✅ Supabase configuré avec succès")
+    console.log("🔗 URL:", supabaseUrl)
   }
 }
