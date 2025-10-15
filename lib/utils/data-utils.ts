@@ -161,4 +161,3 @@ export const getSubcategoryById = (categoryId: string, subcategoryId: string) =>
 
   return category.subcategories.find((s) => s.id === subcategoryId)
 }
-

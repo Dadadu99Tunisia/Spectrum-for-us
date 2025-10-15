@@ -56,4 +56,3 @@ export function CategoryImage({ category, className = "w-full h-full object-cove
     </div>
   )
 }
-

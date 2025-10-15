@@ -64,4 +64,3 @@ export const users: User[] = [
     sellerId: "seller-004",
   },
 ]
-

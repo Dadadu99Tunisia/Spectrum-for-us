@@ -151,4 +151,3 @@ export function Product3DCard({ product, onToggleFavorite }: ProductCardProps) {
     </div>
   )
 }
-

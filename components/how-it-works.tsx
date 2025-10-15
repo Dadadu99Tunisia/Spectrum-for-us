@@ -168,4 +168,3 @@ function Step({ number, title, description }: { number: string; title: string; d
     </div>
   )
 }
-

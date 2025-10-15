@@ -49,4 +49,3 @@ export function ParallaxSection({ children, direction = "up", speed = 0.1 }: Par
     </section>
   )
 }
-

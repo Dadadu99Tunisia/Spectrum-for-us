@@ -12,4 +12,3 @@ export function Translate({ text, className }: TranslateProps) {
 
   return <span className={className}>{t(text)}</span>
 }
-

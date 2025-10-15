@@ -94,4 +94,3 @@ export default function EventsGrid() {
     </div>
   )
 }
-

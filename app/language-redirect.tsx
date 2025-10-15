@@ -29,4 +29,3 @@ export default function LanguageRedirect() {
 
   return null
 }
-

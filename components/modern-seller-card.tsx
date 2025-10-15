@@ -70,4 +70,3 @@ export function ModernSellerCard({ seller }: { seller: Seller }) {
     </Card>
   )
 }
-

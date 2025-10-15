@@ -17,4 +17,3 @@ export async function exampleServerAction(data: FormData) {
     timestamp: new Date().toISOString(),
   }
 }
-

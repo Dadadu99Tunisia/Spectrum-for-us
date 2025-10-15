@@ -409,4 +409,3 @@ export default function SecurityPage() {
     </VendeurLayout>
   )
 }
-

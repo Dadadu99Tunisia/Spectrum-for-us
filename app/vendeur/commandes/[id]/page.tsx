@@ -381,4 +381,3 @@ export default function CommandeDetailPage({ params }: { params: { id: string } 
     </VendeurLayout>
   )
 }
-

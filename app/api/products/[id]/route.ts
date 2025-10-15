@@ -222,4 +222,3 @@ export async function PUT() {
 export async function DELETE() {
   return NextResp.json({ success: true, message: "Suppression simulée" })
 }
-

@@ -22,4 +22,3 @@ export function checkDeploymentIssues() {
     isReady: missingEnvVars.length === 0,
   }
 }
-

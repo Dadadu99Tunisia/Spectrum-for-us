@@ -185,4 +185,3 @@ export function CategoryIcon({ category, className = "w-12 h-12" }: CategoryIcon
       )
   }
 }
-

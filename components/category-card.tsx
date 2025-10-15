@@ -55,4 +55,3 @@ export function CategoryCard({ id, name, parentId, count, isSubcategory = false 
     </motion.div>
   )
 }
-

@@ -89,4 +89,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Une erreur est survenue lors de l'ajout aux favoris" }, { status: 500 })
   }
 }
-

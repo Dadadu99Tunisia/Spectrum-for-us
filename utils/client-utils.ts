@@ -7,4 +7,3 @@ export function getWindow(): Window | undefined {
 export function getDocument(): Document | undefined {
   return isBrowser ? document : undefined
 }
-

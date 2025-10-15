@@ -27,4 +27,3 @@ const mockStripe = {
 }
 
 export default mockStripe
-

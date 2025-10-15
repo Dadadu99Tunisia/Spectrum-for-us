@@ -76,4 +76,3 @@ function ProductGridSkeleton() {
     </div>
   )
 }
-

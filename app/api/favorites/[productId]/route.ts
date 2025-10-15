@@ -13,4 +13,3 @@ export async function DELETE() {
     message: "Produit retiré des favoris",
   })
 }
-

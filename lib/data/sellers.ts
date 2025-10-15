@@ -98,4 +98,3 @@ export const sellers: Seller[] = [
     verified: true,
   },
 ]
-

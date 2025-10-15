@@ -100,4 +100,3 @@ function ProductGridSkeleton() {
     </div>
   )
 }
-

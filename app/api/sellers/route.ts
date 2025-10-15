@@ -24,4 +24,3 @@ export async function GET() {
     totalPages: 1,
   })
 }
-

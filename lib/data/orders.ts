@@ -119,4 +119,3 @@ export const orders: Order[] = [
     trackingNumber: "SP87654321FR",
   },
 ]
-

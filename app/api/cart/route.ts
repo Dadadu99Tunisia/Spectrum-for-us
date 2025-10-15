@@ -37,4 +37,3 @@ export async function POST() {
     message: "Produit ajouté au panier",
   })
 }
-

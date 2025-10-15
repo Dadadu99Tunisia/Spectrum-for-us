@@ -6,4 +6,3 @@ import { users } from "./users"
 import { orders } from "./orders"
 
 export { categories, products, sellers, users, orders }
-

@@ -145,4 +145,3 @@ const mockSellers = [
 ]
 
 export default prisma
-

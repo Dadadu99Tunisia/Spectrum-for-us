@@ -77,4 +77,3 @@ export function ModernCategoryCard({ id, name, subcategories, icon, color }: Mod
     </Link>
   )
 }
-

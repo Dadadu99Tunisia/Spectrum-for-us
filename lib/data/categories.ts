@@ -65,4 +65,3 @@ export const categories = [
   },
   // ... autres nouvelles catégories ...
 ]
-

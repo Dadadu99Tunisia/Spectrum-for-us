@@ -43,4 +43,3 @@ export function FormattedPrice({ amount, className }: FormattedPriceProps) {
 
   return <span className={className}>{formatPrice(amount)}</span>
 }
-
