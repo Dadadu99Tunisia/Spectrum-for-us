@@ -1,29 +1,6 @@
-// Version de démonstration qui ne nécessite pas de clé API Stripe
-const mockStripe = {
-  checkout: {
-    sessions: {
-      create: async () => ({
-        id: "mock_session_id",
-        url: "/panier?demo=true",
-      }),
-    },
-  },
-  webhooks: {
-    constructEvent: () => ({
-      type: "checkout.session.completed",
-      data: {
-        object: {
-          id: "mock_session_id",
-          customer_details: {
-            email: "demo@example.com",
-          },
-          metadata: {
-            orderId: "demo_order_123",
-          },
-        },
-      },
-    }),
-  },
-}
+import Stripe from "stripe"
 
-export default mockStripe
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-11-20.acacia",
+  typescript: true,
+})
