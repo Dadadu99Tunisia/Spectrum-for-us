@@ -232,7 +232,7 @@ export function Navigation() {
               asChild
               className="hidden lg:flex bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold px-4 transition-all duration-200 shadow-md hover:shadow-lg"
             >
-              <Link href="/events">Voyage</Link>
+              <Link href="/travel">Voyage</Link>
             </Button>
 
             <Button
@@ -274,7 +274,7 @@ export function Navigation() {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[320px] sm:w-[400px]">
+              <SheetContent side="right" className="w-[320px] sm:w-[400px] overflow-y-auto">
                 <div className="flex flex-col gap-6 mt-8">
                   {/* Mobile Search */}
                   <div className="relative">
@@ -290,50 +290,102 @@ export function Navigation() {
                     >
                       Accueil
                     </Link>
-                    <Link
-                      href="/products"
-                      className="text-lg font-semibold hover:text-primary transition-colors py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Produits
-                    </Link>
-                    <Link
-                      href="/services"
-                      className="text-lg font-semibold hover:text-primary transition-colors py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Services
-                    </Link>
-                    <Link
-                      href="/streaming"
-                      className="text-lg font-semibold hover:text-primary transition-colors py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Streaming
-                    </Link>
-                    <Link
-                      href="/blog"
-                      className="text-lg font-semibold hover:text-primary transition-colors py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Nouveautés
-                    </Link>
-                    <Link
-                      href="/about"
-                      className="text-lg font-semibold hover:text-primary transition-colors py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      À propos
-                    </Link>
+
+                    <div className="border-t pt-4">
+                      <p className="text-xs font-semibold text-muted-foreground mb-3">SHOPPING</p>
+                      <Link
+                        href="/products"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Produits
+                      </Link>
+                      <Link
+                        href="/creators"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Créateur·rice·s
+                      </Link>
+                    </div>
+
+                    <div className="border-t pt-4">
+                      <p className="text-xs font-semibold text-muted-foreground mb-3">SERVICES</p>
+                      <Link
+                        href="/services"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Tous les Services
+                      </Link>
+                      <Link
+                        href="/streaming"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        🎵 Streaming
+                      </Link>
+                      <Link
+                        href="/events"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        🎭 Événements
+                      </Link>
+                      <Link
+                        href="/travel"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        ✈️ Voyage
+                      </Link>
+                      <Link
+                        href="/agency"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Qtalkbot Ads
+                      </Link>
+                    </div>
+
+                    <div className="border-t pt-4">
+                      <Link
+                        href="/blog"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        📰 Nouveautés
+                      </Link>
+                      <Link
+                        href="/about"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        À propos
+                      </Link>
+                      <Link
+                        href="/contact"
+                        className="text-base font-medium hover:text-primary transition-colors py-2 block"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Contact
+                      </Link>
+                    </div>
                   </div>
+                  {/* </CHANGE> */}
 
                   <div className="pt-6 border-t">
                     <Button
                       asChild
-                      className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transition-all duration-200"
+                      className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transition-all duration-200 mb-3"
                     >
                       <Link href="/login" onClick={() => setIsOpen(false)}>
                         Connexion
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" className="w-full bg-transparent">
+                      <Link href="/vendor-subscription" onClick={() => setIsOpen(false)}>
+                        Devenir Vendeur·euse
                       </Link>
                     </Button>
                   </div>
