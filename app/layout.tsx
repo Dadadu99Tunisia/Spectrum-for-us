@@ -84,8 +84,7 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
-  manifest: "/manifest.json",,
-  // </CHANGE>
+  manifest: "/manifest.json",
     generator: 'v0.app'
 }
 
@@ -136,7 +135,6 @@ export default function RootLayout({
             }),
           }}
         />
-        {/* </CHANGE> */}
       </head>
       <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased flex flex-col min-h-screen`}>
         <I18nProvider>
