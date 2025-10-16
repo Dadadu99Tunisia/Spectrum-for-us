@@ -1,9 +1,38 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Check } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 
 export default function VendorSubscriptionPage() {
+  const [isLoading, setIsLoading] = useState<string | null>(null)
+
+  const handleSubscribe = async (plan: string) => {
+    setIsLoading(plan)
+    try {
+      const response = await fetch("/api/vendor-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      })
+
+      const data = await response.json()
+
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error(data.error || "Failed to create subscription")
+      }
+    } catch (error) {
+      console.error("[v0] Subscription error:", error)
+      alert("Une erreur est survenue. Veuillez réessayer.")
+    } finally {
+      setIsLoading(null)
+    }
+  }
+
   const plans = [
     {
       name: "Basic",
@@ -187,8 +216,13 @@ export default function VendorSubscriptionPage() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button asChild className="w-full" variant={plan.popular ? "default" : "outline"}>
-                  <Link href="/signup?type=vendor">Commencer</Link>
+                <Button
+                  onClick={() => handleSubscribe(plan.name.toLowerCase())}
+                  disabled={isLoading === plan.name.toLowerCase()}
+                  className="w-full"
+                  variant={plan.popular ? "default" : "outline"}
+                >
+                  {isLoading === plan.name.toLowerCase() ? "Chargement..." : "Commencer"}
                 </Button>
               </CardFooter>
             </Card>
