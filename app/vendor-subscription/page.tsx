@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Logo } from "@/components/logo"
 import { Check } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
@@ -88,6 +89,10 @@ export default function VendorSubscriptionPage() {
       {/* Hero Section */}
       <section className="gradient-hero py-20 text-white">
         <div className="container mx-auto px-4 text-center">
+          <div className="flex justify-center mb-8">
+            <Logo size="xl" linkToHome={true} />
+          </div>
+
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Devenez Vendeur·euse sur Spectrum</h1>
           <p className="text-xl md:text-2xl mb-8 text-white/95 max-w-4xl mx-auto leading-relaxed">
             Rejoignez la première marketplace queer internationale et partagez vos créations avec une communauté engagée

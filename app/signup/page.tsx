@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Logo } from "@/components/logo"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -52,20 +53,25 @@ export default function SignUpPage() {
     <div className="flex min-h-[calc(100vh-4rem)] w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
+          <div className="flex justify-center">
+            <Logo size="lg" />
+          </div>
+          {/* </CHANGE> */}
+
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Sign up</CardTitle>
-              <CardDescription>Create a new account to get started</CardDescription>
+              <CardTitle className="text-2xl">Inscription</CardTitle>
+              <CardDescription>Créez un nouveau compte pour commencer</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSignUp}>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
-                    <Label htmlFor="name">Name</Label>
+                    <Label htmlFor="name">Nom</Label>
                     <Input
                       id="name"
                       type="text"
-                      placeholder="Your name"
+                      placeholder="Votre nom"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -83,7 +89,7 @@ export default function SignUpPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">Mot de passe</Label>
                     <Input
                       id="password"
                       type="password"
@@ -93,26 +99,26 @@ export default function SignUpPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="role">Account Type</Label>
+                    <Label htmlFor="role">Type de compte</Label>
                     <Select value={role} onValueChange={setRole}>
                       <SelectTrigger id="role">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="buyer">Buyer</SelectItem>
-                        <SelectItem value="vendor">Vendor</SelectItem>
+                        <SelectItem value="buyer">Acheteur·euse</SelectItem>
+                        <SelectItem value="vendor">Vendeur·euse</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   {error && <p className="text-sm text-destructive">{error}</p>}
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Creating account..." : "Sign up"}
+                    {isLoading ? "Création du compte..." : "S'inscrire"}
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-sm">
-                  Already have an account?{" "}
+                  Vous avez déjà un compte?{" "}
                   <Link href="/login" className="underline underline-offset-4">
-                    Login
+                    Se connecter
                   </Link>
                 </div>
               </form>

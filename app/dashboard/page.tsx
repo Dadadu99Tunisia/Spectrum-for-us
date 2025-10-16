@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { Package, Briefcase, Plus, Edit, Trash2 } from "lucide-react"
+import { Logo } from "@/components/logo"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -43,11 +44,16 @@ export default async function DashboardPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-balance mb-2">Vendor Dashboard</h1>
-        <p className="text-muted-foreground text-lg">
-          Welcome back, {profile?.name || "Creator"}! Manage your products and services.
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-balance mb-2">Vendor Dashboard</h1>
+          <p className="text-muted-foreground text-lg">
+            Welcome back, {profile?.name || "Creator"}! Manage your products and services.
+          </p>
+        </div>
+        <div className="hidden md:block">
+          <Logo size="md" linkToHome={true} />
+        </div>
       </div>
 
       {/* Stats Cards */}

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Logo } from "@/components/logo"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -42,10 +43,14 @@ export default function LoginPage() {
     <div className="flex min-h-[calc(100vh-4rem)] w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
+          <div className="flex justify-center">
+            <Logo size="lg" />
+          </div>
+
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Login</CardTitle>
-              <CardDescription>Enter your email below to login to your account</CardDescription>
+              <CardTitle className="text-2xl">Connexion</CardTitle>
+              <CardDescription>Entrez votre email pour vous connecter à votre compte</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin}>

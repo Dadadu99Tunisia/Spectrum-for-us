@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
+import { Logo } from "@/components/logo"
 import { ShoppingCart, Menu, Search, User, ChevronDown, HelpCircle, Globe, DollarSign } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -92,17 +92,7 @@ export function Navigation() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between gap-4 lg:gap-8">
-          {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0 transition-opacity hover:opacity-80">
-            <Image
-              src="/logo-horizontal.png"
-              alt="Spectrum For us"
-              width={200}
-              height={50}
-              className="h-10 w-auto sm:h-12"
-              priority
-            />
-          </Link>
+          <Logo size="lg" className="h-10 sm:h-12" />
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">

@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { SocialLinks } from "@/components/social-links"
+import { Logo } from "@/components/logo"
 import { useI18n } from "@/lib/i18n/context"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -15,9 +16,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="text-2xl font-bold text-primary">
-              Spectrum<span className="text-accent">.</span>
-            </div>
+            <Logo size="md" />
             <p className="text-sm text-muted-foreground leading-relaxed">{t("footer.tagline")}</p>
             <div>
               <p className="text-sm font-semibold mb-2">{t("footer.followUs")}</p>
