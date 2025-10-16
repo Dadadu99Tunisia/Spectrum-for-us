@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Minus, Plus, Trash2 } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 // This is a client-side cart implementation
 // In production, you'd want to persist this in localStorage or a database
@@ -21,6 +22,7 @@ export default function CartPage() {
     }>
   >([])
   const [isCheckingOut, setIsCheckingOut] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     const savedCart = localStorage.getItem("spectrum_cart")
@@ -45,28 +47,8 @@ export default function CartPage() {
     setCartItems((items) => items.filter((item) => item.id !== id))
   }
 
-  const handleCheckout = async () => {
-    setIsCheckingOut(true)
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: cartItems }),
-      })
-
-      const data = await response.json()
-
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        throw new Error(data.error || "Failed to create checkout session")
-      }
-    } catch (error) {
-      console.error("[v0] Checkout error:", error)
-      alert("Une erreur est survenue. Veuillez réessayer.")
-    } finally {
-      setIsCheckingOut(false)
-    }
+  const handleCheckout = () => {
+    router.push("/checkout")
   }
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -153,19 +135,19 @@ export default function CartPage() {
                   <span className="text-muted-foreground">Sous-total</span>
                   <span className="font-medium">€{subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Livraison</span>
-                  <span className="font-medium">€{shipping.toFixed(2)}</span>
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Livraison</span>
+                  <span>Calculée à l'étape suivante</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span>€{total.toFixed(2)}</span>
+                  <span>Total estimé</span>
+                  <span>€{subtotal.toFixed(2)}</span>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" size="lg" onClick={handleCheckout} disabled={isCheckingOut}>
-                  {isCheckingOut ? "Chargement..." : "Passer la commande"}
+                <Button className="w-full" size="lg" onClick={handleCheckout}>
+                  Passer la commande
                 </Button>
               </CardFooter>
             </Card>
