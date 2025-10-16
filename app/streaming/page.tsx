@@ -4,83 +4,200 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Play, Music, Mic, Clock, Eye, Heart } from "lucide-react"
+import { Play, Music, Mic, ExternalLink } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 
-const mockVideos = [
+const realVideos = [
   {
     id: "1",
-    title: "Documentaire: Voix Queers",
-    description: "Un voyage à travers les histoires de personnes LGBTQIA+ du monde entier.",
-    thumbnail_url: "/diverse-queer-people-celebrating-authentic-fashion.jpg",
-    duration: 3600,
-    views: 12500,
-    likes: 890,
-    youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    creator: "Studio Prisme",
+    title: "Disclosure (Netflix)",
+    description: "Documentaire sur la représentation trans à Hollywood avec Laverne Cox, Lilly Wachowski et d'autres.",
+    thumbnail_url: "/disclosure-documentary-trans-hollywood.jpg",
+    duration: 6480,
+    platform: "Netflix",
+    url: "https://www.netflix.com/title/81284247",
+    creator: "Sam Feder",
+    year: 2020,
   },
   {
     id: "2",
-    title: "Court-métrage: Entre Deux",
-    description: "L'histoire d'une personne non-binaire naviguant entre deux mondes.",
-    thumbnail_url: "/queer-art-gallery-colorful-exhibition.jpg",
-    duration: 1200,
-    views: 8900,
-    likes: 654,
-    vimeo_url: "https://player.vimeo.com/video/76979871",
-    creator: "Collectif Fluide",
+    title: "Pose (FX/Disney+)",
+    description: "Série dramatique sur la scène ballroom LGBTQ+ de New York dans les années 80-90.",
+    thumbnail_url: "/pose-tv-series-ballroom.jpg",
+    duration: 3600,
+    platform: "Disney+",
+    url: "https://www.disneyplus.com",
+    creator: "Ryan Murphy",
+    year: 2018,
+  },
+  {
+    id: "3",
+    title: "Paris is Burning (YouTube)",
+    description: "Documentaire culte sur la culture ballroom et voguing à New York dans les années 80.",
+    thumbnail_url: "/paris-is-burning-documentary.jpg",
+    duration: 4680,
+    platform: "YouTube",
+    youtube_url: "https://www.youtube.com/embed/hedJer7I1vI",
+    creator: "Jennie Livingston",
+    year: 1990,
+  },
+  {
+    id: "4",
+    title: "Heartstopper (Netflix)",
+    description: "Série romantique sur deux lycéens britanniques qui tombent amoureux.",
+    thumbnail_url: "/heartstopper-netflix-series.jpg",
+    duration: 1800,
+    platform: "Netflix",
+    url: "https://www.netflix.com/title/81059939",
+    creator: "Alice Oseman",
+    year: 2022,
+  },
+  {
+    id: "5",
+    title: "The Death and Life of Marsha P. Johnson",
+    description: "Documentaire sur l'activiste trans et icône de Stonewall.",
+    thumbnail_url: "/marsha-p-johnson-documentary.jpg",
+    duration: 6300,
+    platform: "Netflix",
+    url: "https://www.netflix.com/title/80189623",
+    creator: "David France",
+    year: 2017,
+  },
+  {
+    id: "6",
+    title: "Moonlight (Prime Video)",
+    description: "Film oscarisé sur un jeune homme noir gay grandissant à Miami.",
+    thumbnail_url: "/moonlight-film-barry-jenkins.jpg",
+    duration: 6660,
+    platform: "Prime Video",
+    url: "https://www.primevideo.com",
+    creator: "Barry Jenkins",
+    year: 2016,
   },
 ]
 
-const mockMusic = [
+const realMusic = [
   {
     id: "1",
-    title: "Playlist: Queer Anthems 2025",
-    artist: "Spectrum Collective",
-    cover_url: "/placeholder.svg?key=music1",
-    duration: 7200,
-    genre: "Pop/Electronic",
-    spotify_url: "https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M",
-    tracks: 24,
+    title: "LGBTQ+ Pride Anthems",
+    artist: "Spotify",
+    cover_url: "/pride-rainbow-music.jpg",
+    genre: "Pop/Dance",
+    spotify_url: "https://open.spotify.com/embed/playlist/37i9dQZF1DWWUz3ycJRRJd",
+    tracks: 100,
+    description: "Les hymnes LGBTQ+ les plus iconiques",
   },
   {
     id: "2",
-    title: "Album: Identités Fluides",
-    artist: "Alex Rivers",
-    cover_url: "/placeholder.svg?key=music2",
-    duration: 2400,
+    title: "Queer Voices",
+    artist: "Spotify",
+    cover_url: "/queer-artists-music.jpg",
     genre: "Indie/Alternative",
-    soundcloud_url: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/293",
+    spotify_url: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3WvGXE8FqYX",
+    tracks: 75,
+    description: "Artistes LGBTQ+ émergent·es et établi·es",
+  },
+  {
+    id: "3",
+    title: "Hayley Kiyoko - Expectations",
+    artist: "Hayley Kiyoko",
+    cover_url: "/hayley-kiyoko-expectations.jpg",
+    genre: "Pop",
+    spotify_url: "https://open.spotify.com/embed/album/3xybjP7r2VsWzwvDQipdM0",
     tracks: 12,
+    description: "Album de la 'Lesbian Jesus' du pop",
+  },
+  {
+    id: "4",
+    title: "Troye Sivan - Something To Give Each Other",
+    artist: "Troye Sivan",
+    cover_url: "/troye-sivan-album.jpg",
+    genre: "Pop/Electronic",
+    spotify_url: "https://open.spotify.com/embed/album/1WTA8UKf4IwXNXMUUhPqPJ",
+    tracks: 10,
+    description: "Le dernier album de l'icône pop queer",
+  },
+  {
+    id: "5",
+    title: "King Princess - Cheap Queen",
+    artist: "King Princess",
+    cover_url: "/king-princess-cheap-queen.jpg",
+    genre: "Indie Pop",
+    spotify_url: "https://open.spotify.com/embed/album/4YzNKUJx4TXDHzGKDRgehZ",
+    tracks: 13,
+    description: "Anthems queer indie-pop",
+  },
+  {
+    id: "6",
+    title: "Lil Nas X - MONTERO",
+    artist: "Lil Nas X",
+    cover_url: "/lil-nas-x-montero.jpg",
+    genre: "Hip-Hop/Pop",
+    spotify_url: "https://open.spotify.com/embed/album/6pOiDiuDQqrmo5DbG0ZubR",
+    tracks: 15,
+    description: "Album révolutionnaire du rappeur ouvertement gay",
   },
 ]
 
-const mockPodcasts = [
+const realPodcasts = [
   {
     id: "1",
-    title: "Corps Communs - Épisode 12",
-    description: "Discussion sur la santé mentale dans la communauté queer avec des expert·es.",
-    cover_url: "/placeholder.svg?key=podcast1",
-    duration: 3600,
-    season: 2,
-    episode: 12,
-    host: "Marie & Sam",
+    title: "Nancy (France Culture)",
+    description: "Le podcast qui explore les questions LGBTQI+ avec humour et profondeur.",
+    cover_url: "/nancy-podcast-france-culture.jpg",
+    host: "Océan & Julien Marsay",
+    platform: "France Culture",
+    url: "https://www.radiofrance.fr/franceculture/podcasts/nancy",
   },
   {
     id: "2",
-    title: "Fluidités - Spécial Pride",
-    description: "Retour sur l'histoire des luttes LGBTQIA+ et les enjeux actuels.",
-    cover_url: "/placeholder.svg?key=podcast2",
-    duration: 2700,
-    season: 1,
-    episode: 8,
-    host: "Jordan Chen",
+    title: "Un Podcast à Soi (Arte Radio)",
+    description: "Documentaires sur les questions de genre et féminisme.",
+    cover_url: "/un-podcast-a-soi-arte.jpg",
+    host: "Charlotte Bienaimé",
+    platform: "Arte Radio",
+    url: "https://www.arteradio.com/serie/un_podcast_soi",
+  },
+  {
+    id: "3",
+    title: "Les Couilles sur la Table (Binge Audio)",
+    description: "Podcast sur les masculinités et les questions de genre.",
+    cover_url: "/les-couilles-sur-la-table.jpg",
+    host: "Victoire Tuaillon",
+    platform: "Binge Audio",
+    url: "https://www.binge.audio/podcast/les-couilles-sur-la-table",
+  },
+  {
+    id: "4",
+    title: "Queer as Fact",
+    description: "Histoire LGBTQ+ racontée avec humour et rigueur (EN).",
+    cover_url: "/placeholder.svg?height=300&width=300",
+    host: "Leigh & Ellie",
+    platform: "Spotify",
+    url: "https://open.spotify.com/show/0pMVEbHLpXadeOeHE1L3qh",
+  },
+  {
+    id: "5",
+    title: "Food 4 Thot",
+    description: "Podcast sur la culture queer, la race et la sexualité (EN).",
+    cover_url: "/placeholder.svg?height=300&width=300",
+    host: "Collectif",
+    platform: "Spotify",
+    url: "https://open.spotify.com/show/0s1Y0QfTtU7A76JqPsLQKP",
+  },
+  {
+    id: "6",
+    title: "Kiffe ta Race (Binge Audio)",
+    description: "Podcast sur les questions raciales en France, avec perspectives queer.",
+    cover_url: "/placeholder.svg?height=300&width=300",
+    host: "Rokhaya Diallo & Grace Ly",
+    platform: "Binge Audio",
+    url: "https://www.binge.audio/podcast/kiffetarace",
   },
 ]
 
 export default function StreamingPage() {
-  const [searchQuery, setSearchQuery] = useState("")
   const [selectedVideo, setSelectedVideo] = useState<any>(null)
   const [selectedMusic, setSelectedMusic] = useState<any>(null)
 
@@ -152,12 +269,11 @@ export default function StreamingPage() {
 
           {/* Videos Tab */}
           <TabsContent value="videos" className="space-y-8">
-            {/* Video Player */}
-            {selectedVideo && (
+            {selectedVideo && selectedVideo.youtube_url && (
               <Card className="overflow-hidden">
                 <div className="aspect-video bg-black">
                   <iframe
-                    src={selectedVideo.youtube_url || selectedVideo.vimeo_url}
+                    src={selectedVideo.youtube_url}
                     className="w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -169,29 +285,21 @@ export default function StreamingPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Eye className="h-4 w-4" />
-                      {selectedVideo.views.toLocaleString()} vues
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Heart className="h-4 w-4" />
-                      {selectedVideo.likes.toLocaleString()}
-                    </span>
+                    <Badge>{selectedVideo.platform}</Badge>
+                    <span>{selectedVideo.year}</span>
                     <span>Par {selectedVideo.creator}</span>
                   </div>
                 </CardContent>
               </Card>
             )}
 
-            {/* Video Grid */}
             <div>
-              <h2 className="text-2xl font-bold mb-6">Films & Documentaires</h2>
+              <h2 className="text-2xl font-bold mb-6">Films & Séries Queer</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {mockVideos.map((video) => (
+                {realVideos.map((video) => (
                   <Card
                     key={video.id}
                     className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group"
-                    onClick={() => setSelectedVideo(video)}
                   >
                     <div className="relative aspect-video bg-muted overflow-hidden">
                       <img
@@ -200,26 +308,34 @@ export default function StreamingPage() {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Play className="h-16 w-16 text-white" />
+                        {video.youtube_url ? (
+                          <Play className="h-16 w-16 text-white" onClick={() => setSelectedVideo(video)} />
+                        ) : (
+                          <ExternalLink className="h-16 w-16 text-white" />
+                        )}
                       </div>
+                      <Badge className="absolute top-2 left-2">{video.platform}</Badge>
                       <Badge className="absolute bottom-2 right-2">{formatDuration(video.duration)}</Badge>
                     </div>
                     <CardHeader>
                       <CardTitle className="line-clamp-2 text-base">{video.title}</CardTitle>
                       <CardDescription className="line-clamp-2 text-sm">{video.description}</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Eye className="h-3 w-3" />
-                          {(video.views / 1000).toFixed(1)}k
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Heart className="h-3 w-3" />
-                          {video.likes}
-                        </span>
-                      </div>
-                    </CardContent>
+                    <CardFooter>
+                      {video.youtube_url ? (
+                        <Button className="w-full" onClick={() => setSelectedVideo(video)}>
+                          <Play className="h-4 w-4 mr-2" />
+                          Regarder
+                        </Button>
+                      ) : (
+                        <Button className="w-full" asChild>
+                          <a href={video.url} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Voir sur {video.platform}
+                          </a>
+                        </Button>
+                      )}
+                    </CardFooter>
                   </Card>
                 ))}
               </div>
@@ -228,14 +344,14 @@ export default function StreamingPage() {
 
           {/* Music Tab */}
           <TabsContent value="music" className="space-y-8">
-            {/* Music Player */}
             {selectedMusic && (
               <Card className="overflow-hidden">
-                <div className="aspect-video bg-gradient-to-br from-purple-500 to-pink-500">
+                <div className="h-[380px] bg-gradient-to-br from-purple-500 to-pink-500">
                   <iframe
-                    src={selectedMusic.spotify_url || selectedMusic.soundcloud_url}
+                    src={selectedMusic.spotify_url}
                     className="w-full h-full"
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"
                   />
                 </div>
                 <CardHeader>
@@ -247,26 +363,31 @@ export default function StreamingPage() {
               </Card>
             )}
 
-            {/* Music Grid */}
             <div>
-              <h2 className="text-2xl font-bold mb-6">Playlists & Albums</h2>
+              <h2 className="text-2xl font-bold mb-6">Musique Queer</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {mockMusic.map((music) => (
+                {realMusic.map((music) => (
                   <Card
                     key={music.id}
                     className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group"
                     onClick={() => setSelectedMusic(music)}
                   >
                     <div className="relative aspect-square bg-gradient-to-br from-purple-400 to-pink-400 overflow-hidden">
+                      <img
+                        src={music.cover_url || "/placeholder.svg"}
+                        alt={music.title}
+                        className="w-full h-full object-cover"
+                      />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Music className="h-16 w-16 text-white" />
                       </div>
                     </div>
                     <CardHeader>
                       <CardTitle className="line-clamp-1 text-base">{music.title}</CardTitle>
-                      <CardDescription>{music.artist}</CardDescription>
+                      <CardDescription className="line-clamp-1">{music.artist}</CardDescription>
                     </CardHeader>
                     <CardContent>
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{music.description}</p>
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <Badge variant="secondary">{music.genre}</Badge>
                         <span>{music.tracks} titres</span>
@@ -282,31 +403,31 @@ export default function StreamingPage() {
           <TabsContent value="podcasts">
             <h2 className="text-2xl font-bold mb-6">Podcasts Queer</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {mockPodcasts.map((podcast) => (
+              {realPodcasts.map((podcast) => (
                 <Card key={podcast.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
                   <div className="flex gap-4 p-6">
-                    <div className="relative w-24 h-24 shrink-0 bg-gradient-to-br from-blue-400 to-purple-400 rounded-lg flex items-center justify-center">
-                      <Mic className="h-12 w-12 text-white" />
+                    <div className="relative w-24 h-24 shrink-0 rounded-lg overflow-hidden">
+                      <img
+                        src={podcast.cover_url || "/placeholder.svg"}
+                        alt={podcast.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold line-clamp-2 mb-2">{podcast.title}</h3>
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{podcast.description}</p>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <Badge variant="outline">
-                          S{podcast.season}E{podcast.episode}
-                        </Badge>
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {formatDuration(podcast.duration)}
-                        </span>
+                        <Badge variant="outline">{podcast.platform}</Badge>
+                        <span>Animé par {podcast.host}</span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-2">Animé par {podcast.host}</p>
                     </div>
                   </div>
                   <CardFooter>
-                    <Button className="w-full">
-                      <Play className="h-4 w-4 mr-2" />
-                      Écouter
+                    <Button className="w-full" asChild>
+                      <a href={podcast.url} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Écouter sur {podcast.platform}
+                      </a>
                     </Button>
                   </CardFooter>
                 </Card>
