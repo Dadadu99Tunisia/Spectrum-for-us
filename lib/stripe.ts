@@ -1,6 +1,8 @@
 import Stripe from "stripe"
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-11-20.acacia",
-  typescript: true,
+// Initialize Stripe with the secret key from environment variables
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2023-10-16", // Use the latest API version
 })
+
+export default stripe
