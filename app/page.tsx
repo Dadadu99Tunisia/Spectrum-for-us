@@ -1,392 +1,395 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Heart, Users, Sparkles, TrendingUp, Shield, Globe2, ChevronRight } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import { ArrowRight, Heart, ShoppingCart, Sparkles, CheckCircle2, Search, SlidersHorizontal } from "lucide-react"
 import { MobileCategoryGrid } from "@/components/mobile-category-grid"
 
 export default function HomePage() {
   const featuredProducts = [
     {
       id: 1,
-      name: "Veste Oversized Non-Genrée",
-      creator: "Alex Chen",
-      price: "89€",
+      name: "Chunky Knit Sweater",
+      vendor: "CozyCreations",
+      price: 89,
       image: "/oversized-gender-neutral-jacket-fashion.jpg",
-      category: "Mode",
-      tags: ["Non-genré", "Sustainable"],
+      tags: ["Handmade", "Trans-Owned"],
+      color: "border-electric-blue",
+      shadowColor: "shadow-blue",
     },
     {
       id: 2,
-      name: "Affiche Artistique 'Belonging'",
-      creator: "Sam Rivera",
-      price: "35€",
+      name: "Abstract Joy Print",
+      vendor: "ArtfulSoul",
+      price: 45,
       image: "/queer-art-poster-belonging-illustration.jpg",
-      category: "Art",
-      tags: ["Illustration", "Inclusif"],
+      tags: ["Upcycled", "Local"],
+      color: "border-zesty-orange",
+      shadowColor: "shadow-orange",
     },
     {
       id: 3,
-      name: "Bijoux Artisanaux Fluides",
-      creator: "Jordan Lee",
-      price: "65€",
+      name: "Fluid Statement Ring",
+      vendor: "GenderFreeGems",
+      price: 65,
       image: "/fluid-artisan-jewelry-queer.jpg",
-      category: "Bijoux",
-      tags: ["Fait main", "Unique"],
+      tags: ["Handmade", "Unique"],
+      color: "border-fresh-teal",
+      shadowColor: "shadow-teal",
     },
     {
       id: 4,
-      name: "Livre 'Voix Plurielles'",
-      creator: "Casey Morgan",
-      price: "24€",
+      name: "Inclusive Stories Book",
+      vendor: "QueerReads",
+      price: 28,
       image: "/queer-voices-book-cover-diverse.jpg",
-      category: "Littérature",
-      tags: ["Témoignages", "Inspirant"],
+      tags: ["LGBTQ+", "Inspiring"],
+      color: "border-poppy-red",
+      shadowColor: "shadow-red",
+    },
+    {
+      id: 5,
+      name: "Eco Pride Tote",
+      vendor: "SustainablePride",
+      price: 32,
+      image: "/gender-neutral-fashion-editorial.jpg",
+      tags: ["Sustainable", "Vegan"],
+      color: "border-electric-blue",
+      shadowColor: "shadow-blue",
+    },
+    {
+      id: 6,
+      name: "Affirmation Candle Set",
+      vendor: "WarmVibes",
+      price: 38,
+      image: "/queer-entrepreneur-workspace-creative.jpg",
+      tags: ["Self-Care", "Handmade"],
+      color: "border-zesty-orange",
+      shadowColor: "shadow-orange",
     },
   ]
 
-  const blogPosts = [
-    {
-      title: "La Mode Non-Genrée : Au-delà des Étiquettes",
-      excerpt:
-        "Comment la communauté queer redéfinit les codes vestimentaires et crée de nouveaux espaces d'expression.",
-      author: "Morgan Dubois",
-      date: "15 Jan 2025",
-      image: "/gender-neutral-fashion-editorial.jpg",
-      category: "Mode & Style",
-    },
-    {
-      title: "Entrepreneuriat Queer : Créer son Propre Chemin",
-      excerpt: "Rencontre avec 5 entrepreneur·e·s qui ont transformé leur vision en business florissant.",
-      author: "Alex Martin",
-      date: "12 Jan 2025",
-      image: "/queer-entrepreneur-workspace-creative.jpg",
-      category: "Business",
-    },
-    {
-      title: "L'Art comme Résistance et Célébration",
-      excerpt:
-        "Explorer comment les artistes queer utilisent leur créativité pour raconter des histoires authentiques.",
-      author: "Sam Lefebvre",
-      date: "10 Jan 2025",
-      image: "/queer-art-gallery-colorful-exhibition.jpg",
-      category: "Culture",
-    },
+  const vibeCategories = [
+    { name: "Wear", icon: "👕", color: "bg-electric-blue", href: "/products?category=wear" },
+    { name: "Decorate", icon: "🎨", color: "bg-zesty-orange", href: "/products?category=decorate" },
+    { name: "Read", icon: "📚", color: "bg-fresh-teal", href: "/products?category=read" },
+    { name: "Play", icon: "🎮", color: "bg-poppy-red", href: "/products?category=play" },
+    { name: "Care", icon: "💆", color: "bg-sunshine-yellow", href: "/products?category=care" },
   ]
+
+  const filterMoods = ["Joyful", "Bold", "Cozy", "Minimal", "Retro"]
+  const filterColors = ["Electric Blue", "Zesty Orange", "Sunshine Yellow", "Poppy Red", "Fresh Teal"]
 
   return (
-    <div className="flex flex-col pb-20 lg:pb-0">
-      {/* Hero Section */}
-      <section className="relative gradient-hero py-12 md:py-20 lg:py-32 overflow-hidden">
+    <div className="flex flex-col pb-20 lg:pb-0 bg-cream">
+      {/* Hero Section - Bright & Welcoming */}
+      <section className="relative py-12 md:py-20 lg:py-28 overflow-hidden bg-cream">
+        {/* Decorative blobs */}
+        <div className="absolute top-10 left-10 w-64 h-64 bg-electric-blue/10 blob-shape blur-3xl" aria-hidden="true" />
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-zesty-orange/10 blob-shape blur-3xl" aria-hidden="true" />
+        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-fresh-teal/10 blob-shape blur-3xl" aria-hidden="true" />
+        
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-5xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-              <div className="space-y-6 lg:space-y-8 text-white text-center lg:text-left">
-                <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 hover:bg-white/30 mx-auto lg:mx-0">
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  Nouvelle Collection Printemps 2025
-                </Badge>
+          <div className="max-w-5xl mx-auto text-center space-y-8">
+            {/* Fun Badge */}
+            <Badge className="bg-sunshine-yellow text-charcoal border-0 px-6 py-2 text-sm font-bold rounded-full shadow-lg">
+              <Sparkles className="h-4 w-4 mr-2" aria-hidden="true" />
+              New Makers Joining Daily
+            </Badge>
 
-                <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight text-balance">
-                  Votre Espace,
-                  <br />
-                  Vos Règles
-                </h1>
+            {/* Main Headline */}
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight text-charcoal text-balance">
+              Queer Joy is{" "}
+              <span className="relative inline-block">
+                <span className="gradient-text">Essential</span>
+                <svg className="absolute -bottom-2 left-0 w-full" height="12" viewBox="0 0 200 12" fill="none" aria-hidden="true">
+                  <path d="M2 8C50 2 150 2 198 8" stroke="#f97316" strokeWidth="4" strokeLinecap="round" />
+                </svg>
+              </span>
+              <br />
+              Shop Authentic.
+            </h1>
 
-                <p className="text-lg md:text-xl lg:text-2xl text-white/90 leading-relaxed text-pretty">
-                  Découvrez une marketplace où chaque produit raconte une histoire, où chaque créateur·rice célèbre
-                  l'authenticité.
-                </p>
+            {/* Subtext */}
+            <p className="text-lg md:text-xl lg:text-2xl text-charcoal/80 max-w-3xl mx-auto leading-relaxed text-pretty">
+              A marketplace brimming with creators like you. Discover handmade goods, art, and joy from LGBTQ+ makers worldwide.
+            </p>
 
-                <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 pt-4">
-                  <Button
-                    size="lg"
-                    className="bg-white text-primary hover:bg-white/90 shadow-xl text-base lg:text-lg px-6 lg:px-8 h-12 lg:h-14 w-full sm:w-auto"
-                    asChild
-                  >
-                    <Link href="/products">
-                      Explorer le Catalogue
-                      <ArrowRight className="ml-2 h-4 lg:h-5 w-4 lg:w-5" />
-                    </Link>
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="bg-white/10 backdrop-blur border-2 border-white text-white hover:bg-white/20 text-base lg:text-lg px-6 lg:px-8 h-12 lg:h-14 w-full sm:w-auto"
-                    asChild
-                  >
-                    <Link href="/about">En Savoir Plus</Link>
-                  </Button>
-                </div>
+            {/* CTA Button */}
+            <div className="pt-4">
+              <Button
+                size="lg"
+                className="bg-electric-blue hover:bg-electric-blue/90 text-white font-bold text-lg px-10 py-7 rounded-full shadow-blue hover-bounce"
+                asChild
+              >
+                <Link href="/products">
+                  Dive In
+                  <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                </Link>
+              </Button>
+            </div>
 
-                {/* Stats - Mobile Optimized */}
-                <div className="flex items-center justify-center lg:justify-start gap-6 lg:gap-8 pt-4">
-                  <div className="text-center lg:text-left">
-                    <div className="text-2xl lg:text-3xl font-bold">2,500+</div>
-                    <div className="text-white/80 text-xs lg:text-sm">Produits</div>
-                  </div>
-                  <div className="h-10 lg:h-12 w-px bg-white/30" />
-                  <div className="text-center lg:text-left">
-                    <div className="text-2xl lg:text-3xl font-bold">500+</div>
-                    <div className="text-white/80 text-xs lg:text-sm">Créateur·rice·s</div>
-                  </div>
-                  <div className="h-10 lg:h-12 w-px bg-white/30" />
-                  <div className="text-center lg:text-left">
-                    <div className="text-2xl lg:text-3xl font-bold">15</div>
-                    <div className="text-white/80 text-xs lg:text-sm">Pays</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative hidden lg:block">
-                <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl hover-lift">
-                  <Image
-                    src="/diverse-queer-people-celebrating-authentic-fashion.jpg"
-                    alt="Communauté Spectrum"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-6 shadow-xl max-w-xs">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-400" />
-                    <div>
-                      <div className="font-semibold text-sm">Nouveau Vendeur</div>
-                      <div className="text-xs text-muted-foreground">Il y a 2 minutes</div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">"Rejoindre Spectrum a transformé mon business !"</p>
-                </div>
+            {/* Hero Search Bar */}
+            <div className="max-w-2xl mx-auto pt-6">
+              <div className="relative">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-charcoal/50" aria-hidden="true" />
+                <Input
+                  type="search"
+                  placeholder="Find Joy: search makers, art, gear..."
+                  className="pl-14 pr-6 h-14 w-full rounded-full border-3 border-zesty-orange bg-white text-charcoal placeholder:text-charcoal/50 text-base focus:border-electric-blue focus:ring-4 focus:ring-electric-blue/20"
+                  aria-label="Search products and makers"
+                />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-6 bg-white md:hidden">
+      {/* Vibe Navigation Categories */}
+      <section className="py-8 bg-white border-y-3 border-charcoal/10">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold">Catégories</h2>
-            <Link href="/products" className="text-sm text-primary font-medium flex items-center gap-1">
-              Tout voir
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
+          <nav aria-label="Product categories">
+            <ul className="flex flex-wrap justify-center gap-4 md:gap-8">
+              {vibeCategories.map((category) => (
+                <li key={category.name}>
+                  <Link
+                    href={category.href}
+                    className="flex flex-col items-center gap-2 group"
+                  >
+                    <span className={`w-16 h-16 md:w-20 md:h-20 ${category.color} rounded-full flex items-center justify-center text-2xl md:text-3xl shadow-lg hover-bounce group-focus:ring-4 group-focus:ring-charcoal/30`}>
+                      {category.icon}
+                    </span>
+                    <span className="text-sm md:text-base font-bold text-charcoal group-hover:text-electric-blue transition-colors">
+                      {category.name}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </section>
+
+      {/* Mobile Category Grid */}
+      <section className="py-6 bg-cream md:hidden">
+        <div className="container mx-auto px-4">
           <MobileCategoryGrid />
         </div>
       </section>
 
-      {/* Trust Indicators */}
-      <section className="py-8 lg:py-12 bg-white border-b">
+      {/* Main Content: Sidebar + Product Grid */}
+      <section className="py-12 lg:py-20 bg-cream">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-            <div className="flex flex-col items-center text-center">
-              <Shield className="h-8 lg:h-10 w-8 lg:w-10 text-primary mb-2 lg:mb-3" />
-              <h3 className="font-semibold text-sm lg:text-base mb-1">Paiement Sécurisé</h3>
-              <p className="text-xs lg:text-sm text-muted-foreground">Transactions protégées</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <Globe2 className="h-8 lg:h-10 w-8 lg:w-10 text-primary mb-2 lg:mb-3" />
-              <h3 className="font-semibold text-sm lg:text-base mb-1">Livraison Mondiale</h3>
-              <p className="text-xs lg:text-sm text-muted-foreground">Dans 15 pays</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <Heart className="h-8 lg:h-10 w-8 lg:w-10 text-primary mb-2 lg:mb-3" />
-              <h3 className="font-semibold text-sm lg:text-base mb-1">Fait avec Amour</h3>
-              <p className="text-xs lg:text-sm text-muted-foreground">Par des créateur·rice·s</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <Users className="h-8 lg:h-10 w-8 lg:w-10 text-primary mb-2 lg:mb-3" />
-              <h3 className="font-semibold text-sm lg:text-base mb-1">Communauté Active</h3>
-              <p className="text-xs lg:text-sm text-muted-foreground">Support 24/7</p>
-            </div>
-          </div>
-        </div>
-      </section>
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+            {/* Sidebar Filters - Desktop */}
+            <aside className="hidden lg:block w-72 shrink-0">
+              <div className="sticky top-28 space-y-8">
+                <div className="flex items-center gap-2 mb-6">
+                  <SlidersHorizontal className="h-5 w-5 text-electric-blue" aria-hidden="true" />
+                  <h2 className="text-xl font-bold text-charcoal">Filters</h2>
+                </div>
 
-      {/* Featured Products */}
-      <section className="py-12 lg:py-20 bg-gradient-to-b from-white to-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="flex items-end justify-between mb-6 lg:mb-12">
-            <div>
-              <Badge className="mb-3 lg:mb-4">
-                <TrendingUp className="h-3 w-3 mr-1" />
-                Tendances
-              </Badge>
-              <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-balance">Coups de Cœur</h2>
-              <p className="text-sm lg:text-lg text-muted-foreground mt-2 lg:mt-3">Sélectionnés par notre communauté</p>
-            </div>
-            <Button variant="ghost" className="hidden md:flex" asChild>
-              <Link href="/products">
-                Tout Voir
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
-            {featuredProducts.map((product) => (
-              <Card key={product.id} className="group hover-lift border-0 shadow-md overflow-hidden">
-                <CardHeader className="p-0">
-                  <div className="aspect-square bg-muted overflow-hidden image-overlay relative">
-                    <Image
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute top-2 lg:top-3 right-2 lg:right-3 z-10">
-                      <Badge className="bg-white/90 backdrop-blur text-foreground text-[10px] lg:text-xs">
-                        {product.category}
-                      </Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-3 lg:p-5">
-                  <div className="flex gap-1 lg:gap-2 mb-2 lg:mb-3 flex-wrap">
-                    {product.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-[10px] lg:text-xs">
-                        {tag}
-                      </Badge>
+                {/* Mood Filter */}
+                <fieldset className="bg-white rounded-3xl p-6 border-3 border-electric-blue/20">
+                  <legend className="text-base font-bold text-charcoal mb-4 px-2">Mood</legend>
+                  <div className="space-y-3">
+                    {filterMoods.map((mood) => (
+                      <div key={mood} className="flex items-center gap-3">
+                        <Checkbox
+                          id={`mood-${mood}`}
+                          className="h-5 w-5 rounded-lg border-2 border-zesty-orange data-[state=checked]:bg-zesty-orange data-[state=checked]:border-zesty-orange"
+                        />
+                        <label htmlFor={`mood-${mood}`} className="text-sm font-medium text-charcoal cursor-pointer">
+                          {mood}
+                        </label>
+                      </div>
                     ))}
                   </div>
-                  <CardTitle className="text-sm lg:text-lg mb-1 lg:mb-2 line-clamp-2">{product.name}</CardTitle>
-                  <CardDescription className="text-xs lg:text-sm mb-2 lg:mb-3 hidden lg:block">
-                    Par {product.creator}
-                  </CardDescription>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg lg:text-2xl font-bold gradient-text">{product.price}</span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="group-hover:bg-primary group-hover:text-primary-foreground h-8 w-8 lg:h-auto lg:w-auto p-0 lg:p-2"
-                    >
-                      <Heart className="h-3 lg:h-4 w-3 lg:w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-                <CardFooter className="p-3 lg:p-5 pt-0">
-                  <Button className="w-full text-xs lg:text-sm h-9 lg:h-10" asChild>
-                    <Link href={`/products/${product.id}`}>Découvrir</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+                </fieldset>
 
-          <div className="text-center mt-6 lg:mt-8 md:hidden">
-            <Button variant="outline" className="w-full sm:w-auto bg-transparent" asChild>
-              <Link href="/products">
-                Voir Tous les Produits
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+                {/* Color Pop Filter */}
+                <fieldset className="bg-white rounded-3xl p-6 border-3 border-zesty-orange/20">
+                  <legend className="text-base font-bold text-charcoal mb-4 px-2">Color Pop</legend>
+                  <div className="space-y-3">
+                    {filterColors.map((color) => (
+                      <div key={color} className="flex items-center gap-3">
+                        <Checkbox
+                          id={`color-${color}`}
+                          className="h-5 w-5 rounded-lg border-2 border-fresh-teal data-[state=checked]:bg-fresh-teal data-[state=checked]:border-fresh-teal"
+                        />
+                        <label htmlFor={`color-${color}`} className="text-sm font-medium text-charcoal cursor-pointer">
+                          {color}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+
+                {/* Fit Vibe Filter */}
+                <fieldset className="bg-white rounded-3xl p-6 border-3 border-fresh-teal/20">
+                  <legend className="text-base font-bold text-charcoal mb-4 px-2">Fit Vibe</legend>
+                  <div className="space-y-3">
+                    {["Unisex", "Oversized", "Cropped", "Flowy", "Structured"].map((fit) => (
+                      <div key={fit} className="flex items-center gap-3">
+                        <Checkbox
+                          id={`fit-${fit}`}
+                          className="h-5 w-5 rounded-lg border-2 border-poppy-red data-[state=checked]:bg-poppy-red data-[state=checked]:border-poppy-red"
+                        />
+                        <label htmlFor={`fit-${fit}`} className="text-sm font-medium text-charcoal cursor-pointer">
+                          {fit}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+              </div>
+            </aside>
+
+            {/* Product Grid */}
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-charcoal">
+                    Coups de Coeur
+                  </h2>
+                  <p className="text-charcoal/70 mt-1">Curated picks from our community</p>
+                </div>
+                <Button variant="ghost" className="hidden md:flex text-electric-blue font-bold hover:bg-electric-blue/10" asChild>
+                  <Link href="/products">
+                    View All
+                    <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Product Cards Grid */}
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                {featuredProducts.map((product) => (
+                  <article
+                    key={product.id}
+                    className={`group bg-white rounded-3xl border-3 ${product.color} overflow-hidden hover-bounce ${product.shadowColor}`}
+                  >
+                    <Link href={`/products/${product.id}`} className="block">
+                      {/* Product Image */}
+                      <div className="aspect-square relative overflow-hidden">
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        {/* Hover Add to Cart */}
+                        <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/30 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <Button
+                            size="lg"
+                            className="bg-zesty-orange hover:bg-zesty-orange/90 text-white font-bold rounded-full px-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              // Add to cart logic
+                            }}
+                          >
+                            <ShoppingCart className="mr-2 h-5 w-5" aria-hidden="true" />
+                            Add to Cart
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Product Details */}
+                      <div className="p-4 lg:p-5">
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {product.tags.map((tag) => (
+                            <Badge
+                              key={tag}
+                              className="bg-sunshine-yellow/30 text-charcoal border-0 text-xs font-bold rounded-full px-3"
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-base lg:text-lg font-bold text-charcoal mb-1 line-clamp-2 group-hover:text-electric-blue transition-colors">
+                          {product.name}
+                        </h3>
+
+                        {/* Vendor */}
+                        <div className="flex items-center gap-1.5 mb-3">
+                          <span className="text-sm text-charcoal/70">{product.vendor}</span>
+                          <CheckCircle2 className="h-4 w-4 text-fresh-teal" aria-label="Verified seller" />
+                        </div>
+
+                        {/* Price & Favorite */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-xl lg:text-2xl font-black text-zesty-orange">
+                            ${product.price}
+                          </span>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-10 w-10 rounded-full hover:bg-poppy-red/10 group-hover:text-poppy-red"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              // Favorite logic
+                            }}
+                            aria-label={`Add ${product.name} to favorites`}
+                          >
+                            <Heart className="h-5 w-5" />
+                          </Button>
+                        </div>
+                      </div>
+                    </Link>
+                  </article>
+                ))}
+              </div>
+
+              {/* View All Mobile */}
+              <div className="text-center mt-8 md:hidden">
+                <Button
+                  className="bg-electric-blue hover:bg-electric-blue/90 text-white font-bold rounded-full px-8 py-6"
+                  asChild
+                >
+                  <Link href="/products">
+                    View All Products
+                    <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Blog Section */}
-      <section className="py-12 lg:py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8 lg:mb-12">
-            <Badge className="mb-3 lg:mb-4">
-              <Sparkles className="h-3 w-3 mr-1" />
-              Le Blog
-            </Badge>
-            <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-balance mb-3 lg:mb-4">
-              Histoires & Inspirations
-            </h2>
-            <p className="text-sm lg:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Plongez dans les récits de notre communauté
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {blogPosts.map((post, i) => (
-              <article key={i} className="group hover-lift">
-                <Link href={`/blog/${i + 1}`}>
-                  <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 lg:mb-5 image-overlay relative">
-                    <Image
-                      src={post.image || "/placeholder.svg"}
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute top-3 lg:top-4 left-3 lg:left-4 z-10">
-                      <Badge className="bg-white/90 backdrop-blur text-foreground text-xs">{post.category}</Badge>
-                    </div>
-                  </div>
-                  <div className="space-y-2 lg:space-y-3">
-                    <div className="flex items-center gap-2 lg:gap-3 text-xs lg:text-sm text-muted-foreground">
-                      <span>{post.author}</span>
-                      <span>•</span>
-                      <span>{post.date}</span>
-                    </div>
-                    <h3 className="text-lg lg:text-2xl font-bold group-hover:text-primary transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-sm lg:text-base text-muted-foreground leading-relaxed line-clamp-2 lg:line-clamp-3">
-                      {post.excerpt}
-                    </p>
-                    <div className="flex items-center text-primary font-semibold text-sm lg:text-base group-hover:gap-3 transition-all">
-                      Lire l'article
-                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </Link>
-              </article>
-            ))}
-          </div>
-
-          <div className="text-center mt-8 lg:mt-12">
-            <Button size="lg" variant="outline" className="w-full sm:w-auto bg-transparent" asChild>
-              <Link href="/blog">
-                Tous les Articles
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-12 lg:py-20 gradient-hero relative overflow-hidden">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center text-white space-y-6 lg:space-y-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-white/20 backdrop-blur-sm mb-3 lg:mb-4">
-              <Users className="h-8 w-8 lg:h-10 lg:w-10" />
-            </div>
-            <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold text-balance leading-tight">
-              Rejoignez une Communauté
-              <br />
-              qui Vous Ressemble
-            </h2>
-            <p className="text-base md:text-lg lg:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto text-pretty">
-              Que vous soyez créateur·rice, acheteur·se ou simplement curieux·se, Spectrum For Us est votre espace pour
-              être vous-même.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center pt-4 lg:pt-6">
-              <Button
-                size="lg"
-                className="bg-white text-primary hover:bg-white/90 shadow-xl text-base lg:text-lg px-6 lg:px-8 h-12 lg:h-14 w-full sm:w-auto"
-                asChild
-              >
-                <Link href="/vendor-subscription">
-                  Devenir Vendeur·se
-                  <ArrowRight className="ml-2 h-4 lg:h-5 w-4 lg:w-5" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-white/10 backdrop-blur border-2 border-white text-white hover:bg-white/20 text-base lg:text-lg px-6 lg:px-8 h-12 lg:h-14 w-full sm:w-auto"
-                asChild
-              >
-                <Link href="/about">Notre Mission</Link>
-              </Button>
-            </div>
-          </div>
+      {/* Join the Party CTA */}
+      <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-electric-blue via-zesty-orange via-sunshine-yellow via-fresh-teal to-poppy-red" aria-hidden="true" />
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <Badge className="bg-poppy-red text-white border-0 px-6 py-2 text-sm font-bold rounded-full mb-6">
+            Join 500+ Creators
+          </Badge>
+          
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-charcoal mb-4 text-balance">
+            Sell & Join the Party
+          </h2>
+          
+          <p className="text-lg text-charcoal/80 max-w-2xl mx-auto mb-8 text-pretty">
+            Turn your passion into a thriving business. Connect with a community that celebrates authenticity.
+          </p>
+          
+          <Button
+            size="lg"
+            className="bg-zesty-orange hover:bg-zesty-orange/90 text-white font-bold text-lg px-10 py-7 rounded-full shadow-orange hover-bounce"
+            asChild
+          >
+            <Link href="/vendor-subscription">
+              Start Selling Today
+              <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+            </Link>
+          </Button>
         </div>
       </section>
     </div>
