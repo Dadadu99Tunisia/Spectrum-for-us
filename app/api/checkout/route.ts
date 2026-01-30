@@ -1,9 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server"
+import Stripe from "stripe"
 import { createClient } from "@/lib/supabase/server"
-import { stripe } from "@/lib/stripe"
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-11-20.acacia",
+})
 
 export async function POST(request: NextRequest) {
   try {
+    const { items, shippingAddress, shippingMethodsByVendor } = await request.json()
+
     const supabase = await createClient()
     const {
       data: { user },
@@ -13,164 +19,82 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { items, shippingAddress, total } = body
-
-    if (!items || items.length === 0) {
-      return NextResponse.json({ error: "No items in cart" }, { status: 400 })
-    }
-
-    // Validate products and get vendor info
-    const productIds = items.map((item: any) => item.productId)
-    const { data: products } = await supabase
-      .from("products")
-      .select("id, name, price, vendor_id, stock")
-      .in("id", productIds)
-
-    if (!products || products.length !== items.length) {
-      return NextResponse.json({ error: "Invalid products" }, { status: 400 })
-    }
-
-    // Check stock availability
-    for (const item of items) {
-      const product = products.find((p) => p.id === item.productId)
-      if (!product || product.stock < item.quantity) {
-        return NextResponse.json(
-          {
-            error: `Insufficient stock for ${product?.name || "product"}`,
-          },
-          { status: 400 },
-        )
-      }
-    }
-
-    // Calculate total from server-side prices
-    const calculatedTotal = products.reduce((acc, product) => {
-      const item = items.find((i: any) => i.productId === product.id)
-      return acc + product.price * item.quantity
-    }, 0)
-
-    const shipping = calculatedTotal >= 50 ? 0 : 5
-    const finalTotal = calculatedTotal + shipping
-
-    // Create the order first
-    const { data: order, error: orderError } = await supabase
-      .from("orders")
-      .insert({
-        customer_id: user.id,
-        total_amount: finalTotal,
-        shipping_address: shippingAddress,
-        status: "pending",
-      })
-      .select()
-      .single()
-
-    if (orderError || !order) {
-      console.error("Order creation error:", orderError)
-      return NextResponse.json({ error: "Failed to create order" }, { status: 500 })
-    }
-
-    // Create order items
-    const orderItems = items.map((item: any) => {
-      const product = products.find((p) => p.id === item.productId)!
-      return {
-        order_id: order.id,
-        product_id: item.productId,
-        vendor_id: product.vendor_id,
-        quantity: item.quantity,
-        unit_price: product.price,
-        total_price: product.price * item.quantity,
-        status: "pending",
-      }
-    })
-
-    const { error: itemsError } = await supabase.from("order_items").insert(orderItems)
-
-    if (itemsError) {
-      console.error("Order items error:", itemsError)
-      // Clean up the order if items failed
-      await supabase.from("orders").delete().eq("id", order.id)
-      return NextResponse.json({ error: "Failed to create order items" }, { status: 500 })
-    }
-
-    // Update product stock
-    for (const item of items) {
-      const product = products.find((p) => p.id === item.productId)!
-      await supabase
-        .from("products")
-        .update({ stock: product.stock - item.quantity })
-        .eq("id", item.productId)
-    }
-
-    // Update vendor sales count
-    const vendorSales: Record<string, number> = {}
-    for (const item of items) {
-      const product = products.find((p) => p.id === item.productId)!
-      vendorSales[product.vendor_id] = (vendorSales[product.vendor_id] || 0) + item.quantity
-    }
-
-    for (const [vendorId, sales] of Object.entries(vendorSales)) {
-      const { data: vendor } = await supabase.from("vendors").select("total_sales").eq("id", vendorId).single()
-
-      if (vendor) {
-        await supabase
-          .from("vendors")
-          .update({ total_sales: vendor.total_sales + sales })
-          .eq("id", vendorId)
-      }
-    }
-
-    // Try to create Stripe checkout session
-    try {
-      const lineItems = products.map((product) => {
-        const item = items.find((i: any) => i.productId === product.id)
-        return {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: product.name,
-            },
-            unit_amount: Math.round(product.price * 100),
-          },
-          quantity: item.quantity,
+    const vendorGroups = items.reduce((acc: any, item: any) => {
+      if (!acc[item.vendor_id]) {
+        acc[item.vendor_id] = {
+          items: [],
+          subtotal: 0,
+          shippingCost: 0,
         }
-      })
+      }
+      acc[item.vendor_id].items.push(item)
+      acc[item.vendor_id].subtotal += item.price * item.quantity
+      acc[item.vendor_id].shippingCost = shippingMethodsByVendor[item.vendor_id]?.price || 0
+      return acc
+    }, {})
 
-      // Add shipping if applicable
-      if (shipping > 0) {
+    // Create line items for Stripe (all vendors combined)
+    const lineItems = []
+    for (const vendorId in vendorGroups) {
+      const group = vendorGroups[vendorId]
+
+      // Add product items
+      for (const item of group.items) {
         lineItems.push({
           price_data: {
-            currency: "usd",
+            currency: "eur",
             product_data: {
-              name: "Shipping",
+              name: item.name,
+              images: item.image ? [item.image] : [],
+              metadata: {
+                vendor_id: vendorId,
+              },
             },
-            unit_amount: Math.round(shipping * 100),
+            unit_amount: Math.round(item.price * 100),
+          },
+          quantity: item.quantity,
+        })
+      }
+
+      // Add shipping for this vendor
+      if (group.shippingCost > 0) {
+        lineItems.push({
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: `Livraison - ${shippingMethodsByVendor[vendorId]?.name || "Standard"}`,
+              metadata: {
+                vendor_id: vendorId,
+                type: "shipping",
+              },
+            },
+            unit_amount: Math.round(group.shippingCost * 100),
           },
           quantity: 1,
         })
       }
-
-      const session = await stripe.checkout.sessions.create({
-        mode: "payment",
-        line_items: lineItems,
-        success_url: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL}/orders/${order.id}/success`,
-        cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL}/checkout`,
-        metadata: {
-          orderId: order.id,
-        },
-      })
-
-      // Update order with Stripe payment intent
-      await supabase.from("orders").update({ stripe_payment_intent_id: session.id }).eq("id", order.id)
-
-      return NextResponse.json({ url: session.url })
-    } catch (stripeError) {
-      // If Stripe fails, still return success with order ID (demo mode)
-      console.error("Stripe error:", stripeError)
-      return NextResponse.json({ orderId: order.id })
     }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cart/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout`,
+      customer_email: shippingAddress.email,
+      metadata: {
+        userId: user.id,
+        vendorGroups: JSON.stringify(vendorGroups),
+        shippingAddress: JSON.stringify(shippingAddress),
+      },
+      shipping_address_collection: {
+        allowed_countries: ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT", "PT", "NL"],
+      },
+    })
+
+    return NextResponse.json({ url: session.url })
   } catch (error) {
-    console.error("Checkout error:", error)
-    return NextResponse.json({ error: "Checkout failed" }, { status: 500 })
+    console.error("Stripe checkout error:", error)
+    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
   }
 }
