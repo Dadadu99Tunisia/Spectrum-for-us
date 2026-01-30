@@ -4,7 +4,7 @@ import type React from "react"
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Search, ShoppingCart, User, Menu, Heart, Store, LogOut } from "lucide-react"
+import { Search, ShoppingCart, User, Menu, Heart, Store, LogOut, ChevronDown, Accessibility, Sparkles, Home, Palette, BookHeart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -14,12 +14,46 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { useAuth } from "@/components/providers/auth-provider"
 import { useCart } from "@/components/providers/cart-provider"
 import { createClient } from "@/lib/supabase/client"
 import { useState } from "react"
+
+const categoryMenu = [
+  {
+    name: "Fashion & Apparel",
+    href: "/categories/fashion-apparel",
+    description: "Gender-neutral streetwear, binders, tucking lingerie, upcycled fashion, clubwear",
+    icon: Sparkles,
+  },
+  {
+    name: "Beauty & Grooming",
+    href: "/categories/beauty-grooming",
+    description: "Skincare for all, beard care, gender-affirming makeup, fragrances",
+    icon: Palette,
+  },
+  {
+    name: "Adaptive & Mobility",
+    href: "/categories/adaptive-mobility",
+    description: "Designer wheelchair covers, stylish canes, sensory-friendly clothing, prosthetic art",
+    icon: Accessibility,
+  },
+  {
+    name: "Home & Sanctuary",
+    href: "/categories/home-sanctuary",
+    description: "Queer art prints, LGBTQ+ literature, safe space decor, candles",
+    icon: Home,
+  },
+  {
+    name: "Intimacy & Wellness",
+    href: "/categories/intimacy-wellness",
+    description: "Sexual wellness, mental health resources, yoga & body connection",
+    icon: BookHeart,
+  },
+]
 
 export function Header() {
   const { user, profile, vendor, isLoading } = useAuth()
@@ -52,19 +86,37 @@ export function Header() {
               <span className="sr-only">Menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left">
+          <SheetContent side="left" className="w-80 overflow-y-auto">
             <SheetHeader>
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
-            <nav className="mt-6 flex flex-col gap-4">
+            <nav className="mt-6 flex flex-col gap-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Shop by Category</p>
+              {categoryMenu.map((category) => (
+                <Link 
+                  key={category.href} 
+                  href={category.href} 
+                  className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted transition-colors"
+                >
+                  <category.icon className="h-5 w-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="font-medium">{category.name}</p>
+                    <p className="text-xs text-muted-foreground">{category.description}</p>
+                  </div>
+                </Link>
+              ))}
+              <div className="border-t my-4" />
               <Link href="/categories" className="text-lg font-medium">
-                Categories
+                All Categories
               </Link>
               <Link href="/vendors" className="text-lg font-medium">
                 Vendors
               </Link>
               <Link href="/deals" className="text-lg font-medium">
                 Deals
+              </Link>
+              <Link href="/community-guidelines" className="text-lg font-medium">
+                Community Guidelines
               </Link>
               {profile?.role === "vendor" && (
                 <Link href="/dashboard" className="text-lg font-medium">
@@ -85,9 +137,33 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6 ml-6">
-          <Link href="/categories" className="text-sm font-medium hover:text-primary transition-colors">
-            Categories
-          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors">
+                Categories
+                <ChevronDown className="h-4 w-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-80">
+              <DropdownMenuLabel>Shop by Category</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {categoryMenu.map((category) => (
+                <DropdownMenuItem key={category.href} asChild>
+                  <Link href={category.href} className="flex items-start gap-3 p-2">
+                    <category.icon className="h-5 w-5 text-primary mt-0.5" />
+                    <div>
+                      <p className="font-medium">{category.name}</p>
+                      <p className="text-xs text-muted-foreground">{category.description}</p>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/categories" className="font-medium">View All Categories</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Link href="/vendors" className="text-sm font-medium hover:text-primary transition-colors">
             Vendors
           </Link>
