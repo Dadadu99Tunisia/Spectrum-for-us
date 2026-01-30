@@ -37,77 +37,13 @@ const demoVendors = [
 ]
 
 export default async function HomePage() {
-  // Use demo data by default - database tables may not exist yet
-  let categories: any[] = demoCategories
-  let featuredProducts: any[] = demoProducts.slice(0, 4)
-  let newArrivals: any[] = demoProducts.slice(4)
-  let topVendors: any[] = demoVendors
-
-  try {
-    const supabase = await createClient()
-
-    // Try to fetch from database, fall back to demo data on any error
-    const { data: categoriesData, error: catError } = await supabase
-      .from("categories")
-      .select("*")
-      .order("name")
-      .limit(8)
-    
-    if (!catError && categoriesData && categoriesData.length > 0) {
-      categories = categoriesData
-    }
-
-    // Fetch featured products
-    const { data: featuredData, error: featError } = await supabase
-      .from("products")
-      .select("*")
-      .eq("is_active", true)
-      .eq("is_featured", true)
-      .order("created_at", { ascending: false })
-      .limit(8)
-
-    if (!featError && featuredData && featuredData.length > 0) {
-      const vendorIds = [...new Set(featuredData.map((p) => p.vendor_id))]
-      const { data: vendorsData } = await supabase.from("vendors").select("id, store_name").in("id", vendorIds)
-      const vendorMap = new Map(vendorsData?.map((v) => [v.id, v]) || [])
-      featuredProducts = featuredData.map((p) => ({
-        ...p,
-        vendors: vendorMap.get(p.vendor_id) || { store_name: "Unknown" },
-      }))
-    }
-
-    // Fetch new arrivals
-    const { data: newData, error: newError } = await supabase
-      .from("products")
-      .select("*")
-      .eq("is_active", true)
-      .order("created_at", { ascending: false })
-      .limit(8)
-
-    if (!newError && newData && newData.length > 0) {
-      const vendorIds = [...new Set(newData.map((p) => p.vendor_id))]
-      const { data: vendorsData } = await supabase.from("vendors").select("id, store_name").in("id", vendorIds)
-      const vendorMap = new Map(vendorsData?.map((v) => [v.id, v]) || [])
-      newArrivals = newData.map((p) => ({
-        ...p,
-        vendors: vendorMap.get(p.vendor_id) || { store_name: "Unknown" },
-      }))
-    }
-
-    // Fetch top vendors
-    const { data: vendorsData, error: vendorError } = await supabase
-      .from("vendors")
-      .select("*")
-      .eq("is_verified", true)
-      .order("rating", { ascending: false })
-      .limit(4)
-    
-    if (!vendorError && vendorsData && vendorsData.length > 0) {
-      topVendors = vendorsData
-    }
-  } catch {
-    // If Supabase connection fails entirely, we already have demo data initialized
-  }
+  // Use demo data - database tables are not set up yet
+  // Once you run the SQL scripts (001-create-tables.sql, 002-enable-rls.sql, 003-seed-data.sql),
+  // the app will fetch real data from the database
+  const categories = demoCategories
+  const featuredProducts = demoProducts.slice(0, 4)
+  const newArrivals = demoProducts.slice(4)
+  const topVendors = demoVendors
 
   return (
     <div className="min-h-screen flex flex-col">
