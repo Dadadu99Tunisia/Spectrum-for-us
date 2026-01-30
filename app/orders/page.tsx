@@ -116,41 +116,92 @@ export default function OrdersPage() {
         return
       }
 
-      const { data, error } = await supabase
+      // Fetch orders
+      const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
-        .select(`
-          *,
-          sub_orders (
-            *,
-            vendor:profiles!vendor_id (
-              id,
-              name,
-              avatar_url
-            ),
-            items:order_items (
-              id,
-              quantity,
-              unit_price,
-              subtotal,
-              product:products!product_id (
-                id,
-                name,
-                image_url
-              )
-            )
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
 
-      if (error) {
-        console.error('[v0] Error fetching orders:', error)
+      if (ordersError || !ordersData) {
+        console.error('[v0] Error fetching orders:', ordersError)
         setOrders([])
-      } else {
-        setOrders(data || [])
+        return
       }
+
+      if (ordersData.length === 0) {
+        setOrders([])
+        return
+      }
+
+      // Fetch sub_orders for all orders
+      const orderIds = ordersData.map(o => o.id)
+      const { data: subOrdersData } = await supabase
+        .from('sub_orders')
+        .select('*')
+        .in('order_id', orderIds)
+
+      // Fetch sub_order_items for all sub_orders
+      const subOrderIds = subOrdersData?.map(so => so.id) || []
+      const { data: itemsData } = await supabase
+        .from('sub_order_items')
+        .select('*')
+        .in('sub_order_id', subOrderIds)
+
+      // Get unique vendor and product IDs
+      const vendorIds = [...new Set(subOrdersData?.map(so => so.vendor_id).filter(Boolean) || [])]
+      const productIds = [...new Set(itemsData?.map(i => i.product_id).filter(Boolean) || [])]
+
+      // Fetch vendors
+      let vendorMap: Record<string, any> = {}
+      if (vendorIds.length > 0) {
+        const { data: vendorsData } = await supabase
+          .from('profiles')
+          .select('id, name, avatar_url')
+          .in('id', vendorIds)
+        if (vendorsData) {
+          vendorMap = vendorsData.reduce((acc, v) => ({ ...acc, [v.id]: v }), {})
+        }
+      }
+
+      // Fetch products
+      let productMap: Record<string, any> = {}
+      if (productIds.length > 0) {
+        const { data: productsData } = await supabase
+          .from('products')
+          .select('id, name, image_url')
+          .in('id', productIds)
+        if (productsData) {
+          productMap = productsData.reduce((acc, p) => ({ ...acc, [p.id]: p }), {})
+        }
+      }
+
+      // Assemble the data
+      const ordersWithSubOrders = ordersData.map(order => {
+        const subOrders = (subOrdersData || [])
+          .filter(so => so.order_id === order.id)
+          .map(subOrder => {
+            const items = (itemsData || [])
+              .filter(i => i.sub_order_id === subOrder.id)
+              .map(item => ({
+                ...item,
+                product: item.product_id ? productMap[item.product_id] || null : null
+              }))
+            
+            return {
+              ...subOrder,
+              vendor: subOrder.vendor_id ? vendorMap[subOrder.vendor_id] || null : null,
+              items
+            }
+          })
+        
+        return { ...order, sub_orders: subOrders }
+      })
+
+      setOrders(ordersWithSubOrders)
     } catch (error) {
       console.error('[v0] Error:', error)
+      setOrders([])
     } finally {
       setLoading(false)
     }

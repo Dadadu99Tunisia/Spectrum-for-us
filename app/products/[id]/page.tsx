@@ -10,23 +10,29 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const { id } = await params
   const supabase = await createClient()
 
-  const { data: product, error } = await supabase
+  // Fetch product
+  const { data: productData, error } = await supabase
     .from('products')
-    .select(`
-      *,
-      vendor:profiles!vendor_id (
-        id,
-        name,
-        avatar_url,
-        bio
-      )
-    `)
+    .select('*')
     .eq('id', id)
     .single()
 
-  if (error || !product) {
+  if (error || !productData) {
     notFound()
   }
+
+  // Fetch vendor profile separately
+  let vendor = null
+  if (productData.vendor_id) {
+    const { data: vendorData } = await supabase
+      .from('profiles')
+      .select('id, name, avatar_url, bio')
+      .eq('id', productData.vendor_id)
+      .single()
+    vendor = vendorData
+  }
+
+  const product = { ...productData, vendor }
 
   // Get vendor shipping settings
   const { data: shippingSettings } = await supabase

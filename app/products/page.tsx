@@ -50,16 +50,10 @@ export default function ProductsPage() {
   const fetchProducts = useCallback(async () => {
     setLoading(true)
     try {
+      // First fetch products
       let query = supabase
         .from('products')
-        .select(`
-          *,
-          vendor:profiles!vendor_id (
-            id,
-            name,
-            avatar_url
-          )
-        `)
+        .select('*')
         .gt('stock', 0)
         .order('created_at', { ascending: false })
 
@@ -73,30 +67,62 @@ export default function ProductsPage() {
 
       query = query.gte('price', priceRange[0]).lte('price', priceRange[1])
 
-      const { data, error } = await query
+      const { data: productsData, error: productsError } = await query
 
-      if (error) {
-        console.error('[v0] Error fetching products:', error)
+      if (productsError) {
+        console.error('[v0] Error fetching products:', productsError)
         setProducts([])
-      } else {
-        let sorted = data || []
-        
-        switch (sortBy) {
-          case "price-low":
-            sorted = sorted.sort((a, b) => a.price - b.price)
-            break
-          case "price-high":
-            sorted = sorted.sort((a, b) => b.price - a.price)
-            break
-          case "name":
-            sorted = sorted.sort((a, b) => a.name.localeCompare(b.name))
-            break
-        }
-        
-        setProducts(sorted)
+        return
       }
+
+      if (!productsData || productsData.length === 0) {
+        setProducts([])
+        return
+      }
+
+      // Get unique vendor IDs
+      const vendorIds = [...new Set(productsData.map(p => p.vendor_id).filter(Boolean))]
+
+      // Fetch vendor profiles
+      let vendorMap: Record<string, { id: string; name: string; avatar_url: string | null }> = {}
+      
+      if (vendorIds.length > 0) {
+        const { data: vendorsData } = await supabase
+          .from('profiles')
+          .select('id, name, avatar_url')
+          .in('id', vendorIds)
+
+        if (vendorsData) {
+          vendorMap = vendorsData.reduce((acc, vendor) => {
+            acc[vendor.id] = vendor
+            return acc
+          }, {} as Record<string, { id: string; name: string; avatar_url: string | null }>)
+        }
+      }
+
+      // Combine products with vendor data
+      let combined = productsData.map(product => ({
+        ...product,
+        vendor: vendorMap[product.vendor_id] || null
+      }))
+      
+      // Sort
+      switch (sortBy) {
+        case "price-low":
+          combined = combined.sort((a, b) => a.price - b.price)
+          break
+        case "price-high":
+          combined = combined.sort((a, b) => b.price - a.price)
+          break
+        case "name":
+          combined = combined.sort((a, b) => a.name.localeCompare(b.name))
+          break
+      }
+      
+      setProducts(combined)
     } catch (error) {
       console.error('[v0] Error:', error)
+      setProducts([])
     } finally {
       setLoading(false)
     }
