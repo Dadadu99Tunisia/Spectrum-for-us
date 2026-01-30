@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -12,115 +12,46 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Image from "next/image"
 import { 
   Package, Truck, MessageSquare, MapPin, Euro, 
-  CheckCircle, Clock, AlertCircle, Send, Copy, ExternalLink
+  CheckCircle, Clock, AlertCircle, Send, Copy, ExternalLink, Loader2
 } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
-// Demo vendor orders
-const demoVendorOrders = [
-  {
-    id: "sub-v001",
-    orderId: "ord-001-spectrum",
-    buyerName: "Alex Martin",
-    buyerEmail: "alex@example.com",
-    status: "paid",
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    items: [
-      { id: "1", name: "Chemise Fluide Unisexe", quantity: 1, price: 89.00, image: "/unisex-fluid-shirt-minimal.jpg" },
-      { id: "2", name: "Pantalon Large", quantity: 1, price: 75.00, image: "/wide-leg-pants-neutral.jpg" },
-    ],
-    subtotal: 164.00,
-    shippingCost: 5.99,
-    commission: 19.68 + 0.30, // 12% + 0.30€
-    payout: 164.00 + 5.99 - 19.98 - 0.30,
-    shippingAddress: {
-      fullName: "Alex Martin",
-      addressLine1: "15 Rue de la Liberté",
-      addressLine2: "Apt 4B",
-      city: "Paris",
-      postalCode: "75011",
-      country: "France",
-      phone: "+33 6 12 34 56 78",
-    },
-    buyerNote: "Merci de faire un paquet cadeau si possible !",
-  },
-  {
-    id: "sub-v002",
-    orderId: "ord-002-spectrum",
-    buyerName: "Jordan Leroy",
-    buyerEmail: "jordan@example.com",
-    status: "processing",
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    items: [
-      { id: "3", name: "T-shirt Oversize", quantity: 2, price: 45.00, image: "/oversized-tee-pastel.jpg" },
-    ],
-    subtotal: 90.00,
-    shippingCost: 0,
-    commission: 10.80 + 0.30,
-    payout: 90.00 - 11.10,
-    shippingAddress: {
-      fullName: "Jordan Leroy",
-      addressLine1: "28 Avenue des Fleurs",
-      city: "Lyon",
-      postalCode: "69003",
-      country: "France",
-      phone: "+33 7 98 76 54 32",
-    },
-    trackingNumber: "",
-    carrier: "",
-  },
-  {
-    id: "sub-v003",
-    orderId: "ord-003-spectrum",
-    buyerName: "Sam Dubois",
-    buyerEmail: "sam@example.com",
-    status: "shipped",
-    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    shippedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    items: [
-      { id: "4", name: "Veste Denim Unisexe", quantity: 1, price: 129.00, image: "/unisex-denim-jacket.jpg" },
-    ],
-    subtotal: 129.00,
-    shippingCost: 7.99,
-    commission: 15.48 + 0.30,
-    payout: 129.00 + 7.99 - 15.78,
-    shippingAddress: {
-      fullName: "Sam Dubois",
-      addressLine1: "5 Place du Marché",
-      city: "Bordeaux",
-      postalCode: "33000",
-      country: "France",
-      phone: "+33 6 55 44 33 22",
-    },
-    trackingNumber: "LP987654321FR",
-    trackingUrl: "https://www.laposte.fr/outils/suivre-vos-envois",
-    carrier: "Colissimo",
-  },
-  {
-    id: "sub-v004",
-    orderId: "ord-004-spectrum",
-    buyerName: "Charlie Moreau",
-    buyerEmail: "charlie@example.com",
-    status: "delivered",
-    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-    deliveredAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    items: [
-      { id: "5", name: "Sweat à Capuche", quantity: 1, price: 85.00, image: "/hoodie-minimal-neutral.jpg" },
-    ],
-    subtotal: 85.00,
-    shippingCost: 5.99,
-    commission: 10.20 + 0.30,
-    payout: 85.00 + 5.99 - 10.50,
-    shippingAddress: {
-      fullName: "Charlie Moreau",
-      addressLine1: "12 Rue des Arts",
-      city: "Nantes",
-      postalCode: "44000",
-      country: "France",
-    },
-    trackingNumber: "MR123456789",
-    carrier: "Mondial Relay",
-  },
-]
+interface SubOrder {
+  id: string
+  order_id: string
+  status: string
+  subtotal: number
+  shipping_cost: number
+  commission_amount: number
+  vendor_payout: number
+  buyer_notes: string | null
+  tracking_number: string | null
+  tracking_url: string | null
+  carrier: string | null
+  shipped_at: string | null
+  delivered_at: string | null
+  created_at: string
+  order: {
+    id: string
+    user_id: string
+    shipping_address: any
+    buyer: {
+      name: string
+      email: string
+    }
+  }
+  items: Array<{
+    id: string
+    quantity: number
+    unit_price: number
+    subtotal: number
+    product: {
+      id: string
+      name: string
+      image_url: string | null
+    }
+  }>
+}
 
 const carriers = [
   { value: "colissimo", label: "Colissimo", trackingUrl: "https://www.laposte.fr/outils/suivre-vos-envois" },
@@ -144,11 +75,12 @@ const getStatusBadge = (status: string): "default" | "secondary" | "destructive"
 
 const getStatusLabel = (status: string) => {
   const labels: Record<string, string> = {
-    paid: "A expédier",
-    processing: "En préparation",
-    shipped: "Expédiée",
-    delivered: "Livrée",
-    cancelled: "Annulée",
+    pending: "En attente",
+    paid: "A expedier",
+    processing: "En preparation",
+    shipped: "Expediee",
+    delivered: "Livree",
+    cancelled: "Annulee",
   }
   return labels[status] || status
 }
@@ -167,54 +99,145 @@ const getStatusIcon = (status: string) => {
 }
 
 export default function VendorOrdersPage() {
-  const [orders, setOrders] = useState(demoVendorOrders)
+  const [subOrders, setSubOrders] = useState<SubOrder[]>([])
+  const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("pending")
   const [trackingInputs, setTrackingInputs] = useState<Record<string, { number: string; carrier: string }>>({})
+  const [updating, setUpdating] = useState<string | null>(null)
 
-  const pendingCount = orders.filter(o => o.status === "paid" || o.status === "processing").length
-  const shippedCount = orders.filter(o => o.status === "shipped").length
-  const deliveredCount = orders.filter(o => o.status === "delivered").length
+  const supabase = createClient()
 
-  const filteredOrders = orders.filter(order => {
+  const fetchOrders = useCallback(async () => {
+    setLoading(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        setSubOrders([])
+        return
+      }
+
+      const { data, error } = await supabase
+        .from('sub_orders')
+        .select(`
+          *,
+          order:orders!order_id (
+            id,
+            user_id,
+            shipping_address,
+            buyer:profiles!user_id (
+              name,
+              email
+            )
+          ),
+          items:order_items (
+            id,
+            quantity,
+            unit_price,
+            subtotal,
+            product:products!product_id (
+              id,
+              name,
+              image_url
+            )
+          )
+        `)
+        .eq('vendor_id', user.id)
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error('[v0] Error fetching orders:', error)
+        setSubOrders([])
+      } else {
+        setSubOrders(data || [])
+      }
+    } catch (error) {
+      console.error('[v0] Error:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [supabase])
+
+  useEffect(() => {
+    fetchOrders()
+  }, [fetchOrders])
+
+  const pendingCount = subOrders.filter(o => o.status === "paid" || o.status === "processing").length
+  const shippedCount = subOrders.filter(o => o.status === "shipped").length
+  const deliveredCount = subOrders.filter(o => o.status === "delivered").length
+
+  const filteredOrders = subOrders.filter(order => {
     if (activeTab === "pending") return order.status === "paid" || order.status === "processing"
     if (activeTab === "shipped") return order.status === "shipped"
     if (activeTab === "delivered") return order.status === "delivered"
     return true
   })
 
-  const handleShipOrder = (orderId: string) => {
-    const tracking = trackingInputs[orderId]
+  const handleShipOrder = async (subOrderId: string) => {
+    const tracking = trackingInputs[subOrderId]
     if (!tracking?.number || !tracking?.carrier) {
-      alert("Veuillez entrer le numéro de suivi et sélectionner un transporteur")
+      alert("Veuillez entrer le numero de suivi et selectionner un transporteur")
       return
     }
 
-    setOrders(orders.map(o => 
-      o.id === orderId 
-        ? { ...o, status: "shipped", trackingNumber: tracking.number, carrier: tracking.carrier, shippedAt: new Date().toISOString() }
-        : o
-    ))
+    setUpdating(subOrderId)
+
+    try {
+      const carrierInfo = carriers.find(c => c.value === tracking.carrier)
+      
+      const { error } = await supabase
+        .from('sub_orders')
+        .update({
+          status: 'shipped',
+          tracking_number: tracking.number,
+          carrier: carrierInfo?.label || tracking.carrier,
+          tracking_url: carrierInfo?.trackingUrl || null,
+          shipped_at: new Date().toISOString(),
+        })
+        .eq('id', subOrderId)
+
+      if (error) {
+        console.error('[v0] Error updating order:', error)
+        alert("Erreur lors de la mise a jour")
+      } else {
+        // Refresh orders
+        await fetchOrders()
+      }
+    } catch (error) {
+      console.error('[v0] Error:', error)
+    } finally {
+      setUpdating(null)
+    }
   }
 
-  const copyAddress = (address: typeof demoVendorOrders[0]["shippingAddress"]) => {
-    const text = `${address.fullName}\n${address.addressLine1}${address.addressLine2 ? '\n' + address.addressLine2 : ''}\n${address.postalCode} ${address.city}\n${address.country}${address.phone ? '\nTél: ' + address.phone : ''}`
+  const copyAddress = (address: any) => {
+    if (!address) return
+    const text = `${address.fullName}\n${address.addressLine1}${address.addressLine2 ? '\n' + address.addressLine2 : ''}\n${address.postalCode} ${address.city}\n${address.country}${address.phone ? '\nTel: ' + address.phone : ''}`
     navigator.clipboard.writeText(text)
   }
 
   // Stats
-  const totalRevenue = orders.filter(o => o.status !== "cancelled").reduce((sum, o) => sum + o.payout, 0)
-  const pendingRevenue = orders.filter(o => ["paid", "processing", "shipped"].includes(o.status)).reduce((sum, o) => sum + o.payout, 0)
+  const totalRevenue = subOrders.filter(o => o.status !== "cancelled").reduce((sum, o) => sum + (o.vendor_payout || 0), 0)
+  const pendingRevenue = subOrders.filter(o => ["paid", "processing", "shipped"].includes(o.status)).reduce((sum, o) => sum + (o.vendor_payout || 0), 0)
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-balance">Gestion des commandes</h1>
-          <p className="text-muted-foreground">Gérez vos expéditions et suivez vos revenus</p>
+          <p className="text-muted-foreground">Gerez vos expeditions et suivez vos revenus</p>
         </div>
         <div className="flex gap-4">
           <Card className="px-4 py-2">
-            <p className="text-xs text-muted-foreground">A expédier</p>
+            <p className="text-xs text-muted-foreground">A expedier</p>
             <p className="text-2xl font-bold text-primary">{pendingCount}</p>
           </Card>
           <Card className="px-4 py-2">
@@ -232,11 +255,11 @@ export default function VendorOrdersPage() {
           </TabsTrigger>
           <TabsTrigger value="shipped" className="gap-2">
             <Truck className="h-4 w-4" />
-            Expédiées ({shippedCount})
+            Expediees ({shippedCount})
           </TabsTrigger>
           <TabsTrigger value="delivered" className="gap-2">
             <CheckCircle className="h-4 w-4" />
-            Livrées ({deliveredCount})
+            Livrees ({deliveredCount})
           </TabsTrigger>
         </TabsList>
       </Tabs>
@@ -245,7 +268,12 @@ export default function VendorOrdersPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16">
             <Package className="h-16 w-16 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground text-lg">Aucune commande dans cette catégorie</p>
+            <p className="text-muted-foreground text-lg">
+              {subOrders.length === 0 
+                ? "Vous n'avez pas encore de commandes" 
+                : "Aucune commande dans cette categorie"
+              }
+            </p>
           </CardContent>
         </Card>
       ) : (
@@ -256,14 +284,14 @@ export default function VendorOrdersPage() {
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">
                   <div>
                     <div className="flex items-center gap-2">
-                      <CardTitle className="text-base">#{order.orderId.slice(-8)}</CardTitle>
+                      <CardTitle className="text-base">#{order.order_id.slice(-8)}</CardTitle>
                       <Badge variant={getStatusBadge(order.status)}>
                         {getStatusIcon(order.status)}
                         <span className="ml-1">{getStatusLabel(order.status)}</span>
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {order.buyerName} • {new Date(order.createdAt).toLocaleDateString("fr-FR", {
+                      {order.order?.buyer?.name || "Client"} • {new Date(order.created_at).toLocaleDateString("fr-FR", {
                         day: "numeric",
                         month: "short",
                         hour: "2-digit",
@@ -274,10 +302,10 @@ export default function VendorOrdersPage() {
                   <div className="text-right">
                     <p className="text-lg font-bold text-green-600 flex items-center gap-1 justify-end">
                       <Euro className="h-4 w-4" />
-                      {order.payout.toFixed(2)}
+                      {(order.vendor_payout || 0).toFixed(2)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      après commission ({order.commission.toFixed(2)} €)
+                      apres commission ({(order.commission_amount || 0).toFixed(2)} €)
                     </p>
                   </div>
                 </div>
@@ -285,34 +313,34 @@ export default function VendorOrdersPage() {
               <CardContent className="space-y-4">
                 {/* Items */}
                 <div className="space-y-2">
-                  {order.items.map((item) => (
+                  {order.items?.map((item) => (
                     <div key={item.id} className="flex items-center gap-3 p-2 bg-muted/30 rounded-lg">
                       <div className="w-12 h-12 bg-background rounded overflow-hidden flex-shrink-0">
                         <Image
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
+                          src={item.product?.image_url || "/placeholder.svg"}
+                          alt={item.product?.name || "Produit"}
                           width={48}
                           height={48}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{item.name}</p>
-                        <p className="text-xs text-muted-foreground">Qté: {item.quantity}</p>
+                        <p className="font-medium text-sm truncate">{item.product?.name || "Produit"}</p>
+                        <p className="text-xs text-muted-foreground">Qte: {item.quantity}</p>
                       </div>
-                      <p className="text-sm font-medium">{(item.price * item.quantity).toFixed(2)} €</p>
+                      <p className="text-sm font-medium">{item.subtotal.toFixed(2)} €</p>
                     </div>
                   ))}
                 </div>
 
                 {/* Buyer note */}
-                {order.buyerNote && (
+                {order.buyer_notes && (
                   <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
                     <p className="text-sm font-medium flex items-center gap-1 mb-1">
                       <MessageSquare className="h-4 w-4 text-blue-600" />
                       Message du client
                     </p>
-                    <p className="text-sm text-muted-foreground">{order.buyerNote}</p>
+                    <p className="text-sm text-muted-foreground">{order.buyer_notes}</p>
                   </div>
                 )}
 
@@ -328,20 +356,24 @@ export default function VendorOrdersPage() {
                         variant="ghost" 
                         size="sm" 
                         className="h-7 text-xs"
-                        onClick={() => copyAddress(order.shippingAddress)}
+                        onClick={() => copyAddress(order.order?.shipping_address)}
                       >
                         <Copy className="h-3 w-3 mr-1" />
                         Copier
                       </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {order.shippingAddress.fullName}<br />
-                      {order.shippingAddress.addressLine1}<br />
-                      {order.shippingAddress.addressLine2 && <>{order.shippingAddress.addressLine2}<br /></>}
-                      {order.shippingAddress.postalCode} {order.shippingAddress.city}<br />
-                      {order.shippingAddress.country}
-                      {order.shippingAddress.phone && <><br />Tél: {order.shippingAddress.phone}</>}
-                    </p>
+                    {order.order?.shipping_address ? (
+                      <p className="text-sm text-muted-foreground">
+                        {order.order.shipping_address.fullName}<br />
+                        {order.order.shipping_address.addressLine1}<br />
+                        {order.order.shipping_address.addressLine2 && <>{order.order.shipping_address.addressLine2}<br /></>}
+                        {order.order.shipping_address.postalCode} {order.order.shipping_address.city}<br />
+                        {order.order.shipping_address.country}
+                        {order.order.shipping_address.phone && <><br />Tel: {order.order.shipping_address.phone}</>}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">Adresse non disponible</p>
+                    )}
                   </div>
 
                   {/* Shipping / Tracking */}
@@ -350,7 +382,7 @@ export default function VendorOrdersPage() {
                       <div className="space-y-3">
                         <p className="text-sm font-medium flex items-center gap-1">
                           <Truck className="h-4 w-4" />
-                          Expédition
+                          Expedition
                         </p>
                         <div>
                           <Label htmlFor={`carrier-${order.id}`} className="text-xs">Transporteur</Label>
@@ -372,7 +404,7 @@ export default function VendorOrdersPage() {
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor={`tracking-${order.id}`} className="text-xs">Numéro de suivi</Label>
+                          <Label htmlFor={`tracking-${order.id}`} className="text-xs">Numero de suivi</Label>
                           <Input
                             id={`tracking-${order.id}`}
                             placeholder="LP123456789FR"
@@ -388,32 +420,48 @@ export default function VendorOrdersPage() {
                           className="w-full" 
                           size="sm"
                           onClick={() => handleShipOrder(order.id)}
+                          disabled={updating === order.id}
                         >
-                          <Send className="h-4 w-4 mr-2" />
-                          Marquer comme expédiée
+                          {updating === order.id ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <Send className="h-4 w-4 mr-2" />
+                          )}
+                          Marquer comme expediee
                         </Button>
                       </div>
-                    ) : order.trackingNumber ? (
+                    ) : order.tracking_number ? (
                       <div className="space-y-2">
                         <p className="text-sm font-medium flex items-center gap-1">
                           <Truck className="h-4 w-4" />
-                          Suivi d'expédition
+                          Suivi d'expedition
                         </p>
                         <p className="text-sm">
                           <span className="text-muted-foreground">Transporteur:</span> {order.carrier}
                         </p>
                         <p className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {order.trackingNumber}
+                          {order.tracking_number}
                         </p>
-                        {order.shippedAt && (
+                        {order.shipped_at && (
                           <p className="text-xs text-muted-foreground">
-                            Expédiée le {new Date(order.shippedAt).toLocaleDateString("fr-FR")}
+                            Expediee le {new Date(order.shipped_at).toLocaleDateString("fr-FR")}
                           </p>
                         )}
-                        {order.deliveredAt && (
+                        {order.delivered_at && (
                           <p className="text-xs text-green-600">
-                            Livrée le {new Date(order.deliveredAt).toLocaleDateString("fr-FR")}
+                            Livree le {new Date(order.delivered_at).toLocaleDateString("fr-FR")}
                           </p>
+                        )}
+                        {order.tracking_url && (
+                          <a 
+                            href={order.tracking_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-sm text-primary hover:underline flex items-center gap-1"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                            Suivre le colis
+                          </a>
                         )}
                       </div>
                     ) : null}
@@ -427,12 +475,6 @@ export default function VendorOrdersPage() {
                     <MessageSquare className="h-4 w-4 mr-1" />
                     Contacter l'acheteur
                   </Button>
-                  {order.status === "shipped" && (
-                    <Button variant="outline" size="sm" className="bg-transparent">
-                      <ExternalLink className="h-4 w-4 mr-1" />
-                      Voir le suivi
-                    </Button>
-                  )}
                 </div>
               </CardContent>
             </Card>
