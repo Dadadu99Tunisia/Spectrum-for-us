@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
-import { Package, Briefcase, Plus, Edit, Trash2 } from "lucide-react"
+import { Package, Briefcase, Plus, Edit, Trash2, Truck, ShoppingBag, Euro, Settings } from "lucide-react"
 import { Logo } from "@/components/logo"
 
 export default async function DashboardPage() {
@@ -91,13 +91,41 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
+      {/* Quick Actions for Multivendor */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <Button asChild variant="outline" className="h-auto py-4 flex-col gap-2 bg-transparent">
+          <Link href="/dashboard/orders">
+            <ShoppingBag className="h-6 w-6 text-primary" />
+            <span>Commandes</span>
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="h-auto py-4 flex-col gap-2 bg-transparent">
+          <Link href="/dashboard/shipping">
+            <Truck className="h-6 w-6 text-primary" />
+            <span>Livraison</span>
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="h-auto py-4 flex-col gap-2 bg-transparent">
+          <Link href="/dashboard/products/new">
+            <Plus className="h-6 w-6 text-primary" />
+            <span>Nouveau produit</span>
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="h-auto py-4 flex-col gap-2 bg-transparent">
+          <Link href="/dashboard/profile/edit">
+            <Settings className="h-6 w-6 text-primary" />
+            <span>Paramètres</span>
+          </Link>
+        </Button>
+      </div>
+
       {/* Tabs for Products and Services */}
       <Tabs defaultValue="products" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="products">Produits</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="blog">Blog</TabsTrigger>
-          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="profile">Profil</TabsTrigger>
         </TabsList>
 
         {/* Products Tab */}
