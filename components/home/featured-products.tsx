@@ -15,6 +15,10 @@ export function FeaturedProducts({
   subtitle = "Handpicked products from our best vendors",
   viewAllHref = "/products",
 }: FeaturedProductsProps) {
+  if (!products || products.length === 0) {
+    return null
+  }
+
   return (
     <section className="container py-12">
       <div className="flex items-center justify-between mb-8">

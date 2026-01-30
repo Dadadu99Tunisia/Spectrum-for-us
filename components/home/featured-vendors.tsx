@@ -8,15 +8,19 @@ interface FeaturedVendorsProps {
 }
 
 export function FeaturedVendors({ vendors }: FeaturedVendorsProps) {
+  if (!vendors || vendors.length === 0) {
+    return null
+  }
+
   return (
     <section className="container py-12">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold">Top Vendors</h2>
-          <p className="text-muted-foreground mt-1">Shop from our highest-rated sellers</p>
+          <h2 className="text-2xl md:text-3xl font-bold">Featured Creators</h2>
+          <p className="text-muted-foreground mt-1">Shop from inclusive, community-owned businesses</p>
         </div>
         <Link href="/vendors" className="text-sm font-medium text-primary hover:underline">
-          View All Vendors
+          View All Creators
         </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

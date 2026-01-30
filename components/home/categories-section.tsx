@@ -19,6 +19,10 @@ const categoryIcons: Record<string, typeof Sparkles> = {
 }
 
 export function CategoriesSection({ categories }: CategoriesSectionProps) {
+  if (!categories || categories.length === 0) {
+    return null
+  }
+
   return (
     <section className="container py-12">
       <div className="flex items-center justify-between mb-8">

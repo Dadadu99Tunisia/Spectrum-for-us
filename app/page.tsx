@@ -6,25 +6,59 @@ import { CategoriesSection } from "@/components/home/categories-section"
 import { FeaturedProducts } from "@/components/home/featured-products"
 import { FeaturedVendors } from "@/components/home/featured-vendors"
 
+// Demo data for when database is not set up yet
+const demoCategories = [
+  { id: "c1", name: "Fashion & Apparel", slug: "fashion-apparel", description: "Gender-neutral streetwear, binders, tucking lingerie, upcycled fashion, and clubwear for every body and every expression.", image_url: "/images/categories/fashion-apparel.jpg" },
+  { id: "c2", name: "Beauty & Grooming", slug: "beauty-grooming", description: "Skincare for all skin types, beard care, gender-affirming makeup, and fragrances that celebrate individuality.", image_url: "/images/categories/beauty-grooming.jpg" },
+  { id: "c3", name: "Adaptive & Mobility", slug: "adaptive-mobility", description: "High-fashion adaptive gear: designer wheelchair covers, stylish canes, sensory-friendly clothing, magnetic closure apparel, and prosthetic art.", image_url: "/images/categories/adaptive-mobility.jpg" },
+  { id: "c4", name: "Home & Sanctuary", slug: "home-sanctuary", description: "Queer art prints, LGBTQ+ literature, safe space decor, and candles to create your perfect sanctuary.", image_url: "/images/categories/home-sanctuary.jpg" },
+  { id: "c5", name: "Intimacy & Wellness", slug: "intimacy-wellness", description: "Sexual wellness products, mental health resources, and yoga and body connection tools for holistic well-being.", image_url: "/images/categories/intimacy-wellness.jpg" },
+  { id: "c6", name: "Accessories", slug: "accessories", description: "Pronoun pins, pride jewelry, bags, and statement pieces that let you express your authentic self.", image_url: "/images/categories/accessories.jpg" },
+  { id: "c7", name: "Unisex & Fluid Style", slug: "unisex-fluid", description: "Clothing and accessories designed without gender boundaries, for fluid and androgynous expression.", image_url: "/images/categories/unisex-fluid.jpg" },
+  { id: "c8", name: "Community & Culture", slug: "community-culture", description: "Books, zines, educational materials, and cultural items celebrating diverse identities and histories.", image_url: "/images/categories/community-culture.jpg" },
+]
+
+const demoProducts = [
+  { id: "p1", name: "Abstract Art Wheelchair Spoke Guards", slug: "abstract-art-wheelchair-spoke-guards", description: "Transform your wheelchair into a statement piece with these stunning abstract art spoke guards.", price: 89.99, compare_at_price: 119.99, images: ["/images/products/wheelchair-spoke-guards.jpg"], rating: 4.9, review_count: 156, vendors: { store_name: "Radiant Mobility Co." } },
+  { id: "p2", name: "Breathable Chest Binder - Nude Tone", slug: "breathable-chest-binder-nude", description: "Our most comfortable binder yet. Breathable mesh panels, 8+ hours of safe wear.", price: 54.99, compare_at_price: 64.99, images: ["/images/products/chest-binder.jpg"], rating: 4.8, review_count: 412, vendors: { store_name: "Affirm Apparel" } },
+  { id: "p3", name: "Magnetic Button Silk Shirt", slug: "magnetic-button-silk-shirt", description: "Elegant silk shirt with hidden magnetic closures for easy dressing.", price: 129.99, compare_at_price: 159.99, images: ["/images/products/magnetic-silk-shirt.jpg"], rating: 4.7, review_count: 78, vendors: { store_name: "Radiant Mobility Co." } },
+  { id: "p4", name: "Trans-Owned Organic Beard Oil", slug: "trans-owned-organic-beard-oil", description: "Nourishing beard oil made with organic argan, jojoba, and cedar essential oils.", price: 24.99, compare_at_price: null, images: ["/images/products/beard-oil.jpg"], rating: 4.8, review_count: 187, vendors: { store_name: "Fluid Beauty Collective" } },
+  { id: "p5", name: "Pronoun Pin Set - Gold Plated", slug: "pronoun-pin-set-gold", description: "Elegant gold-plated pronoun pins featuring she/her, he/him, they/them, and a customizable blank pin.", price: 18.99, compare_at_price: 24.99, images: ["/images/products/pronoun-pins.jpg"], rating: 4.8, review_count: 523, vendors: { store_name: "Pride Accessories" } },
+  { id: "p6", name: "Queer Joy Art Print Collection", slug: "queer-joy-art-print-collection", description: "Set of 3 vibrant art prints celebrating queer joy and community. Created by LGBTQ+ artists.", price: 49.99, compare_at_price: null, images: ["/images/hero/pride-accessories.jpg"], rating: 4.8, review_count: 145, vendors: { store_name: "Sanctuary Home" } },
+  { id: "p7", name: "Gender-Neutral Streetwear Hoodie", slug: "gender-neutral-streetwear-hoodie", description: "Oversized, cozy hoodie designed without gender constraints.", price: 79.99, compare_at_price: 99.99, images: ["/images/hero/adaptive-fashion.jpg"], rating: 4.6, review_count: 167, vendors: { store_name: "Affirm Apparel" } },
+  { id: "p8", name: "Safe Space Neon Sign", slug: "safe-space-neon-sign", description: "LED neon sign that reads \"Safe Space\" in warm pink. Energy-efficient, dimmable.", price: 89.99, compare_at_price: 109.99, images: ["/images/hero/inclusive-home-decor.jpg"], rating: 4.7, review_count: 98, vendors: { store_name: "Sanctuary Home" } },
+]
+
+const demoVendors = [
+  { id: "v1", store_name: "Radiant Mobility Co.", store_description: "Disability-led brand creating high-fashion adaptive gear. We believe mobility aids should be as stylish as they are functional.", store_logo: "/images/categories/adaptive-mobility.jpg", is_verified: true, rating: 4.9, total_sales: 1850 },
+  { id: "v2", store_name: "Affirm Apparel", store_description: "Trans-owned fashion house specializing in gender-affirming clothing, binders, and tucking lingerie.", store_logo: "/images/categories/fashion-apparel.jpg", is_verified: true, rating: 4.8, total_sales: 2340 },
+  { id: "v3", store_name: "Sanctuary Home", store_description: "Queer-owned home decor celebrating LGBTQ+ art, literature, and safe space aesthetics.", store_logo: "/images/categories/home-sanctuary.jpg", is_verified: true, rating: 4.7, total_sales: 1120 },
+  { id: "v4", store_name: "Fluid Beauty Collective", store_description: "Gender-affirming beauty and grooming products for all. Skincare, beard care, and makeup without boundaries.", store_logo: "/images/categories/beauty-grooming.jpg", is_verified: true, rating: 4.8, total_sales: 1560 },
+]
+
 export default async function HomePage() {
-  const supabase = await createClient()
-
-  let categories: any[] = []
-  let featuredProducts: any[] = []
-  let newArrivals: any[] = []
-  let topVendors: any[] = []
-
-  try {
-    // Fetch categories
-    const { data: categoriesData } = await supabase.from("categories").select("*").order("name").limit(8)
-    categories = categoriesData || []
-  } catch (e) {
-    console.log("[v0] Categories table may not exist yet")
-  }
+  // Use demo data by default - database tables may not exist yet
+  let categories: any[] = demoCategories
+  let featuredProducts: any[] = demoProducts.slice(0, 4)
+  let newArrivals: any[] = demoProducts.slice(4)
+  let topVendors: any[] = demoVendors
 
   try {
-    // Fetch featured products - separate query for vendor info
-    const { data: featuredData } = await supabase
+    const supabase = await createClient()
+
+    // Try to fetch from database, fall back to demo data on any error
+    const { data: categoriesData, error: catError } = await supabase
+      .from("categories")
+      .select("*")
+      .order("name")
+      .limit(8)
+    
+    if (!catError && categoriesData && categoriesData.length > 0) {
+      categories = categoriesData
+    }
+
+    // Fetch featured products
+    const { data: featuredData, error: featError } = await supabase
       .from("products")
       .select("*")
       .eq("is_active", true)
@@ -32,55 +66,47 @@ export default async function HomePage() {
       .order("created_at", { ascending: false })
       .limit(8)
 
-    if (featuredData && featuredData.length > 0) {
-      // Fetch vendor names for these products
+    if (!featError && featuredData && featuredData.length > 0) {
       const vendorIds = [...new Set(featuredData.map((p) => p.vendor_id))]
       const { data: vendorsData } = await supabase.from("vendors").select("id, store_name").in("id", vendorIds)
-
       const vendorMap = new Map(vendorsData?.map((v) => [v.id, v]) || [])
       featuredProducts = featuredData.map((p) => ({
         ...p,
         vendors: vendorMap.get(p.vendor_id) || { store_name: "Unknown" },
       }))
     }
-  } catch (e) {
-    console.log("[v0] Products table may not exist yet")
-  }
 
-  try {
     // Fetch new arrivals
-    const { data: newData } = await supabase
+    const { data: newData, error: newError } = await supabase
       .from("products")
       .select("*")
       .eq("is_active", true)
       .order("created_at", { ascending: false })
       .limit(8)
 
-    if (newData && newData.length > 0) {
+    if (!newError && newData && newData.length > 0) {
       const vendorIds = [...new Set(newData.map((p) => p.vendor_id))]
       const { data: vendorsData } = await supabase.from("vendors").select("id, store_name").in("id", vendorIds)
-
       const vendorMap = new Map(vendorsData?.map((v) => [v.id, v]) || [])
       newArrivals = newData.map((p) => ({
         ...p,
         vendors: vendorMap.get(p.vendor_id) || { store_name: "Unknown" },
       }))
     }
-  } catch (e) {
-    console.log("[v0] Could not fetch new arrivals")
-  }
 
-  try {
     // Fetch top vendors
-    const { data: vendorsData } = await supabase
+    const { data: vendorsData, error: vendorError } = await supabase
       .from("vendors")
       .select("*")
       .eq("is_verified", true)
       .order("rating", { ascending: false })
       .limit(4)
-    topVendors = vendorsData || []
-  } catch (e) {
-    console.log("[v0] Vendors table may not exist yet")
+    
+    if (!vendorError && vendorsData && vendorsData.length > 0) {
+      topVendors = vendorsData
+    }
+  } catch {
+    // If Supabase connection fails entirely, we already have demo data initialized
   }
 
   return (
