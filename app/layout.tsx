@@ -2,6 +2,13 @@ import type React from "react"
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
+import { Nunito } from "next/font/google"
+
+const nunito = Nunito({ 
+  subsets: ["latin"],
+  variable: "--font-nunito",
+  weight: ["400", "600", "700", "800", "900"]
+})
 import { Analytics } from "@vercel/analytics/next"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
@@ -136,7 +143,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased flex flex-col min-h-screen`}>
+      <body className={`${GeistSans.variable} ${GeistMono.variable} ${nunito.variable} font-sans antialiased flex flex-col min-h-screen bg-cream`}>
         <I18nProvider>
           <Navigation />
           <main className="flex-1">{children}</main>
