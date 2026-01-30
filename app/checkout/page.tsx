@@ -2,313 +2,299 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, Package, Truck } from "lucide-react"
+import { useCart } from "@/components/providers/cart-provider"
+import { useAuth } from "@/components/providers/auth-provider"
+import { toast } from "sonner"
+import { ShoppingBag, CreditCard, Lock } from "lucide-react"
 import Link from "next/link"
-
-interface CartItem {
-  id: string
-  name: string
-  price: number
-  currency: string
-  quantity: number
-  image: string
-}
-
-interface ShippingMethod {
-  id: string
-  name: string
-  description: string
-  price: number
-  estimatedDays: string
-}
-
-const shippingMethods: ShippingMethod[] = [
-  { id: "free", name: "Livraison gratuite", description: "7-10 jours ouvrés", price: 0, estimatedDays: "7-10 jours" },
-  { id: "standard", name: "Standard", description: "5-7 jours ouvrés", price: 5.99, estimatedDays: "5-7 jours" },
-  { id: "express", name: "Express", description: "2-3 jours ouvrés", price: 12.99, estimatedDays: "2-3 jours" },
-  { id: "priority", name: "Prioritaire", description: "1-2 jours ouvrés", price: 19.99, estimatedDays: "1-2 jours" },
-]
+import Image from "next/image"
 
 export default function CheckoutPage() {
+  const { items, total, clearCart, isLoading: cartLoading } = useCart()
+  const { user, profile } = useAuth()
   const router = useRouter()
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-  const [selectedShipping, setSelectedShipping] = useState("standard")
   const [isProcessing, setIsProcessing] = useState(false)
 
-  // Shipping address form
-  const [shippingForm, setShippingForm] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    addressLine1: "",
-    addressLine2: "",
+  const [shippingAddress, setShippingAddress] = useState({
+    name: profile?.full_name || "",
+    address: "",
     city: "",
     postalCode: "",
-    country: "France",
+    country: "",
+    phone: "",
   })
 
-  useEffect(() => {
-    const savedCart = localStorage.getItem("spectrum_cart")
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart))
-    }
-  }, [])
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shippingCost = shippingMethods.find((m) => m.id === selectedShipping)?.price || 0
-  const total = subtotal + shippingCost
+  const shipping = total >= 50 ? 0 : 5
+  const grandTotal = total + shipping
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!user) {
+      router.push("/auth/login?redirect=/checkout")
+      return
+    }
+
+    if (items.length === 0) {
+      toast.error("Your cart is empty")
+      return
+    }
+
     setIsProcessing(true)
 
     try {
+      // Create checkout session
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: cartItems,
-          shippingAddress: shippingForm,
-          shippingMethod: selectedShipping,
-          shippingCost,
+          items: items.map((item) => ({
+            productId: item.product_id,
+            quantity: item.quantity,
+            price: item.products?.price,
+            vendorId: item.products?.vendor_id,
+          })),
+          shippingAddress,
+          total: grandTotal,
         }),
       })
 
       const data = await response.json()
 
+      if (data.error) {
+        toast.error(data.error)
+        setIsProcessing(false)
+        return
+      }
+
       if (data.url) {
+        // Redirect to Stripe Checkout
         window.location.href = data.url
-      } else {
-        throw new Error(data.error || "Failed to create checkout session")
+      } else if (data.orderId) {
+        // Order created successfully (demo mode)
+        await clearCart()
+        router.push(`/orders/${data.orderId}/success`)
       }
     } catch (error) {
-      console.error("[v0] Checkout error:", error)
-      alert("Une erreur est survenue. Veuillez réessayer.")
-    } finally {
+      toast.error("An error occurred. Please try again.")
       setIsProcessing(false)
     }
   }
 
-  if (cartItems.length === 0) {
+  if (cartLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <Package className="h-16 w-16 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground text-lg mb-4">Votre panier est vide</p>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container py-8">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 w-48 bg-muted rounded" />
+            <div className="h-64 bg-muted rounded" />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container py-8">
+          <div className="text-center py-16">
+            <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <h1 className="text-2xl font-bold mb-2">Your cart is empty</h1>
+            <p className="text-muted-foreground mb-6">Add some items to your cart before checking out.</p>
             <Button asChild>
-              <Link href="/products">Continuer mes achats</Link>
+              <Link href="/categories">Start Shopping</Link>
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </main>
+        <Footer />
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Button variant="ghost" asChild className="mb-6">
-        <Link href="/cart">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour au panier
-        </Link>
-      </Button>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 container py-8">
+        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
 
-      <h1 className="text-4xl font-bold text-balance mb-8">Finaliser la commande</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="grid lg:grid-cols-[1fr_400px] gap-8">
+            {/* Shipping Form */}
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Shipping Address</CardTitle>
+                  <CardDescription>Enter your delivery information</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input
+                      id="name"
+                      required
+                      value={shippingAddress.name}
+                      onChange={(e) => setShippingAddress({ ...shippingAddress, name: e.target.value })}
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="address">Address *</Label>
+                    <Input
+                      id="address"
+                      required
+                      value={shippingAddress.address}
+                      onChange={(e) => setShippingAddress({ ...shippingAddress, address: e.target.value })}
+                      placeholder="123 Main St, Apt 4"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="city">City *</Label>
+                      <Input
+                        id="city"
+                        required
+                        value={shippingAddress.city}
+                        onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })}
+                        placeholder="New York"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="postalCode">Postal Code *</Label>
+                      <Input
+                        id="postalCode"
+                        required
+                        value={shippingAddress.postalCode}
+                        onChange={(e) => setShippingAddress({ ...shippingAddress, postalCode: e.target.value })}
+                        placeholder="10001"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="country">Country *</Label>
+                      <Input
+                        id="country"
+                        required
+                        value={shippingAddress.country}
+                        onChange={(e) => setShippingAddress({ ...shippingAddress, country: e.target.value })}
+                        placeholder="United States"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={shippingAddress.phone}
+                        onChange={(e) => setShippingAddress({ ...shippingAddress, phone: e.target.value })}
+                        placeholder="+1 234 567 8900"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Shipping & Payment Forms */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Shipping Address */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="h-5 w-5" />
-                  Adresse de livraison
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <Label htmlFor="fullName">Nom complet *</Label>
-                    <Input
-                      id="fullName"
-                      required
-                      value={shippingForm.fullName}
-                      onChange={(e) => setShippingForm({ ...shippingForm, fullName: e.target.value })}
-                    />
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5" />
+                    Payment
+                  </CardTitle>
+                  <CardDescription>Secure payment powered by Stripe</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-muted/50 p-4 rounded-lg flex items-center gap-3">
+                    <Lock className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">Secure Checkout</p>
+                      <p className="text-xs text-muted-foreground">
+                        You&apos;ll be redirected to Stripe&apos;s secure payment page
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      required
-                      value={shippingForm.email}
-                      onChange={(e) => setShippingForm({ ...shippingForm, email: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Téléphone *</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      required
-                      value={shippingForm.phone}
-                      onChange={(e) => setShippingForm({ ...shippingForm, phone: e.target.value })}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="addressLine1">Adresse *</Label>
-                    <Input
-                      id="addressLine1"
-                      required
-                      value={shippingForm.addressLine1}
-                      onChange={(e) => setShippingForm({ ...shippingForm, addressLine1: e.target.value })}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="addressLine2">Complément d'adresse</Label>
-                    <Input
-                      id="addressLine2"
-                      value={shippingForm.addressLine2}
-                      onChange={(e) => setShippingForm({ ...shippingForm, addressLine2: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="city">Ville *</Label>
-                    <Input
-                      id="city"
-                      required
-                      value={shippingForm.city}
-                      onChange={(e) => setShippingForm({ ...shippingForm, city: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="postalCode">Code postal *</Label>
-                    <Input
-                      id="postalCode"
-                      required
-                      value={shippingForm.postalCode}
-                      onChange={(e) => setShippingForm({ ...shippingForm, postalCode: e.target.value })}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="country">Pays *</Label>
-                    <Input
-                      id="country"
-                      required
-                      value={shippingForm.country}
-                      onChange={(e) => setShippingForm({ ...shippingForm, country: e.target.value })}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
 
-            {/* Shipping Method */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Truck className="h-5 w-5" />
-                  Mode de livraison
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RadioGroup value={selectedShipping} onValueChange={setSelectedShipping}>
-                  <div className="space-y-3">
-                    {shippingMethods.map((method) => (
-                      <div
-                        key={method.id}
-                        className="flex items-center space-x-3 border rounded-lg p-4 hover:bg-muted/50 transition-colors"
-                      >
-                        <RadioGroupItem value={method.id} id={method.id} />
-                        <Label htmlFor={method.id} className="flex-1 cursor-pointer">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <p className="font-medium">{method.name}</p>
-                              <p className="text-sm text-muted-foreground">{method.description}</p>
-                            </div>
-                            <p className="font-semibold">
-                              {method.price === 0 ? "Gratuit" : `€${method.price.toFixed(2)}`}
-                            </p>
-                          </div>
-                        </Label>
+            {/* Order Summary */}
+            <div className="lg:sticky lg:top-24 h-fit">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Order Summary</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Items */}
+                  <div className="space-y-3 max-h-64 overflow-y-auto">
+                    {items.map((item) => (
+                      <div key={item.id} className="flex gap-3">
+                        <div className="relative h-16 w-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                          <Image
+                            src={item.products?.images?.[0] || `/placeholder.svg?height=64&width=64`}
+                            alt={item.products?.name || "Product"}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium line-clamp-1">{item.products?.name}</p>
+                          <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                          <p className="text-sm font-medium">
+                            ${((item.products?.price || 0) * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>
-                </RadioGroup>
-              </CardContent>
-            </Card>
-          </div>
 
-          {/* Order Summary */}
-          <div>
-            <Card className="sticky top-4">
-              <CardHeader>
-                <CardTitle>Récapitulatif</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Cart Items */}
-                <div className="space-y-3">
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="flex gap-3">
-                      <div className="w-16 h-16 bg-muted rounded overflow-hidden flex-shrink-0">
-                        <img
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{item.name}</p>
-                        <p className="text-sm text-muted-foreground">Qté: {item.quantity}</p>
-                      </div>
-                      <p className="text-sm font-medium">€{(item.price * item.quantity).toFixed(2)}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <Separator />
-
-                {/* Pricing */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Sous-total</span>
-                    <span className="font-medium">€{subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Livraison</span>
-                    <span className="font-medium">
-                      {shippingCost === 0 ? "Gratuit" : `€${shippingCost.toFixed(2)}`}
-                    </span>
-                  </div>
                   <Separator />
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span>€{total.toFixed(2)}</span>
+
+                  {/* Totals */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Subtotal</span>
+                      <span>${total.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Shipping</span>
+                      <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total</span>
+                      <span>${grandTotal.toFixed(2)}</span>
+                    </div>
                   </div>
-                </div>
 
-                <Button type="submit" className="w-full" size="lg" disabled={isProcessing}>
-                  {isProcessing ? "Traitement..." : "Payer maintenant"}
-                </Button>
+                  <Button type="submit" className="w-full" size="lg" disabled={isProcessing}>
+                    {isProcessing ? "Processing..." : `Pay $${grandTotal.toFixed(2)}`}
+                  </Button>
 
-                <p className="text-xs text-muted-foreground text-center">Paiement sécurisé par Stripe</p>
-              </CardContent>
-            </Card>
+                  <p className="text-xs text-center text-muted-foreground">
+                    By placing this order, you agree to our{" "}
+                    <Link href="/terms" className="underline">
+                      Terms of Service
+                    </Link>
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </main>
+      <Footer />
     </div>
   )
 }
