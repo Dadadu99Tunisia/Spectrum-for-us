@@ -1,100 +1,127 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import Stripe from "stripe"
-import { createClient } from "@/lib/supabase/server"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-11-20.acacia",
+  apiVersion: "2024-06-20",
 })
 
-export async function POST(request: NextRequest) {
+interface CheckoutItem {
+  productId: string
+  name: string
+  price: number
+  quantity: number
+  image?: string
+  vendorId: string
+}
+
+interface ShippingAddress {
+  email: string
+  firstName: string
+  lastName: string
+  address: string
+  city: string
+  postalCode: string
+  country: string
+  phone?: string
+}
+
+export async function POST(request: Request) {
   try {
-    const { items, shippingAddress, shippingMethodsByVendor } = await request.json()
-
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    const body = await request.json()
+    const { items, shippingAddress, shippingMethod } = body as {
+      items: CheckoutItem[]
+      shippingAddress: ShippingAddress
+      shippingMethod: string
     }
 
-    const vendorGroups = items.reduce((acc: any, item: any) => {
-      if (!acc[item.vendor_id]) {
-        acc[item.vendor_id] = {
-          items: [],
-          subtotal: 0,
-          shippingCost: 0,
-        }
-      }
-      acc[item.vendor_id].items.push(item)
-      acc[item.vendor_id].subtotal += item.price * item.quantity
-      acc[item.vendor_id].shippingCost = shippingMethodsByVendor[item.vendor_id]?.price || 0
-      return acc
-    }, {})
-
-    // Create line items for Stripe (all vendors combined)
-    const lineItems = []
-    for (const vendorId in vendorGroups) {
-      const group = vendorGroups[vendorId]
-
-      // Add product items
-      for (const item of group.items) {
-        lineItems.push({
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: item.name,
-              images: item.image ? [item.image] : [],
-              metadata: {
-                vendor_id: vendorId,
-              },
-            },
-            unit_amount: Math.round(item.price * 100),
-          },
-          quantity: item.quantity,
-        })
-      }
-
-      // Add shipping for this vendor
-      if (group.shippingCost > 0) {
-        lineItems.push({
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: `Livraison - ${shippingMethodsByVendor[vendorId]?.name || "Standard"}`,
-              metadata: {
-                vendor_id: vendorId,
-                type: "shipping",
-              },
-            },
-            unit_amount: Math.round(group.shippingCost * 100),
-          },
-          quantity: 1,
-        })
-      }
+    if (!items || items.length === 0) {
+      return NextResponse.json({ error: "Aucun article dans le panier." }, { status: 400 })
     }
 
+    // Create line items for Stripe
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item) => ({
+      price_data: {
+        currency: "eur",
+        product_data: {
+          name: item.name,
+          images: item.image ? [item.image] : [],
+          metadata: {
+            productId: item.productId,
+            vendorId: item.vendorId,
+          },
+        },
+        unit_amount: item.price, // Already in cents from frontend
+      },
+      quantity: item.quantity,
+    }))
+
+    // Calculate subtotal
+    const subtotal = items.reduce((sum, item) => sum + (item.price / 100) * item.quantity, 0)
+
+    // Add shipping cost
+    let shippingCost = 0
+    if (shippingMethod === "express") {
+      shippingCost = 799 // 7.99€ in cents
+    } else if (subtotal < 50) {
+      shippingCost = 499 // 4.99€ in cents
+    }
+
+    if (shippingCost > 0) {
+      lineItems.push({
+        price_data: {
+          currency: "eur",
+          product_data: {
+            name: shippingMethod === "express" ? "Livraison express" : "Frais de livraison",
+          },
+          unit_amount: shippingCost,
+        },
+        quantity: 1,
+      })
+    }
+
+    // Group items by vendor for metadata
+    const vendorIds = [...new Set(items.map((item) => item.vendorId))]
+
+    // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cart/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout`,
-      customer_email: shippingAddress.email,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL}/checkout`,
+      customer_email: shippingAddress?.email,
       metadata: {
-        userId: user.id,
-        vendorGroups: JSON.stringify(vendorGroups),
+        vendorIds: vendorIds.join(","),
+        shippingMethod,
+        customerName: `${shippingAddress?.firstName} ${shippingAddress?.lastName}`,
         shippingAddress: JSON.stringify(shippingAddress),
       },
-      shipping_address_collection: {
-        allowed_countries: ["FR", "BE", "CH", "LU", "MC", "DE", "ES", "IT", "PT", "NL"],
-      },
+      shipping_options:
+        shippingCost === 0
+          ? undefined
+          : [
+              {
+                shipping_rate_data: {
+                  type: "fixed_amount",
+                  fixed_amount: {
+                    amount: 0,
+                    currency: "eur",
+                  },
+                  display_name: "Inclus dans le total",
+                },
+              },
+            ],
     })
 
-    return NextResponse.json({ url: session.url })
+    return NextResponse.json({
+      sessionId: session.id,
+      url: session.url,
+    })
   } catch (error) {
-    console.error("Stripe checkout error:", error)
-    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
+    console.error("Checkout error:", error)
+    return NextResponse.json(
+      { error: "Une erreur est survenue lors de la création de la session de paiement." },
+      { status: 500 },
+    )
   }
 }
