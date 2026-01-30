@@ -1,11 +1,10 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import "./accessibility.css"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
-import MobileNavigationBar from "@/components/mobile-navigation-bar"
+import EditorialHeader from "@/components/editorial-header"
+import EditorialFooter from "@/components/editorial-footer"
 import { Toaster } from "@/components/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/components/providers/auth-provider"
@@ -15,26 +14,41 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   preload: true,
+  variable: "--font-sans",
+})
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+  variable: "--font-serif",
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+  variable: "--font-mono",
 })
 
 export const metadata: Metadata = {
   title: {
-    default: "Spectrum - Marketplace Inclusif",
+    default: "Spectrum For Us - Community Marketplace",
     template: "%s | Spectrum",
   },
   description:
-    "Découvrez Spectrum, la première marketplace inclusive dédiée à la diversité et à l'inclusion. Trouvez des produits authentiques créés par et pour les communautés LGBTQIA+.",
-  keywords: ["marketplace", "inclusif", "LGBTQIA+", "diversité", "inclusion", "produits éthiques"],
+    "An avant-garde, community-driven marketplace celebrating queer creativity, artistry, and authentic expression. For Us, By Us.",
+  keywords: ["marketplace", "LGBTQIA+", "queer", "art", "community", "creators"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://spectrum-marketplace.vercel.app"),
   openGraph: {
     type: "website",
-    locale: "fr_FR",
+    locale: "en_US",
     url: "/",
-    title: "Spectrum - Marketplace Inclusif",
-    description: "La première marketplace inclusive dédiée à la diversité et à l'inclusion.",
-    siteName: "Spectrum",
+    title: "Spectrum For Us - Community Marketplace",
+    description: "An avant-garde marketplace celebrating queer creativity and authentic expression.",
+    siteName: "Spectrum For Us",
   },
-    generator: 'v0.app'
+  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -43,23 +57,27 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta name="theme-color" content="#8b5cf6" />
+        <meta name="theme-color" content="#09090b" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
-      <body className={inter.className} suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+      <body
+        className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+        suppressHydrationWarning
+      >
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           <LocaleProvider>
             <AuthProvider>
               <div className="min-h-screen flex flex-col">
-                <Header />
-                <main className="flex-1 pb-16 md:pb-0">{children}</main>
-                <Footer />
-                <MobileNavigationBar />
+                <EditorialHeader />
+                <main className="flex-1">{children}</main>
+                <EditorialFooter />
               </div>
               <Toaster />
+              {/* Subtle noise texture overlay */}
+              <div className="noise-overlay" aria-hidden="true" />
             </AuthProvider>
           </LocaleProvider>
         </ThemeProvider>
