@@ -1,182 +1,119 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { redirect } from "next/navigation"
 import Link from "next/link"
-import { Package, Truck, CheckCircle, XCircle } from "lucide-react"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { ArrowRight, ShoppingBag } from "lucide-react"
 
 export default async function OrdersPage() {
   const supabase = await createClient()
-
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/login")
+    redirect("/auth/login?redirect=/orders")
   }
 
-  // Fetch user's orders with items
   const { data: orders } = await supabase
     .from("orders")
     .select(`
       *,
-      shipping_addresses (*),
-      shipping_methods (*),
       order_items (
         *,
-        products (*),
-        services (*)
+        products (name, images)
       )
     `)
-    .eq("user_id", user.id)
+    .eq("customer_id", user.id)
     .order("created_at", { ascending: false })
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "delivered":
-        return <CheckCircle className="h-5 w-5 text-green-600" />
-      case "shipped":
-        return <Truck className="h-5 w-5 text-blue-600" />
-      case "cancelled":
-      case "refunded":
-        return <XCircle className="h-5 w-5 text-red-600" />
-      default:
-        return <Package className="h-5 w-5 text-orange-600" />
-    }
-  }
-
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-      pending: "secondary",
-      paid: "default",
-      processing: "default",
-      shipped: "default",
-      delivered: "outline",
-      cancelled: "destructive",
-      refunded: "destructive",
+    const statusColors: Record<string, string> = {
+      pending: "bg-yellow-100 text-yellow-700",
+      processing: "bg-blue-100 text-blue-700",
+      shipped: "bg-purple-100 text-purple-700",
+      delivered: "bg-green-100 text-green-700",
+      cancelled: "bg-red-100 text-red-700",
+      refunded: "bg-gray-100 text-gray-700",
     }
-    return variants[status] || "default"
-  }
-
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, string> = {
-      pending: "En attente",
-      paid: "Payée",
-      processing: "En préparation",
-      shipped: "Expédiée",
-      delivered: "Livrée",
-      cancelled: "Annulée",
-      refunded: "Remboursée",
-    }
-    return labels[status] || status
+    return statusColors[status] || "bg-gray-100 text-gray-700"
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-balance mb-8">Mes commandes</h1>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 container py-8">
+        <h1 className="text-3xl font-bold mb-8">My Orders</h1>
 
-      {!orders || orders.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <Package className="h-16 w-16 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground text-lg mb-4">Vous n'avez pas encore de commandes</p>
-            <Button asChild>
-              <Link href="/products">Découvrir nos produits</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-6">
-          {orders.map((order) => (
-            <Card key={order.id}>
-              <CardHeader>
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    {getStatusIcon(order.status)}
+        {orders && orders.length > 0 ? (
+          <div className="space-y-4">
+            {orders.map((order) => (
+              <Card key={order.id}>
+                <CardHeader>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                      <CardTitle className="text-lg">Commande #{order.id.slice(0, 8)}</CardTitle>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(order.created_at).toLocaleDateString("fr-FR", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </p>
+                      <CardTitle className="text-lg">Order #{order.id.slice(0, 8)}</CardTitle>
+                      <CardDescription>Placed on {new Date(order.created_at).toLocaleDateString()}</CardDescription>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <Badge className={getStatusBadge(order.status)}>{order.status}</Badge>
+                      <span className="font-bold">${order.total_amount.toFixed(2)}</span>
                     </div>
                   </div>
-                  <Badge variant={getStatusBadge(order.status)}>{getStatusLabel(order.status)}</Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Order Items */}
-                <div className="space-y-3">
-                  {order.order_items?.map((item: any) => {
-                    const product = item.products || item.services
-                    return (
-                      <div key={item.id} className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-muted rounded overflow-hidden flex-shrink-0">
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-4 mb-4">
+                    {order.order_items?.slice(0, 4).map((item: any) => (
+                      <div key={item.id} className="flex items-center gap-3">
+                        <div className="h-12 w-12 rounded-lg overflow-hidden bg-muted">
                           <img
-                            src={product?.image_url || "/placeholder.svg"}
-                            alt={product?.name}
+                            src={item.products?.images?.[0] || `/placeholder.svg?height=48&width=48`}
+                            alt={item.products?.name}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <div className="flex-1">
-                          <p className="font-medium">{product?.name}</p>
-                          <p className="text-sm text-muted-foreground">Quantité: {item.quantity}</p>
+                        <div>
+                          <p className="text-sm font-medium line-clamp-1">{item.products?.name}</p>
+                          <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
                         </div>
-                        <p className="font-medium">€{item.subtotal}</p>
                       </div>
-                    )
-                  })}
-                </div>
-
-                {/* Shipping Info */}
-                {order.shipping_addresses && (
-                  <div className="border-t pt-4">
-                    <p className="text-sm font-medium mb-2">Adresse de livraison</p>
+                    ))}
+                    {order.order_items?.length > 4 && (
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        +{order.order_items.length - 4} more items
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">
-                      {order.shipping_addresses.full_name}
-                      <br />
-                      {order.shipping_addresses.address_line1}
-                      <br />
-                      {order.shipping_addresses.address_line2 && (
-                        <>
-                          {order.shipping_addresses.address_line2}
-                          <br />
-                        </>
-                      )}
-                      {order.shipping_addresses.postal_code} {order.shipping_addresses.city}
-                      <br />
-                      {order.shipping_addresses.country}
+                      {order.order_items?.length} {order.order_items?.length === 1 ? "item" : "items"}
                     </p>
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href={`/orders/${order.id}`}>
+                        View Details
+                        <ArrowRight className="h-4 w-4 ml-1" />
+                      </Link>
+                    </Button>
                   </div>
-                )}
-
-                {/* Tracking */}
-                {order.tracking_number && (
-                  <div className="border-t pt-4">
-                    <p className="text-sm font-medium mb-1">Numéro de suivi</p>
-                    <p className="text-sm font-mono text-muted-foreground">{order.tracking_number}</p>
-                  </div>
-                )}
-
-                {/* Total */}
-                <div className="border-t pt-4 flex justify-between items-center">
-                  <span className="font-medium">Total</span>
-                  <span className="text-xl font-bold">€{order.total_price}</span>
-                </div>
-
-                <Button asChild variant="outline" className="w-full bg-transparent">
-                  <Link href={`/orders/${order.id}`}>Voir les détails</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <h2 className="text-xl font-semibold mb-2">No orders yet</h2>
+            <p className="text-muted-foreground mb-6">When you place an order, it will appear here.</p>
+            <Button asChild>
+              <Link href="/categories">Start Shopping</Link>
+            </Button>
+          </div>
+        )}
+      </main>
+      <Footer />
     </div>
   )
 }

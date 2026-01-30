@@ -29,10 +29,13 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect vendor dashboard routes
-  if (request.nextUrl.pathname.startsWith("/dashboard") && !user) {
+  // Protected routes that require authentication
+  const protectedRoutes = ["/dashboard", "/checkout", "/orders", "/wishlist", "/settings"]
+  const isProtectedRoute = protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
+
+  if (!user && isProtectedRoute) {
     const url = request.nextUrl.clone()
-    url.pathname = "/login"
+    url.pathname = "/auth/login"
     return NextResponse.redirect(url)
   }
 
