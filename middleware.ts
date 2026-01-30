@@ -2,7 +2,26 @@ import { updateSession } from "@/lib/supabase/middleware"
 import type { NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+  // Update Supabase session
+  const response = await updateSession(request)
+
+  // Security headers
+  response.headers.set("X-Frame-Options", "DENY")
+  response.headers.set("X-Content-Type-Options", "nosniff")
+  response.headers.set("Referrer-Policy", "origin-when-cross-origin")
+
+  // CORS for API routes
+  if (request.nextUrl.pathname.startsWith("/api/")) {
+    response.headers.set("Access-Control-Allow-Origin", "*")
+    response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 200, headers: response.headers })
+    }
+  }
+
+  return response
 }
 
 export const config = {
