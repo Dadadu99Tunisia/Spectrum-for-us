@@ -60,14 +60,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta name="theme-color" content="#09090b" />
+        <meta name="theme-color" content="#ffffff" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
       <body
         className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <LocaleProvider>
             <AuthProvider>
               <div className="min-h-screen flex flex-col">
@@ -76,8 +76,6 @@ export default function RootLayout({
                 <EditorialFooter />
               </div>
               <Toaster />
-              {/* Subtle noise texture overlay */}
-              <div className="noise-overlay" aria-hidden="true" />
             </AuthProvider>
           </LocaleProvider>
         </ThemeProvider>
