@@ -1,20 +1,51 @@
-# Salut, moi c'est Dada ! 👋
+# 🚀 Aïcha Chennaoui | Manager de Projet Stratégique & Future Experte Data-Cyber
 
-### 🚀 Future Data & Cyber Specialist | En route vers Jedha Bootcamp
+![Banner](https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=Aïcha%20Chennaoui&fontSize=70&animation=fadeIn)
 
-Anciennement engagée dans le secteur des **Droits Humains**, je transitionne aujourd'hui vers la **Tech**. Je suis convaincue que la donnée et la sécurité sont les nouveaux piliers de l'impact social.
+### 🌟 À propos de moi
+Manager de projet certifiée (**Double Diplôme ESCG/PPA/ECEMA**) avec plus de 10 ans d'expérience internationale. De la logistique du festival **Chouftouhonna** à la communication des **Journées Cinématographiques de Carthage**, j'ai orchestré des projets où la donnée et l'image se rencontrent. 
 
-- 🛠 **Compétences en cours :** Python, SQL, Next.js, Supabase & Git.
-- 🔭 **Projet phare :** Développement d'un Marketplace inclusif (Next.js 15, Stripe, Supabase).
-- 💬 **Objectif :** Intégrer Jedha Bootcamp pour devenir experte en Cybersécurité / Data.
+Mon nouveau challenge ? Maîtriser les briques technologiques (**Data & Cybersecurity**) pour piloter des projets tech sécurisés, éthiques et performants.
+
+---
+
+### 🎓 Mon Background "Elite"
+- **Master Double Diplôme (2022)** : Responsable d'affaires internationales & Manager de projet (Marketing & Stratégie Digitale).
+- **Bachelor IESA Paris (2018)** : Marché de l'art & Métiers de la culture.
 
 ---
 
-### 📊 Mes Statistiques GitHub
-
-![Stats de Dada](https://github-readme-stats.vercel.app/api?username=Dadadu99Tunisia&show_icons=true&theme=radical)
-
-![Top Langages](https://github-readme-stats.vercel.app/api/top-langs/?username=Dadadu99Tunisia&layout=compact&theme=radical)
+### 🛠 Tech Stack & Expertise
+| Stratégie & Management | Digital & Design | Tech & Data (En cours) |
+| :--- | :--- | :--- |
+| 🌍 Business Dev International | 🎨 Direction Artistique (Adobe Suite) | 🐍 Python & SQL |
+| 📊 Analyse de Performance | 📱 Stratégie Social Media 360° | 🚀 Next.js 15 & React |
+| 🏗 Logistique & Régie | ✍️ Relations Presse & Plaidoyer | 🔐 Supabase & Security |
 
 ---
-*« Utiliser la technologie pour protéger et servir les communautés. »*
+
+### ⚡ Projet Phare : [Spectrum for Us]
+> **Le challenge :** Créer une Marketplace inclusive LGBTQIA+ multi-vendeurs de A à Z.
+- **Le Stack :** Next.js 15 (App Router), TypeScript, Tailwind CSS, Supabase, Stripe.
+- **La Vision :** Un projet qui synthétise mes engagements passés (Droits Humains) et mes compétences futures (Architecture de données).
+
+---
+
+### 📈 Mes Statistiques GitHub
+<p align="center">
+<img src="https://github-readme-stats.vercel.app/api?username=Dadadu99Tunisia&show_icons=true&theme=radical&hide_border=true&include_all_commits=true" alt="Stats de Aïcha" />
+</p>
+
+<p align="center">
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Dadadu99Tunisia&layout=compact&theme=radical&hide_border=true" alt="Langages les plus utilisés" />
+</p>
+
+---
+
+### 🤝 Contact & Networking
+- 📧 **Email :** [chennaoui.aicha@gmail.com](mailto:chennaoui.aicha@gmail.com)
+- 💼 **LinkedIn :** [linkedin.com/in/aicha-chennaoui](https://www.linkedin.com/in/aicha-chennaoui/)
+- 📍 **Localisation :** Paris / Aubervilliers (Disponible pour des projets impactants)
+
+---
+*« Transformer la complexité logistique en fluidité numérique. »*
