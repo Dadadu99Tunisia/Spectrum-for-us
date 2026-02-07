@@ -1,51 +1,43 @@
-# 🚀 Aïcha Chennaoui | Manager de Projet Stratégique & Future Experte Data-Cyber
+# 🚀 Aïcha Chennaoui | Data-Driven Strategist & AI Architect
 
-![Banner](https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=Aïcha%20Chennaoui&fontSize=70&animation=fadeIn)
+![Banner](https://capsule-render.vercel.app/api?type=waving&color=00ffab&height=180&section=header&text=DATA%20SCIENCE%20%26%20AI&fontSize=50&animation=fadeIn&fontAlignY=40)
 
-### 🌟 À propos de moi
-Manager de projet certifiée (**Double Diplôme ESCG/PPA/ECEMA**) avec plus de 10 ans d'expérience internationale. De la logistique du festival **Chouftouhonna** à la communication des **Journées Cinématographiques de Carthage**, j'ai orchestré des projets où la donnée et l'image se rencontrent. 
-
-Mon nouveau challenge ? Maîtriser les briques technologiques (**Data & Cybersecurity**) pour piloter des projets tech sécurisés, éthiques et performants.
+### ⚡ Ma Mission : Allier l'Intelligence Artificielle à l'Impact Réel
+Forte de **10 ans de pilotage stratégique** à l'international, j'ai orchestré des projets où la gestion de flux et la communication étaient reines. Aujourd'hui, je fusionne ce bagage de **Manager (Master Double Diplôme)** avec l'**Ingénierie de la donnée** pour concevoir des systèmes intelligents, sécurisés et éthiques.
 
 ---
 
-### 🎓 Mon Background "Elite"
-- **Master Double Diplôme (2022)** : Responsable d'affaires internationales & Manager de projet (Marketing & Stratégie Digitale).
-- **Bachelor IESA Paris (2018)** : Marché de l'art & Métiers de la culture.
-
----
-
-### 🛠 Tech Stack & Expertise
-| Stratégie & Management | Digital & Design | Tech & Data (En cours) |
+### 🛠 Tech Stack "Full Intelligence"
+| 🧠 Intelligence Artificielle | 📊 Data Engineering | 🚀 Architecture Moderne |
 | :--- | :--- | :--- |
-| 🌍 Business Dev International | 🎨 Direction Artistique (Adobe Suite) | 🐍 Python & SQL |
-| 📊 Analyse de Performance | 📱 Stratégie Social Media 360° | 🚀 Next.js 15 & React |
-| 🏗 Logistique & Régie | ✍️ Relations Presse & Plaidoyer | 🔐 Supabase & Security |
+| **Machine Learning** (Scikit-Learn) | **Python** (Pandas, Numpy) | **Next.js 15** & React |
+| **Automation** (API OpenAI, LangChain) | **SQL** (PostgreSQL) | **Supabase** (Backend-as-a-Service) |
+| **NLP** & Systèmes de Recommandation | **DataViz** (Matplotlib, Seaborn) | **Stripe API** & Cloud Ops |
 
 ---
 
-### ⚡ Projet Phare : [Spectrum for Us]
-> **Le challenge :** Créer une Marketplace inclusive LGBTQIA+ multi-vendeurs de A à Z.
-- **Le Stack :** Next.js 15 (App Router), TypeScript, Tailwind CSS, Supabase, Stripe.
-- **La Vision :** Un projet qui synthétise mes engagements passés (Droits Humains) et mes compétences futures (Architecture de données).
+### 📁 Projet Pilote : [Spectrum for Us]
+*Conception d'un écosystème Marketplace intelligent et inclusif.*
+- **L'IA au service de l'inclusion :** Intégration de modèles d'automatisation pour le contenu et accessibilité augmentée (RTL, Dyslexia-friendly).
+- **Architecture :** Infrastructure serverless haute performance avec gestion de données transactionnelles sécurisées.
 
 ---
 
-### 📈 Mes Statistiques GitHub
+### 📊 Mes Metrics GitHub
 <p align="center">
-<img src="https://github-readme-stats.vercel.app/api?username=Dadadu99Tunisia&show_icons=true&theme=radical&hide_border=true&include_all_commits=true" alt="Stats de Aïcha" />
+<img src="https://github-readme-stats.vercel.app/api?username=Dadadu99Tunisia&show_icons=true&theme=tokyonight&hide_border=true&count_private=true" alt="Stats de Aïcha" />
 </p>
 
 <p align="center">
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Dadadu99Tunisia&layout=compact&theme=radical&hide_border=true" alt="Langages les plus utilisés" />
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Dadadu99Tunisia&layout=compact&theme=tokyonight&hide_border=true" alt="Top Langages" />
 </p>
 
 ---
 
-### 🤝 Contact & Networking
-- 📧 **Email :** [chennaoui.aicha@gmail.com](mailto:chennaoui.aicha@gmail.com)
-- 💼 **LinkedIn :** [linkedin.com/in/aicha-chennaoui](https://www.linkedin.com/in/aicha-chennaoui/)
-- 📍 **Localisation :** Paris / Aubervilliers (Disponible pour des projets impactants)
+### 🎯 Prochaine Étape : Jedha Fullstack
+Je rejoins le cursus **Data Fullstack & IA** de Jedha pour certifier mon expertise en déploiement de modèles prédictifs et renforcer la sécurité des flux de données.
+
+[💼 LinkedIn](https://www.linkedin.com/in/aicha-chennaoui/) | [✉️ Contact](mailto:chennaoui.aicha@gmail.com) | [📍 Paris / Aubervilliers]
 
 ---
-*« Transformer la complexité logistique en fluidité numérique. »*
+*« On ne prévoit pas l'avenir, on le code. »*
