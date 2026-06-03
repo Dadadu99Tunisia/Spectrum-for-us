@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { WebsiteJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { Hero } from "@/components/sections/Hero";
 import { Manifeste } from "@/components/sections/Manifeste";
 import { Univers } from "@/components/sections/Univers";
@@ -13,6 +14,8 @@ import { AccessibilityBar } from "@/components/AccessibilityBar";
 export default function Home() {
   return (
     <>
+      <WebsiteJsonLd />
+      <OrganizationJsonLd />
       <Header />
       <main>
         <Hero />

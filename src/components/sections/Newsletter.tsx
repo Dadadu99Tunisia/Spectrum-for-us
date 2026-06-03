@@ -10,9 +10,24 @@ export function Newsletter() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) setSubmitted(true);
+    if (!email) return;
+    setError("");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source: "homepage" }),
+      });
+      const data = await res.json();
+      if (data.success) setSubmitted(true);
+      else setError(data.error || "Erreur, réessaie.");
+    } catch {
+      setError("Erreur réseau.");
+    }
   };
 
   return (
@@ -52,6 +67,8 @@ export function Newsletter() {
               </span>
             </div>
           ) : (
+            <>
+            {error && <p className="font-hanken text-sm text-red-400 mb-3">{error}</p>}
             <form onSubmit={handleSubmit} className="flex gap-3 max-w-md mx-auto">
               <input
                 type="email"
@@ -69,6 +86,7 @@ export function Newsletter() {
                 <ArrowRight size={14} />
               </button>
             </form>
+            </>
           )}
         </div>
       </div>

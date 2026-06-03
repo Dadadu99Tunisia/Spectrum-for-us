@@ -5,6 +5,8 @@ import { CustomCursor } from "@/components/animations/CustomCursor";
 import { PrismParticles } from "@/components/animations/PrismParticles";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { I18nProvider } from "@/contexts/I18nContext";
+import { Suspense } from "react";
+import { ReferralTracker } from "@/components/ReferralTracker";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -31,13 +33,55 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Spectrum For Us — B(u)y us, for us.",
+  metadataBase: new URL("https://spectrumforus.com"),
+  title: {
+    default: "Spectrum For Us — B(u)y us, for us.",
+    template: "%s | Spectrum For Us",
+  },
   description:
-    "La première marketplace queer francophone. Créations, services et événements par et pour la communauté LGBTQIA+.",
+    "La première marketplace queer francophone. Créations, services et événements par et pour la communauté LGBTQIA+. Mode non-genrée, art, beauté, bien-être.",
+  keywords: [
+    "marketplace queer", "LGBTQIA+", "mode non-genrée", "artisans queer",
+    "boutique inclusive", "communauté queer", "spectrum for us",
+    "mode inclusive", "créateurs queer", "shop queer france",
+  ],
+  authors: [{ name: "Spectrum For Us", url: "https://spectrumforus.com" }],
+  creator: "Spectrum For Us",
+  publisher: "Spectrum For Us",
   openGraph: {
-    title: "Spectrum For Us",
-    description: "B(u)y us, for us.",
+    title: "Spectrum For Us — B(u)y us, for us.",
+    description: "La première marketplace queer francophone. Des créations faites avec amour, pour tout le spectre.",
+    url: "https://spectrumforus.com",
     siteName: "Spectrum For Us",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Spectrum For Us — B(u)y us, for us.",
+      },
+    ],
+    locale: "fr_FR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Spectrum For Us — B(u)y us, for us.",
+    description: "La première marketplace queer francophone.",
+    images: ["/og-image.jpg"],
+    creator: "@spectrumforus",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  alternates: {
+    canonical: "https://spectrumforus.com",
+    languages: {
+      "fr-FR": "https://spectrumforus.com",
+      "en-GB": "https://spectrumforus.com",
+    },
   },
 };
 
@@ -56,6 +100,9 @@ export default function RootLayout({
         <PrismParticles />
         <AuthProvider>
           <I18nProvider>
+            <Suspense fallback={null}>
+              <ReferralTracker />
+            </Suspense>
             {children}
           </I18nProvider>
         </AuthProvider>
