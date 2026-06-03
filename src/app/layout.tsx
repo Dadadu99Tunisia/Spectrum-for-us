@@ -4,6 +4,7 @@ import "./globals.css";
 import { CustomCursor } from "@/components/animations/CustomCursor";
 import { PrismParticles } from "@/components/animations/PrismParticles";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { I18nProvider } from "@/contexts/I18nContext";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -54,7 +55,9 @@ export default function RootLayout({
         <CustomCursor />
         <PrismParticles />
         <AuthProvider>
-          {children}
+          <I18nProvider>
+            {children}
+          </I18nProvider>
         </AuthProvider>
       </body>
     </html>

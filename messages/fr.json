@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "discover": "Découvrir",
+    "creators": "Créateur·rice·s",
+    "experiences": "Expériences",
+    "sell": "Vendre ici",
+    "cart": "Panier",
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "account": "Mon compte",
+    "logout": "Se déconnecter"
+  },
+  "hero": {
+    "tagline": "B(u)y us, for us.",
+    "subtitle": "La première marketplace queer francophone. Des créations faites avec amour, pour tout le spectre.",
+    "cta_discover": "Explorer les créations",
+    "cta_sell": "Ouvrir ma boutique"
+  },
+  "subscription": {
+    "title": "Abonnement Vendeur·euse",
+    "price": "35€ / mois",
+    "description": "Accès illimité à ta boutique, zéro commission sur les 3 premiers mois.",
+    "features": [
+      "Boutique personnalisée",
+      "Produits illimités",
+      "Tableau de bord analytics",
+      "Support prioritaire",
+      "Mise en avant communautaire"
+    ],
+    "cta": "Activer mon abonnement",
+    "active": "Abonnement actif ✓",
+    "inactive": "Abonnement inactif",
+    "expires": "Expire le"
+  },
+  "blog": {
+    "title": "Média Spectrum",
+    "subtitle": "Histoires, modes de vie, actualités queer.",
+    "read_more": "Lire l'article",
+    "categories": {
+      "editorial": "Éditorial",
+      "lifestyle": "Lifestyle",
+      "culture": "Culture",
+      "news": "Actualités",
+      "guide": "Guide"
+    }
+  },
+  "ambassador": {
+    "title": "Programme Ambassadeur·rice",
+    "subtitle": "Partage Spectrum For Us et gagne une commission sur chaque vente générée.",
+    "commission": "10% de commission",
+    "join": "Rejoindre le programme",
+    "your_code": "Ton code ambassadeur·rice",
+    "earnings": "Tes gains",
+    "referrals": "Parrainages"
+  },
+  "currency": {
+    "EUR": "Euro €",
+    "USD": "Dollar $",
+    "GBP": "Livre £",
+    "MAD": "Dirham MAD",
+    "TND": "Dinar TND"
+  },
+  "common": {
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "publish": "Publier",
+    "draft": "Brouillon",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier"
+  }
+}

@@ -23,12 +23,15 @@ export async function updateSession(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Protect vendor dashboard
+  // Protect routes
   if (request.nextUrl.pathname.startsWith("/vendeur") && !user) {
     return NextResponse.redirect(new URL("/auth?redirect=/vendeur", request.url));
   }
   if (request.nextUrl.pathname.startsWith("/compte") && !user) {
     return NextResponse.redirect(new URL("/auth?redirect=/compte", request.url));
+  }
+  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
+    return NextResponse.redirect(new URL("/auth?redirect=/admin", request.url));
   }
 
   return supabaseResponse;

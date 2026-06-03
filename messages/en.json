@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "discover": "Discover",
+    "creators": "Creators",
+    "experiences": "Experiences",
+    "sell": "Sell here",
+    "cart": "Cart",
+    "login": "Login",
+    "signup": "Sign up",
+    "account": "My account",
+    "logout": "Log out"
+  },
+  "hero": {
+    "tagline": "B(u)y us, for us.",
+    "subtitle": "The first French-speaking queer marketplace. Creations made with love, for the whole spectrum.",
+    "cta_discover": "Explore creations",
+    "cta_sell": "Open my shop"
+  },
+  "subscription": {
+    "title": "Vendor Subscription",
+    "price": "€35 / month",
+    "description": "Unlimited access to your shop, zero commission for the first 3 months.",
+    "features": [
+      "Personalized shop",
+      "Unlimited products",
+      "Analytics dashboard",
+      "Priority support",
+      "Community spotlight"
+    ],
+    "cta": "Activate my subscription",
+    "active": "Active subscription ✓",
+    "inactive": "Inactive subscription",
+    "expires": "Expires on"
+  },
+  "blog": {
+    "title": "Spectrum Media",
+    "subtitle": "Stories, lifestyles, queer news.",
+    "read_more": "Read article",
+    "categories": {
+      "editorial": "Editorial",
+      "lifestyle": "Lifestyle",
+      "culture": "Culture",
+      "news": "News",
+      "guide": "Guide"
+    }
+  },
+  "ambassador": {
+    "title": "Ambassador Program",
+    "subtitle": "Share Spectrum For Us and earn a commission on every sale you generate.",
+    "commission": "10% commission",
+    "join": "Join the program",
+    "your_code": "Your ambassador code",
+    "earnings": "Your earnings",
+    "referrals": "Referrals"
+  },
+  "currency": {
+    "EUR": "Euro €",
+    "USD": "Dollar $",
+    "GBP": "Pound £",
+    "MAD": "Dirham MAD",
+    "TND": "Dinar TND"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "publish": "Publish",
+    "draft": "Draft",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort"
+  }
+}

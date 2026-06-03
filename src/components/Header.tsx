@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/Button";
 import { ShoppingBag, Menu, X, Search, User, LogOut, Store, ChevronDown } from "lucide-react";
 import { useCart } from "@/store/cart";
 import { useAuth } from "@/contexts/AuthContext";
+import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 
 const navLinks = [
   { label: "Créations", href: "/decouvrir?type=produit" },
   { label: "Services", href: "/decouvrir?type=service" },
   { label: "Expériences", href: "/decouvrir?type=experience" },
-  { label: "Créateur·rice·s", href: "/#createurs" },
-  { label: "À propos", href: "/#manifeste" },
+  { label: "Média", href: "/media" },
+  { label: "Ambassadeur·rices", href: "/ambassadeurs" },
 ];
 
 export function Header() {
@@ -84,6 +85,11 @@ export function Header() {
             className="p-2 text-[#F3EADB]/60 hover:text-[#F3EADB] transition-colors hidden md:flex">
             <Search size={18} />
           </Link>
+
+          {/* Locale + Currency */}
+          <div className="hidden md:flex">
+            <LocaleSwitcher />
+          </div>
 
           {/* Cart */}
           <Link href="/panier" aria-label={`Panier — ${cartCount} article${cartCount > 1 ? "s" : ""}`}
