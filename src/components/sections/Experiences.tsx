@@ -147,7 +147,7 @@ export function Experiences() {
                           key={t.name}
                           className="px-3 py-1.5 rounded-full border border-[#F3EADB]/15 text-xs font-hanken text-[#F3EADB]/70 hover:border-[#E0337E]/50 hover:text-[#E0337E] transition-all duration-200"
                         >
-                          {t.name} — {t.price}
+                          {t.name} · {t.price}
                         </button>
                       ))}
                     </div>

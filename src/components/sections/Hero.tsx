@@ -53,7 +53,7 @@ export function Hero() {
       "radial-gradient(ellipse 70% 60% at 50% 60%, rgba(110,45,181,0.18) 0%, transparent 70%)";
   }, []);
 
-  const description = useCMS("hero_description", "Parce que nos mains créent, nos voix existent, et nos histoires ont une valeur. Un espace construit par et pour la communauté queer — pour vendre, acheter, et exister.");
+  const description = useCMS("hero_description", "Parce que nos mains créent, nos voix existent, et nos histoires ont une valeur. Un espace construit par et pour la communauté queer.");
   const btn1Label   = useCMS("hero_btn1_label", "Découvrir les créations");
   const btn1Url     = useCMS("hero_btn1_url", "/decouvrir");
   const btn2Label   = useCMS("hero_btn2_label", "Rejoindre le mouvement");

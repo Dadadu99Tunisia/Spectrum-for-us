@@ -23,7 +23,7 @@ const PILLARS = [
     icon: HeartHandshake,
     color: "#E0337E",
     title: "Une communauté qui cherche ce que tu fais",
-    desc: "Ici, ton audience est déjà là. Des milliers de personnes queer et alliées qui veulent acheter engagé, local, différent — exactement ce que tu crées.",
+    desc: "Ici, ton audience est déjà là. Des milliers de personnes queer et alliées qui veulent acheter engagé, local, différent : exactement ce que tu crées.",
   },
   {
     icon: Zap,
@@ -84,7 +84,7 @@ const TESTIMONIALS = [
   {
     name: "Sasha M.",
     shop: "Spectre Bijoux",
-    quote: "J'avais essayé Etsy mais mes produits étaient noyés dans la masse. Ici, les gens qui achètent comprennent vraiment ce que je fais.",
+    quote: "Sur les autres plateformes, mes créations étaient noyées dans la masse. Ici, les gens qui achètent comprennent vraiment ce que je fais.",
     stars: 5,
   },
   {

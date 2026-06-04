@@ -34,7 +34,7 @@ export function RejoindreCTA() {
           </h2>
           <p className="font-hanken text-[#F3EADB]/55 max-w-xl mx-auto leading-relaxed">
             Spectrum For Us accueille tous les profils qui veulent exister dans un espace
-            pensé pour eux. Pas besoin d&apos;être une boutique — si tu as une activité,
+            pensé pour eux. Pas besoin d&apos;être une boutique : si tu as une activité,
             une expertise ou un talent à partager, on veut t&apos;accueillir.
           </p>
         </div>

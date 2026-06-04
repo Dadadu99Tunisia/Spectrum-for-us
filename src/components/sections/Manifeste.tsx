@@ -103,8 +103,8 @@ export function Manifeste() {
             un acte de visibilité. Où chaque vente dit : <em className="text-[#F3EADB]/80 not-italic font-medium">nous existons, et nous créons.</em>
           </p>
           <p className="font-hanken text-lg text-[#F3EADB]/60 leading-relaxed max-w-2xl">
-            Ce n&apos;est pas une alternative à Amazon ou Etsy.{" "}
-            <strong className="text-[#F3EADB]/90 font-semibold">C&apos;est leur réponse.</strong>
+            Un espace pensé depuis le départ pour nous.{" "}
+            <strong className="text-[#F3EADB]/90 font-semibold">Pas adapté. Pas toléré. Construit.</strong>
           </p>
         </div>
 

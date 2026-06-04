@@ -5,8 +5,6 @@
     "media": "Média",
     "community": "Communauté",
     "discover": "Découvrir",
-    "creators": "Créateur·rice·s",
-    "experiences": "Expériences",
     "sell": "Vendre ici",
     "sell_short": "+ Vendre ici",
     "cart": "Panier",
@@ -33,22 +31,188 @@
     "events_desc": "Agenda culturel et festif"
   },
   "hero": {
-    "tagline": "B(u)y us, for us.",
-    "subtitle": "La première marketplace queer francophone. Des créations faites avec amour, pour tout le spectre.",
-    "cta_discover": "Explorer les créations",
-    "cta_sell": "Ouvrir ma boutique"
+    "description": "Parce que nos mains créent, nos voix existent, et nos histoires ont une valeur. Un espace construit par et pour la communauté queer.",
+    "btn1": "Découvrir les créations",
+    "btn2": "Rejoindre le mouvement",
+    "btn3": "Vendre ici",
+    "scroll_hint": "Ce n'est pas juste une marketplace"
+  },
+  "manifeste": {
+    "eyebrow": "✦ Notre manifeste",
+    "d1_text": "On n'a pas construit une marketplace.",
+    "d1_em": "On a construit un refus.",
+    "d2_text": "Le refus de disparaître des algorithmes.",
+    "d2_em": "Le refus d'être une niche rentable pour d'autres.",
+    "d3_text": "Le refus que nos créations soient shadowbannées.",
+    "d3_em": "Que nos corps soient modérés.",
+    "d4_text": "Le refus que l'argent de nos achats finance des espaces qui nous tolèrent",
+    "d4_em": "mais ne nous appartiennent pas.",
+    "turn_title": "Spectrum For Us, c'est l'espace",
+    "turn_em": "qu'on s'est fait.",
+    "turn_p1": "Un endroit où chaque achat va directement dans les mains d'une personne qui a décidé que son identité était une force. Où chaque boutique est un acte de visibilité. Où chaque vente dit :",
+    "turn_p1_em": "nous existons, et nous créons.",
+    "turn_p2": "Un espace pensé depuis le départ pour nous.",
+    "turn_p2_em": "Pas adapté. Pas toléré. Construit.",
+    "stat1_value": "100%",
+    "stat1_label": "des revenus restent\nchez les créateur·ices",
+    "stat2_value": "0",
+    "stat2_label": "tolérance pour\nla discrimination",
+    "stat3_value": "3",
+    "stat3_label": "façons d'exister\nici",
+    "stat4_value": "Safe",
+    "stat4_label": "pour toi,\nquoi que tu sois"
+  },
+  "origines": {
+    "eyebrow": "◈ Pourquoi ça existe",
+    "quote_main": "On nous a dit que nos histoires ne valaient pas assez.",
+    "quote_dim": "Que nos corps dérangeaient.",
+    "quote_em": "On a construit un endroit où c'est faux.",
+    "fact1_num": "73%",
+    "fact1_text": "des créateur·ices LGBTQIA+ déclarent avoir subi une modération arbitraire sur les plateformes mainstream.",
+    "fact2_num": "−40%",
+    "fact2_text": "de revenus en moyenne lorsqu'un contenu est tagué LGBTQ+ sur les algorithmes publicitaires.",
+    "fact3_num": "Invisible",
+    "fact3_text": "C'est le mot qui revient le plus souvent quand on demande à nos créateur·ices comment elles et ils se sentaient avant.",
+    "p1": "Les plateformes mainstream ne sont pas neutres. Leurs algorithmes apprennent de millions de biais. Leurs équipes de modération ont des angles morts. Leurs règles publicitaires punissent ce qui dérange la majorité.",
+    "p2_before": "Spectrum For Us a été construit pour que ces règles ne nous concernent plus. Ici,",
+    "p2_em": "la communauté est le produit principal.",
+    "p2_after": "Pas le problème à gérer.",
+    "check1": "Modération humaine et queer",
+    "check2": "Aucun shadowban algorithmique",
+    "check3": "Commission reversée directement aux créateur·ices",
+    "check4": "Charte inclusive, sans compromis",
+    "cross1": "\"Vos contenus violent nos standards\"",
+    "cta": "Rejoindre le mouvement →"
+  },
+  "createurs": {
+    "eyebrow": "Les visages",
+    "title": "Iels créent.",
+    "title_em": "Iels racontent.",
+    "subtitle": "Derrière chaque boutique, une personne qui a décidé que son art méritait un espace à lui.",
+    "see_all": "( Toutes les boutiques )",
+    "see_shop": "Voir la boutique",
+    "items": [
+      {
+        "name": "Maëlis",
+        "pronouns": "iel/elle",
+        "category": "Art & Illustration",
+        "quote": "J'ai été shadowbanné trois fois pour avoir dessiné deux hommes qui s'embrassaient. Ici, c'est mon œuvre principale.",
+        "bio": "Créations numériques et prints autour de l'identité queer, du corps et de la joie radicale."
+      },
+      {
+        "name": "Théo",
+        "pronouns": "il/lui",
+        "category": "Bijoux",
+        "quote": "Mes bijoux ont une histoire - ils ont été portés à des mariages que la loi ne reconnaissait pas encore.",
+        "bio": "Bijoux forgés à la main, pièces uniques. Chaque métal porte la trace d'une célébration."
+      },
+      {
+        "name": "Nour",
+        "pronouns": "iel",
+        "category": "Corps & Soin",
+        "quote": "J'ai commencé à formuler pour moi. Parce que je ne me reconnaissais pas dans les soins qu'on me vendait.",
+        "bio": "Formulations naturelles pour des rituels de soin inclusifs - faits pour tous les corps, sans exception."
+      },
+      {
+        "name": "Collectif Roseau",
+        "pronouns": "iel·le·s",
+        "category": "Zines & Édition",
+        "quote": "On publie des histoires que les maisons d'édition trouvent \"trop spécifiques\". Trop spécifiques pour qui ?",
+        "bio": "Fanzines, publications indépendantes et ateliers d'écriture queer. La marge est un endroit."
+      }
+    ]
+  },
+  "voix": {
+    "eyebrow": "✦ Voix du spectre",
+    "title": "Ce qu'on entend",
+    "title_em": "ici.",
+    "footnote": "Des histoires réelles. Des voix qui ont choisi de rester.",
+    "items": [
+      {
+        "quote": "Pour la première fois, j'ai acheté un cadeau à ma partenaire sans avoir honte du regard du vendeur.",
+        "name": "Sarah",
+        "location": "Paris",
+        "role": "acheteuse"
+      },
+      {
+        "quote": "En 3 semaines sur Spectrum, j'ai vendu plus que mes 6 mois sur une plateforme mainstream. L'audience, elle comprend ce que je fais.",
+        "name": "Collectif Roseau",
+        "location": "Lyon",
+        "role": "créateur·ice·s"
+      },
+      {
+        "quote": "J'ai grandi dans une famille qui ne voulait pas de moi tel que je suis. Créer ici, c'est une façon de dire que j'existe quand même.",
+        "name": "Théo",
+        "location": "Tunis",
+        "role": "artisan bijoutier"
+      },
+      {
+        "quote": "Je ne cherchais pas une marketplace. Je cherchais un endroit où mes produits de soin trans-affirmants n'auraient pas à se justifier.",
+        "name": "Alex",
+        "location": "Bruxelles",
+        "role": "formulateur·ice"
+      }
+    ]
+  },
+  "rejoindre_cta": {
+    "eyebrow": "🏳️‍🌈 Pour le lancement Pride · 26 juin",
+    "title": "Tu crées, tu soignes, tu défends.",
+    "title_em": "Ta place est ici.",
+    "subtitle": "Spectrum For Us accueille tous les profils qui veulent exister dans un espace pensé pour eux. Pas besoin d'être une boutique - si tu as une activité, une expertise ou un talent à partager, on veut t'accueillir.",
+    "cta": "Rejoindre Spectrum",
+    "disclaimer": "Réponse garantie avant le 26 juin · Gratuit pour démarrer",
+    "profiles": [
+      { "emoji": "🎨", "title": "Créateur·ices", "desc": "Mode, bijoux, art, zines, cosmétiques…" },
+      { "emoji": "🎭", "title": "Artistes", "desc": "Musique, danse, performance, photo…" },
+      { "emoji": "🌿", "title": "Thérapeutes", "desc": "Sophrologie, psy, bien-être, coaching…" },
+      { "emoji": "⚖️", "title": "Avocat·es", "desc": "Droit de la famille, identité, discrimination…" },
+      { "emoji": "💻", "title": "Freelances", "desc": "Graphisme, vidéo, dev, traduction…" },
+      { "emoji": "🩺", "title": "Soignant·es alliés", "desc": "Médecins, sages-femmes, dentistes…" }
+    ]
+  },
+  "vendre_ici": {
+    "eyebrow": "Rejoindre le spectre",
+    "title": "Vendez ici,",
+    "title_em": "sans filtres.",
+    "subtitle": "9,90 €/mois. Boutique en ligne. Commission sur vente. Aucune condition sur ce que tu es.",
+    "cta_open": "Ouvrir ma boutique",
+    "cta_more": "En savoir plus",
+    "args": [
+      { "title": "Communauté engagée", "desc": "Accède directement à une audience qui cherche ce que tu crées." },
+      { "title": "Safe space garanti", "desc": "Modération active, charte communautaire, zéro tolérance pour la haine." },
+      { "title": "Visibilité offerte", "desc": "Mise en avant éditoriale, newsletter, réseaux - ton travail mérite d'être vu." },
+      { "title": "Lancez-vous en 10 min", "desc": "Boutique en ligne, outils simples. Pas de tech, pas de fric, juste toi." }
+    ]
+  },
+  "newsletter": {
+    "eyebrow": "Rester connecté·e",
+    "title": "La newsletter",
+    "title_em": "du spectre.",
+    "subtitle": "Nouvelles créations, histoires de la communauté, événements - dans ta boîte mail, sans spam.",
+    "placeholder": "ton@email.com",
+    "cta": "M'abonner",
+    "disclaimer": "Pas de spam. Désabonnement en 1 clic.",
+    "success": "Bienvenue dans le spectre ✦",
+    "error": "Une erreur est survenue. Réessaie."
+  },
+  "footer": {
+    "tagline": "La première marketplace queer. Par et pour la communauté.",
+    "marketplace": "Marketplace",
+    "company": "À propos",
+    "legal": "Légal",
+    "about": "Notre histoire",
+    "press": "Presse",
+    "jobs": "Emploi",
+    "contact": "Contact",
+    "terms": "CGV",
+    "privacy": "Confidentialité",
+    "cookies": "Cookies",
+    "rights": "Tous droits réservés"
   },
   "subscription": {
     "title": "Abonnement Vendeur·euse",
     "price": "35€ / mois",
     "description": "Accès illimité à ta boutique, zéro commission sur les 3 premiers mois.",
-    "features": [
-      "Boutique personnalisée",
-      "Produits illimités",
-      "Tableau de bord analytics",
-      "Support prioritaire",
-      "Mise en avant communautaire"
-    ],
     "cta": "Activer mon abonnement",
     "active": "Abonnement actif ✓",
     "inactive": "Abonnement inactif",
@@ -65,15 +229,6 @@
       "news": "Actualités",
       "guide": "Guide"
     }
-  },
-  "ambassador": {
-    "title": "Programme Ambassadeur·rice",
-    "subtitle": "Partage Spectrum For Us et gagne une commission sur chaque vente générée.",
-    "commission": "10% de commission",
-    "join": "Rejoindre le programme",
-    "your_code": "Ton code ambassadeur·rice",
-    "earnings": "Tes gains",
-    "referrals": "Parrainages"
   },
   "product": {
     "add_to_cart": "Ajouter au panier",
@@ -107,34 +262,10 @@
     "or": "ou",
     "continue_google": "Continuer avec Google"
   },
-  "footer": {
-    "tagline": "La marketplace queer qui te ressemble.",
-    "marketplace": "Marketplace",
-    "company": "Entreprise",
-    "legal": "Légal",
-    "about": "À propos",
-    "press": "Presse",
-    "jobs": "Emploi",
-    "contact": "Contact",
-    "terms": "CGV",
-    "privacy": "Confidentialité",
-    "cookies": "Cookies",
-    "rights": "Tous droits réservés"
-  },
   "currency": {
-    "EUR": "Euro €",
-    "USD": "Dollar $",
-    "GBP": "Livre £",
-    "MAD": "Dirham MAD",
-    "TND": "Dinar TND",
-    "DZD": "Dinar DZD",
-    "CAD": "Dollar CA$",
-    "AUD": "Dollar A$",
-    "CHF": "Franc Fr",
-    "SAR": "Riyal ﷼",
-    "AED": "Dirham AED",
-    "EGP": "Livre EGP",
-    "XOF": "Franc CFA"
+    "EUR": "Euro €", "USD": "Dollar $", "GBP": "Livre £", "MAD": "Dirham MAD",
+    "TND": "Dinar TND", "DZD": "Dinar DZD", "CAD": "Dollar CA$", "AUD": "Dollar A$",
+    "CHF": "Franc Fr", "SAR": "Riyal ﷼", "AED": "Dirham AED", "EGP": "Livre EGP", "XOF": "Franc CFA"
   },
   "common": {
     "loading": "Chargement…",
@@ -152,7 +283,6 @@
     "next": "Suivant",
     "previous": "Précédent",
     "close": "Fermer",
-    "open": "Ouvrir",
     "yes": "Oui",
     "no": "Non",
     "confirm": "Confirmer",

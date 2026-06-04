@@ -20,7 +20,7 @@ const ARGS = [
   {
     icon: Eye,
     title: "Visibilité offerte",
-    desc: "Mise en avant éditoriale, newsletter, réseaux — ton travail mérite d'être vu.",
+    desc: "Mise en avant éditoriale, newsletter, réseaux : ton travail mérite d'être vu.",
     color: "#6D2DB5",
   },
   {

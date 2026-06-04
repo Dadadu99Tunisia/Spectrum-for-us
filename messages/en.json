@@ -5,8 +5,6 @@
     "media": "Media",
     "community": "Community",
     "discover": "Discover",
-    "creators": "Creators",
-    "experiences": "Experiences",
     "sell": "Sell here",
     "sell_short": "+ Sell here",
     "cart": "Cart",
@@ -33,22 +31,188 @@
     "events_desc": "Cultural and festive calendar"
   },
   "hero": {
-    "tagline": "B(u)y us, for us.",
-    "subtitle": "The first francophone queer marketplace. Creations made with love, for the whole spectrum.",
-    "cta_discover": "Explore creations",
-    "cta_sell": "Open my shop"
+    "description": "Because our hands create, our voices exist, and our stories have value. A space built by and for the queer community.",
+    "btn1": "Discover creations",
+    "btn2": "Join the movement",
+    "btn3": "Sell here",
+    "scroll_hint": "This is not just a marketplace"
+  },
+  "manifeste": {
+    "eyebrow": "✦ Our manifesto",
+    "d1_text": "We didn't build a marketplace.",
+    "d1_em": "We built a refusal.",
+    "d2_text": "The refusal to disappear from algorithms.",
+    "d2_em": "The refusal to be a profitable niche for others.",
+    "d3_text": "The refusal to have our creations shadowbanned.",
+    "d3_em": "To have our bodies moderated.",
+    "d4_text": "The refusal that the money from our purchases funds spaces that tolerate us",
+    "d4_em": "but don't belong to us.",
+    "turn_title": "Spectrum For Us is the space",
+    "turn_em": "we made for ourselves.",
+    "turn_p1": "A place where every purchase goes directly into the hands of someone who decided their identity was a strength. Where every shop is an act of visibility. Where every sale says:",
+    "turn_p1_em": "we exist, and we create.",
+    "turn_p2": "A space designed from the ground up for us.",
+    "turn_p2_em": "Not adapted. Not tolerated. Built.",
+    "stat1_value": "100%",
+    "stat1_label": "of revenue stays\nwith creators",
+    "stat2_value": "0",
+    "stat2_label": "tolerance for\ndiscrimination",
+    "stat3_value": "3",
+    "stat3_label": "ways to exist\nhere",
+    "stat4_value": "Safe",
+    "stat4_label": "for you,\nwhoever you are"
+  },
+  "origines": {
+    "eyebrow": "◈ Why this exists",
+    "quote_main": "We were told our stories weren't worth enough.",
+    "quote_dim": "That our bodies were a problem.",
+    "quote_em": "We built a place where that's not true.",
+    "fact1_num": "73%",
+    "fact1_text": "of LGBTQIA+ creators report having faced arbitrary moderation on mainstream platforms.",
+    "fact2_num": "−40%",
+    "fact2_text": "average revenue loss when content is tagged LGBTQ+ in advertising algorithms.",
+    "fact3_num": "Invisible",
+    "fact3_text": "That's the word that comes up most often when we ask our creators how they felt before.",
+    "p1": "Mainstream platforms are not neutral. Their algorithms learn from millions of biases. Their moderation teams have blind spots. Their advertising rules punish whatever upsets the majority.",
+    "p2_before": "Spectrum For Us was built so these rules no longer apply to us. Here,",
+    "p2_em": "the community is the main product.",
+    "p2_after": "Not the problem to manage.",
+    "check1": "Human, queer moderation",
+    "check2": "No algorithmic shadowban",
+    "check3": "Commission paid directly to creators",
+    "check4": "Inclusive charter, no compromise",
+    "cross1": "\"Your content violates our standards\"",
+    "cta": "Join the movement →"
+  },
+  "createurs": {
+    "eyebrow": "The faces",
+    "title": "They create.",
+    "title_em": "They tell stories.",
+    "subtitle": "Behind every shop, a person who decided their art deserved a space of its own.",
+    "see_all": "( All shops )",
+    "see_shop": "See the shop",
+    "items": [
+      {
+        "name": "Maëlis",
+        "pronouns": "they/she",
+        "category": "Art & Illustration",
+        "quote": "I was shadowbanned three times for drawing two men kissing. Here, that's my main work.",
+        "bio": "Digital creations and prints around queer identity, the body, and radical joy."
+      },
+      {
+        "name": "Théo",
+        "pronouns": "he/him",
+        "category": "Jewellery",
+        "quote": "My jewellery has a story - it was worn at weddings the law didn't recognise yet.",
+        "bio": "Hand-forged jewellery, unique pieces. Every metal carries the mark of a celebration."
+      },
+      {
+        "name": "Nour",
+        "pronouns": "they",
+        "category": "Body & Care",
+        "quote": "I started formulating for myself. Because I didn't recognise myself in the products they sold me.",
+        "bio": "Natural formulations for inclusive self-care rituals - made for all bodies, no exceptions."
+      },
+      {
+        "name": "Collectif Roseau",
+        "pronouns": "they",
+        "category": "Zines & Publishing",
+        "quote": "We publish stories that publishers find \"too specific\". Too specific for whom?",
+        "bio": "Fanzines, independent publications and queer writing workshops. The margin is a place."
+      }
+    ]
+  },
+  "voix": {
+    "eyebrow": "✦ Voices of the spectrum",
+    "title": "What we hear",
+    "title_em": "here.",
+    "footnote": "Real stories. Voices that chose to stay.",
+    "items": [
+      {
+        "quote": "For the first time, I bought a gift for my partner without feeling ashamed of the seller's look.",
+        "name": "Sarah",
+        "location": "Paris",
+        "role": "buyer"
+      },
+      {
+        "quote": "In 3 weeks on Spectrum, I sold more than my 6 months on a mainstream platform. The audience here gets what I do.",
+        "name": "Collectif Roseau",
+        "location": "Lyon",
+        "role": "creators"
+      },
+      {
+        "quote": "I grew up in a family that didn't want me as I am. Creating here is a way of saying I exist anyway.",
+        "name": "Théo",
+        "location": "Tunis",
+        "role": "artisan jeweller"
+      },
+      {
+        "quote": "I wasn't looking for a marketplace. I was looking for a place where my trans-affirming skincare products wouldn't have to justify themselves.",
+        "name": "Alex",
+        "location": "Brussels",
+        "role": "formulator"
+      }
+    ]
+  },
+  "rejoindre_cta": {
+    "eyebrow": "🏳️‍🌈 For the Pride launch · June 26",
+    "title": "You create, you care, you defend.",
+    "title_em": "Your place is here.",
+    "subtitle": "Spectrum For Us welcomes all profiles who want to exist in a space designed for them. No need to be a shop - if you have an activity, expertise or talent to share, we want you.",
+    "cta": "Join Spectrum",
+    "disclaimer": "Response guaranteed before June 26 · Free to start",
+    "profiles": [
+      { "emoji": "🎨", "title": "Creators", "desc": "Fashion, jewellery, art, zines, cosmetics…" },
+      { "emoji": "🎭", "title": "Artists", "desc": "Music, dance, performance, photography…" },
+      { "emoji": "🌿", "title": "Therapists", "desc": "Mindfulness, counselling, wellness, coaching…" },
+      { "emoji": "⚖️", "title": "Lawyers", "desc": "Family law, identity, discrimination…" },
+      { "emoji": "💻", "title": "Freelancers", "desc": "Design, video, dev, translation…" },
+      { "emoji": "🩺", "title": "Allied healthcare", "desc": "Doctors, midwives, dentists…" }
+    ]
+  },
+  "vendre_ici": {
+    "eyebrow": "Join the spectrum",
+    "title": "Sell here,",
+    "title_em": "without filters.",
+    "subtitle": "€9.90/month. Online shop. Commission on sales. No conditions on who you are.",
+    "cta_open": "Open my shop",
+    "cta_more": "Learn more",
+    "args": [
+      { "title": "Engaged community", "desc": "Reach an audience that is actively looking for what you create." },
+      { "title": "Safe space guaranteed", "desc": "Active moderation, community charter, zero tolerance for hate." },
+      { "title": "Visibility offered", "desc": "Editorial features, newsletter, social - your work deserves to be seen." },
+      { "title": "Get started in 10 min", "desc": "Online shop, simple tools. No tech, no money needed - just you." }
+    ]
+  },
+  "newsletter": {
+    "eyebrow": "Stay connected",
+    "title": "The newsletter",
+    "title_em": "of the spectrum.",
+    "subtitle": "New creations, community stories, events - in your inbox, no spam.",
+    "placeholder": "your@email.com",
+    "cta": "Subscribe",
+    "disclaimer": "No spam. Unsubscribe in 1 click.",
+    "success": "Welcome to the spectrum ✦",
+    "error": "An error occurred. Please try again."
+  },
+  "footer": {
+    "tagline": "The first queer marketplace. By and for the community.",
+    "marketplace": "Marketplace",
+    "company": "About",
+    "legal": "Legal",
+    "about": "Our story",
+    "press": "Press",
+    "jobs": "Jobs",
+    "contact": "Contact",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies",
+    "rights": "All rights reserved"
   },
   "subscription": {
     "title": "Seller Subscription",
     "price": "€35 / month",
     "description": "Unlimited access to your shop, zero commission for the first 3 months.",
-    "features": [
-      "Personalised shop",
-      "Unlimited products",
-      "Analytics dashboard",
-      "Priority support",
-      "Community highlight"
-    ],
     "cta": "Activate my subscription",
     "active": "Active subscription ✓",
     "inactive": "Inactive subscription",
@@ -65,15 +229,6 @@
       "news": "News",
       "guide": "Guide"
     }
-  },
-  "ambassador": {
-    "title": "Ambassador Programme",
-    "subtitle": "Share Spectrum For Us and earn a commission on every sale you generate.",
-    "commission": "10% commission",
-    "join": "Join the programme",
-    "your_code": "Your ambassador code",
-    "earnings": "Your earnings",
-    "referrals": "Referrals"
   },
   "product": {
     "add_to_cart": "Add to cart",
@@ -107,34 +262,10 @@
     "or": "or",
     "continue_google": "Continue with Google"
   },
-  "footer": {
-    "tagline": "The queer marketplace that looks like you.",
-    "marketplace": "Marketplace",
-    "company": "Company",
-    "legal": "Legal",
-    "about": "About",
-    "press": "Press",
-    "jobs": "Jobs",
-    "contact": "Contact",
-    "terms": "Terms",
-    "privacy": "Privacy",
-    "cookies": "Cookies",
-    "rights": "All rights reserved"
-  },
   "currency": {
-    "EUR": "Euro €",
-    "USD": "Dollar $",
-    "GBP": "Pound £",
-    "MAD": "Dirham MAD",
-    "TND": "Dinar TND",
-    "DZD": "Dinar DZD",
-    "CAD": "Dollar CA$",
-    "AUD": "Dollar A$",
-    "CHF": "Franc Fr",
-    "SAR": "Riyal ﷼",
-    "AED": "Dirham AED",
-    "EGP": "Pound EGP",
-    "XOF": "Franc CFA"
+    "EUR": "Euro €", "USD": "Dollar $", "GBP": "Pound £", "MAD": "Dirham MAD",
+    "TND": "Dinar TND", "DZD": "Dinar DZD", "CAD": "Dollar CA$", "AUD": "Dollar A$",
+    "CHF": "Franc Fr", "SAR": "Riyal ﷼", "AED": "Dirham AED", "EGP": "Pound EGP", "XOF": "Franc CFA"
   },
   "common": {
     "loading": "Loading…",
@@ -152,7 +283,6 @@
     "next": "Next",
     "previous": "Previous",
     "close": "Close",
-    "open": "Open",
     "yes": "Yes",
     "no": "No",
     "confirm": "Confirm",
