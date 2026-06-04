@@ -1,123 +1,160 @@
 "use client";
-import { Phone, Globe, Mail, MapPin, Calendar } from "lucide-react";
+import { Phone, Globe, Mail, Calendar, ExternalLink } from "lucide-react";
 import type { OrgEntry, OrgCategory } from "@/data/annuaire-orgs";
 import { CATEGORIES } from "@/data/annuaire-orgs";
 
 interface Props {
   org: OrgEntry;
   selected?: boolean;
+  hovered?: boolean;
   onClick?: () => void;
+  onHover?: (id: string | null) => void;
   compact?: boolean;
 }
 
-const categoryLabel = (cat: OrgCategory) =>
-  CATEGORIES.find((c) => c.value === cat);
+const categoryLabel = (cat: OrgCategory) => CATEGORIES.find((c) => c.value === cat);
 
-export function OrgCard({ org, selected, onClick, compact }: Props) {
+export function OrgCard({ org, selected, hovered, onClick, onHover, compact }: Props) {
+  const active = selected || hovered;
+
   return (
-    <div
+    <article
       onClick={onClick}
-      className="group relative rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden"
+      onMouseEnter={() => onHover?.(org.id)}
+      onMouseLeave={() => onHover?.(null)}
+      tabIndex={0}
+      role="button"
+      aria-pressed={selected}
+      aria-label={`${org.name}, ${org.city}, ${org.country}`}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick?.(); } }}
+      className="group relative rounded-2xl border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2"
       style={{
-        borderColor: selected ? org.accent : "rgba(243,234,219,0.08)",
-        background: selected
-          ? `${org.accent}10`
-          : "rgba(243,234,219,0.02)",
-        boxShadow: selected ? `0 0 0 1px ${org.accent}44, 0 8px 32px ${org.accent}22` : "none",
+        borderColor: selected ? org.accent : hovered ? `${org.accent}55` : "rgba(243,234,219,0.07)",
+        background: selected ? `${org.accent}0d` : hovered ? `${org.accent}06` : "rgba(243,234,219,0.015)",
+        boxShadow: selected
+          ? `0 0 0 1px ${org.accent}33, 0 6px 24px ${org.accent}18`
+          : hovered ? `0 2px 12px ${org.accent}10` : "none",
+        // @ts-expect-error CSS custom property
+        "--tw-ring-color": org.accent,
+        transform: selected ? "translateX(2px)" : "none",
       }}
     >
-      {/* Top accent line */}
+      {/* Accent top line */}
       <div
-        className="absolute top-0 left-0 right-0 h-[2px] transition-opacity duration-300"
+        className="absolute top-0 left-4 right-4 h-px transition-all duration-200"
         style={{
-          background: `linear-gradient(90deg, ${org.accent}, transparent)`,
-          opacity: selected ? 1 : 0,
+          background: `linear-gradient(90deg, transparent, ${org.accent}, transparent)`,
+          opacity: active ? 0.6 : 0,
         }}
       />
 
-      {/* Glow on hover */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse at 20% 20%, ${org.accent}15, transparent 60%)`,
-        }}
-      />
-
-      <div className={compact ? "p-4" : "p-5"}>
-        {/* Header */}
-        <div className="flex items-start gap-3 mb-3">
+      <div className={compact ? "p-3" : "p-4"}>
+        {/* Header row */}
+        <div className="flex items-start gap-3">
+          {/* Logo */}
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
-            style={{ background: `${org.accent}20`, border: `1px solid ${org.accent}40` }}
+            className="shrink-0 rounded-xl flex items-center justify-center text-xl transition-all duration-200"
+            style={{
+              width: compact ? 36 : 42,
+              height: compact ? 36 : 42,
+              background: `${org.accent}18`,
+              border: `1px solid ${org.accent}${active ? "55" : "25"}`,
+              fontSize: compact ? 16 : 20,
+            }}
+            aria-hidden="true"
           >
             {org.logo ?? org.flag}
           </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="font-bricolage font-bold text-[#F3EADB] text-sm leading-tight truncate">
+
+          {/* Title + meta */}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bricolage font-bold text-[#F3EADB] leading-tight truncate"
+              style={{ fontSize: compact ? 13 : 15 }}>
               {org.shortName ?? org.name}
             </h3>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-xs">{org.flag}</span>
-              <span className="font-mono text-[10px] text-[#F3EADB]/40 truncate">
-                {org.city}, {org.country}
+              <span className="text-xs" aria-hidden>{org.flag}</span>
+              <span className="font-mono text-[10px] text-[#F3EADB]/35 truncate">
+                {org.city}{!compact && `, ${org.country}`}
               </span>
+              {org.founded && !compact && (
+                <span className="flex items-center gap-0.5 font-mono text-[9px] text-[#F3EADB]/20 ml-auto shrink-0">
+                  <Calendar size={8} />
+                  {org.founded}
+                </span>
+              )}
             </div>
           </div>
-          {org.founded && !compact && (
-            <div className="shrink-0 flex items-center gap-1 text-[10px] font-mono text-[#F3EADB]/25">
-              <Calendar size={9} />
-              {org.founded}
-            </div>
+
+          {/* External link on hover */}
+          {org.website && (
+            <a
+              href={org.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`Visiter ${org.name}`}
+              className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-[#F3EADB]/8"
+              style={{ color: org.accent }}
+            >
+              <ExternalLink size={12} />
+            </a>
           )}
         </div>
 
-        {/* Categories */}
-        <div className="flex flex-wrap gap-1.5 mb-3">
+        {/* Category tags */}
+        <div className="flex flex-wrap gap-1 mt-2.5">
           {org.categories.map((cat) => {
             const c = categoryLabel(cat);
             return (
               <span
                 key={cat}
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono"
+                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full font-mono"
                 style={{
-                  background: `${org.accent}18`,
+                  fontSize: 9,
+                  background: `${org.accent}14`,
                   color: org.accent,
-                  border: `1px solid ${org.accent}30`,
+                  border: `1px solid ${org.accent}22`,
                 }}
               >
-                {c?.emoji} {c?.label}
+                <span aria-hidden>{c?.emoji}</span>
+                {c?.label}
               </span>
             );
           })}
         </div>
 
-        {/* Description */}
-        {!compact && (
-          <p className="font-hanken text-xs text-[#F3EADB]/55 leading-relaxed mb-4 line-clamp-3">
+        {/* Description — only expanded or non-compact */}
+        {(selected || !compact) && (
+          <p className="font-hanken text-xs text-[#F3EADB]/50 leading-relaxed mt-2.5 line-clamp-2">
             {org.description}
           </p>
         )}
 
-        {/* Contact */}
-        <div className="flex flex-col gap-1.5">
+        {/* Contact row */}
+        <div className="flex items-center gap-3 mt-3 flex-wrap">
           {org.phone && (
             <a
               href={`tel:${org.phone}`}
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2 text-xs font-mono text-[#F3EADB]/50 hover:text-[#F3EADB]/90 transition-colors"
+              aria-label={`Appeler ${org.name}`}
+              className="flex items-center gap-1.5 font-mono transition-colors hover:opacity-100 opacity-60"
+              style={{ fontSize: 10, color: org.accent }}
             >
-              <Phone size={11} style={{ color: org.accent }} />
-              {org.phone}
+              <Phone size={10} aria-hidden />
+              <span className={compact ? "hidden sm:inline" : ""}>{org.phone}</span>
             </a>
           )}
           {org.email && !compact && (
             <a
               href={`mailto:${org.email}`}
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2 text-xs font-mono text-[#F3EADB]/50 hover:text-[#F3EADB]/90 transition-colors truncate"
+              aria-label={`Email ${org.name}`}
+              className="flex items-center gap-1.5 font-mono transition-colors hover:opacity-100 opacity-60 truncate"
+              style={{ fontSize: 10, color: org.accent }}
             >
-              <Mail size={11} style={{ color: org.accent }} />
-              {org.email}
+              <Mail size={10} aria-hidden />
+              <span className="truncate">{org.email}</span>
             </a>
           )}
           {org.website && (
@@ -126,15 +163,18 @@ export function OrgCard({ org, selected, onClick, compact }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2 text-xs font-mono hover:underline transition-colors"
-              style={{ color: org.accent }}
+              aria-label={`Site de ${org.name}`}
+              className="flex items-center gap-1.5 font-mono transition-colors hover:opacity-100 opacity-60 truncate ml-auto"
+              style={{ fontSize: 10, color: org.accent }}
             >
-              <Globe size={11} />
-              {org.website.replace(/^https?:\/\//, "")}
+              <Globe size={10} aria-hidden />
+              <span className="truncate hidden sm:inline">
+                {org.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+              </span>
             </a>
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
