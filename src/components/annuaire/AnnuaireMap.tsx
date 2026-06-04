@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import type { OrgEntry } from "@/data/annuaire-orgs";
 
 interface Props {
@@ -8,217 +8,242 @@ interface Props {
   onSelect: (id: string) => void;
 }
 
-// Europe bounding box: lng -11 to 40, lat 34 to 72
-// SVG viewport: 0 0 600 500
-function lngLatToXY(lng: number, lat: number): [number, number] {
-  const x = ((lng + 11) / 51) * 600;
-  const y = ((72 - lat) / 38) * 500;
-  return [x, y];
-}
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
-// Simplified Europe SVG path (approximate coastlines)
-const EUROPE_PATH = `
-M 80,80 L 100,60 L 120,55 L 140,50 L 160,48 L 180,52 L 200,50
-L 220,45 L 240,48 L 260,52 L 280,50 L 300,48 L 320,52 L 340,55
-L 360,52 L 380,58 L 400,60 L 420,65 L 440,70 L 460,78
-L 470,90 L 465,105 L 455,115 L 445,125 L 440,140
-L 430,155 L 425,170 L 420,185 L 415,200 L 410,215
-L 405,225 L 395,235 L 385,245 L 370,255 L 355,265
-L 340,270 L 325,275 L 310,280 L 295,285 L 280,290
-L 265,295 L 250,298 L 235,300 L 220,302 L 205,305
-L 190,308 L 175,310 L 160,312 L 145,315 L 130,318
-L 115,320 L 100,315 L 90,305 L 82,295 L 78,280
-L 75,265 L 73,250 L 72,235 L 73,220 L 75,205
-L 76,190 L 77,175 L 78,160 L 79,145 L 80,130
-L 80,115 L 80,100 L 80,80 Z
-`;
-
-// Country-level dot positions (approximate, based on capital/center)
-// Used to group multiple orgs in same country
-function getCountryCenter(countryCode: string): [number, number] {
-  const centers: Record<string, [number, number]> = {
-    FR: [2.35, 46.8],
-    BE: [4.35, 50.5],
-    ES: [-3.7, 40.4],
-    DE: [10.4, 51.2],
-    NL: [5.3, 52.1],
-    SE: [18.0, 59.5],
-    GB: [-1.5, 52.5],
-    IT: [12.5, 42.5],
-    PT: [-8.2, 39.5],
-    CH: [8.2, 46.8],
-    PL: [19.5, 52.1],
-    AT: [14.5, 47.5],
-    DK: [10.0, 56.0],
-    NO: [10.7, 59.9],
-    FI: [25.0, 61.5],
-    GR: [21.8, 39.0],
-    UA: [31.0, 49.0],
-    RO: [25.0, 45.5],
-    IS: [-19.0, 64.5],
-  };
-  return centers[countryCode] ?? [15, 50];
-}
+// Custom dark style inspired by site's palette
+const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 
 export function AnnuaireMap({ orgs, selected, onSelect }: Props) {
-  // Group orgs by country
-  const byCountry = useMemo(() => {
-    const map = new Map<string, OrgEntry[]>();
-    orgs.forEach((org) => {
-      const key = org.countryCode;
-      if (!map.has(key)) map.set(key, []);
-      map.get(key)!.push(org);
-    });
-    return map;
-  }, [orgs]);
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<unknown>(null);
+  const markersRef = useRef<Map<string, unknown>>(new Map());
+  const [mapLoaded, setMapLoaded] = useState(false);
 
-  const selectedOrg = orgs.find((o) => o.id === selected);
+  // Init map once
+  useEffect(() => {
+    if (!mapContainer.current || mapRef.current) return;
+
+    import("mapbox-gl").then((mapboxgl) => {
+      if (!mapContainer.current || mapRef.current) return;
+
+      mapboxgl.default.accessToken = MAPBOX_TOKEN;
+
+      const map = new mapboxgl.default.Map({
+        container: mapContainer.current,
+        style: MAP_STYLE,
+        center: [12, 52],
+        zoom: 3.5,
+        minZoom: 2,
+        maxZoom: 10,
+        attributionControl: false,
+        logoPosition: "bottom-right",
+      });
+
+      mapRef.current = map;
+
+      map.on("load", () => {
+        // Override map background/fog for site aesthetic
+        map.setFog({
+          color: "rgb(10, 8, 20)",
+          "high-color": "rgb(20, 10, 40)",
+          "horizon-blend": 0.05,
+          "space-color": "rgb(5, 4, 14)",
+          "star-intensity": 0.4,
+        });
+
+        // Add attribution
+        map.addControl(
+          new mapboxgl.default.AttributionControl({ compact: true }),
+          "bottom-right"
+        );
+        map.addControl(
+          new mapboxgl.default.NavigationControl({ showCompass: false }),
+          "bottom-right"
+        );
+
+        setMapLoaded(true);
+      });
+
+      return () => {
+        map.remove();
+        mapRef.current = null;
+      };
+    });
+  }, []);
+
+  // Add/update markers when orgs or mapLoaded changes
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current) return;
+
+    import("mapbox-gl").then((mapboxgl) => {
+      const map = mapRef.current as InstanceType<typeof mapboxgl.default.Map>;
+
+      // Clear old markers
+      markersRef.current.forEach((m) => {
+        (m as InstanceType<typeof mapboxgl.default.Marker>).remove();
+      });
+      markersRef.current.clear();
+
+      orgs.forEach((org) => {
+        const isSelected = org.id === selected;
+
+        // Build marker element
+        const el = document.createElement("div");
+        el.style.cssText = `
+          width: ${isSelected ? "48px" : "36px"};
+          height: ${isSelected ? "48px" : "36px"};
+          border-radius: 50%;
+          background: ${isSelected ? org.accent + "33" : org.accent + "18"};
+          border: ${isSelected ? "2.5px" : "1.5px"} solid ${org.accent};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: ${isSelected ? "20px" : "16px"};
+          cursor: pointer;
+          transition: all 0.25s ease;
+          box-shadow: 0 0 ${isSelected ? "20px" : "8px"} ${org.accent}${isSelected ? "66" : "33"};
+          position: relative;
+        `;
+        el.innerHTML = org.flag;
+        el.title = org.name;
+
+        // Pulse ring for selected
+        if (isSelected) {
+          const ring = document.createElement("div");
+          ring.style.cssText = `
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 1.5px solid ${org.accent};
+            opacity: 0.4;
+            animation: pulse 1.5s ease-in-out infinite;
+          `;
+          el.appendChild(ring);
+        }
+
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          onSelect(org.id);
+        });
+
+        // Hover effect
+        el.addEventListener("mouseenter", () => {
+          el.style.transform = "scale(1.15)";
+          el.style.zIndex = "10";
+        });
+        el.addEventListener("mouseleave", () => {
+          el.style.transform = "scale(1)";
+          el.style.zIndex = "auto";
+        });
+
+        const marker = new mapboxgl.default.Marker({ element: el, anchor: "center" })
+          .setLngLat([org.lng, org.lat])
+          .addTo(map);
+
+        markersRef.current.set(org.id, marker);
+      });
+    });
+  }, [orgs, mapLoaded, selected, onSelect]);
+
+  // Fly to selected org
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current || !selected) return;
+    const org = orgs.find((o) => o.id === selected);
+    if (!org) return;
+
+    import("mapbox-gl").then((mapboxgl) => {
+      const map = mapRef.current as InstanceType<typeof mapboxgl.default.Map>;
+      map.flyTo({
+        center: [org.lng, org.lat],
+        zoom: 6,
+        duration: 1400,
+        essential: true,
+      });
+    });
+  }, [selected, orgs, mapLoaded]);
 
   return (
-    <div className="relative w-full h-full flex flex-col" style={{ background: "#080812" }}>
-      <svg
-        viewBox="0 0 600 500"
-        className="w-full flex-1"
-        style={{ minHeight: 0 }}
-      >
-        {/* Grid lines */}
-        {[...Array(6)].map((_, i) => (
-          <line
-            key={`h${i}`}
-            x1={0} y1={i * 83} x2={600} y2={i * 83}
-            stroke="#F3EADB" strokeOpacity={0.03} strokeWidth={1}
-          />
-        ))}
-        {[...Array(7)].map((_, i) => (
-          <line
-            key={`v${i}`}
-            x1={i * 86} y1={0} x2={i * 86} y2={500}
-            stroke="#F3EADB" strokeOpacity={0.03} strokeWidth={1}
-          />
-        ))}
+    <>
+      {/* Pulse animation */}
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); opacity: 0.4; }
+          50% { transform: scale(1.3); opacity: 0.1; }
+        }
+      `}</style>
 
-        {/* Ambient glow */}
-        <defs>
-          <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#6D2DB5" stopOpacity={0.08} />
-            <stop offset="100%" stopColor="transparent" stopOpacity={0} />
-          </radialGradient>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        <rect x={0} y={0} width={600} height={500} fill="url(#bgGlow)" />
+      <div className="relative w-full h-full rounded-xl overflow-hidden">
+        <div ref={mapContainer} className="w-full h-full" />
 
-        {/* Country markers */}
-        {[...byCountry.entries()].map(([code, countryOrgs]) => {
-          const [lng, lat] = getCountryCenter(code);
-          const [x, y] = lngLatToXY(lng, lat);
-          const hasSelected = selected && countryOrgs.some((o) => o.id === selected);
-          const accent = countryOrgs[0].accent;
-          const count = countryOrgs.length;
+        {/* Loading overlay */}
+        {!mapLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center"
+            style={{ background: "#0a0814" }}>
+            <span className="font-mono text-xs text-[#F3EADB]/30 animate-pulse">
+              Chargement de la carte…
+            </span>
+          </div>
+        )}
 
+        {/* Selected org popup card */}
+        {selected && (() => {
+          const org = orgs.find((o) => o.id === selected);
+          if (!org) return null;
           return (
-            <g
-              key={code}
-              onClick={() => onSelect(countryOrgs[0].id)}
-              style={{ cursor: "pointer" }}
-              filter={hasSelected ? "url(#glow)" : undefined}
+            <div
+              className="absolute bottom-4 left-4 right-4 md:left-4 md:right-auto md:w-72 rounded-2xl p-4 z-10"
+              style={{
+                background: "rgba(10,8,20,0.92)",
+                border: `1px solid ${org.accent}44`,
+                backdropFilter: "blur(16px)",
+                boxShadow: `0 8px 32px ${org.accent}22`,
+              }}
             >
-              {/* Pulse ring when selected */}
-              {hasSelected && (
-                <circle
-                  cx={x} cy={y} r={22}
-                  fill="none"
-                  stroke={accent}
-                  strokeOpacity={0.35}
-                  strokeWidth={2}
-                />
-              )}
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
+                  style={{ background: `${org.accent}20`, border: `1px solid ${org.accent}40` }}
+                >
+                  {org.logo ?? org.flag}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bricolage font-bold text-[#F3EADB] text-sm leading-tight">
+                    {org.name}
+                  </p>
+                  <p className="font-mono text-[10px] text-[#F3EADB]/40 mt-0.5">
+                    {org.flag} {org.city}, {org.country}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onSelect(selected)}
+                  className="text-[#F3EADB]/30 hover:text-[#F3EADB]/70 text-lg leading-none shrink-0"
+                >×</button>
+              </div>
 
-              {/* Outer ring */}
-              <circle
-                cx={x} cy={y} r={hasSelected ? 16 : 12}
-                fill={`${accent}22`}
-                stroke={accent}
-                strokeWidth={hasSelected ? 2 : 1.5}
-                strokeOpacity={hasSelected ? 1 : 0.7}
-                style={{ transition: "all 0.3s" }}
-              />
+              <p className="font-hanken text-xs text-[#F3EADB]/50 leading-relaxed mt-3 line-clamp-2">
+                {org.description}
+              </p>
 
-              {/* Flag emoji */}
-              <text
-                x={x} y={y + 1}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize={hasSelected ? 14 : 11}
-                style={{ transition: "font-size 0.3s", userSelect: "none" }}
-              >
-                {countryOrgs[0].flag}
-              </text>
-
-              {/* Count badge */}
-              {count > 1 && (
-                <g>
-                  <circle
-                    cx={x + 10} cy={y - 10} r={8}
-                    fill={accent}
-                  />
-                  <text
-                    x={x + 10} y={y - 9}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    fontSize={9}
-                    fontWeight="bold"
-                    fill="white"
-                    style={{ userSelect: "none" }}
-                  >
-                    {count}
-                  </text>
-                </g>
-              )}
-            </g>
-          );
-        })}
-
-        {/* Selected org tooltip */}
-        {selectedOrg && (() => {
-          const [lng, lat] = lngLatToXY(selectedOrg.lng, selectedOrg.lat);
-          const tipX = lng > 450 ? lng - 160 : lng + 20;
-          const tipY = lat > 400 ? lat - 80 : lat + 10;
-
-          return (
-            <g>
-              <rect
-                x={tipX} y={tipY}
-                width={155} height={58}
-                rx={8}
-                fill="#1a0d28"
-                stroke={selectedOrg.accent}
-                strokeOpacity={0.5}
-                strokeWidth={1}
-              />
-              <text x={tipX + 10} y={tipY + 18} fontSize={11} fontWeight="bold" fill="#F3EADB">
-                {selectedOrg.shortName ?? selectedOrg.name.slice(0, 22)}
-              </text>
-              <text x={tipX + 10} y={tipY + 32} fontSize={9} fill="#F3EADB" opacity={0.5}>
-                {selectedOrg.city}, {selectedOrg.country}
-              </text>
-              <text x={tipX + 10} y={tipY + 46} fontSize={8} fill={selectedOrg.accent}>
-                {selectedOrg.website?.replace(/^https?:\/\//, "").slice(0, 28)}
-              </text>
-            </g>
+              <div className="flex flex-col gap-1 mt-3">
+                {org.phone && (
+                  <a href={`tel:${org.phone}`}
+                    className="font-mono text-[10px] flex items-center gap-1.5"
+                    style={{ color: org.accent }}>
+                    📞 {org.phone}
+                  </a>
+                )}
+                {org.website && (
+                  <a href={org.website} target="_blank" rel="noopener noreferrer"
+                    className="font-mono text-[10px] flex items-center gap-1.5 hover:underline"
+                    style={{ color: org.accent }}>
+                    🌐 {org.website.replace(/^https?:\/\//, "")}
+                  </a>
+                )}
+              </div>
+            </div>
           );
         })()}
-
-        {/* Legend */}
-        <text x={10} y={490} fontSize={9} fill="#F3EADB" opacity={0.2} fontFamily="monospace">
-          Carte LGBTQIA+ Europe · Spectrum For Us
-        </text>
-      </svg>
-    </div>
+      </div>
+    </>
   );
 }
