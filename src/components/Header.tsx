@@ -234,7 +234,7 @@ export function Header() {
                                           className="opacity-0 group-hover:opacity-60 transition-opacity ml-auto" aria-hidden="true" />
                                       </Link>
                                       <ul className="space-y-0.5 pl-3.5">
-                                        {subs.slice(0, 5).map((sub) => (
+                                        {subs.map((sub) => (
                                           <li key={sub}>
                                             <Link
                                               href={`/decouvrir?category=${encodeURIComponent(catName)}&subcategory=${encodeURIComponent(sub)}`}
@@ -245,17 +245,6 @@ export function Header() {
                                             </Link>
                                           </li>
                                         ))}
-                                        {subs.length > 5 && (
-                                          <li>
-                                            <Link
-                                              href={`/decouvrir?category=${encodeURIComponent(catName)}`}
-                                              onClick={() => setActiveMenu(null)}
-                                              className="font-mono text-[9px] text-[#F3EADB]/25 hover:text-[#E0337E] transition-colors"
-                                            >
-                                              + {subs.length - 5} autres →
-                                            </Link>
-                                          </li>
-                                        )}
                                       </ul>
                                     </div>
                                   );
