@@ -30,16 +30,21 @@ export default function ArticlesPage() {
 
   const fetch_ = useCallback(async () => {
     setLoading(true);
-    const supabase = createClient();
-    let q = supabase.from("articles").select("id,slug,title_fr,title_en,excerpt_fr,cover_url,category,tags,published,published_at,created_at,updated_at", { count: "exact" })
-      .order("created_at", { ascending: false });
-    if (pubFilter === "published") q = q.eq("published", true);
-    if (pubFilter === "draft")     q = q.eq("published", false);
-    if (search) q = q.ilike("title_fr", `%${search}%`);
-    const { data, count } = await q.limit(50);
-    setArticles(data ?? []);
-    setTotal(count ?? 0);
-    setLoading(false);
+    try {
+      const supabase = createClient();
+      let q = supabase.from("articles").select("id,slug,title_fr,title_en,excerpt_fr,cover_url,category,tags,published,published_at,created_at,updated_at", { count: "exact" })
+        .order("created_at", { ascending: false });
+      if (pubFilter === "published") q = q.eq("published", true);
+      if (pubFilter === "draft")     q = q.eq("published", false);
+      if (search) q = q.ilike("title_fr", `%${search}%`);
+      const { data, count } = await q.limit(50);
+      setArticles(data ?? []);
+      setTotal(count ?? 0);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [pubFilter, search]);
 
   useEffect(() => { fetch_(); }, [fetch_]);

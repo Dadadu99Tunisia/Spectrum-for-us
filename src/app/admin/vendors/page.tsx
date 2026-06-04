@@ -40,11 +40,16 @@ export default function VendorsPage() {
     const params = new URLSearchParams({ page: String(page), limit: String(LIMIT) });
     if (search) params.set("search", search);
     if (kycFilter) params.set("status", kycFilter);
-    const res = await fetch(`/api/admin/vendors?${params}`);
-    const json = await res.json();
-    setVendors(json.data ?? []);
-    setTotal(json.meta?.total ?? 0);
-    setLoading(false);
+    try {
+      const res = await fetch(`/api/admin/vendors?${params}`);
+      const json = await res.json();
+      setVendors(json.data ?? []);
+      setTotal(json.meta?.total ?? 0);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [page, search, kycFilter]);
 
   useEffect(() => { fetchVendors(); }, [fetchVendors]);

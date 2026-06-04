@@ -39,14 +39,19 @@ export default function ServicesPage() {
 
   const fetch_ = useCallback(async () => {
     setLoading(true);
-    const supabase = createClient();
-    let q = supabase.from("workshops").select("*", { count: "exact" }).order("created_at", { ascending: false });
-    if (statusFilter) q = q.eq("listing_status", statusFilter);
-    if (search) q = q.or(`title.ilike.%${search}%,name.ilike.%${search}%,city.ilike.%${search}%`);
-    const { data, count } = await q.limit(60);
-    setItems(data ?? []);
-    setTotal(count ?? 0);
-    setLoading(false);
+    try {
+      const supabase = createClient();
+      let q = supabase.from("workshops").select("*", { count: "exact" }).order("created_at", { ascending: false });
+      if (statusFilter) q = q.eq("listing_status", statusFilter);
+      if (search) q = q.or(`title.ilike.%${search}%,name.ilike.%${search}%,city.ilike.%${search}%`);
+      const { data, count } = await q.limit(60);
+      setItems(data ?? []);
+      setTotal(count ?? 0);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [statusFilter, search]);
 
   useEffect(() => { fetch_(); }, [fetch_]);

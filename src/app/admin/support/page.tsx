@@ -49,11 +49,16 @@ export default function SupportPage() {
     const params = new URLSearchParams({ page: String(page), limit: String(LIMIT) });
     if (status)   params.set("status", status);
     if (priority) params.set("priority", priority);
-    const res  = await fetch(`/api/admin/support?${params}`);
-    const json = await res.json();
-    setTickets(json.data ?? []);
-    setTotal(json.meta?.total ?? 0);
-    setLoading(false);
+    try {
+      const res  = await fetch(`/api/admin/support?${params}`);
+      const json = await res.json();
+      setTickets(json.data ?? []);
+      setTotal(json.meta?.total ?? 0);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [page, status, priority]);
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);

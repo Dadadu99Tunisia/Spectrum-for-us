@@ -11,6 +11,7 @@ import {
   Bell, Search, ExternalLink, Zap,
 } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
+import { AdminErrorBoundary } from "@/components/ui/AdminErrorBoundary";
 
 type NavItem = {
   href: string;
@@ -305,7 +306,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* ── Page content ── */}
         <main className="flex-1 p-6 overflow-y-auto">
-          {children}
+          <AdminErrorBoundary>
+            {children}
+          </AdminErrorBoundary>
         </main>
       </div>
     </div>

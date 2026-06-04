@@ -56,11 +56,16 @@ export default function TicketDetailPage() {
   const [toast, setToast]       = useState<string | null>(null);
 
   const load = async () => {
-    const res  = await fetch(`/api/admin/support/${id}`);
-    const json = await res.json();
-    setTicket(json.data?.ticket);
-    setMessages(json.data?.messages ?? []);
-    setLoading(false);
+    try {
+      const res  = await fetch(`/api/admin/support/${id}`);
+      const json = await res.json();
+      setTicket(json.data?.ticket);
+      setMessages(json.data?.messages ?? []);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, [id]);

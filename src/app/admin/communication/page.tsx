@@ -22,25 +22,17 @@ export default function CommunicationPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.from("newsletter_subscribers").select("*").order("created_at", { ascending: false })
-      .then(({ data }) => {
+    (async () => {
+      try {
+        const { data } = await supabase.from("newsletter_subscribers").select("*").order("created_at", { ascending: false });
         const rows = data ?? [];
         setSubscribers(rows);
-        // Compute stats
         const sources: Record<string, number> = {};
-        rows.forEach(r => {
-          const s = r.source ?? "direct";
-          sources[s] = (sources[s] ?? 0) + 1;
-        });
-        // By month (last 6)
+        rows.forEach(r => { const s = r.source ?? "direct"; sources[s] = (sources[s] ?? 0) + 1; });
         const monthMap: Record<string, number> = {};
-        rows.forEach(r => {
-          const m = r.created_at.slice(0, 7);
-          monthMap[m] = (monthMap[m] ?? 0) + 1;
-        });
+        rows.forEach(r => { const m = r.created_at.slice(0, 7); monthMap[m] = (monthMap[m] ?? 0) + 1; });
         const byMonth = Object.entries(monthMap)
-          .sort(([a],[b]) => a.localeCompare(b))
-          .slice(-6)
+          .sort(([a],[b]) => a.localeCompare(b)).slice(-6)
           .map(([month, count]) => ({
             month: new Date(month + "-01").toLocaleDateString("fr-FR", { month: "short", year: "2-digit" }),
             count,
@@ -51,11 +43,10 @@ export default function CommunicationPage() {
           fr: rows.filter(r => r.locale === "fr").length,
           en: rows.filter(r => r.locale === "en").length,
           ar: rows.filter(r => r.locale === "ar").length,
-          sources,
-          byMonth,
+          sources, byMonth,
         });
-        setLoading(false);
-      });
+      } catch { /* silently fail */ } finally { setLoading(false); }
+    })();
   }, []);
 
   const exportCSV = () => {

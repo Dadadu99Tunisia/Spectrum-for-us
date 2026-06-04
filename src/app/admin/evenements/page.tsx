@@ -40,15 +40,20 @@ export default function EvenementsPage() {
 
   const fetch_ = useCallback(async () => {
     setLoading(true);
-    const supabase = createClient();
-    let q = supabase.from("queer_events").select("*", { count: "exact" })
-      .order("date_start", { ascending: true });
-    if (modFilter) q = q.eq("moderation", modFilter);
-    if (search)    q = q.ilike("title", `%${search}%`);
-    const { data, count } = await q.limit(50);
-    setEvents(data ?? []);
-    setTotal(count ?? 0);
-    setLoading(false);
+    try {
+      const supabase = createClient();
+      let q = supabase.from("queer_events").select("*", { count: "exact" })
+        .order("date_start", { ascending: true });
+      if (modFilter) q = q.eq("moderation", modFilter);
+      if (search)    q = q.ilike("title", `%${search}%`);
+      const { data, count } = await q.limit(50);
+      setEvents(data ?? []);
+      setTotal(count ?? 0);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [modFilter, search]);
 
   useEffect(() => { fetch_(); }, [fetch_]);

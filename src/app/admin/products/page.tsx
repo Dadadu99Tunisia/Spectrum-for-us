@@ -41,12 +41,17 @@ export default function ProductsPage() {
     const params = new URLSearchParams({ page: String(page), limit: String(LIMIT) });
     if (status) params.set("status", status);
     if (search) params.set("search", search);
-    const res  = await fetch(`/api/admin/products?${params}`);
-    const json = await res.json();
-    setProducts(json.data ?? []);
-    setTotal(json.meta?.total ?? 0);
-    setLoading(false);
-    setSelected(new Set());
+    try {
+      const res  = await fetch(`/api/admin/products?${params}`);
+      const json = await res.json();
+      setProducts(json.data ?? []);
+      setTotal(json.meta?.total ?? 0);
+      setSelected(new Set());
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [page, status, search]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);

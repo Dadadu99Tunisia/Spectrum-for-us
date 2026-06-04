@@ -42,11 +42,16 @@ export default function OrdersPage() {
     const params = new URLSearchParams({ page: String(page), limit: String(LIMIT) });
     if (statusFilter) params.set("status", statusFilter);
     if (search)       params.set("search", search);
-    const res = await fetch(`/api/admin/orders?${params}`);
-    const json = await res.json();
-    setOrders(json.data ?? []);
-    setTotal(json.meta?.total ?? 0);
-    setLoading(false);
+    try {
+      const res = await fetch(`/api/admin/orders?${params}`);
+      const json = await res.json();
+      setOrders(json.data ?? []);
+      setTotal(json.meta?.total ?? 0);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [page, statusFilter, search]);
 
   useEffect(() => { fetchOrders(); }, [fetchOrders]);

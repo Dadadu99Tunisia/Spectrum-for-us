@@ -41,14 +41,19 @@ export default function AmbassadeursPage() {
 
   const fetch_ = useCallback(async () => {
     setLoading(true);
-    const supabase = createClient();
-    let q = supabase.from("ambassadors").select("*", { count: "exact" }).order("followers_count", { ascending: false });
-    if (statusFilter) q = q.eq("outreach_status", statusFilter);
-    if (search)       q = q.ilike("name", `%${search}%`);
-    const { data, count } = await q.limit(60);
-    setItems(data ?? []);
-    setTotal(count ?? 0);
-    setLoading(false);
+    try {
+      const supabase = createClient();
+      let q = supabase.from("ambassadors").select("*", { count: "exact" }).order("followers_count", { ascending: false });
+      if (statusFilter) q = q.eq("outreach_status", statusFilter);
+      if (search)       q = q.ilike("name", `%${search}%`);
+      const { data, count } = await q.limit(60);
+      setItems(data ?? []);
+      setTotal(count ?? 0);
+    } catch {
+      // silently fail — show empty state
+    } finally {
+      setLoading(false);
+    }
   }, [statusFilter, search]);
 
   useEffect(() => { fetch_(); }, [fetch_]);
