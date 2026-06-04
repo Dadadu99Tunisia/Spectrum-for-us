@@ -1,14 +1,36 @@
 {
   "nav": {
+    "shop": "Boutique",
+    "services": "Services & Expériences",
+    "media": "Média",
+    "community": "Communauté",
     "discover": "Découvrir",
     "creators": "Créateur·rice·s",
     "experiences": "Expériences",
     "sell": "Vendre ici",
+    "sell_short": "+ Vendre ici",
     "cart": "Panier",
     "login": "Connexion",
     "signup": "S'inscrire",
     "account": "Mon compte",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "admin": "Back-office Admin",
+    "vendor_space": "Espace créateur·rice",
+    "see_all": "Voir tout",
+    "articles_resources": "Articles & Ressources",
+    "articles_desc": "Actualités, guides, témoignages queer",
+    "resources": "Ressources",
+    "resources_desc": "Liens, associations, outils",
+    "jobs": "Emploi & Offres",
+    "jobs_desc": "Opportunités dans l'écosystème queer",
+    "community_space": "Espace communautaire",
+    "community_desc": "Rencontres, échanges, soutien",
+    "directory": "Annuaire queer",
+    "directory_desc": "Professionnel·les, asso, lieux safe",
+    "ambassadors": "Ambassadeur·rices",
+    "ambassadors_desc": "Notre réseau de représentation",
+    "events": "Événements",
+    "events_desc": "Agenda culturel et festif"
   },
   "hero": {
     "tagline": "B(u)y us, for us.",
@@ -53,12 +75,66 @@
     "earnings": "Tes gains",
     "referrals": "Parrainages"
   },
+  "product": {
+    "add_to_cart": "Ajouter au panier",
+    "buy_now": "Acheter maintenant",
+    "out_of_stock": "Rupture de stock",
+    "by": "par",
+    "reviews": "avis",
+    "description": "Description",
+    "details": "Détails",
+    "shipping": "Livraison",
+    "similar": "Produits similaires"
+  },
+  "cart": {
+    "title": "Mon panier",
+    "empty": "Ton panier est vide",
+    "empty_sub": "Explore notre boutique pour trouver des créations qui te ressemblent.",
+    "total": "Total",
+    "checkout": "Passer commande",
+    "continue_shopping": "Continuer mes achats",
+    "remove": "Retirer",
+    "quantity": "Quantité"
+  },
+  "auth": {
+    "login_title": "Connexion",
+    "signup_title": "Créer un compte",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "forgot_password": "Mot de passe oublié ?",
+    "no_account": "Pas encore de compte ?",
+    "has_account": "Déjà un compte ?",
+    "or": "ou",
+    "continue_google": "Continuer avec Google"
+  },
+  "footer": {
+    "tagline": "La marketplace queer qui te ressemble.",
+    "marketplace": "Marketplace",
+    "company": "Entreprise",
+    "legal": "Légal",
+    "about": "À propos",
+    "press": "Presse",
+    "jobs": "Emploi",
+    "contact": "Contact",
+    "terms": "CGV",
+    "privacy": "Confidentialité",
+    "cookies": "Cookies",
+    "rights": "Tous droits réservés"
+  },
   "currency": {
     "EUR": "Euro €",
     "USD": "Dollar $",
     "GBP": "Livre £",
     "MAD": "Dirham MAD",
-    "TND": "Dinar TND"
+    "TND": "Dinar TND",
+    "DZD": "Dinar DZD",
+    "CAD": "Dollar CA$",
+    "AUD": "Dollar A$",
+    "CHF": "Franc Fr",
+    "SAR": "Riyal ﷼",
+    "AED": "Dirham AED",
+    "EGP": "Livre EGP",
+    "XOF": "Franc CFA"
   },
   "common": {
     "loading": "Chargement…",
@@ -71,6 +147,15 @@
     "draft": "Brouillon",
     "search": "Rechercher",
     "filter": "Filtrer",
-    "sort": "Trier"
+    "sort": "Trier",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "close": "Fermer",
+    "open": "Ouvrir",
+    "yes": "Oui",
+    "no": "Non",
+    "confirm": "Confirmer",
+    "other": "autre"
   }
 }

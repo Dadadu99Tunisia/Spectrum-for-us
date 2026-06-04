@@ -12,16 +12,17 @@ import {
 } from "lucide-react";
 import { useCart } from "@/store/cart";
 import { useAuth } from "@/contexts/AuthContext";
+import { useI18n } from "@/contexts/I18nContext";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 import { CATEGORIES } from "@/lib/categories";
 import { useBanner } from "@/contexts/BannerContext";
 
 // ─────────────────────────────────────────────────────────────
-// Structure de navigation propre, sans doublons
+// Structure de navigation — labels via clés i18n
 // ─────────────────────────────────────────────────────────────
 
-const NAV: Array<{
-  label: string;
+type NavItem = {
+  labelKey: string;
   href: string;
   icon: React.ElementType;
   mega?: Array<{
@@ -30,71 +31,48 @@ const NAV: Array<{
     icon: React.ElementType;
     cats: string[];
   }>;
-  links?: Array<{ label: string; href: string; desc?: string }>;
-}> = [
+  links?: Array<{ labelKey: string; href: string; descKey?: string }>;
+};
+
+const NAV_CONFIG: NavItem[] = [
   {
-    label: "Boutique",
+    labelKey: "nav.shop",
     href: "/decouvrir",
     icon: ShoppingBag,
     mega: [
-      {
-        heading: "Mode & Bijoux",
-        color: "#E0337E",
-        icon: Package,
-        cats: ["Mode non-genrée", "Bijoux"],
-      },
-      {
-        heading: "Art & Édition",
-        color: "#6D2DB5",
-        icon: Palette,
-        cats: ["Art & Culture", "Zines & Édition"],
-      },
-      {
-        heading: "Corps & Maison",
-        color: "#1C9C95",
-        icon: Sparkles,
-        cats: ["Corps & Soin", "Intimité", "Maison"],
-      },
+      { heading: "Mode & Bijoux", color: "#E0337E", icon: Package, cats: ["Mode non-genrée", "Bijoux"] },
+      { heading: "Art & Édition", color: "#6D2DB5", icon: Palette, cats: ["Art & Culture", "Zines & Édition"] },
+      { heading: "Corps & Maison", color: "#1C9C95", icon: Sparkles, cats: ["Corps & Soin", "Intimité", "Maison"] },
     ],
   },
   {
-    label: "Services & Expériences",
+    labelKey: "nav.services",
     href: "/services",
     icon: Briefcase,
     mega: [
-      {
-        heading: "Services",
-        color: "#E0901E",
-        icon: Zap,
-        cats: ["Services"],
-      },
-      {
-        heading: "Expériences & Ateliers",
-        color: "#6D2DB5",
-        icon: CalendarDays,
-        cats: ["Expériences"],
-      },
+      { heading: "Services", color: "#E0901E", icon: Zap, cats: ["Services"] },
+      { heading: "Expériences & Ateliers", color: "#6D2DB5", icon: CalendarDays, cats: ["Expériences"] },
     ],
   },
   {
-    label: "Média",
+    labelKey: "nav.media",
     href: "/media",
     icon: BookOpen,
     links: [
-      { label: "Articles & Ressources", href: "/media", desc: "Actualités, guides, témoignages queer" },
-      { label: "Ressources", href: "/ressources", desc: "Liens, associations, outils" },
-      { label: "Emploi & Offres", href: "/emploi", desc: "Opportunités dans l'écosystème queer" },
+      { labelKey: "nav.articles_resources", href: "/media", descKey: "nav.articles_desc" },
+      { labelKey: "nav.resources", href: "/ressources", descKey: "nav.resources_desc" },
+      { labelKey: "nav.jobs", href: "/emploi", descKey: "nav.jobs_desc" },
     ],
   },
   {
-    label: "Communauté",
+    labelKey: "nav.community",
     href: "/communaute",
     icon: Users,
     links: [
-      { label: "Espace communautaire", href: "/communaute", desc: "Rencontres, échanges, soutien" },
-      { label: "Annuaire queer", href: "/annuaire", desc: "Professionnel·les, asso, lieux safe" },
-      { label: "Ambassadeur·rices", href: "/ambassadeurs", desc: "Notre réseau de représentation" },
-      { label: "Événements", href: "/evenements", desc: "Agenda culturel et festif" },
+      { labelKey: "nav.community_space", href: "/communaute", descKey: "nav.community_desc" },
+      { labelKey: "nav.directory", href: "/annuaire", descKey: "nav.directory_desc" },
+      { labelKey: "nav.ambassadors", href: "/ambassadeurs", descKey: "nav.ambassadors_desc" },
+      { labelKey: "nav.events", href: "/evenements", descKey: "nav.events_desc" },
     ],
   },
 ];
@@ -116,7 +94,8 @@ export function Header() {
   const { user, isAdmin, loading, signOut } = useAuth();
   const { visible: bannerVisible } = useBanner();
 
-  const pseudo = user?.user_metadata?.pseudo || user?.email?.split("@")[0] || "Mon compte";
+  const { t } = useI18n();
+  const pseudo = user?.user_metadata?.pseudo || user?.email?.split("@")[0] || t("nav.account");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -189,7 +168,7 @@ export function Header() {
 
           {/* Desktop nav */}
           <nav ref={navRef} className="hidden lg:flex items-center gap-0.5" aria-label="Navigation principale">
-            {NAV.map((item) => (
+            {NAV_CONFIG.map((item) => (
               <div key={item.href} className="relative"
                 onMouseEnter={() => openMenu(item.href)}
                 onMouseLeave={closeMenu}>
@@ -203,14 +182,14 @@ export function Header() {
                       ? "text-[#F3EADB] bg-[#F3EADB]/8"
                       : "text-[#F3EADB]/70 hover:text-[#F3EADB]"
                   )}>
-                  {item.label}
+                  {t(item.labelKey)}
                   <ChevronDown size={11}
                     className={cn("transition-transform duration-200", activeMenu === item.href && "rotate-180")} />
                 </button>
 
                 {/* Dropdown */}
                 {activeMenu === item.href && (
-                  <div className="absolute left-0 top-full pt-2 z-50" role="region" aria-label={item.label}>
+                  <div className="absolute left-0 top-full pt-2 z-50" role="region" aria-label={t(item.labelKey)}>
                     <div className="absolute -top-2 left-0 right-0 h-2" aria-hidden="true" />
                     <div className="bg-[#1e0f35] border border-[#F3EADB]/10 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden flex flex-col"
                       style={{ minWidth: item.mega ? "560px" : "260px", maxHeight: "calc(100vh - 120px)" }}>
@@ -219,11 +198,11 @@ export function Header() {
                       <div className="px-5 pt-4 pb-3 border-b border-[#F3EADB]/8 flex items-center justify-between shrink-0">
                         <Link href={item.href} onClick={() => setActiveMenu(null)}
                           className="flex items-center gap-2 font-fraunces text-sm text-[#F3EADB] hover:text-[#E0337E] transition-colors">
-                          {item.label} <ArrowRight size={13} />
+                          {t(item.labelKey)} <ArrowRight size={13} />
                         </Link>
                         <Link href="/vendre" onClick={() => setActiveMenu(null)}
                           className="font-mono text-[10px] text-[#E0337E]/60 hover:text-[#E0337E] uppercase tracking-widest transition-colors">
-                          + Vendre ici
+                          {t("nav.sell_short")}
                         </Link>
                       </div>
 
@@ -294,10 +273,10 @@ export function Header() {
                             <Link key={link.href} href={link.href} onClick={() => setActiveMenu(null)}
                               className="flex flex-col px-4 py-3 rounded-xl hover:bg-[#F3EADB]/5 transition-colors group">
                               <span className="font-hanken text-sm text-[#F3EADB]/80 group-hover:text-[#F3EADB] transition-colors">
-                                {link.label}
+                                {t(link.labelKey)}
                               </span>
-                              {link.desc && (
-                                <span className="font-hanken text-xs text-[#F3EADB]/35 mt-0.5">{link.desc}</span>
+                              {link.descKey && (
+                                <span className="font-hanken text-xs text-[#F3EADB]/35 mt-0.5">{t(link.descKey)}</span>
                               )}
                             </Link>
                           ))}
@@ -351,28 +330,28 @@ export function Header() {
                       {isAdmin && (
                         <Link href="/admin" onClick={() => setUserMenuOpen(false)}
                           className="flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#E0337E] hover:bg-[#E0337E]/5 transition-colors border-b border-[#F3EADB]/8">
-                          <LayoutDashboard size={14} aria-hidden="true" /> Back-office Admin
+                          <LayoutDashboard size={14} aria-hidden="true" /> {t("nav.admin")}
                         </Link>
                       )}
                       <Link href="/compte" onClick={() => setUserMenuOpen(false)}
                         className="flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#F3EADB]/70 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 transition-colors">
-                        <User size={14} aria-hidden="true" /> Mon compte
+                        <User size={14} aria-hidden="true" /> {t("nav.account")}
                       </Link>
                       <Link href="/vendeur" onClick={() => setUserMenuOpen(false)}
                         className="flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#F3EADB]/70 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 transition-colors">
-                        <Store size={14} aria-hidden="true" /> Espace créateur·rice
+                        <Store size={14} aria-hidden="true" /> {t("nav.vendor_space")}
                       </Link>
                       <button onClick={() => { setUserMenuOpen(false); signOut(); }}
                         className="w-full flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#F3EADB]/50 hover:text-red-400 hover:bg-[#F3EADB]/5 transition-colors border-t border-[#F3EADB]/8">
-                        <LogOut size={14} aria-hidden="true" /> Se déconnecter
+                        <LogOut size={14} aria-hidden="true" /> {t("nav.logout")}
                       </button>
                     </div>
                   )}
                 </div>
               ) : (
                 <div className="hidden lg:flex items-center gap-2">
-                  <Button variant="ghost" href="/auth" className="text-sm px-4 py-2">Connexion</Button>
-                  <Button variant="primary" href="/auth" className="text-xs px-5 py-2">S&apos;inscrire</Button>
+                  <Button variant="ghost" href="/auth" className="text-sm px-4 py-2">{t("nav.login")}</Button>
+                  <Button variant="primary" href="/auth" className="text-xs px-5 py-2">{t("nav.signup")}</Button>
                 </div>
               )
             )}
@@ -449,7 +428,7 @@ export function Header() {
         {/* Scroll area */}
         <div className="flex-1 overflow-y-auto overscroll-contain">
           <nav aria-label="Menu mobile" className="p-3">
-            {NAV.map((item) => {
+            {NAV_CONFIG.map((item) => {
               const isExpanded = mobileExpanded === item.href;
               const Icon = item.icon;
 
@@ -468,7 +447,7 @@ export function Header() {
                   >
                     <Icon size={16} aria-hidden="true"
                       className={isExpanded ? "text-[#E0337E]" : "text-[#E0337E]/60"} />
-                    <span className="font-hanken text-base flex-1 text-left">{item.label}</span>
+                    <span className="font-hanken text-base flex-1 text-left">{t(item.labelKey)}</span>
                     <ChevronDown size={15} aria-hidden="true"
                       className={cn("transition-transform duration-200 text-[#F3EADB]/30",
                         isExpanded && "rotate-180 text-[#E0337E]")} />
@@ -484,7 +463,7 @@ export function Header() {
                       <Link href={item.href} onClick={closeMobile}
                         className="flex items-center gap-2 px-4 py-2.5 mx-2 rounded-lg font-hanken text-sm text-[#E0337E]/80 hover:text-[#E0337E] hover:bg-[#E0337E]/5 transition-colors">
                         <ArrowRight size={12} aria-hidden="true" />
-                        Voir tout — {item.label}
+                        {t("nav.see_all")} — {t(item.labelKey)}
                       </Link>
 
                       {/* Méga menu : sections avec sous-catégories */}
@@ -566,10 +545,10 @@ export function Header() {
                           <Link href={link.href} onClick={closeMobile}
                             className="flex flex-col px-3 py-2.5 rounded-xl hover:bg-[#F3EADB]/5 transition-colors">
                             <span className="font-hanken text-sm text-[#F3EADB]/75 hover:text-[#F3EADB]">
-                              {link.label}
+                              {t(link.labelKey)}
                             </span>
-                            {link.desc && (
-                              <span className="font-hanken text-xs text-[#F3EADB]/30 mt-0.5">{link.desc}</span>
+                            {link.descKey && (
+                              <span className="font-hanken text-xs text-[#F3EADB]/30 mt-0.5">{t(link.descKey)}</span>
                             )}
                           </Link>
                         </div>
@@ -594,20 +573,20 @@ export function Header() {
             <div className="grid grid-cols-2 gap-2">
               <Link href="/compte" onClick={closeMobile}
                 className="flex items-center justify-center gap-2 py-2.5 rounded-full border border-[#F3EADB]/20 text-sm font-hanken text-[#F3EADB]/70 hover:text-[#F3EADB] transition-colors">
-                <User size={14} aria-hidden="true" /> Mon compte
+                <User size={14} aria-hidden="true" /> {t("nav.account")}
               </Link>
               <button onClick={() => { closeMobile(); signOut(); }}
                 className="flex items-center justify-center gap-2 py-2.5 rounded-full border border-red-400/20 text-sm font-hanken text-red-400 hover:bg-red-400/5 transition-colors">
-                <LogOut size={14} aria-hidden="true" /> Déconnexion
+                <LogOut size={14} aria-hidden="true" /> {t("nav.logout")}
               </button>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-2">
               <Button variant="secondary" href="/auth" className="text-sm py-2.5 text-center justify-center">
-                Connexion
+                {t("nav.login")}
               </Button>
               <Button variant="primary" href="/auth" className="text-sm py-2.5 text-center justify-center">
-                S&apos;inscrire
+                {t("nav.signup")}
               </Button>
             </div>
           )}

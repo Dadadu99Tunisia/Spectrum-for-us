@@ -1,31 +1,53 @@
 {
   "nav": {
+    "shop": "Shop",
+    "services": "Services & Experiences",
+    "media": "Media",
+    "community": "Community",
     "discover": "Discover",
     "creators": "Creators",
     "experiences": "Experiences",
     "sell": "Sell here",
+    "sell_short": "+ Sell here",
     "cart": "Cart",
-    "login": "Login",
+    "login": "Log in",
     "signup": "Sign up",
     "account": "My account",
-    "logout": "Log out"
+    "logout": "Log out",
+    "admin": "Admin back-office",
+    "vendor_space": "Creator space",
+    "see_all": "See all",
+    "articles_resources": "Articles & Resources",
+    "articles_desc": "News, guides, queer stories",
+    "resources": "Resources",
+    "resources_desc": "Links, associations, tools",
+    "jobs": "Jobs & Opportunities",
+    "jobs_desc": "Opportunities in the queer ecosystem",
+    "community_space": "Community space",
+    "community_desc": "Meetings, exchanges, support",
+    "directory": "Queer directory",
+    "directory_desc": "Professionals, associations, safe spaces",
+    "ambassadors": "Ambassadors",
+    "ambassadors_desc": "Our representation network",
+    "events": "Events",
+    "events_desc": "Cultural and festive calendar"
   },
   "hero": {
     "tagline": "B(u)y us, for us.",
-    "subtitle": "The first French-speaking queer marketplace. Creations made with love, for the whole spectrum.",
+    "subtitle": "The first francophone queer marketplace. Creations made with love, for the whole spectrum.",
     "cta_discover": "Explore creations",
     "cta_sell": "Open my shop"
   },
   "subscription": {
-    "title": "Vendor Subscription",
+    "title": "Seller Subscription",
     "price": "€35 / month",
     "description": "Unlimited access to your shop, zero commission for the first 3 months.",
     "features": [
-      "Personalized shop",
+      "Personalised shop",
       "Unlimited products",
       "Analytics dashboard",
       "Priority support",
-      "Community spotlight"
+      "Community highlight"
     ],
     "cta": "Activate my subscription",
     "active": "Active subscription ✓",
@@ -45,20 +67,74 @@
     }
   },
   "ambassador": {
-    "title": "Ambassador Program",
+    "title": "Ambassador Programme",
     "subtitle": "Share Spectrum For Us and earn a commission on every sale you generate.",
     "commission": "10% commission",
-    "join": "Join the program",
+    "join": "Join the programme",
     "your_code": "Your ambassador code",
     "earnings": "Your earnings",
     "referrals": "Referrals"
+  },
+  "product": {
+    "add_to_cart": "Add to cart",
+    "buy_now": "Buy now",
+    "out_of_stock": "Out of stock",
+    "by": "by",
+    "reviews": "reviews",
+    "description": "Description",
+    "details": "Details",
+    "shipping": "Shipping",
+    "similar": "Similar products"
+  },
+  "cart": {
+    "title": "My cart",
+    "empty": "Your cart is empty",
+    "empty_sub": "Explore our shop to find creations that look like you.",
+    "total": "Total",
+    "checkout": "Checkout",
+    "continue_shopping": "Continue shopping",
+    "remove": "Remove",
+    "quantity": "Quantity"
+  },
+  "auth": {
+    "login_title": "Log in",
+    "signup_title": "Create an account",
+    "email": "Email address",
+    "password": "Password",
+    "forgot_password": "Forgot password?",
+    "no_account": "No account yet?",
+    "has_account": "Already have an account?",
+    "or": "or",
+    "continue_google": "Continue with Google"
+  },
+  "footer": {
+    "tagline": "The queer marketplace that looks like you.",
+    "marketplace": "Marketplace",
+    "company": "Company",
+    "legal": "Legal",
+    "about": "About",
+    "press": "Press",
+    "jobs": "Jobs",
+    "contact": "Contact",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies",
+    "rights": "All rights reserved"
   },
   "currency": {
     "EUR": "Euro €",
     "USD": "Dollar $",
     "GBP": "Pound £",
     "MAD": "Dirham MAD",
-    "TND": "Dinar TND"
+    "TND": "Dinar TND",
+    "DZD": "Dinar DZD",
+    "CAD": "Dollar CA$",
+    "AUD": "Dollar A$",
+    "CHF": "Franc Fr",
+    "SAR": "Riyal ﷼",
+    "AED": "Dirham AED",
+    "EGP": "Pound EGP",
+    "XOF": "Franc CFA"
   },
   "common": {
     "loading": "Loading…",
@@ -71,6 +147,15 @@
     "draft": "Draft",
     "search": "Search",
     "filter": "Filter",
-    "sort": "Sort"
+    "sort": "Sort",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "open": "Open",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "other": "other"
   }
 }
