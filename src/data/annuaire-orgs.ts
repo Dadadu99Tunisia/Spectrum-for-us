@@ -31,6 +31,24 @@ export interface OrgEntry {
 export const ORGS: OrgEntry[] = [
   // ─── FRANCE ───────────────────────────────────────────────
   {
+    id: "mawjoudin",
+    name: "Mawjoudin – Nous Existons",
+    shortName: "Mawjoudin",
+    country: "France",
+    countryCode: "FR",
+    city: "Paris",
+    lat: 48.858,
+    lng: 2.351,
+    categories: ["association", "culture"],
+    description: "Association de personnes LGBTQI+ tunisiennes et nord-africaines en exil. Visibilité, solidarité, lutte contre les discriminations subies à l'intersection du racisme et de la LGBTQIA+phobie.",
+    email: "contact@mawjoudin.org",
+    website: "https://www.mawjoudin.org",
+    logo: "🌙",
+    accent: "#CF3F7C",
+    founded: 2015,
+    flag: "🇹🇳",
+  },
+  {
     id: "sos-homophobie",
     name: "SOS Homophobie",
     country: "France",
