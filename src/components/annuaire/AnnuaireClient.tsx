@@ -10,6 +10,49 @@ import {
 } from "lucide-react";
 import { ORGS, CATEGORIES, type OrgCategory, type OrgEntry } from "@/data/annuaire-orgs";
 
+// ─── Overrides ────────────────────────────────────────────────────────────────
+type Override = {
+  org_id: string;
+  logo_url?: string | null;
+  custom_name?: string | null;
+  custom_desc?: string | null;
+  website?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  accent?: string | null;
+  is_featured?: boolean;
+  is_hidden?: boolean;
+};
+
+function useOverrides() {
+  const [overrides, setOverrides] = useState<Map<string, Override>>(new Map());
+  useEffect(() => {
+    fetch("/api/annuaire/overrides")
+      .then(r => r.json())
+      .then(({ data }: { data: Override[] }) => {
+        const map = new Map<string, Override>();
+        for (const o of data ?? []) map.set(o.org_id, o);
+        setOverrides(map);
+      })
+      .catch(() => {});
+  }, []);
+  return overrides;
+}
+
+function applyOverride(org: OrgEntry, ov: Override | undefined): OrgEntry {
+  if (!ov) return org;
+  return {
+    ...org,
+    name:        ov.custom_name  ?? org.name,
+    description: ov.custom_desc  ?? org.description,
+    website:     ov.website      ?? org.website,
+    phone:       ov.phone        ?? org.phone,
+    email:       ov.email        ?? org.email,
+    accent:      ov.accent       ?? org.accent,
+    logo:        ov.logo_url     ?? org.logo,
+  };
+}
+
 // ─── helpers ──────────────────────────────────────────────────────────────────
 function codeToFlag(code: string) {
   return [...code.toUpperCase()].map(c => String.fromCodePoint(c.charCodeAt(0) + 127397)).join("");
@@ -22,12 +65,15 @@ function domain(url?: string) {
 // ─── Logo ─────────────────────────────────────────────────────────────────────
 function OrgLogo({ org, size = 52 }: { org: OrgEntry; size?: number }) {
   const [err, setErr] = useState(false);
+  // org.logo may be an override URL (absolute) or clearbit domain, or emoji fallback
+  const customUrl = org.logo?.startsWith("http") ? org.logo : null;
   const d = domain(org.website);
   const radius = Math.round(size * 0.28);
-  if (!err && d) return (
+  const imgSrc = customUrl ?? (d ? `https://logo.clearbit.com/${d}` : null);
+  if (!err && imgSrc) return (
     <div className="shrink-0 bg-white flex items-center justify-center overflow-hidden"
       style={{ width: size, height: size, borderRadius: radius }}>
-      <Image src={`https://logo.clearbit.com/${d}`} alt={`Logo ${org.name}`}
+      <Image src={imgSrc} alt={`Logo ${org.name}`}
         width={size} height={size} className="object-contain" onError={() => setErr(true)} unoptimized />
     </div>
   );
@@ -262,6 +308,7 @@ export function AnnuaireClient() {
   const [showFilters, setShowFilters] = useState(false);
   const [showMoreCountries, setShowMoreCountries] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const overrides = useOverrides();
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
@@ -272,12 +319,25 @@ export function AnnuaireClient() {
     return () => window.removeEventListener("keydown", h);
   }, []);
 
+  // Merge overrides into static org data, hide hidden orgs, feature first
+  const mergedOrgs = useMemo(() => {
+    const list = ORGS
+      .filter(o => !overrides.get(o.id)?.is_hidden)
+      .map(o => applyOverride(o, overrides.get(o.id)));
+    list.sort((a, b) => {
+      const af = overrides.get(a.id)?.is_featured ? 0 : 1;
+      const bf = overrides.get(b.id)?.is_featured ? 0 : 1;
+      return af - bf;
+    });
+    return list;
+  }, [overrides]);
+
   const allCountries = useMemo(() =>
-    [...new Set(ORGS.map(o => o.country))].sort(), []);
+    [...new Set(mergedOrgs.map(o => o.country))].sort(), [mergedOrgs]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
-    let list = ORGS.filter(o => {
+    let list = mergedOrgs.filter(o => {
       const ms = !q || o.name.toLowerCase().includes(q) || o.city.toLowerCase().includes(q)
         || o.country.toLowerCase().includes(q) || o.description.toLowerCase().includes(q)
         || o.categories.some(c => c.toLowerCase().includes(q));
@@ -372,7 +432,7 @@ export function AnnuaireClient() {
               <div className="space-y-1.5">
                 {CATEGORIES.map(cat => {
                   const active = selectedCats.includes(cat.value);
-                  const count = ORGS.filter(o => o.categories.includes(cat.value)).length;
+                  const count = mergedOrgs.filter(o => o.categories.includes(cat.value)).length;
                   return (
                     <button key={cat.value} onClick={() => toggleCat(cat.value)}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all duration-150 group text-left"
@@ -404,8 +464,8 @@ export function AnnuaireClient() {
               <div className="space-y-1">
                 {visibleCountries.map(c => {
                   const active = selectedCountries.includes(c);
-                  const code = ORGS.find(o => o.country === c)?.countryCode ?? "";
-                  const count = ORGS.filter(o => o.country === c).length;
+                  const code = mergedOrgs.find(o => o.country === c)?.countryCode ?? "";
+                  const count = mergedOrgs.filter(o => o.country === c).length;
                   return (
                     <button key={c} onClick={() => toggleCountry(c)}
                       className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all text-left"
@@ -481,7 +541,7 @@ export function AnnuaireClient() {
               })}
               {selectedCountries.map(c => (
                 <span key={c} className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#CF3F7C]/15 border border-[#CF3F7C]/30 font-mono text-[10px] text-[#CF3F7C] shrink-0">
-                  {codeToFlag(ORGS.find(o => o.country === c)?.countryCode ?? "")} {c}
+                  {codeToFlag(mergedOrgs.find(o => o.country === c)?.countryCode ?? "")} {c}
                   <button onClick={() => toggleCountry(c)}><X size={9} /></button>
                 </span>
               ))}

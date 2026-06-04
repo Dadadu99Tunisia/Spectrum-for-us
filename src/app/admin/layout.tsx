@@ -8,7 +8,7 @@ import {
   CalendarDays, Mail, ShieldCheck, ShoppingCart, Users,
   MessageSquare, Settings, Menu, X, ChevronRight,
   TrendingUp, Briefcase, Bot, LogOut, Layout,
-  Bell, Search, ExternalLink, Zap,
+  Bell, Search, ExternalLink, Zap, MapPin,
 } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import { AdminErrorBoundary } from "@/components/ui/AdminErrorBoundary";
@@ -72,6 +72,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { href: "/admin/contenu",       label: "Site & Contenu",  icon: Layout },
       { href: "/admin/articles",      label: "Articles",        icon: FileText },
+      { href: "/admin/annuaire",      label: "Annuaire LGBTQ+", icon: MapPin },
       { href: "/admin/ambassadeurs",  label: "Ambassadeurs",    icon: Star },
       { href: "/admin/communication", label: "Communication",   icon: Briefcase },
     ]
@@ -103,6 +104,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "/admin/support":       "Support",
   "/admin/contenu":       "Site & Contenu",
   "/admin/articles":      "Articles",
+  "/admin/annuaire":      "Annuaire LGBTQ+",
   "/admin/ambassadeurs":  "Ambassadeurs",
   "/admin/communication": "Communication",
   "/admin/agents":        "Agents IA",
