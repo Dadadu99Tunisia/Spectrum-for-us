@@ -69,9 +69,9 @@ export function Manifeste() {
   const eyebrow      = useCMS("manifeste_eyebrow",      "Notre manifeste");
   const title        = useCMS("manifeste_title",        "Cultiver les différences pour une société");
   const titleItalic  = useCMS("manifeste_title_italic", "plus ouverte.");
-  const p1           = useCMS("manifeste_p1",           "La communauté queer représente la <strong>4ᵉ économie mondiale</strong>. Pourtant, presque aucune marketplace ne lui est réellement dédiée — ni pensée par elle, ni construite pour elle.");
-  const p2           = useCMS("manifeste_p2",           "Spectrum For Us est cet espace. Un lieu où chaque achat est un geste de soin envers quelqu'un·e de ta communauté. Où chaque création porte une histoire vraie. Où appartenir est suffisant pour être ici.");
-  const p3           = useCMS("manifeste_p3",           "Pas un site marchand. Un <strong>refuge prismatique</strong> — ouvert, tenu, traversé de lumière.");
+  const p1           = useCMS("manifeste_p1",           "Spectrum For Us est une marketplace en ligne où vous pouvez découvrir, acheter et vendre des créations, des services et des expériences uniques.");
+  const p2           = useCMS("manifeste_p2",           "Un espace simple pour connecter des <strong>créateur·ices, artisan·es et professionnel·les LGBTQIA+</strong> et allié·es à des personnes qui recherchent des produits et services authentiques et indépendants.");
+  const p3           = useCMS("manifeste_p3",           "La plateforme accueille également des marques et entreprises qui souhaitent s'inscrire dans une démarche respectueuse, inclusive et alignée avec les valeurs de la communauté.");
 
   const stats = [
     { num: "4",    suffix: "ème", label: useCMS("manifeste_stat1_label", "économie mondiale") },
