@@ -3,7 +3,9 @@ import { useRef, useState } from "react";
 import { useInView } from "@/lib/useInView";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, Check } from "lucide-react";
+import { useCart } from "@/store/cart";
+import Link from "next/link";
 
 const PRODUCTS = [
   {
@@ -70,8 +72,16 @@ const PRODUCTS = [
 
 function ProductCard({ product, delay }: { product: typeof PRODUCTS[0]; delay: number }) {
   const [liked, setLiked] = useState(false);
+  const [added, setAdded] = useState(false);
+  const { add } = useCart();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref);
+
+  const handleAdd = () => {
+    add({ id: String(product.id), name: product.name, creator: product.creator, price: parseFloat(product.price), quantity: 1, type: "product" });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  };
 
   return (
     <div
@@ -104,7 +114,7 @@ function ProductCard({ product, delay }: { product: typeof PRODUCTS[0]; delay: n
           {/* Favorite button */}
           <button
             onClick={() => setLiked(!liked)}
-            className="absolute top-3 right-3 p-1.5 rounded-full bg-[#1C0E29]/60 backdrop-blur-sm transition-all duration-300 hover:scale-110"
+            className="absolute top-3 right-3 p-1.5 rounded-full bg-[#3D1F5C]/60 backdrop-blur-sm transition-all duration-300 hover:scale-110"
             aria-label="Ajouter aux favoris"
           >
             <Heart
@@ -128,9 +138,14 @@ function ProductCard({ product, delay }: { product: typeof PRODUCTS[0]; delay: n
             <span className="font-mono text-sm font-bold text-[#F3EADB]">
               {product.price}
             </span>
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#E0337E]/10 text-[#E0337E] text-xs font-hanken font-medium hover:bg-[#E0337E]/20 transition-colors duration-200">
-              <ShoppingBag size={12} />
-              Ajouter
+            <button
+              onClick={handleAdd}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${
+                added ? "bg-green-500/20 text-green-400" : "bg-[#E0337E]/10 text-[#E0337E] hover:bg-[#E0337E]/20"
+              }`}
+            >
+              {added ? <Check size={12} /> : <ShoppingBag size={12} />}
+              {added ? "Ajouté !" : "Ajouter"}
             </button>
           </div>
         </div>
@@ -159,12 +174,12 @@ export function CoupsDeCoeur() {
               <span className="italic text-[#F2B79E]">cœur</span>
             </h2>
           </div>
-          <a
-            href="#creations"
+          <Link
+            href="/decouvrir"
             className="font-mono text-xs tracking-widest uppercase text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors duration-200 whitespace-nowrap"
           >
             ( Tout voir )
-          </a>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

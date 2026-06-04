@@ -8,31 +8,41 @@ export async function generateMetadata(
   const supabase = await createClient();
   const { data: product } = await supabase
     .from("products")
-    .select("name, description, price, images, shops(name)")
+    .select("name, title, description, price, category, type, images, image_url, shops(name, slug)")
     .eq("slug", slug)
     .single();
 
   if (!product) return { title: "Produit introuvable" };
 
-  const shop = (Array.isArray(product.shops) ? product.shops[0] : product.shops) as { name: string } | null;
-  const image = Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : null;
+  const name     = (product.name ?? product.title ?? "Produit") as string;
+  const shop     = (Array.isArray(product.shops) ? product.shops[0] : product.shops) as { name: string; slug?: string } | null;
+  const shopName = shop?.name ?? "Spectrum For Us";
+  const price    = product.price ? `${Number(product.price).toFixed(2)} €` : null;
+  const desc     = product.description
+    ? (product.description as string).slice(0, 155)
+    : `Découvrez "${name}" par ${shopName} sur Spectrum For Us.`;
+  const url      = `https://spectrumforus.com/produit/${slug}`;
+  const ogTitle  = `${name}${price ? ` — ${price}` : ""} | ${shopName}`;
+
+  // L'image OG dynamique est générée par opengraph-image.tsx dans ce même dossier.
+  // Next.js l'injecte automatiquement — pas besoin de la passer manuellement.
 
   return {
-    title: `${product.name} — ${shop?.name ?? "Spectrum For Us"}`,
-    description: (product.description ?? "").slice(0, 160),
+    title: ogTitle,
+    description: desc,
     openGraph: {
-      title: product.name,
-      description: `${(product.description ?? "").slice(0, 120)} — ${product.price}€`,
-      images: image ? [{ url: image, width: 800, height: 800, alt: product.name }] : [],
+      title: ogTitle,
+      description: desc,
+      url,
       type: "website",
+      siteName: "Spectrum For Us",
     },
     twitter: {
       card: "summary_large_image",
-      title: product.name,
-      description: `Disponible sur Spectrum For Us — ${product.price}€`,
-      images: image ? [image] : [],
+      title: ogTitle,
+      description: desc,
     },
-    alternates: { canonical: `https://spectrumforus.com/produit/${slug}` },
+    alternates: { canonical: url },
   };
 }
 

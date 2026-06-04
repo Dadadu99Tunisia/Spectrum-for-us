@@ -54,7 +54,7 @@ export default function AbonnementPage() {
   const isActive = shop?.subscription_status === "active";
 
   return (
-    <div className="min-h-screen bg-[#1C0E29] text-[#F3EADB]">
+    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB]">
       <Header />
       <div className="max-w-2xl mx-auto px-6 pt-28 pb-24">
         <div className="text-center mb-10">
@@ -72,7 +72,7 @@ export default function AbonnementPage() {
         {/* Pricing card */}
         <div className={`rounded-3xl border p-8 mb-6 ${isActive ? "border-green-500/30 bg-green-500/5" : "border-[#E0337E]/30 bg-[#E0337E]/5"}`}>
           <div className="flex items-end gap-2 mb-6">
-            <span className="font-fraunces text-6xl">35</span>
+            <span className="font-fraunces text-6xl">9,90</span>
             <div className="pb-2">
               <span className="font-fraunces text-2xl text-[#E0337E]">€</span>
               <span className="font-mono text-sm text-[#F3EADB]/40 block">/mois</span>
@@ -112,7 +112,7 @@ export default function AbonnementPage() {
                 disabled={subscribing}
                 className="w-full py-4 rounded-xl bg-[#E0337E] text-white font-hanken font-semibold hover:bg-[#E0337E]/80 transition-all disabled:opacity-50"
               >
-                {subscribing ? "Redirection vers Stripe…" : "S'abonner maintenant — 35€/mois"}
+                {subscribing ? "Redirection vers Stripe…" : "S'abonner maintenant — 9,90€/mois"}
               </button>
             </>
           )}

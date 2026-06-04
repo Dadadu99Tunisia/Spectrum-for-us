@@ -58,7 +58,7 @@ export function VendreIci() {
               <span className="italic text-[#F2B79E]">sans filtres.</span>
             </h2>
             <p className="font-hanken text-[#F3EADB]/60 text-lg mb-12 max-w-xl">
-              35 €/mois. Boutique en ligne. Commission sur vente. Aucune condition sur ce que tu es.
+              9,90 €/mois. Boutique en ligne. Commission sur vente. Aucune condition sur ce que tu es.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
@@ -94,10 +94,10 @@ export function VendreIci() {
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <Button variant="primary" className="text-base px-8 py-3.5">
+              <Button variant="primary" href="/vendeur/onboarding" className="text-base px-8 py-3.5">
                 Ouvrir ma boutique
               </Button>
-              <Button variant="secondary" className="text-base px-8 py-3.5">
+              <Button variant="secondary" href="/vendre" className="text-base px-8 py-3.5">
                 En savoir plus
               </Button>
             </div>

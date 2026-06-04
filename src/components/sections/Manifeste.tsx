@@ -1,10 +1,32 @@
 "use client";
 import { useRef } from "react";
 import { useInView } from "@/lib/useInView";
+import { useSiteContent } from "@/lib/useSiteContent";
+
+// Helper: lit une clé CMS et retourne la valeur ou le fallback
+function useCMS(key: string, fallback: string) {
+  const { value } = useSiteContent(key);
+  return value ?? fallback;
+}
 
 export function Manifeste() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref);
+
+  // CMS values — fallback = texte d'origine (le site fonctionne même si la DB est vide)
+  const eyebrow      = useCMS("manifeste_eyebrow",      "Notre manifeste");
+  const title        = useCMS("manifeste_title",        "Cultiver les différences pour une société");
+  const titleItalic  = useCMS("manifeste_title_italic", "plus ouverte.");
+  const p1           = useCMS("manifeste_p1",           "La communauté queer représente la <strong>4ᵉ économie mondiale</strong>. Pourtant, presque aucune marketplace ne lui est réellement dédiée — ni pensée par elle, ni construite pour elle.");
+  const p2           = useCMS("manifeste_p2",           "Spectrum For Us est cet espace. Un lieu où chaque achat est un geste de soin envers quelqu'un·e de ta communauté. Où chaque création porte une histoire vraie. Où appartenir est suffisant pour être ici.");
+  const p3           = useCMS("manifeste_p3",           "Pas un site marchand. Un <strong>refuge prismatique</strong> — ouvert, tenu, traversé de lumière.");
+
+  const stats = [
+    { num: useCMS("manifeste_stat1_num", "4ème"),  label: useCMS("manifeste_stat1_label", "économie mondiale") },
+    { num: useCMS("manifeste_stat2_num", "100%"),  label: useCMS("manifeste_stat2_label", "communautaire") },
+    { num: useCMS("manifeste_stat3_num", "3"),     label: useCMS("manifeste_stat3_label", "types d'offres") },
+    { num: useCMS("manifeste_stat4_num", "Safe"),  label: useCMS("manifeste_stat4_label", "space garanti") },
+  ];
 
   return (
     <section
@@ -28,7 +50,7 @@ export function Manifeste() {
             transform: inView ? "translateY(0)" : "translateY(16px)",
           }}
         >
-          Notre manifeste
+          {eyebrow}
         </span>
 
         <h2
@@ -38,8 +60,8 @@ export function Manifeste() {
             transform: inView ? "translateY(0)" : "translateY(24px)",
           }}
         >
-          Cultiver les différences pour une société{" "}
-          <span className="italic text-[#F2B79E]">plus ouverte.</span>
+          {title}{" "}
+          <span className="italic text-[#F2B79E]">{titleItalic}</span>
         </h2>
 
         <div
@@ -49,22 +71,9 @@ export function Manifeste() {
             transform: inView ? "translateY(0)" : "translateY(16px)",
           }}
         >
-          <p>
-            La communauté queer représente la{" "}
-            <span className="text-[#F2B79E] font-semibold">4ᵉ économie mondiale</span>.
-            Pourtant, presque aucune marketplace ne lui est réellement dédiée — ni pensée par elle,
-            ni construite pour elle.
-          </p>
-          <p>
-            Spectrum For Us est cet espace. Un lieu où chaque achat est un geste de soin envers
-            quelqu&apos;un·e de ta communauté. Où chaque création porte une histoire vraie.
-            Où appartenir est suffisant pour être ici.
-          </p>
-          <p>
-            Pas un site marchand. Un{" "}
-            <span className="text-[#F3EADB] font-semibold">refuge prismatique</span> — ouvert,
-            tenu, traversé de lumière.
-          </p>
+          <p dangerouslySetInnerHTML={{ __html: p1 }} />
+          <p dangerouslySetInnerHTML={{ __html: p2 }} />
+          <p dangerouslySetInnerHTML={{ __html: p3 }} />
         </div>
 
         <div
@@ -74,12 +83,7 @@ export function Manifeste() {
             transform: inView ? "translateY(0)" : "translateY(16px)",
           }}
         >
-          {[
-            { num: "4ème", label: "économie mondiale" },
-            { num: "100%", label: "communautaire" },
-            { num: "3", label: "types d'offres" },
-            { num: "Safe", label: "space garanti" },
-          ].map(({ num, label }) => (
+          {stats.map(({ num, label }) => (
             <div key={label}>
               <div className="font-fraunces text-3xl text-[#E0337E] leading-none">{num}</div>
               <div className="font-mono text-xs tracking-wide text-[#F3EADB]/40 uppercase mt-1">

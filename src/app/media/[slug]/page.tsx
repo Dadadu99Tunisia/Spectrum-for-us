@@ -6,6 +6,8 @@ import { Header } from "@/components/Header";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
+import DOMPurify from "isomorphic-dompurify";
 
 type Article = {
   id: string; slug: string; title_fr: string; title_en: string; title_ar: string;
@@ -25,20 +27,20 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
   }, [slug]);
 
   if (loading) return (
-    <div className="min-h-screen bg-[#1C0E29] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
+    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
+      <SpectrumLoader size="md" />
     </div>
   );
 
   if (!article) return (
-    <div className="min-h-screen bg-[#1C0E29] text-[#F3EADB] flex flex-col items-center justify-center gap-4">
+    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB] flex flex-col items-center justify-center gap-4">
       <p className="font-fraunces text-2xl">Article introuvable</p>
       <Link href="/media" className="font-hanken text-[#E0337E] hover:underline">← Retour au média</Link>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#1C0E29] text-[#F3EADB]">
+    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB]">
       <Header />
       <article className="max-w-3xl mx-auto px-6 pt-28 pb-24">
         <Link href="/media" className="inline-flex items-center gap-2 text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors font-hanken text-sm mb-8">
@@ -70,7 +72,10 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
 
         <div
           className="font-hanken text-[#F3EADB]/80 leading-relaxed prose prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: (article.content_fr ?? "").replace(/\n/g, "<br/>") }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(
+            (article.content_fr ?? "").replace(/\n/g, "<br/>"),
+            { ALLOWED_TAGS: ["p","br","strong","em","h2","h3","h4","ul","ol","li","a","blockquote","code","pre","span"], ALLOWED_ATTR: ["href","target","rel"] }
+          ) }}
         />
 
         {article.tags && article.tags.length > 0 && (

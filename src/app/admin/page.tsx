@@ -1,333 +1,266 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { Header } from "@/components/Header";
-import { Store, ShoppingBag, Users, Euro, CheckCircle, XCircle, Clock, FileText, Star } from "lucide-react";
+import {
+  TrendingUp, ShoppingCart, Store, Users, Clock,
+  AlertTriangle, CheckCircle, ShieldCheck, MessageSquare,
+  ArrowUpRight, ArrowDownRight, Package
+} from "lucide-react";
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar
+} from "recharts";
 
-type Tab = "overview" | "produits" | "vendeurs" | "commissions" | "articles" | "ambassadeurs";
+type KPIs = {
+  revenueToday: number; revenueMonth: number; revenueYear: number;
+  totalOrders: number; ordersToday: number; ordersMonth: number;
+  vendors: number; buyers: number; avgBasket: number;
+  pendingMod: number; openTickets: number; pendingKyc?: number;
+};
 
-type Stats = { vendors: number; products: number; orders: number; revenue: number; pending_products: number; };
+type ChartPoint = { date: string; revenue: number };
 
-export default function AdminPage() {
-  const { user } = useAuth();
+export default function AdminDashboard() {
   const router = useRouter();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [kpis, setKpis] = useState<KPIs | null>(null);
+  const [chart, setChart] = useState<ChartPoint[]>([]);
+  const [recentOrders, setRecentOrders] = useState<Record<string, unknown>[]>([]);
+  const [recentVendors, setRecentVendors] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<Tab>("overview");
-  const [stats, setStats] = useState<Stats>({ vendors: 0, products: 0, orders: 0, revenue: 0, pending_products: 0 });
-  const [products, setProducts] = useState<Record<string, unknown>[]>([]);
-  const [vendors, setVendors] = useState<Record<string, unknown>[]>([]);
-  const [commissions, setCommissions] = useState<Record<string, unknown>[]>([]);
-  const [articles, setArticles] = useState<Record<string, unknown>[]>([]);
-  const [ambassadors, setAmbassadors] = useState<Record<string, unknown>[]>([]);
 
   useEffect(() => {
-    if (!user) return;
-    const supabase = createClient();
-    supabase.from("profiles").select("is_admin").eq("id", user.id).single().then(({ data }) => {
-      if (!data?.is_admin) { router.push("/"); return; }
-      setIsAdmin(true);
-      // Load stats
-      Promise.all([
-        supabase.from("shops").select("id", { count: "exact" }),
-        supabase.from("products").select("id", { count: "exact" }),
-        supabase.from("orders").select("id,total", { count: "exact" }),
-        supabase.from("products").select("id", { count: "exact" }).eq("is_available", false),
-      ]).then(([shops, prods, orders, pendingProds]) => {
-        const revenue = (orders.data ?? []).reduce((s, o) => s + (Number((o as Record<string, unknown>).total) || 0), 0);
-        setStats({
-          vendors: shops.count ?? 0,
-          products: prods.count ?? 0,
-          orders: orders.count ?? 0,
-          revenue,
-          pending_products: pendingProds.count ?? 0,
-        });
-      });
+    // Fetch KPIs from API
+    fetch("/api/admin/kpis")
+      .then(r => r.json())
+      .then(d => { setKpis(d.kpis); setChart(d.charts?.dailyRevenue ?? []); })
+      .catch(() => {});
+
+    // Fetch recent orders + vendors via API (sécurisé server-side)
+    Promise.all([
+      fetch("/api/admin/orders?limit=8").then(r => r.json()).catch(() => ({ data: [] })),
+      fetch("/api/admin/vendors?limit=5").then(r => r.json()).catch(() => ({ data: [] })),
+    ]).then(([orders, vendors]) => {
+      setRecentOrders(orders.data ?? []);
+      setRecentVendors(vendors.data ?? []);
       setLoading(false);
     });
-  }, [user, router]);
+  }, []);
 
-  useEffect(() => {
-    if (!isAdmin) return;
-    const supabase = createClient();
-    if (tab === "produits") supabase.from("products").select("*, shops(name)").order("created_at", { ascending: false }).limit(50).then(({ data }) => setProducts(data ?? []));
-    if (tab === "vendeurs") supabase.from("shops").select("*, profiles(username,email)").order("created_at", { ascending: false }).limit(50).then(({ data }) => setVendors(data ?? []));
-    if (tab === "commissions") supabase.from("commissions").select("*, shops(name)").order("created_at", { ascending: false }).limit(50).then(({ data }) => setCommissions(data ?? []));
-    if (tab === "articles") supabase.from("articles").select("*").order("created_at", { ascending: false }).limit(50).then(({ data }) => setArticles(data ?? []));
-    if (tab === "ambassadeurs") supabase.from("ambassadors").select("*, profiles(username)").order("created_at", { ascending: false }).limit(50).then(({ data }) => setAmbassadors(data ?? []));
-  }, [tab, isAdmin]);
+  const fmt = (n: number) => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
+  const fmtSmall = (n: number) => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n);
 
-  const toggleProductAvailability = async (id: string, current: boolean) => {
-    const supabase = createClient();
-    await supabase.from("products").update({ is_available: !current }).eq("id", id);
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, is_available: !current } : p));
+  const KPI_CARDS = kpis ? [
+    { label: "CA Aujourd'hui",  value: fmt(kpis.revenueToday),  sub: `${kpis.ordersToday} commandes`, icon: TrendingUp,   color: "#E0337E",  trend: null },
+    { label: "CA Ce mois",      value: fmt(kpis.revenueMonth),  sub: `${kpis.ordersMonth} commandes`, icon: TrendingUp,   color: "#6D2DB5",  trend: null },
+    { label: "CA Annuel",       value: fmt(kpis.revenueYear),   sub: "depuis le 1er janvier",         icon: TrendingUp,   color: "#E0901E",  trend: null },
+    { label: "Panier moyen",    value: fmtSmall(kpis.avgBasket),sub: `sur ${kpis.totalOrders} cmds`,  icon: ShoppingCart, color: "#1C9C95",  trend: null },
+    { label: "Vendeur·ses",     value: kpis.vendors.toString(), sub: "boutiques actives",             icon: Store,        color: "#CF3F7C",  trend: null },
+    { label: "Acheteur·ses",    value: kpis.buyers.toString(),  sub: "comptes actifs",                icon: Users,        color: "#F2B79E",  trend: null },
+    { label: "Modération",      value: kpis.pendingMod.toString(), sub: "éléments en attente",       icon: ShieldCheck,  color: kpis.pendingMod > 0 ? "#E0901E" : "#1C9C95", trend: null },
+    { label: "Support",         value: kpis.openTickets.toString(), sub: "tickets ouverts",          icon: MessageSquare,color: kpis.openTickets > 5 ? "#E0337E" : "#1C9C95", trend: null },
+  ] : [];
+
+  const STATUS_STYLE: Record<string, string> = {
+    paid:      "bg-green-500/15 text-green-400",
+    pending:   "bg-yellow-500/15 text-yellow-400",
+    shipped:   "bg-blue-500/15 text-blue-400",
+    cancelled: "bg-red-500/15 text-red-400",
+    delivered: "bg-teal-500/15 text-teal-400",
   };
-
-  const toggleArticlePublished = async (id: string, current: boolean) => {
-    const supabase = createClient();
-    const update = { published: !current, ...(!current ? { published_at: new Date().toISOString() } : {}) };
-    await supabase.from("articles").update(update).eq("id", id);
-    setArticles(prev => prev.map(a => a.id === id ? { ...a, ...update } : a));
+  const STATUS_LABEL: Record<string, string> = {
+    paid: "Payé", pending: "En attente", shipped: "Expédié",
+    cancelled: "Annulé", delivered: "Livré",
   };
-
-  if (loading) return (
-    <div className="min-h-screen bg-[#1C0E29] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
-    </div>
-  );
-
-  const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
-    { id: "overview", label: "Vue d'ensemble", icon: Euro },
-    { id: "produits", label: "Produits", icon: ShoppingBag },
-    { id: "vendeurs", label: "Vendeur·ses", icon: Store },
-    { id: "commissions", label: "Commissions", icon: Euro },
-    { id: "articles", label: "Articles", icon: FileText },
-    { id: "ambassadeurs", label: "Ambassadeur·rices", icon: Star },
-  ];
 
   return (
-    <div className="min-h-screen bg-[#1C0E29] text-[#F3EADB]">
-      <Header />
-      <div className="max-w-7xl mx-auto px-6 pt-24 pb-24">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-2 h-2 rounded-full bg-[#E0337E] animate-pulse" />
-          <h1 className="font-fraunces text-3xl">Back-office Admin</h1>
-          <span className="font-mono text-[10px] text-[#F3EADB]/30 bg-[#F3EADB]/5 px-2 py-1 rounded">ACCÈS RESTREINT</span>
-        </div>
+    <div className="space-y-8 max-w-[1400px]">
+      {/* Header */}
+      <div>
+        <h1 className="font-fraunces text-2xl text-[#F3EADB] mb-0.5">Dashboard</h1>
+        <p className="font-hanken text-sm text-[#F3EADB]/40">
+          {new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+        </p>
+      </div>
 
-        {/* Tabs */}
-        <div className="flex gap-1 flex-wrap mb-8 border-b border-[#F3EADB]/8 pb-4">
-          {TABS.map(t => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-hanken text-sm transition-all ${
-                tab === t.id ? "bg-[#E0337E]/20 text-[#E0337E]" : "text-[#F3EADB]/50 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5"
-              }`}
-            >
-              <t.icon size={14} />
-              {t.label}
-            </button>
+      {/* KPI Grid */}
+      {loading ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 animate-pulse">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="h-24 rounded-2xl bg-[#F3EADB]/5" />
           ))}
         </div>
-
-        {/* Overview */}
-        {tab === "overview" && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: "Vendeur·ses", value: stats.vendors, icon: Store, color: "#E0337E" },
-              { label: "Produits", value: stats.products, icon: ShoppingBag, color: "#6D2DB5" },
-              { label: "Commandes", value: stats.orders, icon: Users, color: "#1C9C95" },
-              { label: "CA Total", value: `${stats.revenue.toFixed(0)}€`, icon: Euro, color: "#E0901E" },
-            ].map(s => (
-              <div key={s.label} className="p-6 rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02]">
-                <s.icon size={20} style={{ color: s.color }} className="mb-3" />
-                <p className="font-fraunces text-3xl mb-1">{s.value}</p>
-                <p className="font-mono text-[10px] text-[#F3EADB]/40 uppercase">{s.label}</p>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {KPI_CARDS.map(k => {
+            const Icon = k.icon;
+            return (
+              <div key={k.label}
+                className="p-4 rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02] hover:bg-[#F3EADB]/[0.04] transition-colors group">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center"
+                    style={{ background: `${k.color}18`, border: `1px solid ${k.color}30` }}>
+                    <Icon size={14} style={{ color: k.color }} />
+                  </div>
+                </div>
+                <p className="font-fraunces text-xl text-[#F3EADB] leading-none mb-1">{k.value}</p>
+                <p className="font-mono text-[9px] text-[#F3EADB]/30 uppercase tracking-widest">{k.label}</p>
+                <p className="font-hanken text-[11px] text-[#F3EADB]/25 mt-0.5">{k.sub}</p>
               </div>
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
+      )}
 
-        {/* Produits */}
-        {tab === "produits" && (
-          <div className="rounded-2xl border border-[#F3EADB]/8 overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-[#F3EADB]/5">
-                <tr>
-                  {["Produit", "Boutique", "Prix", "Stock", "Statut", "Actions"].map(h => (
-                    <th key={h} className="px-4 py-3 text-left font-mono text-[10px] text-[#F3EADB]/40 uppercase">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F3EADB]/5">
-                {products.map(p => (
-                  <tr key={String(p.id)} className="hover:bg-[#F3EADB]/[0.02]">
-                    <td className="px-4 py-3 font-hanken text-sm">{String(p.name)}</td>
-                    <td className="px-4 py-3 font-hanken text-sm text-[#F3EADB]/50">{String((p.shops as Record<string, unknown>)?.name ?? "—")}</td>
-                    <td className="px-4 py-3 font-mono text-sm">{Number(p.price).toFixed(2)}€</td>
-                    <td className="px-4 py-3 font-mono text-sm">{String(p.stock_quantity ?? "∞")}</td>
-                    <td className="px-4 py-3">
-                      <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${
-                        p.is_available ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"
-                      }`}>
-                        {p.is_available ? "En ligne" : "Hors ligne"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <button
-                        onClick={() => toggleProductAvailability(String(p.id), Boolean(p.is_available))}
-                        className="p-1.5 rounded-lg border border-[#F3EADB]/10 hover:border-[#E0337E]/30 transition-all"
-                      >
-                        {p.is_available ? <XCircle size={14} className="text-red-400" /> : <CheckCircle size={14} className="text-green-400" />}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* Vendeurs */}
-        {tab === "vendeurs" && (
-          <div className="rounded-2xl border border-[#F3EADB]/8 overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-[#F3EADB]/5">
-                <tr>
-                  {["Boutique", "Propriétaire", "Abonnement", "Expire le", "Statut"].map(h => (
-                    <th key={h} className="px-4 py-3 text-left font-mono text-[10px] text-[#F3EADB]/40 uppercase">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F3EADB]/5">
-                {vendors.map(v => (
-                  <tr key={String(v.id)} className="hover:bg-[#F3EADB]/[0.02]">
-                    <td className="px-4 py-3 font-hanken text-sm font-medium">{String(v.name)}</td>
-                    <td className="px-4 py-3 font-hanken text-sm text-[#F3EADB]/50">{String((v.profiles as Record<string, unknown>)?.username ?? "—")}</td>
-                    <td className="px-4 py-3">
-                      <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${
-                        v.subscription_status === "active" ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"
-                      }`}>
-                        {String(v.subscription_status ?? "inactive")}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs text-[#F3EADB]/40">
-                      {v.subscription_current_period_end ? new Date(String(v.subscription_current_period_end)).toLocaleDateString("fr-FR") : "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${
-                        v.is_active ? "bg-green-500/20 text-green-400" : "bg-[#F3EADB]/10 text-[#F3EADB]/40"
-                      }`}>
-                        {v.is_active ? "Actif" : "Inactif"}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* Commissions */}
-        {tab === "commissions" && (
-          <div className="rounded-2xl border border-[#F3EADB]/8 overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-[#F3EADB]/5">
-                <tr>
-                  {["Boutique", "Montant brut", "Commission", "Frais", "Statut", "Date"].map(h => (
-                    <th key={h} className="px-4 py-3 text-left font-mono text-[10px] text-[#F3EADB]/40 uppercase">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F3EADB]/5">
-                {commissions.map(c => (
-                  <tr key={String(c.id)} className="hover:bg-[#F3EADB]/[0.02]">
-                    <td className="px-4 py-3 font-hanken text-sm">{String((c.shops as Record<string, unknown>)?.name ?? "—")}</td>
-                    <td className="px-4 py-3 font-mono text-sm">{Number(c.gross_amount).toFixed(2)}€</td>
-                    <td className="px-4 py-3 font-mono text-sm text-[#E0337E]">{Number(c.commission_amount).toFixed(2)}€</td>
-                    <td className="px-4 py-3 font-mono text-sm text-[#F3EADB]/50">{Number(c.platform_fee).toFixed(2)}€</td>
-                    <td className="px-4 py-3">
-                      <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${
-                        c.status === "paid" ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"
-                      }`}>
-                        {c.status === "paid" ? "Payé" : "En attente"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs text-[#F3EADB]/40">
-                      {new Date(String(c.created_at)).toLocaleDateString("fr-FR")}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* Articles */}
-        {tab === "articles" && (
-          <div className="space-y-4">
-            <div className="flex justify-end">
-              <Button onClick={() => router.push("/admin/blog/nouveau")} className="text-sm">+ Nouvel article</Button>
-            </div>
-            <div className="rounded-2xl border border-[#F3EADB]/8 overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-[#F3EADB]/5">
-                  <tr>
-                    {["Titre", "Catégorie", "Statut", "Date", "Actions"].map(h => (
-                      <th key={h} className="px-4 py-3 text-left font-mono text-[10px] text-[#F3EADB]/40 uppercase">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#F3EADB]/5">
-                  {articles.map(a => (
-                    <tr key={String(a.id)} className="hover:bg-[#F3EADB]/[0.02]">
-                      <td className="px-4 py-3 font-hanken text-sm">{String(a.title_fr)}</td>
-                      <td className="px-4 py-3 font-mono text-xs text-[#F3EADB]/50">{String(a.category)}</td>
-                      <td className="px-4 py-3">
-                        <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${
-                          a.published ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"
-                        }`}>
-                          {a.published ? "Publié" : "Brouillon"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 font-mono text-xs text-[#F3EADB]/40">
-                        {a.published_at ? new Date(String(a.published_at)).toLocaleDateString("fr-FR") : "—"}
-                      </td>
-                      <td className="px-4 py-3 flex gap-2">
-                        <button onClick={() => toggleArticlePublished(String(a.id), Boolean(a.published))}
-                          className="p-1.5 rounded border border-[#F3EADB]/10 hover:border-[#E0337E]/30 transition-all">
-                          {a.published ? <Clock size={13} className="text-yellow-400" /> : <CheckCircle size={13} className="text-green-400" />}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Revenue 30 days */}
+        <div className="lg:col-span-2 p-5 rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02]">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <p className="font-fraunces text-base text-[#F3EADB]">Revenus — 30 derniers jours</p>
+              <p className="font-mono text-[10px] text-[#F3EADB]/30 uppercase mt-0.5">Chiffre d&apos;affaires journalier</p>
             </div>
           </div>
-        )}
+          {chart.length > 0 ? (
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={chart} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="rev" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%"  stopColor="#E0337E" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#E0337E" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#F3EADB08" />
+                <XAxis dataKey="date" tick={{ fill: "#F3EADB40", fontSize: 10 }} tickLine={false} axisLine={false} interval={4} />
+                <YAxis tick={{ fill: "#F3EADB40", fontSize: 10 }} tickLine={false} axisLine={false}
+                  tickFormatter={v => v === 0 ? "0" : `${(v/1000).toFixed(1)}k`} />
+                <Tooltip
+                  contentStyle={{ background: "#0e061a", border: "1px solid #F3EADB15", borderRadius: "12px", color: "#F3EADB" }}
+                  formatter={(v: unknown) => [`${Number(v).toFixed(2)} €`, "Revenus"]}
+                />
+                <Area type="monotone" dataKey="revenue" stroke="#E0337E" strokeWidth={2} fill="url(#rev)" dot={false} />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[200px] flex items-center justify-center text-[#F3EADB]/20 font-hanken text-sm">
+              Aucune donnée de vente pour l&apos;instant
+            </div>
+          )}
+        </div>
 
-        {/* Ambassadeurs */}
-        {tab === "ambassadeurs" && (
-          <div className="rounded-2xl border border-[#F3EADB]/8 overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-[#F3EADB]/5">
-                <tr>
-                  {["Utilisateur·rice", "Code", "Commission", "Gains", "Statut"].map(h => (
-                    <th key={h} className="px-4 py-3 text-left font-mono text-[10px] text-[#F3EADB]/40 uppercase">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F3EADB]/5">
-                {ambassadors.map(a => (
-                  <tr key={String(a.id)} className="hover:bg-[#F3EADB]/[0.02]">
-                    <td className="px-4 py-3 font-hanken text-sm">{String((a.profiles as Record<string, unknown>)?.username ?? "—")}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-[#E0337E]">{String(a.referral_code)}</td>
-                    <td className="px-4 py-3 font-mono text-sm">{(Number(a.commission_rate) * 100).toFixed(0)}%</td>
-                    <td className="px-4 py-3 font-mono text-sm">{Number(a.total_earnings).toFixed(2)}€</td>
-                    <td className="px-4 py-3">
-                      <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${
-                        a.status === "active" ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"
-                      }`}>{String(a.status)}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* Quick actions */}
+        <div className="p-5 rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02]">
+          <p className="font-fraunces text-base text-[#F3EADB] mb-5">Actions prioritaires</p>
+          <div className="space-y-2">
+            {[
+              { label: "Modérer les contenus", href: "/admin/moderation", count: kpis?.pendingMod, color: "#E0901E", icon: ShieldCheck },
+              { label: "Voir les commandes",    href: "/admin/orders",     count: kpis?.ordersToday, color: "#1C9C95", icon: ShoppingCart },
+              { label: "Valider les vendeurs",  href: "/admin/vendors",    count: null, color: "#6D2DB5", icon: Store },
+              { label: "Tickets support",       href: "/admin/support",    count: kpis?.openTickets, color: "#CF3F7C", icon: MessageSquare },
+              { label: "Scraper événements",    href: "/admin/evenements", count: null, color: "#E0337E", icon: AlertTriangle },
+            ].map(a => {
+              const Icon = a.icon;
+              return (
+                <button key={a.href} onClick={() => router.push(a.href)}
+                  className="w-full flex items-center gap-3 p-3 rounded-xl border border-[#F3EADB]/6 hover:border-[#F3EADB]/15 hover:bg-[#F3EADB]/[0.03] transition-all group text-left">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: `${a.color}15` }}>
+                    <Icon size={13} style={{ color: a.color }} />
+                  </div>
+                  <span className="font-hanken text-sm text-[#F3EADB]/60 group-hover:text-[#F3EADB] flex-1 transition-colors">{a.label}</span>
+                  {a.count !== null && a.count !== undefined && a.count > 0 && (
+                    <span className="font-mono text-[10px] px-1.5 py-0.5 rounded-full"
+                      style={{ background: `${a.color}20`, color: a.color }}>{a.count}</span>
+                  )}
+                  <ArrowUpRight size={12} className="text-[#F3EADB]/15 group-hover:text-[#F3EADB]/40 transition-colors" />
+                </button>
+              );
+            })}
           </div>
-        )}
+        </div>
+      </div>
+
+      {/* Bottom grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Recent orders */}
+        <div className="p-5 rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02]">
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-fraunces text-base text-[#F3EADB]">Dernières commandes</p>
+            <button onClick={() => router.push("/admin/orders")}
+              className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] uppercase tracking-widest transition-colors">
+              Tout voir →
+            </button>
+          </div>
+          {loading ? (
+            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 bg-[#F3EADB]/5 rounded-lg" />)}</div>
+          ) : recentOrders.length === 0 ? (
+            <div className="py-8 text-center">
+              <ShoppingCart size={24} className="text-[#F3EADB]/15 mx-auto mb-2" />
+              <p className="font-hanken text-sm text-[#F3EADB]/25">Aucune commande pour l&apos;instant</p>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              {recentOrders.map(o => (
+                <div key={String(o.id)} className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-[#F3EADB]/[0.03] transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-[#F3EADB]/5 flex items-center justify-center shrink-0">
+                    <Package size={12} className="text-[#F3EADB]/30" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-mono text-xs text-[#F3EADB]/60 truncate">#{String(o.id).slice(0,8)}</p>
+                    <p className="font-mono text-[10px] text-[#F3EADB]/25">
+                      {new Date(String(o.created_at)).toLocaleDateString("fr-FR")}
+                    </p>
+                  </div>
+                  <span className="font-mono text-sm text-[#F3EADB]">{fmtSmall(Number(o.total_amount || 0))}</span>
+                  <span className={`font-mono text-[9px] px-2 py-0.5 rounded-full ${STATUS_STYLE[String(o.status)] ?? "bg-[#F3EADB]/10 text-[#F3EADB]/40"}`}>
+                    {STATUS_LABEL[String(o.status)] ?? String(o.status)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* New vendors */}
+        <div className="p-5 rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02]">
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-fraunces text-base text-[#F3EADB]">Nouveaux vendeur·ses</p>
+            <button onClick={() => router.push("/admin/vendors")}
+              className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] uppercase tracking-widest transition-colors">
+              Tout voir →
+            </button>
+          </div>
+          {loading ? (
+            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 bg-[#F3EADB]/5 rounded-lg" />)}</div>
+          ) : recentVendors.length === 0 ? (
+            <div className="py-8 text-center">
+              <Store size={24} className="text-[#F3EADB]/15 mx-auto mb-2" />
+              <p className="font-hanken text-sm text-[#F3EADB]/25">Aucune boutique pour l&apos;instant</p>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              {recentVendors.map(v => (
+                <div key={String(v.id)} className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-[#F3EADB]/[0.03] transition-colors cursor-pointer"
+                  onClick={() => router.push(`/admin/vendors`)}>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                    style={{ background: "#E0337E18", border: "1px solid #E0337E25" }}>
+                    <span className="font-fraunces text-sm text-[#E0337E]">
+                      {String(v.name || "?")[0].toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-hanken text-sm text-[#F3EADB] truncate">{String(v.name || "—")}</p>
+                    <p className="font-mono text-[10px] text-[#F3EADB]/25">
+                      Créé le {new Date(String(v.created_at)).toLocaleDateString("fr-FR")}
+                    </p>
+                  </div>
+                  <div className={`w-2 h-2 rounded-full ${Boolean(v.is_active) ? "bg-green-400" : "bg-[#F3EADB]/20"}`} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
-  );
-}
-
-function Button({ children, onClick, className = "" }: { children: React.ReactNode; onClick?: () => void; className?: string }) {
-  return (
-    <button onClick={onClick} className={`px-4 py-2 bg-[#E0337E] text-white rounded-lg font-hanken text-sm hover:bg-[#E0337E]/80 transition-all ${className}`}>
-      {children}
-    </button>
   );
 }

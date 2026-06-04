@@ -3,7 +3,7 @@ import { useCart } from "@/store/cart";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/Button";
-import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight, Package } from "lucide-react";
 import Link from "next/link";
 
 export default function PanierPage() {
@@ -22,27 +22,40 @@ export default function PanierPage() {
           </div>
 
           {items.length === 0 ? (
-            <div className="text-center py-20">
-              <ShoppingBag size={48} className="mx-auto mb-6 text-[#F3EADB]/20" />
-              <p className="font-hanken text-[#F3EADB]/40 mb-8">
-                Tu n&apos;as pas encore ajouté d&apos;article.
+            <div className="flex flex-col items-center text-center py-20 max-w-sm mx-auto">
+              {/* Animated bag */}
+              <div className="relative mb-8">
+                <div className="w-24 h-24 rounded-3xl flex items-center justify-center"
+                  style={{ background: "linear-gradient(135deg, rgba(224,51,126,0.12), rgba(109,45,181,0.12))", border: "1px solid rgba(224,51,126,0.2)" }}>
+                  <ShoppingBag size={40} className="text-[#E0337E]/50" />
+                </div>
+                <span className="absolute -top-2 -right-2 text-2xl">✦</span>
+              </div>
+              <h2 className="font-fraunces text-2xl text-[#F3EADB] mb-3">Ton panier t&apos;attend</h2>
+              <p className="font-hanken text-[#F3EADB]/50 mb-8 leading-relaxed">
+                Des créateur·ices queer talentueux·ses ont des choses à te montrer.
               </p>
-              <Button variant="primary" href="/">
-                Explorer la marketplace
+              <div className="w-16 h-[2px] mx-auto mb-8 rounded-full"
+                style={{ background: "linear-gradient(90deg,#E0533A,#CF3F7C,#6D2DB5,#1C9C95)" }} />
+              <Button variant="primary" href="/decouvrir">
+                Explorer la marketplace <ArrowRight size={14} />
               </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
               {/* Items */}
               <div className="lg:col-span-2 space-y-4">
                 {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex gap-4 p-4 rounded-2xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02]"
-                  >
-                    <div className="w-20 h-20 rounded-xl bg-[#2d1545] flex items-center justify-center shrink-0">
-                      <span className="font-fraunces text-2xl text-[#E0337E]/40">(u)</span>
+                  <div key={item.id} className="flex gap-4 p-4 rounded-2xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02]">
+                    {/* Thumbnail */}
+                    <div className="w-20 h-20 rounded-xl overflow-hidden bg-[#2d1545] shrink-0 flex items-center justify-center">
+                      {item.image
+                        ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                        : <Package size={22} className="text-[#F3EADB]/15" />
+                      }
                     </div>
+
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bricolage font-semibold text-[#F3EADB] truncate">{item.name}</h3>
                       <p className="font-mono text-xs text-[#F3EADB]/40 mb-3">{item.creator}</p>
@@ -57,14 +70,21 @@ export default function PanierPage() {
                         </span>
                       </div>
                     </div>
+
                     <button onClick={() => remove(item.id)} className="p-2 text-[#F3EADB]/30 hover:text-red-400 transition-colors shrink-0">
                       <Trash2 size={16} />
                     </button>
                   </div>
                 ))}
-                <button onClick={clear} className="text-xs font-mono text-[#F3EADB]/25 hover:text-red-400 transition-colors tracking-widest uppercase">
-                  ( Vider le panier )
-                </button>
+
+                <div className="flex items-center justify-between pt-2">
+                  <button onClick={clear} className="text-xs font-mono text-[#F3EADB]/25 hover:text-red-400 transition-colors tracking-widest uppercase">
+                    ( Vider le panier )
+                  </button>
+                  <Link href="/decouvrir" className="font-hanken text-sm text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors">
+                    ← Continuer mes achats
+                  </Link>
+                </div>
               </div>
 
               {/* Summary */}
@@ -72,7 +92,6 @@ export default function PanierPage() {
                 <div className="sticky top-24 rounded-2xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.03] p-6">
                   <div className="prism-line mb-6" />
                   <h2 className="font-bricolage font-bold text-[#F3EADB] text-lg mb-6">Récapitulatif</h2>
-
                   <div className="space-y-3 mb-6 text-sm font-hanken">
                     <div className="flex justify-between text-[#F3EADB]/60">
                       <span>Sous-total</span>
@@ -87,13 +106,11 @@ export default function PanierPage() {
                       <span>{total().toFixed(2)} €</span>
                     </div>
                   </div>
-
                   <Link href="/checkout">
                     <button className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-[#E0337E] text-[#F3EADB] font-hanken font-semibold hover:brightness-110 transition-all active:scale-95">
                       Commander <ArrowRight size={16} />
                     </button>
                   </Link>
-
                   <p className="text-center mt-4 font-mono text-[10px] text-[#F3EADB]/25 tracking-wide">
                     Paiement sécurisé · Stripe
                   </p>

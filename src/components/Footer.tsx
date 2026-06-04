@@ -55,7 +55,7 @@ export function Footer() {
               Un espace tenu pour tout le spectre.
             </p>
             <div className="flex gap-3">
-              <a href="https://instagram.com/spectrumforus" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.instagram.com/spectrum.forus/" target="_blank" rel="noopener noreferrer"
                 className="p-2 rounded-full border border-[#F3EADB]/15 text-[#F3EADB]/40 hover:border-[#E0337E]/40 hover:text-[#E0337E] transition-all duration-200"
                 aria-label="Instagram">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>

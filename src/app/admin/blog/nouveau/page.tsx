@@ -46,7 +46,7 @@ export default function NouvelArticle() {
   const CATS = ["editorial", "lifestyle", "culture", "news", "guide"];
 
   return (
-    <div className="min-h-screen bg-[#1C0E29] text-[#F3EADB]">
+    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB]">
       <Header />
       <div className="max-w-4xl mx-auto px-6 pt-24 pb-24">
         <div className="flex items-center justify-between mb-8">

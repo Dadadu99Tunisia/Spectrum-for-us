@@ -52,7 +52,7 @@ export default function CGU() {
       <h2>5. Conditions vendeur·se·s</h2>
       <h3>Abonnement</h3>
       <p>
-        L'ouverture d'une boutique nécessite un abonnement mensuel de <strong>35€ HT/mois</strong>,
+        L'ouverture d'une boutique nécessite un abonnement mensuel de <strong>9,90€ HT/mois</strong>,
         prélevé automatiquement via Stripe. L'abonnement est résiliable à tout moment,
         avec effet à la fin de la période en cours.
       </p>

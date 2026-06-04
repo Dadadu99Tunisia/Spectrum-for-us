@@ -3,10 +3,14 @@ import { Fraunces, Bricolage_Grotesque, Hanken_Grotesk, Space_Mono } from "next/
 import "./globals.css";
 import { CustomCursor } from "@/components/animations/CustomCursor";
 import { PrismParticles } from "@/components/animations/PrismParticles";
+import { PageTransition } from "@/components/animations/PageTransition";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { I18nProvider } from "@/contexts/I18nContext";
+import { BannerProvider } from "@/contexts/BannerContext";
 import { Suspense } from "react";
 import { ReferralTracker } from "@/components/ReferralTracker";
+import SiteBanner from "@/components/SiteBanner";
+import { CookieBanner } from "@/components/ui/CookieBanner";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -55,7 +59,7 @@ export const metadata: Metadata = {
     siteName: "Spectrum For Us",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Spectrum For Us — B(u)y us, for us.",
@@ -68,7 +72,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Spectrum For Us — B(u)y us, for us.",
     description: "La première marketplace queer francophone.",
-    images: ["/og-image.jpg"],
+    images: ["/opengraph-image"],
     creator: "@spectrumforus",
   },
   robots: {
@@ -83,6 +87,13 @@ export const metadata: Metadata = {
       "en-GB": "https://spectrumforus.com",
     },
   },
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: "/apple-icon.png",
+    shortcut: "/icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -95,17 +106,21 @@ export default function RootLayout({
       lang="fr"
       className={`${fraunces.variable} ${bricolage.variable} ${hanken.variable} ${spaceMono.variable}`}
     >
-      <body className="bg-[#1C0E29] text-[#F3EADB] antialiased cursor-none">
+      <body className="bg-[#3D1F5C] text-[#F3EADB] antialiased cursor-none">
         <CustomCursor />
         <PrismParticles />
-        <AuthProvider>
-          <I18nProvider>
-            <Suspense fallback={null}>
-              <ReferralTracker />
-            </Suspense>
-            {children}
-          </I18nProvider>
-        </AuthProvider>
+        <SiteBanner />
+        <BannerProvider>
+          <AuthProvider>
+            <I18nProvider>
+              <Suspense fallback={null}>
+                <ReferralTracker />
+              </Suspense>
+              <PageTransition>{children}</PageTransition>
+              <CookieBanner />
+            </I18nProvider>
+          </AuthProvider>
+        </BannerProvider>
       </body>
     </html>
   );

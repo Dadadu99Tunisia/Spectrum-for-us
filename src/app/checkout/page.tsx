@@ -98,6 +98,7 @@ export default function CheckoutPage() {
   const [confirmed, setConfirmed] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [stripeReady, setStripeReady] = useState(false);
+  const [serverTotal, setServerTotal] = useState<number | null>(null);
 
   // Pre-fill email from user session
   useEffect(() => {
@@ -109,17 +110,23 @@ export default function CheckoutPage() {
     getStripe().then(() => setStripeReady(true));
   }, []);
 
+  // Payment intent créé AVEC le panier et les infos de livraison — total recalculé côté serveur
   const createPaymentIntent = useCallback(async () => {
     if (total() <= 0) return;
+    if (!user) { setIntentError("Connecte-toi pour payer."); return; }
     setLoadingIntent(true); setIntentError("");
     try {
       const res = await fetch("/api/stripe/payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: Math.round(total() * 100),
+          cart: items.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, type: i.type })),
           currency: "eur",
-          metadata: { user_id: user?.id ?? "guest" },
+          shipping: form.name ? {
+            name: form.name, email: form.email,
+            address: form.address, city: form.city,
+            zip: form.zip, country: form.country,
+          } : undefined,
         }),
       });
       const data = await res.json();
@@ -127,36 +134,40 @@ export default function CheckoutPage() {
         setIntentError(data.error);
       } else {
         setClientSecret(data.clientSecret);
+        // Mettre à jour le total avec celui recalculé serveur
+        if (data.serverTotal) setServerTotal(data.serverTotal);
       }
     } catch {
       setIntentError("Erreur réseau. Réessaie.");
     }
     setLoadingIntent(false);
-  }, [total, user]);
+  }, [total, user, items, form]);
 
   const handleGoToPayment = async () => {
-    if (!clientSecret) await createPaymentIntent();
+    // Recréer le payment intent avec les infos de livraison à jour
+    await createPaymentIntent();
     setStep("Paiement");
   };
 
-  const handlePaymentSuccess = async (stripePaymentId?: string) => {
-    const supabase = createClient();
-    const { data: order } = await supabase.from("orders").insert({
-      user_id: user?.id ?? null,
-      total_amount: total(),
-      status: "paid",
-    }).select("id").single();
-
-    if (order) {
-      await supabase.from("order_items").insert(
-        items.map((i) => ({
-          order_id: order.id,
-          product_id: i.id,
-          quantity: i.quantity,
-          price_at_purchase: i.price,
-        }))
-      );
-      setOrderId(order.id);
+  // La commande est créée par le webhook Stripe — on attend juste la confirmation Stripe
+  const handlePaymentSuccess = async (piId?: string) => {
+    // Polling léger pour attendre que le webhook crée la commande (max 10s)
+    if (piId) {
+      let attempts = 0;
+      const poll = async (): Promise<string | null> => {
+        if (attempts++ > 10) return null;
+        const supabase = createClient();
+        const { data } = await supabase
+          .from("orders")
+          .select("id")
+          .eq("payment_intent_id", piId)
+          .maybeSingle();
+        if (data?.id) return data.id;
+        await new Promise(r => setTimeout(r, 1000));
+        return poll();
+      };
+      const oId = await poll();
+      setOrderId(oId);
     }
     clear();
     setConfirmed(true);
@@ -168,7 +179,7 @@ export default function CheckoutPage() {
 
   // ─ Confirmation screen
   if (confirmed) return (
-    <div className="min-h-screen bg-[#1C0E29] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center px-6">
       <div className="text-center max-w-md">
         <div className="w-20 h-20 rounded-full bg-[#1C9C95]/10 border border-[#1C9C95]/30 flex items-center justify-center mx-auto mb-6 animate-[pulseWarm_1.5s_ease-in-out]">
           <Check size={32} className="text-[#1C9C95]" />
@@ -188,7 +199,7 @@ export default function CheckoutPage() {
 
   // ─ Empty cart guard
   if (items.length === 0 && !confirmed) return (
-    <div className="min-h-screen bg-[#1C0E29] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center px-6">
       <div className="text-center">
         <h2 className="font-fraunces text-2xl text-[#F3EADB] mb-4">Ton panier est vide</h2>
         <Button variant="primary" href="/decouvrir">Explorer la marketplace</Button>
@@ -254,7 +265,7 @@ export default function CheckoutPage() {
                     <select value={form.country} onChange={(e) => set("country", e.target.value)}
                       className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm focus:outline-none focus:border-[#E0337E]/60 transition-colors">
                       {["France", "Belgique", "Suisse", "Canada", "Luxembourg", "Autre"].map((c) => (
-                        <option key={c} value={c} className="bg-[#1C0E29]">{c}</option>
+                        <option key={c} value={c} className="bg-[#3D1F5C]">{c}</option>
                       ))}
                     </select>
                   </div>

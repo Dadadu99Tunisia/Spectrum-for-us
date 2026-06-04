@@ -5,8 +5,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft, Plus, X } from "lucide-react";
+import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
-const CATEGORIES = ["Mode non-genrée", "Art & Culture", "Bijoux", "Zines & Édition", "Corps & Soin", "Intimité", "Maison", "Services", "Expériences"];
+import { CATEGORY_LIST, getSubcategories } from "@/lib/categories";
 const TYPES = [
   { value: "product", label: "Produit physique ou numérique" },
   { value: "service", label: "Service (sur rendez-vous)" },
@@ -27,7 +28,7 @@ export default function NouveauProduitPage() {
   const [variant, setVariant] = useState("");
   const [form, setForm] = useState({
     name: "", description: "", price: "", type: "product" as "product" | "service" | "event",
-    category: "", quantity: "1", is_active: true, variants: [] as string[],
+    category: "", subcategory: "", quantity: "1", is_active: true, variants: [] as string[],
   });
 
   useEffect(() => {
@@ -65,8 +66,10 @@ export default function NouveauProduitPage() {
       description: form.description.trim(),
       price: parseFloat(form.price),
       category: form.category || null,
+      subcategory: form.subcategory || null,
       quantity: parseInt(form.quantity) || 0,
       is_active: form.is_active,
+      type: form.type,
       listing_status: "approved",
     });
     setSaving(false);
@@ -76,13 +79,13 @@ export default function NouveauProduitPage() {
   };
 
   if (loading || !shopId) return (
-    <div className="min-h-screen bg-[#1C0E29] flex items-center justify-center">
+    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
       <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
     </div>
   );
 
   if (success) return (
-    <div className="min-h-screen bg-[#1C0E29] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center px-6">
       <div className="text-center">
         <div className="text-5xl mb-4">✦</div>
         <h1 className="font-fraunces text-3xl text-[#F3EADB] mb-2">Produit ajouté !</h1>
@@ -92,7 +95,7 @@ export default function NouveauProduitPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#1C0E29] px-6 py-12">
+    <div className="min-h-screen bg-[#3D1F5C] px-6 py-12">
       <div className="max-w-xl mx-auto">
         <Button variant="ghost" href="/vendeur" className="mb-6 text-sm text-[#F3EADB]/40">
           <ArrowLeft size={14} /> Retour au dashboard
@@ -150,14 +153,30 @@ export default function NouveauProduitPage() {
             )}
           </div>
 
-          {/* Category */}
-          <div>
-            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Catégorie</label>
-            <select value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-              className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm focus:outline-none focus:border-[#E0337E]/60 transition-colors">
-              <option value="" className="bg-[#1C0E29]">Sélectionner…</option>
-              {CATEGORIES.map((c) => <option key={c} value={c} className="bg-[#1C0E29]">{c}</option>)}
-            </select>
+          {/* Catégorie + Sous-catégorie */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Catégorie</label>
+              <select value={form.category}
+                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value, subcategory: "" }))}
+                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm focus:outline-none focus:border-[#E0337E]/60 transition-colors">
+                <option value="" className="bg-[#3D1F5C]">Sélectionner…</option>
+                {CATEGORY_LIST.map((c) => <option key={c} value={c} className="bg-[#3D1F5C]">{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">
+                Sous-catégorie
+                {!form.category && <span className="text-[#F3EADB]/20 normal-case tracking-normal ml-1">(après catégorie)</span>}
+              </label>
+              <select value={form.subcategory}
+                onChange={(e) => setForm((f) => ({ ...f, subcategory: e.target.value }))}
+                disabled={!form.category}
+                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm focus:outline-none focus:border-[#E0337E]/60 transition-colors disabled:opacity-40">
+                <option value="" className="bg-[#3D1F5C]">— Choisir —</option>
+                {getSubcategories(form.category).map((s) => <option key={s} value={s} className="bg-[#3D1F5C]">{s}</option>)}
+              </select>
+            </div>
           </div>
 
           {/* Variants */}

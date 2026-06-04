@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, ArrowLeft, Check, Store, Shield, Eye, Zap } from "lucide-react";
+import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
 const CATEGORIES = ["Mode non-genrée", "Art & Culture", "Bijoux", "Zines & Édition", "Corps & Soin", "Intimité", "Maison", "Services", "Expériences"];
 
@@ -19,7 +20,7 @@ export default function OnboardingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [step, setStep] = useState<Step>(0);
-  const [form, setForm] = useState({ name: "", tagline: "", description: "", city: "", category: "", charter: false });
+  const [form, setForm] = useState({ name: "", tagline: "", description: "", city: "", category: "", contact_email: "", charter: false });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -41,6 +42,7 @@ export default function OnboardingPage() {
       tagline: form.tagline,
       description: form.description,
       city: form.city,
+      contact_email: form.contact_email || null,
       tags: [form.category].filter(Boolean),
       charter_accepted_at: new Date().toISOString(),
       is_active: true,
@@ -53,13 +55,13 @@ export default function OnboardingPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#1C0E29] flex items-center justify-center">
+    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
       <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#1C0E29] px-6 py-12">
+    <div className="min-h-screen bg-[#3D1F5C] px-6 py-12">
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 50%, rgba(110,45,181,0.12) 0%, transparent 70%)" }} />
 
       <div className="relative z-10 max-w-lg mx-auto">
@@ -101,7 +103,7 @@ export default function OnboardingPage() {
                 { icon: Shield, text: "Safe space garanti — charte communautaire" },
                 { icon: Eye, text: "Visibilité offerte — mise en avant éditoriale" },
                 { icon: Zap, text: "10 min pour être en ligne" },
-                { icon: Store, text: "35 €/mois, commission sur vente" },
+                { icon: Store, text: "9,90 €/mois, sans commission cachée" },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-start gap-3 p-3 rounded-xl bg-[#F3EADB]/[0.03] border border-[#F3EADB]/8">
                   <Icon size={14} className="text-[#E0337E] mt-0.5 shrink-0" />
@@ -138,6 +140,14 @@ export default function OnboardingPage() {
                   placeholder="Présente ton travail, ton univers, ta démarche…"
                   className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors resize-none" />
               </div>
+              <div>
+                <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">
+                  Email de contact <span className="normal-case tracking-normal text-[#F3EADB]/25">(visible sur ta boutique)</span>
+                </label>
+                <input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
+                  placeholder="ta@boutique.com"
+                  className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Ville</label>
@@ -149,8 +159,8 @@ export default function OnboardingPage() {
                   <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Catégorie principale</label>
                   <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
                     className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm focus:outline-none focus:border-[#E0337E]/60 transition-colors">
-                    <option value="" className="bg-[#1C0E29]">Choisir…</option>
-                    {CATEGORIES.map((c) => <option key={c} value={c} className="bg-[#1C0E29]">{c}</option>)}
+                    <option value="" className="bg-[#3D1F5C]">Choisir…</option>
+                    {CATEGORIES.map((c) => <option key={c} value={c} className="bg-[#3D1F5C]">{c}</option>)}
                   </select>
                 </div>
               </div>

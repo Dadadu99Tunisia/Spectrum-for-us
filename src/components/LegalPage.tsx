@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function LegalPage({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#1C0E29] text-[#F3EADB]">
+    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB]">
       <Header />
       <div className="max-w-3xl mx-auto px-6 pt-28 pb-24">
         <Link href="/" className="font-mono text-xs text-[#F3EADB]/30 hover:text-[#E0337E] transition-colors mb-8 inline-block">

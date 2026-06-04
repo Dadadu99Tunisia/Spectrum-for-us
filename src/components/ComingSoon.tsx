@@ -1,0 +1,86 @@
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import Link from "next/link";
+import { LucideIcon } from "lucide-react";
+
+interface ComingSoonProps {
+  icon: LucideIcon;
+  label: string;
+  title: string;
+  subtitle: string;
+  accent?: string;
+  features?: string[];
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#E0337E", features, ctaLabel, ctaHref }: ComingSoonProps) {
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen pt-24 pb-20 px-6 flex flex-col items-center justify-center">
+        <div className="max-w-2xl mx-auto text-center">
+
+          {/* Icon */}
+          <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8"
+            style={{ background: `${accent}15`, border: `1px solid ${accent}30` }}>
+            <Icon size={36} style={{ color: accent }} />
+          </div>
+
+          {/* Label */}
+          <span className="font-mono text-[11px] tracking-widest uppercase mb-3 block" style={{ color: accent }}>
+            {label}
+          </span>
+
+          {/* Title */}
+          <h1 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight mb-4">
+            {title}
+          </h1>
+
+          {/* Subtitle */}
+          <p className="font-hanken text-lg text-[#F3EADB]/60 leading-relaxed mb-10 max-w-xl mx-auto">
+            {subtitle}
+          </p>
+
+          {/* Features preview */}
+          {features && features.length > 0 && (
+            <div className="flex flex-wrap gap-2 justify-center mb-10">
+              {features.map((f) => (
+                <span key={f}
+                  className="px-4 py-1.5 rounded-full border border-[#F3EADB]/10 font-mono text-[11px] tracking-widest uppercase text-[#F3EADB]/40">
+                  {f}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Prism line */}
+          <div className="h-px w-32 mx-auto mb-10"
+            style={{ background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)" }} />
+
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#F3EADB]/15 bg-[#F3EADB]/[0.03] mb-8">
+            <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: accent }} />
+            <span className="font-mono text-xs text-[#F3EADB]/50 tracking-widest uppercase">En construction</span>
+          </div>
+
+          {/* CTA */}
+          <div className="flex gap-4 justify-center flex-wrap">
+            {ctaLabel && ctaHref && (
+              <Link href={ctaHref}
+                className="px-6 py-3 rounded-full font-hanken font-medium text-sm text-[#F3EADB] transition-all duration-200 hover:brightness-110"
+                style={{ background: accent }}>
+                {ctaLabel}
+              </Link>
+            )}
+            <Link href="/"
+              className="px-6 py-3 rounded-full border border-[#F3EADB]/15 font-hanken text-sm text-[#F3EADB]/60 hover:text-[#F3EADB] hover:border-[#F3EADB]/30 transition-all duration-200">
+              ← Retour à l&apos;accueil
+            </Link>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}

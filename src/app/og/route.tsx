@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     (
       <div
         style={{
-          background: "#1C0E29",
+          background: "#3D1F5C",
           width: "100%",
           height: "100%",
           display: "flex",

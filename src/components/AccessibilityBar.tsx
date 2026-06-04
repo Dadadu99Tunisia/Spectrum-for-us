@@ -34,7 +34,7 @@ export function AccessibilityBar() {
       <div className="flex justify-center">
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 px-5 py-2 bg-[#1C0E29] border border-[#F3EADB]/15 border-b-0 rounded-t-xl text-[#F3EADB]/50 hover:text-[#F3EADB] transition-colors text-xs font-mono tracking-widest uppercase"
+          className="flex items-center gap-2 px-5 py-2 bg-[#3D1F5C] border border-[#F3EADB]/15 border-b-0 rounded-t-xl text-[#F3EADB]/50 hover:text-[#F3EADB] transition-colors text-xs font-mono tracking-widest uppercase"
           aria-label="Options d'accessibilité"
           aria-expanded={open}
         >
@@ -45,7 +45,7 @@ export function AccessibilityBar() {
 
       {/* Panel */}
       <div
-        className="bg-[#1C0E29]/95 backdrop-blur-md border-t border-[#F3EADB]/10 transition-all duration-300 overflow-hidden"
+        className="bg-[#3D1F5C]/95 backdrop-blur-md border-t border-[#F3EADB]/10 transition-all duration-300 overflow-hidden"
         style={{ maxHeight: open ? "120px" : "0px" }}
       >
         <div className="max-w-2xl mx-auto px-6 py-4 flex flex-wrap gap-3 justify-center">

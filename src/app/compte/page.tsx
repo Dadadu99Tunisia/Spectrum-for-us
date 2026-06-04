@@ -7,7 +7,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Package, Heart, Star, Settings, Store, LogOut, User } from "lucide-react";
+import { Package, Heart, Star, Settings, Store, LogOut, LayoutDashboard } from "lucide-react";
+import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
 const TABS = ["Commandes", "Favoris", "Avis", "Paramètres"] as const;
 type Tab = typeof TABS[number];
@@ -20,7 +21,7 @@ const TAB_ICONS = {
 };
 
 export default function ComptePage() {
-  const { user, loading, signOut } = useAuth();
+  const { user, isAdmin, loading, signOut } = useAuth();
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("Commandes");
   const [profile, setProfile] = useState<{ full_name?: string; pseudo?: string; pronouns?: string; is_vendor?: boolean } | null>(null);
@@ -41,8 +42,8 @@ export default function ComptePage() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen bg-[#1C0E29] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
+      <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
+        <SpectrumLoader size="md" />
       </div>
     );
   }
@@ -78,13 +79,18 @@ export default function ComptePage() {
               </div>
               <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">{user.email}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
+              {isAdmin && (
+                <Button variant="primary" href="/admin" className="text-sm py-2 px-4 bg-[#E0337E]">
+                  <LayoutDashboard size={14} /> Admin
+                </Button>
+              )}
               {profile?.is_vendor ? (
                 <Button variant="secondary" href="/vendeur" className="text-sm py-2 px-4">
                   <Store size={14} /> Espace vendeur
                 </Button>
               ) : (
-                <Button variant="primary" href="/vendeur/onboarding" className="text-sm py-2 px-4">
+                <Button variant="secondary" href="/vendeur/onboarding" className="text-sm py-2 px-4">
                   <Store size={14} /> Devenir vendeur·rice
                 </Button>
               )}

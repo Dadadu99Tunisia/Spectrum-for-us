@@ -13,7 +13,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const base =
-  "relative inline-flex items-center justify-center gap-2 font-hanken font-semibold text-sm tracking-wide transition-all duration-300 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E0337E] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C0E29] cursor-pointer select-none";
+  "relative inline-flex items-center justify-center gap-2 font-hanken font-semibold text-sm tracking-wide transition-all duration-300 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E0337E] focus-visible:ring-offset-2 focus-visible:ring-offset-[#3D1F5C] cursor-pointer select-none";
 
 const variants: Record<Variant, string> = {
   primary:

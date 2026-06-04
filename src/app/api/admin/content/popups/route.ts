@@ -1,0 +1,39 @@
+import { requireAdmin, apiError } from "@/lib/admin/rbac";
+import { createClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET() {
+  const auth = await requireAdmin();
+  if ("error" in auth) return auth.error;
+  const supabase = await createClient();
+  const { data } = await supabase.from("site_popups").select("*").order("created_at", { ascending: false });
+  return NextResponse.json({ data: data ?? [] });
+}
+
+export async function POST(req: NextRequest) {
+  const auth = await requireAdmin();
+  if ("error" in auth) return auth.error;
+  const body = await req.json() as Record<string, unknown>;
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("site_popups").insert(body).select().single();
+  if (error) return apiError(error.message);
+  return NextResponse.json({ data });
+}
+
+export async function PATCH(req: NextRequest) {
+  const auth = await requireAdmin();
+  if ("error" in auth) return auth.error;
+  const { id, ...rest } = await req.json() as { id: string; [k: string]: unknown };
+  const supabase = await createClient();
+  await supabase.from("site_popups").update({ ...rest, updated_at: new Date().toISOString() }).eq("id", id);
+  return NextResponse.json({ ok: true });
+}
+
+export async function DELETE(req: NextRequest) {
+  const auth = await requireAdmin();
+  if ("error" in auth) return auth.error;
+  const { id } = await req.json() as { id: string };
+  const supabase = await createClient();
+  await supabase.from("site_popups").delete().eq("id", id);
+  return NextResponse.json({ ok: true });
+}

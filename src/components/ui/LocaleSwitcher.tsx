@@ -37,7 +37,7 @@ export function LocaleSwitcher() {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 z-50 bg-[#1C0E29] border border-[#F3EADB]/10 rounded-xl p-3 min-w-[180px] shadow-2xl">
+          <div className="absolute right-0 top-full mt-2 z-50 bg-[#3D1F5C] border border-[#F3EADB]/10 rounded-xl p-3 min-w-[180px] shadow-2xl">
             <p className="font-mono text-[10px] text-[#F3EADB]/30 uppercase mb-2 tracking-widest">Langue</p>
             {LOCALES.map(l => (
               <button

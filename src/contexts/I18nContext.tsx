@@ -55,8 +55,15 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [, forceRender] = useState(0);
 
   useEffect(() => {
-    const savedLocale = (localStorage.getItem("spectrum-locale") as Locale) || "fr";
-    const savedCurrency = (localStorage.getItem("spectrum-currency") as Currency) || "EUR";
+    const VALID_LOCALES: Locale[] = ["fr", "en", "ar"];
+    const VALID_CURRENCIES: Currency[] = ["EUR", "USD", "GBP", "MAD", "TND"];
+    const rawLocale = localStorage.getItem("spectrum-locale");
+    const rawCurrency = localStorage.getItem("spectrum-currency");
+    const savedLocale = VALID_LOCALES.includes(rawLocale as Locale) ? (rawLocale as Locale) : "fr";
+    const savedCurrency = VALID_CURRENCIES.includes(rawCurrency as Currency) ? (rawCurrency as Currency) : "EUR";
+    // Clean up corrupted values
+    if (rawLocale && !VALID_LOCALES.includes(rawLocale as Locale)) localStorage.setItem("spectrum-locale", "fr");
+    if (rawCurrency && !VALID_CURRENCIES.includes(rawCurrency as Currency)) localStorage.setItem("spectrum-currency", "EUR");
     setLocaleState(savedLocale);
     setCurrencyState(savedCurrency);
     loadMessages(savedLocale).then(() => forceRender(n => n + 1));

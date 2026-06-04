@@ -59,7 +59,7 @@ export default function AmbassadeursPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1C0E29] text-[#F3EADB]">
+    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB]">
       <Header />
 
       {/* Hero */}

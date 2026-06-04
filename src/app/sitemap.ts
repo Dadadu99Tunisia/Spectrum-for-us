@@ -11,6 +11,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/decouvrir`, lastModified: new Date(), changeFrequency: "hourly", priority: 0.9 },
     { url: `${BASE}/media`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/ambassadeurs`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/vendre`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE}/rejoindre`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE}/legal/cgu`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${BASE}/legal/confidentialite`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
     { url: `${BASE}/auth`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
   ];
 
@@ -18,7 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { data: products } = await supabase
     .from("products")
     .select("slug, updated_at")
-    .eq("is_available", true);
+    .eq("is_active", true);
 
   const productPages: MetadataRoute.Sitemap = (products ?? []).map((p) => ({
     url: `${BASE}/produit/${p.slug}`,
