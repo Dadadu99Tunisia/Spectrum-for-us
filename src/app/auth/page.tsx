@@ -11,7 +11,7 @@ function AuthForm() {
   const redirect = searchParams.get("redirect") ?? "/";
   const asVendor = searchParams.get("mode") === "vendor";
 
-  const [mode, setMode] = useState<"login" | "signup">(initialMode);
+  const [mode, setMode] = useState<"login" | "signup" | "reset">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pseudo, setPseudo] = useState("");
@@ -27,6 +27,16 @@ function AuthForm() {
     setLoading(true);
     setError("");
     const supabase = createClient();
+
+    if (mode === "reset") {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?next=/compte`,
+      });
+      if (error) setError(error.message);
+      else setSuccess("Vérifie ton e-mail — un lien de réinitialisation t'a été envoyé ✦");
+      setLoading(false);
+      return;
+    }
 
     if (mode === "login") {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -76,23 +86,43 @@ function AuthForm() {
         </div>
 
         {/* Tab switcher */}
-        <div className="flex rounded-full border border-[#F3EADB]/15 p-1 mb-8" role="tablist">
-          {(["login", "signup"] as const).map((m) => (
-            <button
-              key={m}
-              role="tab"
-              aria-selected={mode === m}
-              onClick={() => { setMode(m); setError(""); setSuccess(""); }}
-              className={`flex-1 py-2.5 rounded-full text-sm font-hanken font-medium transition-all duration-200 ${
-                mode === m ? "bg-[#E0337E] text-[#F3EADB]" : "text-[#F3EADB]/50 hover:text-[#F3EADB]"
-              }`}
-            >
-              {m === "login" ? "Se connecter" : "Créer un compte"}
+        {mode !== "reset" && (
+          <div className="flex rounded-full border border-[#F3EADB]/15 p-1 mb-8" role="tablist">
+            {(["login", "signup"] as const).map((m) => (
+              <button
+                key={m}
+                role="tab"
+                aria-selected={mode === m}
+                onClick={() => { setMode(m); setError(""); setSuccess(""); }}
+                className={`flex-1 py-2.5 rounded-full text-sm font-hanken font-medium transition-all duration-200 ${
+                  mode === m ? "bg-[#E0337E] text-[#F3EADB]" : "text-[#F3EADB]/50 hover:text-[#F3EADB]"
+                }`}
+              >
+                {m === "login" ? "Se connecter" : "Créer un compte"}
+              </button>
+            ))}
+          </div>
+        )}
+        {mode === "reset" && (
+          <div className="mb-8">
+            <button onClick={() => { setMode("login"); setError(""); setSuccess(""); }}
+              className="flex items-center gap-2 text-[#F3EADB]/40 hover:text-[#F3EADB] text-sm font-hanken transition-colors">
+              <ArrowLeft size={14} /> Retour à la connexion
             </button>
-          ))}
-        </div>
+            <h2 className="font-fraunces text-xl text-[#F3EADB] mt-4">Mot de passe oublié</h2>
+            <p className="font-hanken text-sm text-[#F3EADB]/50 mt-1">Entre ton e-mail, on t&apos;envoie un lien de réinitialisation.</p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          {mode === "reset" && (
+            <div>
+              <label htmlFor="email-reset" className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">E-mail *</label>
+              <input id="email-reset" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                placeholder="ton@email.com"
+                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+            </div>
+          )}
           {mode === "signup" && (
             <>
               <div>
@@ -112,15 +142,23 @@ function AuthForm() {
             </>
           )}
 
-          <div>
+          {mode !== "reset" && <div>
             <label htmlFor="email" className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">E-mail *</label>
             <input id="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)}
               placeholder="ton@email.com"
               className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
-          </div>
+          </div>}
 
-          <div>
-            <label htmlFor="password" className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Mot de passe *</label>
+          {mode !== "reset" && <div>
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="password" className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40">Mot de passe *</label>
+              {mode === "login" && (
+                <button type="button" onClick={() => { setMode("reset"); setError(""); setSuccess(""); }}
+                  className="font-hanken text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] transition-colors">
+                  Mot de passe oublié ?
+                </button>
+              )}
+            </div>
             <div className="relative">
               <input id="password" type={showPw ? "text" : "password"} required autoComplete={mode === "login" ? "current-password" : "new-password"}
                 value={password} onChange={(e) => setPassword(e.target.value)}
@@ -131,7 +169,7 @@ function AuthForm() {
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
-          </div>
+          </div>}
 
           {error && (
             <div role="alert" className="text-sm text-red-400 font-hanken bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">
@@ -147,6 +185,8 @@ function AuthForm() {
           <Button variant="primary" className="w-full py-3.5 text-base mt-2" disabled={loading} type="submit">
             {loading
               ? "Chargement…"
+              : mode === "reset"
+              ? "Envoyer le lien"
               : mode === "login"
               ? "Se connecter"
               : asVendor ? "Créer mon compte vendeur" : "Créer mon compte"}
@@ -154,7 +194,7 @@ function AuthForm() {
         </form>
 
         {/* ── OAuth ── */}
-        <div className="mt-6">
+        {mode !== "reset" && <div className="mt-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-[#F3EADB]/10" />
             <span className="font-mono text-[10px] text-[#F3EADB]/30 uppercase tracking-widest">ou</span>
@@ -179,7 +219,7 @@ function AuthForm() {
             </svg>
             Continuer avec Google
           </button>
-        </div>
+        </div>}
 
         {mode === "login" && (
           <p className="text-center mt-4 font-hanken text-sm text-[#F3EADB]/40">

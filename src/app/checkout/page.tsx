@@ -7,6 +7,7 @@ import { getStripe } from "@/lib/stripe";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/Button";
+import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import { Lock, Check, ArrowRight, ArrowLeft } from "lucide-react";
 
 const STEPS = ["Livraison", "Paiement", "Confirmation"] as const;
@@ -313,7 +314,7 @@ export default function CheckoutPage() {
                       }}
                     >
                       <StripeForm
-                        totalCents={totalCents}
+                        totalCents={serverTotal !== null ? Math.round(serverTotal * 100) : totalCents}
                         onSuccess={handlePaymentSuccess}
                         onBack={() => setStep("Livraison")}
                       />
@@ -336,7 +337,7 @@ export default function CheckoutPage() {
                     </div>
                   ) : (
                     <div className="flex items-center justify-center py-12">
-                      <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
+                      <SpectrumLoader size="md" />
                     </div>
                   )}
                 </>
@@ -360,8 +361,14 @@ export default function CheckoutPage() {
                   <span>Frais de port</span><span className="text-[#1C9C95]">Calculés</span>
                 </div>
                 <div className="flex justify-between font-bricolage font-bold text-[#F3EADB] text-lg">
-                  <span>Total</span><span>{total().toFixed(2)} €</span>
+                  <span>Total</span>
+                  <span>{serverTotal !== null ? serverTotal.toFixed(2) : total().toFixed(2)} €</span>
                 </div>
+                {serverTotal !== null && Math.abs(serverTotal - total()) > 0.01 && (
+                  <p className="font-hanken text-[10px] text-amber-400/70 mt-1 text-right">
+                    Total ajusté par le serveur
+                  </p>
+                )}
                 <div className="mt-3 flex items-center justify-center gap-1.5 text-[#F3EADB]/20">
                   <Lock size={10} />
                   <span className="font-mono text-[9px] tracking-widest uppercase">Paiement sécurisé · Stripe</span>

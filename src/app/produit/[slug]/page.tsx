@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
+import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tag } from "@/components/ui/Tag";
@@ -32,6 +33,8 @@ const TYPE_CONFIG: Record<string, { label: string; icon: React.ElementType; colo
 export default function ProduitPage() {
   const params = useParams();
   const slug   = params?.slug as string;
+  const { user } = useAuth();
+  const router = useRouter();
   const [product,  setProduct]  = useState<Product | null>(null);
   const [related,  setRelated]  = useState<RelatedProduct[]>([]);
   const [loading,  setLoading]  = useState(true);
@@ -68,6 +71,10 @@ export default function ProduitPage() {
 
   const handleAdd = () => {
     if (!product || isOos) return;
+    if (!user) {
+      router.push(`/auth?redirect=/produit/${product.slug}`);
+      return;
+    }
     const shop = getShop();
     add({
       id: product.id,

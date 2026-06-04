@@ -7,7 +7,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Package, Heart, Star, Settings, Store, LogOut, LayoutDashboard } from "lucide-react";
+import { Package, Heart, Star, Settings, Store, LogOut, LayoutDashboard, Download, Trash2 } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
 const TABS = ["Commandes", "Favoris", "Avis", "Paramètres"] as const;
@@ -221,6 +221,56 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
       <Button variant="primary" type="submit" disabled={saving} className="py-3">
         {saving ? "Enregistrement…" : saved ? "✓ Enregistré !" : "Enregistrer"}
       </Button>
+
+      {/* ── RGPD ── */}
+      <div className="pt-8 mt-8 border-t border-[#F3EADB]/8 space-y-3">
+        <p className="font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/30 mb-4">Données personnelles (RGPD)</p>
+
+        <a
+          href="/api/account/export"
+          download
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl border border-[#F3EADB]/12 text-[#F3EADB]/60 font-hanken text-sm hover:border-[#1C9C95]/40 hover:text-[#1C9C95] transition-all"
+        >
+          <Download size={14} />
+          Exporter mes données (Art. 20)
+        </a>
+
+        <DeleteAccountButton />
+      </div>
     </form>
+  );
+}
+
+function DeleteAccountButton() {
+  const [confirm, setConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    const res = await fetch("/api/account/delete", { method: "DELETE" });
+    if (res.ok) window.location.href = "/";
+    else setDeleting(false);
+  };
+
+  return confirm ? (
+    <div className="p-4 rounded-xl border border-red-400/30 bg-red-400/5 space-y-3">
+      <p className="font-hanken text-sm text-red-400">⚠️ Cette action est irréversible. Ton compte sera supprimé définitivement.</p>
+      <div className="flex gap-2">
+        <button onClick={handleDelete} disabled={deleting}
+          className="flex-1 py-2 rounded-xl bg-red-500/20 text-red-400 font-hanken text-sm border border-red-400/30 hover:bg-red-500/30 transition-colors disabled:opacity-50">
+          {deleting ? "Suppression…" : "Confirmer la suppression"}
+        </button>
+        <button onClick={() => setConfirm(false)}
+          className="flex-1 py-2 rounded-xl border border-[#F3EADB]/12 text-[#F3EADB]/50 font-hanken text-sm hover:border-[#F3EADB]/25 transition-colors">
+          Annuler
+        </button>
+      </div>
+    </div>
+  ) : (
+    <button onClick={() => setConfirm(true)}
+      className="flex items-center gap-3 w-full px-4 py-3 rounded-xl border border-[#F3EADB]/12 text-[#F3EADB]/40 font-hanken text-sm hover:border-red-400/30 hover:text-red-400 transition-all">
+      <Trash2 size={14} />
+      Supprimer mon compte (Art. 17)
+    </button>
   );
 }

@@ -38,7 +38,7 @@ export default function AbonnementPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          priceId: process.env.NEXT_PUBLIC_STRIPE_VENDOR_PRICE_ID || "price_vendor_35eur",
+          priceId: process.env.NEXT_PUBLIC_STRIPE_VENDOR_PRICE_ID,
           shopId: shop.id,
         }),
       });

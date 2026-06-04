@@ -13,6 +13,7 @@ export async function POST(req: Request) {
 
   try {
     const { priceId, shopId } = await req.json();
+    if (!priceId) return NextResponse.json({ error: "NEXT_PUBLIC_STRIPE_VENDOR_PRICE_ID non configuré. Ajoute cette variable dans Vercel." }, { status: 503 });
 
     // Get or create Stripe customer
     const { data: shop } = await supabase.from("shops").select("stripe_customer_id, name").eq("id", shopId).single();

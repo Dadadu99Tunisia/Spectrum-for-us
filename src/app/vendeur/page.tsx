@@ -25,29 +25,58 @@ type Product = {
   quantity: number; category: string; is_active: boolean; created_at: string;
 };
 
+type VendorOrder = {
+  id: string;
+  order_id: string;
+  quantity: number;
+  price_at_purchase: number;
+  created_at: string;
+  products: { name: string; title: string } | null;
+  orders: { status: string; created_at: string; shipping_name: string | null } | null;
+};
+
 const TABS = ["Vue d'ensemble", "Produits", "Commandes", "Finances"] as const;
 type Tab = typeof TABS[number];
 
 export default function VendeurPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [tab, setTab]             = useState<Tab>("Vue d'ensemble");
-  const [shop, setShop]           = useState<Shop | null>(null);
-  const [products, setProducts]   = useState<Product[]>([]);
-  const [loadingData, setLoading] = useState(true);
+  const [tab, setTab]               = useState<Tab>("Vue d'ensemble");
+  const [shop, setShop]             = useState<Shop | null>(null);
+  const [products, setProducts]     = useState<Product[]>([]);
+  const [vendorOrders, setVendorOrders] = useState<VendorOrder[]>([]);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [loadingData, setLoading]   = useState(true);
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) { router.push("/auth?redirect=/vendeur"); return; }
     if (!user) return;
     const supabase = createClient();
-    supabase.from("shops").select("*").eq("owner_id", user.id).single()
-      .then(({ data }) => {
-        if (!data) { router.push("/vendeur/onboarding"); return; }
-        setShop(data as Shop);
-        return supabase.from("products").select("*").eq("shop_id", data.id).order("created_at", { ascending: false });
-      })
-      .then((res) => { if (res) setProducts(res.data ?? []); setLoading(false); });
+    const load = async () => {
+      try {
+        const { data: shopData } = await supabase.from("shops").select("*").eq("owner_id", user.id).single();
+        if (!shopData) { router.push("/vendeur/onboarding"); return; }
+        setShop(shopData as Shop);
+        const [prodRes, orderRes] = await Promise.all([
+          supabase.from("products").select("*").eq("shop_id", shopData.id).order("created_at", { ascending: false }),
+          supabase.from("order_items")
+            .select("id, order_id, quantity, price_at_purchase, created_at, products(name,title), orders(status, created_at, shipping_name)")
+            .eq("vendor_id", user.id)
+            .order("created_at", { ascending: false }),
+        ]);
+        setProducts(prodRes.data ?? []);
+        const orders = ((orderRes.data ?? []) as unknown) as VendorOrder[];
+        setVendorOrders(orders);
+        const revenue = orders
+          .filter(o => o.orders?.status === "paid" || o.orders?.status === "shipped" || o.orders?.status === "delivered")
+          .reduce((sum, o) => sum + (Number(o.price_at_purchase) * o.quantity), 0);
+        setTotalRevenue(revenue);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
   }, [user, loading, router]);
 
   const toggleProduct = async (p: Product) => {
@@ -59,13 +88,12 @@ export default function VendeurPage() {
 
   if (loading || loadingData) return (
     <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
+      <SpectrumLoader size="md" />
     </div>
   );
   if (!shop) return null;
 
   const activeProducts = products.filter(p => p.is_active);
-  const totalRevenue   = 0;
 
   /* ── Checklist ── */
   const checklist = [
@@ -360,12 +388,60 @@ export default function VendeurPage() {
 
           {/* ══ COMMANDES ══ */}
           {tab === "Commandes" && (
-            <div>
-              <h1 className="font-fraunces text-3xl text-[#F3EADB] mb-6">Commandes</h1>
-              <Card hoverable={false} className="p-8 text-center">
-                <Package size={36} className="mx-auto mb-4 text-[#F3EADB]/20" />
-                <p className="font-hanken text-[#F3EADB]/40">Tes commandes apparaîtront ici.</p>
-              </Card>
+            <div className="space-y-5">
+              <h1 className="font-fraunces text-3xl text-[#F3EADB]">Mes commandes</h1>
+              {vendorOrders.length === 0 ? (
+                <Card hoverable={false} className="p-8 text-center">
+                  <Package size={36} className="mx-auto mb-4 text-[#F3EADB]/20" />
+                  <p className="font-hanken text-[#F3EADB]/40">Aucune commande pour l&apos;instant.</p>
+                  <p className="font-hanken text-xs text-[#F3EADB]/25 mt-1">Elles apparaîtront dès qu&apos;un·e acheteur·se commandera tes produits.</p>
+                </Card>
+              ) : (
+                <Card hoverable={false} className="overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[500px]">
+                      <thead>
+                        <tr className="border-b border-[#F3EADB]/8">
+                          {["Produit", "Acheteur·se", "Qté", "Montant", "Statut", "Date"].map(h => (
+                            <th key={h} className="text-left px-5 py-3 font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/30">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {vendorOrders.map(o => {
+                          const statusColors: Record<string, string> = {
+                            paid: "text-[#1C9C95]", shipped: "text-[#6D2DB5]",
+                            delivered: "text-[#1C9C95]", pending: "text-[#E0901E]", cancelled: "text-red-400",
+                          };
+                          const statusLabels: Record<string, string> = {
+                            paid: "Payé", shipped: "Expédié", delivered: "Livré",
+                            pending: "En attente", cancelled: "Annulé",
+                          };
+                          const st = o.orders?.status ?? "pending";
+                          return (
+                            <tr key={o.id} className="border-b border-[#F3EADB]/6 last:border-0 hover:bg-[#F3EADB]/[0.02] transition-colors">
+                              <td className="px-5 py-4 font-hanken text-sm text-[#F3EADB] truncate max-w-[160px]">
+                                {(o.products as {name?:string;title?:string}|null)?.name || (o.products as {name?:string;title?:string}|null)?.title || "—"}
+                              </td>
+                              <td className="px-5 py-4 font-hanken text-sm text-[#F3EADB]/60">{o.orders?.shipping_name ?? "—"}</td>
+                              <td className="px-5 py-4 font-mono text-sm text-[#F3EADB]/60">{o.quantity}</td>
+                              <td className="px-5 py-4 font-mono text-sm text-[#F3EADB]">{(Number(o.price_at_purchase) * o.quantity).toFixed(2)} €</td>
+                              <td className="px-5 py-4">
+                                <span className={`font-mono text-[10px] ${statusColors[st] ?? "text-[#F3EADB]/40"}`}>
+                                  {statusLabels[st] ?? st}
+                                </span>
+                              </td>
+                              <td className="px-5 py-4 font-mono text-xs text-[#F3EADB]/30">
+                                {new Date(o.created_at).toLocaleDateString("fr-FR")}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </Card>
+              )}
             </div>
           )}
 
@@ -375,9 +451,9 @@ export default function VendeurPage() {
               <h1 className="font-fraunces text-3xl text-[#F3EADB] mb-6">Finances</h1>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 {[
-                  { label: "Solde disponible", value: "0,00 €", color: "#E0337E" },
-                  { label: "En attente", value: "0,00 €", color: "#E0901E" },
-                  { label: "Total reversé", value: "0,00 €", color: "#1C9C95" },
+                  { label: "CA total encaissé", value: `${totalRevenue.toFixed(2)} €`, color: "#E0337E" },
+                  { label: "Commandes reçues", value: String(vendorOrders.filter(o => o.orders?.status === "paid" || o.orders?.status === "shipped" || o.orders?.status === "delivered").length), color: "#E0901E" },
+                  { label: "En attente paiement", value: `${vendorOrders.filter(o => o.orders?.status === "pending").reduce((s,o) => s + Number(o.price_at_purchase)*o.quantity, 0).toFixed(2)} €`, color: "#1C9C95" },
                 ].map(({ label, value, color }) => (
                   <Card key={label} hoverable={false} className="p-6">
                     <div className="font-fraunces text-3xl mb-1" style={{ color }}>{value}</div>
