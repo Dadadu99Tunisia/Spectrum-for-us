@@ -143,7 +143,7 @@ export default function AdminDashboard() {
     { label: "Vendeurs",         sub: "Vérifier KYC",                                href: "/admin/vendors",   color: "#6D2DB5", icon: Store,         urgent: false },
     { label: "CRM Pipeline",     sub: "Leads à qualifier",                           href: "/admin/crm",       color: "#a78bfa", icon: TrendingUp,    urgent: false },
     { label: "Outreach IA",      sub: "Générer messages",                            href: "/admin/outreach",  color: "#E0337E", icon: Mail,          urgent: false },
-    { label: "IA Spectrum",      sub: "Outils d'analyse",                            href: "/admin/ai",        color: "#34d399", icon: Bot,           urgent: false },
+    { label: "Agents IA",        sub: "Aria · Fina · Koda · Mira",                   href: "/admin/agents",    color: "#34d399", icon: Bot,           urgent: false },
     { label: "Événements",       sub: "Scraper & gérer",                             href: "/admin/evenements",color: "#fbbf24", icon: CalendarDays,  urgent: false },
   ];
 
@@ -166,6 +166,7 @@ export default function AdminDashboard() {
       { href: "/admin/finance",       label: "Finance",       icon: Coins },
       { href: "/admin/crm",          label: "CRM",            icon: TrendingUp },
       { href: "/admin/support",       label: "Support",       icon: MessageSquare },
+      { href: "/admin/agents",        label: "Agents IA",     icon: Bot },
     ]},
     { section: "Contenu",     tools: [
       { href: "/admin/contenu",       label: "Site",          icon: BarChart2 },
