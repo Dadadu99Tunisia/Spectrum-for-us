@@ -78,7 +78,7 @@ export function Manifeste() {
               <p className="font-hanken text-xl md:text-2xl text-[#F3EADB]/50 leading-relaxed">
                 {d.text}
               </p>
-              <p className="font-fraunces text-xl md:text-2xl text-[#F3EADB] leading-relaxed italic">
+              <p className="font-fraunces text-xl md:text-2xl text-[#F3EADB] leading-relaxed italic font-bold">
                 {d.emphasis}
               </p>
             </div>
