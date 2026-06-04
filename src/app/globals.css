@@ -82,9 +82,117 @@ body {
   }
 }
 
-html.mode-dyslexia body {
-  line-height: 1.9;
-  letter-spacing: 0.05em;
-  word-spacing: 0.12em;
+/* ═══════════════════════════════════════════════════════
+   MODES D'ACCESSIBILITÉ
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Dyslexie : OpenDyslexic-like via system font + espacement ── */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: local("OpenDyslexic"),
+       url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/fonts/OpenDyslexic-Regular.otf") format("opentype");
+  font-display: swap;
 }
-html.mode-contrast { filter: contrast(1.5); }
+
+html.mode-dyslexia body,
+html.mode-dyslexia p,
+html.mode-dyslexia span,
+html.mode-dyslexia a,
+html.mode-dyslexia button,
+html.mode-dyslexia input,
+html.mode-dyslexia label,
+html.mode-dyslexia h1, html.mode-dyslexia h2,
+html.mode-dyslexia h3, html.mode-dyslexia h4 {
+  font-family: "OpenDyslexic", "Arial", sans-serif !important;
+  line-height: 2 !important;
+  letter-spacing: 0.08em !important;
+  word-spacing: 0.2em !important;
+}
+html.mode-dyslexia p,
+html.mode-dyslexia li {
+  max-width: 70ch;
+}
+
+/* ── Contraste élevé ── */
+html.mode-contrast {
+  --bone: #ffffff;
+  --ink: #000000;
+  filter: none !important;
+}
+html.mode-contrast body {
+  background: #0a0a0a !important;
+  color: #ffffff !important;
+}
+html.mode-contrast * {
+  border-color: rgba(255,255,255,0.4) !important;
+}
+html.mode-contrast a,
+html.mode-contrast button {
+  text-decoration: underline;
+}
+html.mode-contrast img {
+  filter: contrast(1.2) brightness(1.1);
+}
+
+/* ── Daltonisme (deutéranopie) : remplace rouge→bleu, vert→jaune ── */
+html.mode-colorblind {
+  filter: url('#colorblind-filter');
+}
+html.mode-colorblind .text-\[\#E0337E\],
+html.mode-colorblind .border-\[\#E0337E\] {
+  --tw-text-opacity: 1;
+  color: rgb(0 120 200 / var(--tw-text-opacity)) !important;
+}
+html.mode-colorblind .bg-\[\#E0337E\] {
+  background-color: rgb(0 120 200) !important;
+}
+
+/* ── Taille de texte ajustable ── */
+html.mode-text-lg { font-size: 112.5%; }
+html.mode-text-xl { font-size: 125%; }
+html.mode-text-xxl { font-size: 150%; }
+
+/* ── Réduire les animations ── */
+html.mode-reduce-motion *,
+html.mode-reduce-motion *::before,
+html.mode-reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ── Mode focus visible (navigation clavier) ── */
+html.mode-focus-visible *:focus {
+  outline: 3px solid #E0337E !important;
+  outline-offset: 3px !important;
+  border-radius: 4px !important;
+}
+
+/* ── Espacement augmenté ── */
+html.mode-spacing p,
+html.mode-spacing li,
+html.mode-spacing span {
+  line-height: 2.2 !important;
+  margin-bottom: 1.2em !important;
+}
+
+/* ── Skip to content link ── */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 99999;
+  padding: 0.75rem 1.5rem;
+  background: #E0337E;
+  color: #F3EADB;
+  font-family: var(--font-hanken), sans-serif;
+  font-weight: 600;
+  border-radius: 0 0 12px 12px;
+  transition: top 0.2s;
+  text-decoration: none;
+}
+.skip-to-content:focus {
+  top: 0;
+  outline: 3px solid #F3EADB;
+}

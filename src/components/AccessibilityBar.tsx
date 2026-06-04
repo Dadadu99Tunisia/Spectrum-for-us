@@ -1,74 +1,239 @@
 "use client";
-import { useState } from "react";
-import { Eye, Type, Palette, Volume2, ChevronUp, ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Eye, Type, Palette, Minus, Plus,
+  ChevronUp, ChevronDown, MousePointer2, ZoomIn, Space, X
+} from "lucide-react";
 
-type Mode = "dyslexia" | "contrast" | "colorblind" | "deaf";
+// SVG filter pour daltonisme (deutéranopie)
+const ColorblindSVGFilter = () => (
+  <svg aria-hidden="true" style={{ position: "absolute", width: 0, height: 0 }}>
+    <defs>
+      <filter id="colorblind-filter">
+        <feColorMatrix type="matrix" values="
+          0.625 0.375 0   0 0
+          0.7   0.3   0   0 0
+          0     0.3   0.7 0 0
+          0     0     0   1 0
+        "/>
+      </filter>
+    </defs>
+  </svg>
+);
 
-const MODES: { key: Mode; icon: React.ElementType; label: string; detail: string }[] = [
-  { key: "dyslexia", icon: Type, label: "Dyslexie", detail: "Police & espacement adaptés" },
-  { key: "contrast", icon: Eye, label: "Contraste élevé", detail: "Filtre haute lisibilité" },
-  { key: "colorblind", icon: Palette, label: "Daltonien·ne", detail: "Couleurs accessibles" },
-  { key: "deaf", icon: Volume2, label: "Sourd·e", detail: "Sous-titres systématiques" },
+type ToggleMode = "dyslexia" | "contrast" | "colorblind" | "reduce-motion" | "focus-visible" | "spacing";
+type TextSize = "normal" | "lg" | "xl" | "xxl";
+
+const TEXT_SIZES: { key: TextSize; label: string }[] = [
+  { key: "normal", label: "A" },
+  { key: "lg",     label: "A+" },
+  { key: "xl",     label: "A++" },
+  { key: "xxl",    label: "A+++" },
 ];
+
+const TOGGLE_MODES: {
+  key: ToggleMode;
+  icon: React.ElementType;
+  label: string;
+  detail: string;
+}[] = [
+  { key: "dyslexia",      icon: Type,         label: "Dyslexie",         detail: "Police OpenDyslexic + espacement élargi" },
+  { key: "contrast",      icon: Eye,          label: "Contraste élevé",  detail: "Fond noir, texte blanc, bordures renforcées" },
+  { key: "colorblind",    icon: Palette,      label: "Daltonien·ne",     detail: "Filtre deutéranopie (rouge-vert)" },
+  { key: "reduce-motion", icon: Minus,        label: "Moins d'animations", detail: "Désactive transitions et animations" },
+  { key: "focus-visible", icon: MousePointer2, label: "Focus clavier",   detail: "Indicateur de focus visible pour navigation clavier" },
+  { key: "spacing",       icon: Space,        label: "Espacement +",     detail: "Augmente l'interligne et les espaces" },
+];
+
+const STORAGE_KEY = "sfu_a11y";
+
+function loadPrefs(): { modes: ToggleMode[]; textSize: TextSize } {
+  if (typeof window === "undefined") return { modes: [], textSize: "normal" };
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : { modes: [], textSize: "normal" };
+  } catch { return { modes: [], textSize: "normal" }; }
+}
+
+function savePrefs(modes: Set<ToggleMode>, textSize: TextSize) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ modes: [...modes], textSize }));
+}
+
+function applyToDOM(modes: Set<ToggleMode>, textSize: TextSize) {
+  const html = document.documentElement;
+  // Supprimer tous les modes
+  TOGGLE_MODES.forEach(m => html.classList.remove(`mode-${m.key}`));
+  TEXT_SIZES.forEach(s => html.classList.remove(`mode-text-${s.key}`));
+  // Appliquer les modes actifs
+  modes.forEach(m => html.classList.add(`mode-${m}`));
+  if (textSize !== "normal") html.classList.add(`mode-text-${textSize}`);
+}
 
 export function AccessibilityBar() {
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState<Set<Mode>>(new Set());
+  const [active, setActive] = useState<Set<ToggleMode>>(new Set());
+  const [textSize, setTextSize] = useState<TextSize>("normal");
+  const [mounted, setMounted] = useState(false);
 
-  const toggle = (mode: Mode) => {
-    const html = document.documentElement;
+  // Charger les préférences sauvegardées
+  useEffect(() => {
+    const prefs = loadPrefs();
+    const modes = new Set(prefs.modes as ToggleMode[]);
+    setActive(modes);
+    setTextSize(prefs.textSize);
+    applyToDOM(modes, prefs.textSize);
+    setMounted(true);
+  }, []);
+
+  const toggleMode = (mode: ToggleMode) => {
     const next = new Set(active);
-    if (next.has(mode)) {
-      next.delete(mode);
-      html.classList.remove(`mode-${mode}`);
-    } else {
-      next.add(mode);
-      html.classList.add(`mode-${mode}`);
-    }
+    if (next.has(mode)) next.delete(mode);
+    else next.add(mode);
     setActive(next);
+    applyToDOM(next, textSize);
+    savePrefs(next, textSize);
   };
 
-  return (
-    <div className="fixed bottom-0 left-0 right-0 z-40">
-      {/* Toggle */}
-      <div className="flex justify-center">
-        <button
-          onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 px-5 py-2 bg-[#3D1F5C] border border-[#F3EADB]/15 border-b-0 rounded-t-xl text-[#F3EADB]/50 hover:text-[#F3EADB] transition-colors text-xs font-mono tracking-widest uppercase"
-          aria-label="Options d'accessibilité"
-          aria-expanded={open}
-        >
-          <span>Accessibilité</span>
-          {open ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
-        </button>
-      </div>
+  const changeTextSize = (size: TextSize) => {
+    setTextSize(size);
+    applyToDOM(active, size);
+    savePrefs(active, size);
+  };
 
-      {/* Panel */}
+  const resetAll = () => {
+    const empty = new Set<ToggleMode>();
+    setActive(empty);
+    setTextSize("normal");
+    applyToDOM(empty, "normal");
+    savePrefs(empty, "normal");
+  };
+
+  const hasAnyActive = active.size > 0 || textSize !== "normal";
+
+  if (!mounted) return null;
+
+  return (
+    <>
+      <ColorblindSVGFilter />
+
+      {/* Barre d'accessibilité */}
       <div
-        className="bg-[#3D1F5C]/95 backdrop-blur-md border-t border-[#F3EADB]/10 transition-all duration-300 overflow-hidden"
-        style={{ maxHeight: open ? "120px" : "0px" }}
+        role="region"
+        aria-label="Options d'accessibilité"
+        className="fixed bottom-0 left-0 right-0 z-40"
       >
-        <div className="max-w-2xl mx-auto px-6 py-4 flex flex-wrap gap-3 justify-center">
-          {MODES.map(({ key, icon: Icon, label, detail }) => {
-            const isActive = active.has(key);
-            return (
-              <button
-                key={key}
-                onClick={() => toggle(key)}
-                title={detail}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-hanken transition-all duration-200 ${
-                  isActive
-                    ? "border-[#E0337E] text-[#E0337E] bg-[#E0337E]/10"
-                    : "border-[#F3EADB]/15 text-[#F3EADB]/50 hover:border-[#F3EADB]/30 hover:text-[#F3EADB]/70"
-                }`}
-              >
-                <Icon size={12} />
-                {label}
-              </button>
-            );
-          })}
+        {/* Toggle button */}
+        <div className="flex justify-center">
+          <button
+            onClick={() => setOpen(!open)}
+            aria-expanded={open}
+            aria-controls="a11y-panel"
+            className={`flex items-center gap-2 px-5 py-2 border border-b-0 rounded-t-xl text-xs font-mono tracking-widest uppercase transition-all duration-200 ${
+              hasAnyActive
+                ? "bg-[#E0337E]/15 border-[#E0337E]/40 text-[#E0337E]"
+                : "bg-[#1a0d28] border-[#F3EADB]/15 text-[#F3EADB]/50 hover:text-[#F3EADB]"
+            }`}
+          >
+            {hasAnyActive && <span className="w-1.5 h-1.5 rounded-full bg-[#E0337E] animate-pulse" />}
+            <span>Accessibilité</span>
+            {open ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
+          </button>
+        </div>
+
+        {/* Panel */}
+        <div
+          id="a11y-panel"
+          role="group"
+          className="bg-[#1a0d28]/98 backdrop-blur-md border-t border-[#F3EADB]/10 transition-all duration-300 overflow-hidden"
+          style={{ maxHeight: open ? "220px" : "0px" }}
+          aria-hidden={!open}
+        >
+          <div className="max-w-3xl mx-auto px-4 py-4">
+            <div className="flex items-start gap-6 flex-wrap">
+
+              {/* Taille du texte */}
+              <div className="flex flex-col gap-1.5">
+                <p className="font-mono text-[9px] tracking-widest uppercase text-[#F3EADB]/30">
+                  Taille du texte
+                </p>
+                <div className="flex items-center gap-1">
+                  {TEXT_SIZES.map(({ key, label }) => (
+                    <button
+                      key={key}
+                      onClick={() => changeTextSize(key)}
+                      aria-pressed={textSize === key}
+                      aria-label={`Taille de texte ${label}`}
+                      className={`px-3 py-1.5 rounded-lg border font-mono text-xs transition-all duration-200 ${
+                        textSize === key
+                          ? "border-[#E0337E] text-[#E0337E] bg-[#E0337E]/10"
+                          : "border-[#F3EADB]/15 text-[#F3EADB]/40 hover:border-[#F3EADB]/30 hover:text-[#F3EADB]/70"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Séparateur */}
+              <div className="w-px self-stretch bg-[#F3EADB]/8 hidden sm:block" />
+
+              {/* Modes toggle */}
+              <div className="flex flex-col gap-1.5 flex-1">
+                <p className="font-mono text-[9px] tracking-widest uppercase text-[#F3EADB]/30">
+                  Modes visuels & navigation
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {TOGGLE_MODES.map(({ key, icon: Icon, label, detail }) => {
+                    const isActive = active.has(key);
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => toggleMode(key)}
+                        aria-pressed={isActive}
+                        title={detail}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-hanken transition-all duration-200 ${
+                          isActive
+                            ? "border-[#E0337E] text-[#E0337E] bg-[#E0337E]/10"
+                            : "border-[#F3EADB]/15 text-[#F3EADB]/45 hover:border-[#F3EADB]/30 hover:text-[#F3EADB]/70"
+                        }`}
+                      >
+                        <Icon size={11} aria-hidden="true" />
+                        <span>{label}</span>
+                        {isActive && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#E0337E]" aria-hidden="true" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Reset */}
+              {hasAnyActive && (
+                <button
+                  onClick={resetAll}
+                  aria-label="Réinitialiser tous les paramètres d'accessibilité"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#F3EADB]/15 text-[#F3EADB]/30 font-hanken text-xs hover:border-red-400/30 hover:text-red-400 transition-all self-end"
+                >
+                  <X size={11} />
+                  Réinitialiser
+                </button>
+              )}
+            </div>
+
+            {/* Description du mode actif */}
+            {hasAnyActive && (
+              <p className="mt-3 font-hanken text-[10px] text-[#F3EADB]/30 text-center" aria-live="polite">
+                Actif·ves : {[
+                  textSize !== "normal" ? `Texte ${TEXT_SIZES.find(s => s.key === textSize)?.label}` : null,
+                  ...[...active].map(m => TOGGLE_MODES.find(t => t.key === m)?.label),
+                ].filter(Boolean).join(" · ")} — Préférences sauvegardées
+              </p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

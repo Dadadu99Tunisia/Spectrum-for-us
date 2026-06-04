@@ -20,7 +20,7 @@ export default function Home() {
       <OrganizationJsonLd />
       <PrideCountdown />
       <Header />
-      <main>
+      <main id="main-content">
         <Hero />
         <Manifeste />
         <Univers />
