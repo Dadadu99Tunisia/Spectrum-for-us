@@ -11,7 +11,6 @@ import { RejoindreCTA } from "@/components/sections/RejoindreCTA";
 import { VendreIci } from "@/components/sections/VendreIci";
 import { Newsletter } from "@/components/sections/Newsletter";
 import { Footer } from "@/components/Footer";
-import { AccessibilityBar } from "@/components/AccessibilityBar";
 
 export default function Home() {
   return (
@@ -32,7 +31,6 @@ export default function Home() {
         <Newsletter />
       </main>
       <Footer />
-      <AccessibilityBar />
     </>
   );
 }

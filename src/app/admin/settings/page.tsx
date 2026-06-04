@@ -146,7 +146,7 @@ export default function SettingsPage() {
               <Field label="Nouvelle commande" description="Notification à chaque nouvelle commande">
                 <Toggle value={newOrderNotif} onChange={setNewOrderNotif} />
               </Field>
-              <Field label="Nouveau vendeur" description="Notification à chaque inscription vendeur">
+              <Field label="Nouveau·elle vendeur·se" description="Notification à chaque inscription vendeur·se">
                 <Toggle value={newVendorNotif} onChange={setNewVendorNotif} />
               </Field>
               <Field label="Nouveau ticket support" description="Notification à chaque ticket ouvert">
@@ -236,7 +236,7 @@ export default function SettingsPage() {
               <Field label="Payout minimum (€)" description="Seuil minimal pour déclencher un virement">
                 <Input value={minPayout} onChange={setMinPayout} placeholder="50" />
               </Field>
-              <Field label="Délai payout (jours)" description="Jours après la commande avant le virement vendeur">
+              <Field label="Délai payout (jours)" description="Jours après la commande avant le virement vendeur·se">
                 <Input value={payoutDelay} onChange={setPayoutDelay} placeholder="7" />
               </Field>
               <div className="mt-4 p-4 rounded-xl bg-[#E0901E]/5 border border-[#E0901E]/15">

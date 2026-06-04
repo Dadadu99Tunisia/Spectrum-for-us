@@ -206,7 +206,7 @@ export default function TicketDetailPage() {
           <textarea
             value={reply}
             onChange={e => setReply(e.target.value)}
-            placeholder={isInternal ? "Note interne (invisible pour le client)…" : "Réponse au client…"}
+            placeholder={isInternal ? "Note interne (invisible pour la personne)…" : "Réponse à la personne…"}
             rows={4}
             className={`w-full bg-[#F3EADB]/5 border rounded-xl px-4 py-3 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none resize-none transition-colors ${
               isInternal ? "border-[#6D2DB5]/30 focus:border-[#6D2DB5]/60" : "border-[#F3EADB]/10 focus:border-[#E0337E]/50"

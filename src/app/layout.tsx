@@ -11,6 +11,7 @@ import { Suspense } from "react";
 import { ReferralTracker } from "@/components/ReferralTracker";
 import SiteBanner from "@/components/SiteBanner";
 import { CookieBanner } from "@/components/ui/CookieBanner";
+import { AccessibilityBar } from "@/components/AccessibilityBar";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -122,6 +123,7 @@ export default function RootLayout({
               </Suspense>
               <PageTransition>{children}</PageTransition>
               <CookieBanner />
+              <AccessibilityBar />
             </I18nProvider>
           </AuthProvider>
         </BannerProvider>

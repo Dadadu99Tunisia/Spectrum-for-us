@@ -189,7 +189,7 @@ function AuthForm() {
               ? "Envoyer le lien"
               : mode === "login"
               ? "Se connecter"
-              : asVendor ? "Créer mon compte vendeur" : "Créer mon compte"}
+              : asVendor ? "Créer mon compte créateur·rice" : "Créer mon compte"}
           </Button>
         </form>
 

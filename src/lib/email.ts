@@ -79,7 +79,7 @@ export async function sendOrderConfirmation(params: {
 
   const body = `
     ${h2("Commande confirmée ✦")}
-    ${text(`Merci ${params.shippingName ? params.shippingName.split(" ")[0] : ""}, ta commande a bien été enregistrée et ton paiement est validé.`)}
+    ${text(`${params.shippingName ? `Merci ${params.shippingName.split(" ")[0]}` : "Merci"} ✦ Ta commande a bien été enregistrée et ton paiement est validé.`)}
     <p style="font-family:monospace;font-size:11px;color:rgba(243,234,219,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px;">Réf. #${params.orderRef.slice(0,8).toUpperCase()}</p>
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">${rows}
       <tr><td colspan="2" style="padding:12px 0;font-size:15px;color:rgba(243,234,219,0.6);font-weight:600;">Total</td>

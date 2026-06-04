@@ -242,7 +242,7 @@ export default function CheckoutPage() {
               {step === "Livraison" && (
                 <>
                   {[
-                    { k: "name" as const, label: "Nom complet", ph: "Prénom Nom", type: "text" },
+                    { k: "name" as const, label: "Nom / Pseudo", ph: "Ton nom ou pseudo", type: "text" },
                     { k: "email" as const, label: "E-mail", ph: "ton@email.com", type: "email" },
                     { k: "address" as const, label: "Adresse", ph: "1 rue de la Lumière", type: "text" },
                   ].map(({ k, label, ph, type }) => (
