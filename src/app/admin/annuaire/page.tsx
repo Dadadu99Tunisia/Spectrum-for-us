@@ -155,7 +155,7 @@ function EditDrawer({
 
         {/* Header */}
         <div className="flex items-start gap-3 px-5 pt-5 pb-4 border-b border-[#F3EADB]/8 shrink-0">
-          <LogoPreview org={org} override={{ ...override, logo_url: form.logo_url || override?.logo_url }} size={48} />
+          <LogoPreview org={org} override={override ? { ...override, logo_url: form.logo_url || override.logo_url } : (form.logo_url ? { org_id: org.id, logo_url: form.logo_url } : undefined)} size={48} />
           <div className="flex-1 min-w-0">
             <h2 className="font-bricolage font-bold text-[#F3EADB] text-base leading-tight truncate">
               {org.name}

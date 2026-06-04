@@ -35,6 +35,7 @@ const nextConfig: NextConfig = {
             "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://images.unsplash.com https://cdn.spectrumforus.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://unpkg.com https://api.mapbox.com https://logo.clearbit.com https://www.google.com",
             "frame-src https://js.stripe.com https://hooks.stripe.com",
             "connect-src 'self' https://*.supabase.co https://*.supabase.in https://api.stripe.com https://r.stripe.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://api.mapbox.com https://events.mapbox.com",
+            "worker-src blob:",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",

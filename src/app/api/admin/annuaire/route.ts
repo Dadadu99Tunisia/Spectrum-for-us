@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
+  const auth = await requireAdmin();
+  if ("error" in auth) return auth.error;
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("annuaire_overrides")
