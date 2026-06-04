@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { useInView } from "@/lib/useInView";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
@@ -8,67 +8,61 @@ import { useCart } from "@/store/cart";
 import Link from "next/link";
 
 const PRODUCTS = [
-  {
-    id: 1,
-    name: "Bague Spectre",
-    creator: "Atelier Lumis",
-    price: "68 €",
-    tag: "Bijoux",
-    tagVariant: "teal" as const,
-    bg: "#2d1545",
-    accentColor: "#1C9C95",
-  },
-  {
-    id: 2,
-    name: "Tote Bag « Exist »",
-    creator: "Studio Queer",
-    price: "34 €",
-    tag: "Mode",
-    tagVariant: "magenta" as const,
-    bg: "#1e1030",
-    accentColor: "#E0337E",
-  },
-  {
-    id: 3,
-    name: "Zine « Corps libres »",
-    creator: "Collectif Roseau",
-    price: "12 €",
-    tag: "Zines",
-    tagVariant: "peach" as const,
-    bg: "#1a0d28",
-    accentColor: "#F2B79E",
-  },
-  {
-    id: 4,
-    name: "Sérum Douceur",
-    creator: "Bare Lab",
-    price: "45 €",
-    tag: "Corps & Soin",
-    tagVariant: "teal" as const,
-    bg: "#111f20",
-    accentColor: "#1C9C95",
-  },
-  {
-    id: 5,
-    name: "Print « Prisme »",
-    creator: "Maëlis Artwork",
-    price: "28 €",
-    tag: "Art",
-    tagVariant: "magenta" as const,
-    bg: "#2a1040",
-    accentColor: "#6D2DB5",
-  },
-  {
-    id: 6,
-    name: "Bougie Feu Doux",
-    creator: "La Flamme",
-    price: "22 €",
-    tag: "Maison",
-    tagVariant: "peach" as const,
-    bg: "#1f1008",
-    accentColor: "#E0901E",
-  },
+  { id: 1, name: "Bague Spectre",     creator: "Atelier Lumis",    price: "68 €",  tag: "Bijoux",       tagVariant: "teal"    as const, bg: "#2d1545", accentColor: "#1C9C95" },
+  { id: 2, name: "Tote Bag « Exist »",creator: "Studio Queer",     price: "34 €",  tag: "Mode",         tagVariant: "magenta" as const, bg: "#1e1030", accentColor: "#E0337E" },
+  { id: 3, name: "Zine « Corps libres »", creator: "Collectif Roseau", price: "12 €", tag: "Zines", tagVariant: "peach" as const, bg: "#1a0d28", accentColor: "#F2B79E" },
+  { id: 4, name: "Sérum Douceur",     creator: "Bare Lab",         price: "45 €",  tag: "Corps & Soin", tagVariant: "teal"    as const, bg: "#111f20", accentColor: "#1C9C95" },
+  { id: 5, name: "Print « Prisme »",  creator: "Maëlis Artwork",   price: "28 €",  tag: "Art",          tagVariant: "magenta" as const, bg: "#2a1040", accentColor: "#6D2DB5" },
+  { id: 6, name: "Bougie Feu Doux",   creator: "La Flamme",        price: "22 €",  tag: "Maison",       tagVariant: "peach"   as const, bg: "#1f1008", accentColor: "#E0901E" },
 ];
+
+// ── 3D Tilt card ──────────────────────────────────────────
+function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+
+  const onMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const rx = ((y - cy) / cy) * -8;  // max ±8deg
+    const ry = ((x - cx) / cx) * 8;
+
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02,1.02,1.02)`;
+    cardRef.current.style.transition = "transform 0.1s ease-out";
+
+    // Glow follows mouse
+    if (glowRef.current) {
+      glowRef.current.style.background = `radial-gradient(circle 180px at ${x}px ${y}px, rgba(224,51,126,0.12), transparent)`;
+    }
+  }, []);
+
+  const onLeave = useCallback(() => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)";
+    cardRef.current.style.transition = "transform 0.5s cubic-bezier(0.23,1,0.32,1)";
+    if (glowRef.current) glowRef.current.style.background = "none";
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      className={`relative ${className}`}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ transformStyle: "preserve-3d", willChange: "transform" }}
+    >
+      {/* Dynamic glow overlay */}
+      <div ref={glowRef} className="absolute inset-0 rounded-2xl pointer-events-none z-10 transition-none" />
+      {children}
+    </div>
+  );
+}
 
 function ProductCard({ product, delay }: { product: typeof PRODUCTS[0]; delay: number }) {
   const [liked, setLiked] = useState(false);
@@ -93,63 +87,72 @@ function ProductCard({ product, delay }: { product: typeof PRODUCTS[0]; delay: n
         transitionDelay: `${delay}ms`,
       }}
     >
-      <Card className="group overflow-hidden">
-        {/* Product visual placeholder */}
-        <div
-          className="relative h-56 flex items-center justify-center overflow-hidden"
-          style={{ backgroundColor: product.bg }}
-        >
-          {/* Decorative prism light */}
+      <TiltCard>
+        <Card className="group overflow-hidden h-full">
+          {/* Product visual */}
           <div
-            className="absolute w-32 h-32 rounded-full blur-3xl opacity-30"
-            style={{ background: product.accentColor }}
-          />
-          <span
-            className="font-fraunces text-6xl font-light leading-none select-none opacity-20"
-            style={{ color: product.accentColor }}
+            className="relative h-56 flex items-center justify-center overflow-hidden"
+            style={{ backgroundColor: product.bg }}
           >
-            (u)
-          </span>
-
-          {/* Favorite button */}
-          <button
-            onClick={() => setLiked(!liked)}
-            className="absolute top-3 right-3 p-1.5 rounded-full bg-[#3D1F5C]/60 backdrop-blur-sm transition-all duration-300 hover:scale-110"
-            aria-label="Ajouter aux favoris"
-          >
-            <Heart
-              size={16}
-              className={liked ? "fill-[#E0337E] text-[#E0337E]" : "text-[#F3EADB]/50"}
-              style={liked ? { filter: "drop-shadow(0 0 4px #E0337E)" } : {}}
+            {/* Animated glow blob */}
+            <div
+              className="absolute w-32 h-32 rounded-full blur-3xl opacity-30 group-hover:opacity-50 group-hover:scale-125 transition-all duration-700"
+              style={{ background: product.accentColor }}
             />
-          </button>
-        </div>
-
-        <div className="p-4">
-          <Tag variant={product.tagVariant} className="mb-2">
-            {product.tag}
-          </Tag>
-          <h3 className="font-bricolage font-semibold text-[#F3EADB] text-base leading-tight mt-2">
-            {product.name}
-          </h3>
-          <p className="font-mono text-xs text-[#F3EADB]/40 mt-1">{product.creator}</p>
-
-          <div className="mt-4 flex items-center justify-between">
-            <span className="font-mono text-sm font-bold text-[#F3EADB]">
-              {product.price}
-            </span>
-            <button
-              onClick={handleAdd}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${
-                added ? "bg-green-500/20 text-green-400" : "bg-[#E0337E]/10 text-[#E0337E] hover:bg-[#E0337E]/20"
-              }`}
+            <span
+              className="font-fraunces text-6xl font-light leading-none select-none opacity-20 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500"
+              style={{ color: product.accentColor }}
             >
-              {added ? <Check size={12} /> : <ShoppingBag size={12} />}
-              {added ? "Ajouté !" : "Ajouter"}
+              (u)
+            </span>
+
+            {/* Favorite button */}
+            <button
+              onClick={() => setLiked(!liked)}
+              className="absolute top-3 right-3 p-1.5 rounded-full bg-[#3D1F5C]/60 backdrop-blur-sm transition-all duration-300 hover:scale-110"
+              aria-label={liked ? "Retirer des favoris" : "Ajouter aux favoris"}
+            >
+              <Heart
+                size={16}
+                className={liked ? "fill-[#E0337E] text-[#E0337E]" : "text-[#F3EADB]/50"}
+                style={liked ? { filter: "drop-shadow(0 0 4px #E0337E)" } : {}}
+              />
             </button>
+
+            {/* Hover overlay reveal */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#3D1F5C]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex items-end justify-center pb-4">
+              <span className="font-mono text-[10px] tracking-widest text-[#F3EADB]/60 uppercase">
+                Vue rapide
+              </span>
+            </div>
           </div>
-        </div>
-      </Card>
+
+          <div className="p-4">
+            <Tag variant={product.tagVariant} className="mb-2">
+              {product.tag}
+            </Tag>
+            <h3 className="font-bricolage font-semibold text-[#F3EADB] text-base leading-tight mt-2">
+              {product.name}
+            </h3>
+            <p className="font-mono text-xs text-[#F3EADB]/40 mt-1">{product.creator}</p>
+
+            <div className="mt-4 flex items-center justify-between">
+              <span className="font-mono text-sm font-bold text-[#F3EADB]">
+                {product.price}
+              </span>
+              <button
+                onClick={handleAdd}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${
+                  added ? "bg-green-500/20 text-green-400 scale-95" : "bg-[#E0337E]/10 text-[#E0337E] hover:bg-[#E0337E]/20 hover:scale-105"
+                }`}
+              >
+                {added ? <Check size={12} /> : <ShoppingBag size={12} />}
+                {added ? "Ajouté !" : "Ajouter"}
+              </button>
+            </div>
+          </div>
+        </Card>
+      </TiltCard>
     </div>
   );
 }

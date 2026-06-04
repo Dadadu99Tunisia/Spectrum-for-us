@@ -4,6 +4,7 @@ import "./globals.css";
 import { CustomCursor } from "@/components/animations/CustomCursor";
 import { PrismParticles } from "@/components/animations/PrismParticles";
 import { PageTransition } from "@/components/animations/PageTransition";
+import { ScrollProgress } from "@/components/animations/ScrollProgress";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { I18nProvider } from "@/contexts/I18nContext";
 import { BannerProvider } from "@/contexts/BannerContext";
@@ -112,6 +113,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-to-content">
           Aller au contenu principal
         </a>
+        <ScrollProgress />
         <CustomCursor />
         <PrismParticles />
         <SiteBanner />

@@ -11,6 +11,7 @@ import { RejoindreCTA } from "@/components/sections/RejoindreCTA";
 import { VendreIci } from "@/components/sections/VendreIci";
 import { Newsletter } from "@/components/sections/Newsletter";
 import { Footer } from "@/components/Footer";
+import { MarqueeBanner } from "@/components/ui/MarqueeBanner";
 
 export default function Home() {
   return (
@@ -21,8 +22,24 @@ export default function Home() {
       <Header />
       <main id="main-content">
         <Hero />
+        <MarqueeBanner variant="default" />
         <Manifeste />
         <Univers />
+        <MarqueeBanner
+          variant="bold"
+          speed="slow"
+          reverse
+          items={[
+            "✦ Safe space",
+            "◈ Chaque achat soutient un·e créateur·rice",
+            "✦ Mode sans genre",
+            "◈ Art queer",
+            "✦ Bijoux uniques",
+            "◈ Corps & Soin inclusif",
+            "✦ Zines & édition indépendante",
+            "◈ Communauté avant tout",
+          ]}
+        />
         <CoupsDeCoeur />
         <Createurs />
         <Experiences />

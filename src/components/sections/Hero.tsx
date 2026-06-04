@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import { useSiteContent } from "@/lib/useSiteContent";
 
@@ -8,16 +8,49 @@ function useCMS(key: string, fallback: string) {
   return value ?? fallback;
 }
 
+// ── Glitch text wrapper ──────────────────────────────────
+function GlitchText({ text, className }: { text: string; className?: string }) {
+  const [active, setActive] = useState(false);
+
+  return (
+    <span
+      className={`glitch-wrapper ${active ? "is-glitching" : ""} ${className ?? ""}`}
+      data-text={text}
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
+    >
+      {text}
+    </span>
+  );
+}
+
 export function Hero() {
   const [phase, setPhase] = useState<"line" | "prism" | "parens" | "text" | "done">("line");
-  const lineRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const spotlightRef = useRef<HTMLDivElement>(null);
 
+  // Intro animation sequence
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("prism"), 300);
     const t2 = setTimeout(() => setPhase("parens"), 800);
     const t3 = setTimeout(() => setPhase("text"), 1300);
     const t4 = setTimeout(() => setPhase("done"), 2000);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+  }, []);
+
+  // Mouse spotlight
+  const onMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    if (!spotlightRef.current) return;
+    const rect = sectionRef.current!.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    spotlightRef.current.style.background = `radial-gradient(circle 500px at ${x}px ${y}px, rgba(110,45,181,0.22) 0%, rgba(110,45,181,0.06) 40%, transparent 70%)`;
+  }, []);
+
+  const onMouseLeave = useCallback(() => {
+    if (!spotlightRef.current) return;
+    spotlightRef.current.style.background =
+      "radial-gradient(ellipse 70% 60% at 50% 60%, rgba(110,45,181,0.18) 0%, transparent 70%)";
   }, []);
 
   const description = useCMS("hero_description", "La première marketplace queer francophone. Créations, services et expériences — par et pour la communauté.");
@@ -27,15 +60,21 @@ export function Hero() {
   const btn2Url     = useCMS("hero_btn2_url", "/vendeur/onboarding");
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-6 pt-20">
-      {/* Background radial glow */}
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-6 pt-20"
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+    >
+      {/* Dynamic spotlight — follows cursor */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        ref={spotlightRef}
+        className="absolute inset-0 pointer-events-none transition-[background] duration-300"
         style={{
-          background:
-            "radial-gradient(ellipse 70% 60% at 50% 60%, rgba(110,45,181,0.18) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse 70% 60% at 50% 60%, rgba(110,45,181,0.18) 0%, transparent 70%)",
         }}
       />
+
       {/* Subtle grain texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.035]"
@@ -48,7 +87,6 @@ export function Hero() {
       {/* Animated intro line */}
       <div className="relative flex flex-col items-center gap-0 select-none mb-2" aria-hidden>
         <div
-          ref={lineRef}
           className="h-px transition-all duration-500 ease-out"
           style={{
             width: phase === "line" ? "4px" : phase === "prism" ? "220px" : "0px",
@@ -59,7 +97,7 @@ export function Hero() {
         />
       </div>
 
-      {/* Main heading — titre fixe, seuls description + boutons sont CMS */}
+      {/* Main heading */}
       <div className="relative z-10 text-center max-w-4xl mx-auto">
         <h1
           className="font-fraunces leading-[0.92] mb-6"
@@ -72,7 +110,9 @@ export function Hero() {
               transform: phase === "parens" || phase === "text" || phase === "done" ? "translateY(0)" : "translateY(20px)",
             }}
           >
-            B<span className="transition-colors duration-500" style={{ color: "#E0337E" }}>(u)</span>y us,
+            <GlitchText text="B" />
+            <span className="transition-colors duration-500" style={{ color: "#E0337E" }}>(u)</span>
+            <GlitchText text="y us," />
           </span>
           <span
             className="block text-[#F3EADB] transition-all duration-700 delay-200"
@@ -81,7 +121,7 @@ export function Hero() {
               transform: phase === "text" || phase === "done" ? "translateY(0)" : "translateY(20px)",
             }}
           >
-            for us.
+            <GlitchText text="for us." />
           </span>
         </h1>
 
