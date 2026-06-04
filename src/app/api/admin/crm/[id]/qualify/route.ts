@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 const SYSTEM = `
-Tu es un analyste de croissance pour Spectrum For Us, la première marketplace queer francophone.
+Tu es un analyste de croissance pour Spectrum For Us, la première marketplace queer.
 Tu évalues des leads (marques, créateurs, prestataires) pour savoir s'ils sont pertinents.
 
 Critères de scoring (1 à 5) :

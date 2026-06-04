@@ -3,6 +3,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { useInView } from "@/lib/useInView";
 import { ArrowRight } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
 
 const PROFILES = [
   { emoji: "🎨", title: "Créateur·ices", desc: "Mode, bijoux, art, zines, cosmétiques…" },
@@ -16,6 +17,7 @@ const PROFILES = [
 export function RejoindreCTA() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref);
+  const { t } = useI18n();
 
   return (
     <section ref={ref} className="py-24 px-6 bg-[#2A1540]">
@@ -26,16 +28,14 @@ export function RejoindreCTA() {
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
           <span className="inline-block font-mono text-[11px] tracking-widest uppercase text-[#E0337E] mb-4 px-4 py-1.5 rounded-full border border-[#E0337E]/20 bg-[#E0337E]/8">
-            🏳️‍🌈 Pour le lancement Pride · 26 juin
+            {t("rejoindre_cta.eyebrow")}
           </span>
           <h2 className="font-fraunces text-4xl md:text-5xl font-light mb-4">
-            Tu crées, tu soignes, tu défends.{" "}
-            <span className="italic text-[#F2B79E]">Ta place est ici.</span>
+            {t("rejoindre_cta.title")}{" "}
+            <span className="italic text-[#F2B79E]">{t("rejoindre_cta.title_em")}</span>
           </h2>
           <p className="font-hanken text-[#F3EADB]/55 max-w-xl mx-auto leading-relaxed">
-            Spectrum For Us accueille tous les profils qui veulent exister dans un espace
-            pensé pour eux. Pas besoin d&apos;être une boutique : si tu as une activité,
-            une expertise ou un talent à partager, on veut t&apos;accueillir.
+            {t("rejoindre_cta.subtitle")}
           </p>
         </div>
 
@@ -67,10 +67,10 @@ export function RejoindreCTA() {
             href="/rejoindre"
             className="inline-flex items-center gap-2 px-10 py-4 rounded-2xl bg-[#E0337E] text-white font-hanken font-semibold text-base hover:bg-[#E0337E]/85 hover:scale-[1.02] transition-all duration-200 shadow-xl shadow-[#E0337E]/20"
           >
-            Rejoindre Spectrum <ArrowRight size={16} />
+            {t("rejoindre_cta.cta")} <ArrowRight size={16} />
           </Link>
           <p className="font-hanken text-xs text-[#F3EADB]/30 mt-4">
-            Réponse garantie avant le 26 juin · Gratuit pour démarrer
+            {t("rejoindre_cta.disclaimer")}
           </p>
         </div>
       </div>

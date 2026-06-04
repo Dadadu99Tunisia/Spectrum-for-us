@@ -77,7 +77,7 @@ export default function RejoindrePage() {
             <span className="italic text-[#F2B79E]">Spectrum.</span>
           </h1>
           <p className="font-hanken text-lg text-[#F3EADB]/60 max-w-2xl mx-auto leading-relaxed">
-            Spectrum For Us, c&apos;est la première plateforme queer francophone pour les créateur·ices,
+            Spectrum For Us, c&apos;est la première plateforme queer pour les créateur·ices,
             artistes, thérapeutes, freelances et professionnel·les qui veulent être vus·es
             par une communauté qui leur ressemble.
           </p>

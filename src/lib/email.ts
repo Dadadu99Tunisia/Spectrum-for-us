@@ -157,7 +157,7 @@ export async function sendShippingNotification(params: {
 export async function sendWelcomeEmail(params: { to: string; pseudo: string }) {
   const body = `
     ${h2(`Bienvenue sur Spectrum, ${params.pseudo} ✦`)}
-    ${text("Tu fais maintenant partie de la première marketplace queer francophone. On est vraiment content·e·s de t'avoir ici.")}
+    ${text("Tu fais maintenant partie de la première marketplace queer. On est vraiment content·e·s de t'avoir ici.")}
     ${text("Explore les créations de nos vendeur·ses, ou rejoins-nous en tant que créateur·rice.")}
     <div style="margin:24px 0;display:flex;gap:12px;">
       ${cta("Explorer la marketplace", `${BASE}/decouvrir`)}

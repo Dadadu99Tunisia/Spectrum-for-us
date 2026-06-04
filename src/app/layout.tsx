@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     template: "%s | Spectrum For Us",
   },
   description:
-    "La première marketplace queer francophone. Créations, services et événements par et pour la communauté LGBTQIA+. Mode non-genrée, art, beauté, bien-être.",
+    "La première marketplace queer. Créations, services et événements par et pour la communauté LGBTQIA+. Mode non-genrée, art, beauté, bien-être.",
   keywords: [
     "marketplace queer", "LGBTQIA+", "mode non-genrée", "artisans queer",
     "boutique inclusive", "communauté queer", "spectrum for us",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   publisher: "Spectrum For Us",
   openGraph: {
     title: "Spectrum For Us — B(u)y us, for us.",
-    description: "La première marketplace queer francophone. Des créations faites avec amour, pour tout le spectre.",
+    description: "La première marketplace queer. Des créations faites avec amour, pour tout le spectre.",
     url: "https://spectrumforus.com",
     siteName: "Spectrum For Us",
     images: [
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Spectrum For Us — B(u)y us, for us.",
-    description: "La première marketplace queer francophone.",
+    description: "La première marketplace queer.",
     images: ["/opengraph-image"],
     creator: "@spectrumforus",
   },

@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 const SYSTEM = `
-Tu rédiges des messages de prise de contact pour Spectrum For Us, une marketplace queer francophone.
+Tu rédiges des messages de prise de contact pour Spectrum For Us, une marketplace queer.
 Le ton : humain, chaleureux, pas corporate. Pas de "Bonjour Madame/Monsieur". Pas de template robotique.
 Longueur : 4 à 6 lignes max. Tutoiement.
 Inclure : pourquoi on les contacte (leur univers colle à Spectrum), ce qu'on propose (vendre sur la plateforme), call to action simple.

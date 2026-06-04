@@ -152,18 +152,18 @@ function inferCategory(hint: string): string {
 
 export function generateOutreachEmail(vendor: FoundVendor): string {
   const firstName = vendor.name.split(/[\s_]/)[0];
-  return `Objet : Rejoins Spectrum For Us — la 1ère marketplace queer francophone 🌈
+  return `Objet : Rejoins Spectrum For Us — la 1ère marketplace queer 🌈
 
 Bonjour ${firstName},
 
-Je m'appelle Dada, fondateur·ice de Spectrum For Us (spectrumforus.com) — la première marketplace queer francophone.
+Je m'appelle Dada, fondateur·ice de Spectrum For Us (spectrumforus.com) — la première marketplace queer.
 
 J'ai découvert ta création sur ${vendor.platform === "instagram" ? `Instagram (@${vendor.instagram_handle || vendor.name})` : `Etsy (${vendor.name})`} et ton univers correspond exactement à ce qu'on construit ensemble : un espace où les créateur·ices LGBTQIA+ peuvent vendre à une communauté qui les comprend et les soutient.
 
 ✨ Ce qu'on t'offre :
 • Zéro commission les 3 premiers mois
 • Abonnement vendeur·se à 9,90€/mois (sans frais cachés)
-• Accès à une communauté queer francophone engagée
+• Accès à une communauté queer engagée
 • Outils de gestion boutique intégrés
 
 ${vendor.category ? `Ta catégorie "${vendor.category}" est l'une des plus recherchées chez nous.` : ""}

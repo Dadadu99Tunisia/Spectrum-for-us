@@ -11,6 +11,7 @@ export async function GET() {
     .from("site_content")
     .select("*")
     .order("section")
+    .order("locale")
     .order("label");
 
   if (error) return apiError(error.message);
@@ -21,17 +22,17 @@ export async function PATCH(req: NextRequest) {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
-  const body = await req.json() as { key: string; value: string }[];
-  if (!Array.isArray(body)) return apiError("Expected array of { key, value }");
+  const body = await req.json() as { key: string; locale: string; value: string }[];
+  if (!Array.isArray(body)) return apiError("Expected array of { key, locale, value }");
 
   const supabase = await createClient();
 
-  const updates = body.map(({ key, value }) =>
+  const updates = body.map(({ key, locale, value }) =>
     supabase.from("site_content").update({
       value,
       updated_at: new Date().toISOString(),
       updated_by: auth.user.id,
-    }).eq("key", key)
+    }).eq("key", key).eq("locale", locale ?? "fr")
   );
 
   await Promise.all(updates);

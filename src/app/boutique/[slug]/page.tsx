@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!shop) return {};
 
   const title       = `${shop.name} — Boutique sur Spectrum For Us`;
-  const description = shop.tagline ?? shop.description ?? `Découvrez la boutique ${shop.name} sur Spectrum For Us — la marketplace queer francophone.`;
+  const description = shop.tagline ?? shop.description ?? `Découvrez la boutique ${shop.name} sur Spectrum For Us — la marketplace queer.`;
   const url         = `https://spectrumforus.com/boutique/${slug}`;
 
   return {

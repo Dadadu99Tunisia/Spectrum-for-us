@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { useInView } from "@/lib/useInView";
 import { Button } from "@/components/ui/Button";
 import { Users, Shield, Eye, Zap } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
 
 const ARGS = [
   {
@@ -34,6 +35,7 @@ const ARGS = [
 export function VendreIci() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref);
+  const { t } = useI18n();
 
   return (
     <section ref={ref} id="vendre" className="py-24 px-6">
@@ -51,14 +53,14 @@ export function VendreIci() {
 
           <div className="relative z-10">
             <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-4">
-              Rejoindre le spectre
+              {t("vendre_ici.eyebrow")}
             </span>
             <h2 className="font-fraunces text-3xl md:text-5xl text-[#F3EADB] leading-tight mb-3">
-              Vendez ici,{" "}
-              <span className="italic text-[#F2B79E]">sans filtres.</span>
+              {t("vendre_ici.title")}{" "}
+              <span className="italic text-[#F2B79E]">{t("vendre_ici.title_em")}</span>
             </h2>
             <p className="font-hanken text-[#F3EADB]/60 text-lg mb-12 max-w-xl">
-              9,90 €/mois. Boutique en ligne. Commission sur vente. Aucune condition sur ce que tu es.
+              {t("vendre_ici.subtitle")}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
@@ -95,10 +97,10 @@ export function VendreIci() {
 
             <div className="flex flex-wrap gap-4">
               <Button variant="primary" href="/vendeur/onboarding" className="text-base px-8 py-3.5">
-                Ouvrir ma boutique
+                {t("vendre_ici.cta_open")}
               </Button>
               <Button variant="secondary" href="/vendre" className="text-base px-8 py-3.5">
-                En savoir plus
+                {t("vendre_ici.cta_more")}
               </Button>
             </div>
           </div>

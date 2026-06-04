@@ -2,28 +2,18 @@
 import { useRef } from "react";
 import { useInView } from "@/lib/useInView";
 import Link from "next/link";
-
-const FACTS = [
-  {
-    number: "73%",
-    text: "des créateur·ices LGBTQIA+ déclarent avoir subi une modération arbitraire sur les plateformes mainstream.",
-    color: "#E0337E",
-  },
-  {
-    number: "−40%",
-    text: "de revenus en moyenne lorsqu'un contenu est tagué LGBTQ+ sur les algorithmes publicitaires.",
-    color: "#6D2DB5",
-  },
-  {
-    number: "Invisible",
-    text: "C'est le mot que revient le plus souvent quand on demande à nos créateur·ices comment elles et ils se sentaient avant.",
-    color: "#1C9C95",
-  },
-];
+import { useI18n } from "@/contexts/I18nContext";
 
 export function Origines() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref);
+  const { t } = useI18n();
+
+  const FACTS = [
+    { number: t("origines.fact1_num"), text: t("origines.fact1_text"), color: "#E0337E" },
+    { number: t("origines.fact2_num"), text: t("origines.fact2_text"), color: "#6D2DB5" },
+    { number: t("origines.fact3_num"), text: t("origines.fact3_text"), color: "#1C9C95" },
+  ];
 
   return (
     <section
@@ -55,13 +45,13 @@ export function Origines() {
           style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)" }}
         >
           <span className="font-mono text-[11px] tracking-widest uppercase text-[#1C9C95] block mb-6">
-            ◈ Pourquoi ça existe
+            {t("origines.eyebrow")}
           </span>
 
           <blockquote className="font-fraunces text-3xl md:text-4xl lg:text-5xl text-[#F3EADB] leading-[1.2] max-w-3xl">
-            On nous a dit que nos histoires ne valaient pas assez.{" "}
-            <span className="text-[#F3EADB]/40">Que nos corps dérangeaient.</span>{" "}
-            <span className="italic text-[#F2B79E]">On a construit un endroit où c&apos;est faux.</span>
+            {t("origines.quote_main")}{" "}
+            <span className="text-[#F3EADB]/40">{t("origines.quote_dim")}</span>{" "}
+            <span className="italic text-[#F2B79E]">{t("origines.quote_em")}</span>
           </blockquote>
         </div>
 
@@ -95,25 +85,22 @@ export function Origines() {
         >
           <div className="space-y-5">
             <p className="font-hanken text-lg text-[#F3EADB]/65 leading-relaxed">
-              Les plateformes mainstream ne sont pas neutres. Leurs algorithmes
-              apprennent de millions de biais. Leurs équipes de modération
-              ont des angles morts. Leurs règles publicitaires punissent
-              ce qui dérange la majorité.
+              {t("origines.p1")}
             </p>
             <p className="font-hanken text-lg text-[#F3EADB]/65 leading-relaxed">
-              Spectrum For Us a été construit pour que ces règles ne nous concernent plus.
-              Ici, <strong className="text-[#F3EADB]/90">la communauté est le produit principal.</strong>{" "}
-              Pas le problème à gérer.
+              {t("origines.p2_before")}{" "}
+              <strong className="text-[#F3EADB]/90">{t("origines.p2_em")}</strong>{" "}
+              {t("origines.p2_after")}
             </p>
           </div>
 
           <div className="space-y-4">
             {[
-              { label: "Modération humaine et queer", check: true },
-              { label: "Aucun shadowban algorithmique", check: true },
-              { label: "Commission reversée directement aux créateur·ices", check: true },
-              { label: "Charte inclusive, sans compromis", check: true },
-              { label: "\"Vos contenus violent nos standards\"", check: false },
+              { label: t("origines.check1"), check: true },
+              { label: t("origines.check2"), check: true },
+              { label: t("origines.check3"), check: true },
+              { label: t("origines.check4"), check: true },
+              { label: t("origines.cross1"), check: false },
             ].map(({ label, check }) => (
               <div key={label} className="flex items-center gap-3">
                 <span
@@ -139,7 +126,7 @@ export function Origines() {
               href="/rejoindre"
               className="inline-flex items-center gap-2 mt-4 font-mono text-xs tracking-widest uppercase text-[#E0337E] hover:text-[#F2B79E] transition-colors"
             >
-              Rejoindre le mouvement →
+              {t("origines.cta")}
             </Link>
           </div>
         </div>

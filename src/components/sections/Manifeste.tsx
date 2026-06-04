@@ -1,33 +1,26 @@
 "use client";
 import { useRef } from "react";
 import { useInView } from "@/lib/useInView";
-
-const DECLARATIONS = [
-  {
-    text: "On n'a pas construit une marketplace.",
-    emphasis: "On a construit un refus.",
-    delay: 0,
-  },
-  {
-    text: "Le refus de disparaître des algorithmes.",
-    emphasis: "Le refus d'être une niche rentable pour d'autres.",
-    delay: 120,
-  },
-  {
-    text: "Le refus que nos créations soient shadowbannées.",
-    emphasis: "Que nos corps soient modérés.",
-    delay: 240,
-  },
-  {
-    text: "Le refus que l'argent de nos achats finance des espaces qui nous tolèrent",
-    emphasis: "mais ne nous appartiennent pas.",
-    delay: 360,
-  },
-];
+import { useI18n } from "@/contexts/I18nContext";
 
 export function Manifeste() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref);
+  const { t } = useI18n();
+
+  const DECLARATIONS = [
+    { text: t("manifeste.d1_text"), emphasis: t("manifeste.d1_em"), delay: 0 },
+    { text: t("manifeste.d2_text"), emphasis: t("manifeste.d2_em"), delay: 120 },
+    { text: t("manifeste.d3_text"), emphasis: t("manifeste.d3_em"), delay: 240 },
+    { text: t("manifeste.d4_text"), emphasis: t("manifeste.d4_em"), delay: 360 },
+  ];
+
+  const STATS = [
+    { value: t("manifeste.stat1_value"), label: t("manifeste.stat1_label") },
+    { value: t("manifeste.stat2_value"), label: t("manifeste.stat2_label") },
+    { value: t("manifeste.stat3_value"), label: t("manifeste.stat3_label") },
+    { value: t("manifeste.stat4_value"), label: t("manifeste.stat4_label") },
+  ];
 
   return (
     <section
@@ -60,7 +53,7 @@ export function Manifeste() {
             transform: inView ? "translateY(0)" : "translateY(16px)",
           }}
         >
-          ✦ Notre manifeste
+          {t("manifeste.eyebrow")}
         </span>
 
         {/* Declaration blocks */}
@@ -94,17 +87,15 @@ export function Manifeste() {
           }}
         >
           <p className="font-fraunces text-3xl md:text-4xl text-[#F3EADB] leading-tight">
-            Spectrum For Us, c&apos;est l&apos;espace{" "}
-            <span className="italic text-[#E0337E]">qu&apos;on s&apos;est fait.</span>
+            {t("manifeste.turn_title")}{" "}
+            <span className="italic text-[#E0337E]">{t("manifeste.turn_em")}</span>
           </p>
           <p className="font-hanken text-lg text-[#F3EADB]/60 leading-relaxed max-w-2xl">
-            Un endroit où chaque achat va directement dans les mains d&apos;une personne
-            qui a décidé que son identité était une force. Où chaque boutique est
-            un acte de visibilité. Où chaque vente dit : <em className="text-[#F3EADB]/80 not-italic font-medium">nous existons, et nous créons.</em>
+            {t("manifeste.turn_p1")} <em className="text-[#F3EADB]/80 not-italic font-medium">{t("manifeste.turn_p1_em")}</em>
           </p>
           <p className="font-hanken text-lg text-[#F3EADB]/60 leading-relaxed max-w-2xl">
-            Un espace pensé depuis le départ pour nous.{" "}
-            <strong className="text-[#F3EADB]/90 font-semibold">Pas adapté. Pas toléré. Construit.</strong>
+            {t("manifeste.turn_p2")}{" "}
+            <strong className="text-[#F3EADB]/90 font-semibold">{t("manifeste.turn_p2_em")}</strong>
           </p>
         </div>
 
@@ -116,12 +107,7 @@ export function Manifeste() {
             transform: inView ? "translateY(0)" : "translateY(16px)",
           }}
         >
-          {[
-            { value: "100%", label: "des revenus restent\nchez les créateur·ices" },
-            { value: "0", label: "tolérance pour\nla discrimination" },
-            { value: "3", label: "façons d'exister\nici (produit, service, expérience)" },
-            { value: "Safe", label: "pour toi,\nquoi que tu sois" },
-          ].map(({ value, label }) => (
+          {STATS.map(({ value, label }) => (
             <div key={label}>
               <div className="font-fraunces text-3xl text-[#E0337E] leading-none tabular-nums mb-2">
                 {value}

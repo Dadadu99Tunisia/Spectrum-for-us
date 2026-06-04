@@ -10,7 +10,7 @@ export default function CGU() {
       <p>
         Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation
         de la plateforme <strong>Spectrum For Us</strong> (spectrumforus.com), marketplace queer
-        francophone mettant en relation des acheteur·euse·s et des vendeur·se·s créateur·rice·s.
+        mettant en relation des acheteur·euse·s et des vendeur·se·s créateur·rice·s.
       </p>
 
       <h2>2. Acceptation des conditions</h2>

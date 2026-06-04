@@ -6,7 +6,7 @@ export const runtime = "edge";
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const title = searchParams.get("title") || "B(u)y us, for us.";
-  const subtitle = searchParams.get("subtitle") || "La première marketplace queer francophone.";
+  const subtitle = searchParams.get("subtitle") || "La première marketplace queer.";
 
   return new ImageResponse(
     (

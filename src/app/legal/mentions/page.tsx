@@ -8,7 +8,7 @@ export default function MentionsLegales() {
       <h2>Éditeur du site</h2>
       <p>
         Le site <strong>spectrumforus.com</strong> est édité par <strong>Spectrum For Us</strong>,
-        marketplace queer francophone.<br />
+        marketplace queer.<br />
         Directeur de publication : <strong>Dada Azouz</strong>, CEO & co-fondateur·rice.<br />
         Email : <a href="mailto:hello@spectrumforus.com">hello@spectrumforus.com</a>
       </p>

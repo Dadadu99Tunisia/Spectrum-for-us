@@ -64,7 +64,7 @@ export function WebsiteJsonLd() {
     "@type": "WebSite",
     name: "Spectrum For Us",
     url: "https://spectrumforus.com",
-    description: "La première marketplace queer francophone",
+    description: "La première marketplace queer",
     potentialAction: {
       "@type": "SearchAction",
       target: "https://spectrumforus.com/decouvrir?q={search_term_string}",
