@@ -79,7 +79,7 @@ const NAV_SECTIONS: NavSection[] = [
     label: "Système",
     accent: "#a78bfa",
     items: [
-      { href: "/admin/ai",       label: "IA Spectrum",  icon: Bot },
+      { href: "/admin/agents",   label: "Agents IA",    icon: Bot },
       { href: "/admin/settings", label: "Paramètres",   icon: Settings },
     ]
   }
