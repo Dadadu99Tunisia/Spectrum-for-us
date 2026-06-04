@@ -21,7 +21,7 @@ export function AnnuaireClient() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [view, setView] = useState<View>("split");
-  const [showAllCountries, setShowAllCountries] = useState(false);
+  const [openCountries, setOpenCountries] = useState<Set<string>>(new Set());
   const listRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const searchRef = useRef<HTMLInputElement>(null);
@@ -67,17 +67,12 @@ export function AnnuaireClient() {
     return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
   }, [filtered]);
 
-  // Countries with counts for filter pills
-  const countryCounts = useMemo(() => {
-    const map = new Map<string, { count: number; flag: string }>();
-    filtered.forEach((o) => {
-      if (!map.has(o.country)) map.set(o.country, { count: 0, flag: o.flag });
-      map.get(o.country)!.count++;
-    });
-    return [...map.entries()].sort((a, b) => b[1].count - a[1].count);
-  }, [filtered]);
-
-  const visibleCountries = showAllCountries ? countryCounts : countryCounts.slice(0, 8);
+  // When search/filter changes, auto-open countries with results if searching
+  useEffect(() => {
+    if (search || selectedCategories.length > 0) {
+      setOpenCountries(new Set(grouped.map(([c]) => c)));
+    }
+  }, [search, selectedCategories, grouped]);
 
   const toggleCategory = useCallback((c: OrgCategory) => {
     setSelectedCategories((prev) =>
@@ -85,18 +80,32 @@ export function AnnuaireClient() {
     );
   }, []);
 
+  const toggleCountry = useCallback((country: string) => {
+    setOpenCountries((prev) => {
+      const next = new Set(prev);
+      if (next.has(country)) next.delete(country);
+      else next.add(country);
+      return next;
+    });
+  }, []);
+
   // Pick a random org
   const pickRandom = useCallback(() => {
     if (filtered.length === 0) return;
     const random = filtered[Math.floor(Math.random() * filtered.length)];
+    // Open the country
+    setOpenCountries((prev) => new Set([...prev, random.country]));
     setSelectedId(random.id);
     if (view === "list") setView("split");
+    setTimeout(() => {
+      const el = cardRefs.current.get(random.id);
+      el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 100);
   }, [filtered, view]);
 
   // Scroll list to selected card
   const handleSelect = useCallback((id: string) => {
     setSelectedId((prev) => prev === id ? null : id);
-    // Scroll card into view
     setTimeout(() => {
       const el = cardRefs.current.get(id);
       el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -218,37 +227,6 @@ export function AnnuaireClient() {
         )}
       </div>
 
-      {/* ── COUNTRY PILLS ── */}
-      {countryCounts.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 px-4 py-2 border-b border-[#F3EADB]/6 shrink-0">
-          <span className="font-mono text-[10px] text-[#F3EADB]/25 uppercase tracking-widest shrink-0">Pays</span>
-          {visibleCountries.map(([country, { count, flag }]) => (
-            <button
-              key={country}
-              onClick={() => {
-                setSearch(country);
-                searchRef.current?.focus();
-              }}
-              className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-hanken border border-[#F3EADB]/8 text-[#F3EADB]/45 hover:border-[#CF3F7C]/40 hover:text-[#CF3F7C] transition-all"
-              title={`Filtrer : ${country}`}
-            >
-              <span>{flag}</span>
-              <span className="hidden sm:inline">{country}</span>
-              <span className="ml-0.5 text-[9px] opacity-60">({count})</span>
-            </button>
-          ))}
-          {countryCounts.length > 8 && (
-            <button
-              onClick={() => setShowAllCountries((v) => !v)}
-              className="flex items-center gap-1 text-[11px] font-mono text-[#F3EADB]/25 hover:text-[#F3EADB]/60 transition-colors"
-            >
-              {showAllCountries ? "− moins" : `+ ${countryCounts.length - 8} pays`}
-              <ChevronDown size={10} style={{ transform: showAllCountries ? "rotate(180deg)" : "none", transition: "transform .2s" }} />
-            </button>
-          )}
-        </div>
-      )}
-
       {/* ── MAIN CONTENT ── */}
       <div className="flex-1 overflow-hidden flex min-h-0">
 
@@ -257,7 +235,7 @@ export function AnnuaireClient() {
           <div
             ref={listRef}
             className="overflow-y-auto shrink-0 flex flex-col"
-            style={{ width: view === "list" ? "100%" : "clamp(300px, 35%, 420px)" }}
+            style={{ width: view === "list" ? "100%" : "clamp(280px, 33%, 400px)" }}
             role="list"
             aria-label="Liste des organisations"
           >
@@ -275,37 +253,70 @@ export function AnnuaireClient() {
                 </button>
               </div>
             ) : (
-              <div className="p-3 space-y-6">
-                {grouped.map(([country, orgs]) => (
-                  <div key={country} role="group" aria-label={country}>
-                    {/* Country header */}
-                    <div className="flex items-center gap-2 mb-2 px-1">
-                      <span className="text-base">{orgs[0].flag}</span>
-                      <span className="font-mono text-[10px] text-[#F3EADB]/30 uppercase tracking-widest">{country}</span>
-                      <span className="font-mono text-[9px] text-[#F3EADB]/20">({orgs.length})</span>
-                      <div className="flex-1 h-px bg-[#F3EADB]/6" />
-                    </div>
-                    {/* Org cards */}
-                    <div className="space-y-2">
-                      {orgs.map((org) => (
-                        <div
-                          key={org.id}
-                          ref={(el) => { if (el) cardRefs.current.set(org.id, el); }}
-                          role="listitem"
-                        >
-                          <OrgCard
-                            org={org}
-                            selected={selectedId === org.id}
-                            hovered={hoveredId === org.id}
-                            compact={view === "split"}
-                            onClick={() => handleSelect(org.id)}
-                            onHover={(id) => setHoveredId(id)}
-                          />
+              <div className="p-2 space-y-1">
+                {grouped.map(([country, orgs]) => {
+                  const isOpen = openCountries.has(country);
+                  const hasSelected = orgs.some((o) => o.id === selectedId);
+                  return (
+                    <div key={country} role="group" aria-label={country}>
+                      {/* ── Country row (accordion trigger) ── */}
+                      <button
+                        onClick={() => toggleCountry(country)}
+                        aria-expanded={isOpen}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-200 group text-left"
+                        style={{
+                          background: isOpen || hasSelected
+                            ? "rgba(243,234,219,0.04)"
+                            : "transparent",
+                        }}
+                      >
+                        <span className="text-lg leading-none shrink-0">{orgs[0].flag}</span>
+                        <div className="flex-1 min-w-0">
+                          <span className="font-bricolage font-semibold text-sm text-[#F3EADB]/80 group-hover:text-[#F3EADB] transition-colors">
+                            {country}
+                          </span>
                         </div>
-                      ))}
+                        {/* count badge */}
+                        <span
+                          className="font-mono text-[10px] px-1.5 py-0.5 rounded-full shrink-0 tabular-nums"
+                          style={{
+                            background: isOpen ? "#E0337E18" : "rgba(243,234,219,0.06)",
+                            color: isOpen ? "#E0337E" : "rgba(243,234,219,0.30)",
+                          }}
+                        >
+                          {orgs.length}
+                        </span>
+                        <ChevronDown
+                          size={13}
+                          className="shrink-0 transition-transform duration-200 text-[#F3EADB]/25"
+                          style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                        />
+                      </button>
+
+                      {/* ── Org cards (collapsible) ── */}
+                      {isOpen && (
+                        <div className="pl-2 pr-1 pb-1 space-y-1.5 mt-0.5">
+                          {orgs.map((org) => (
+                            <div
+                              key={org.id}
+                              ref={(el) => { if (el) cardRefs.current.set(org.id, el); }}
+                              role="listitem"
+                            >
+                              <OrgCard
+                                org={org}
+                                selected={selectedId === org.id}
+                                hovered={hoveredId === org.id}
+                                compact
+                                onClick={() => handleSelect(org.id)}
+                                onHover={(id) => setHoveredId(id)}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
 
                 {/* Footer */}
                 <div className="pt-4 pb-2 text-center">
