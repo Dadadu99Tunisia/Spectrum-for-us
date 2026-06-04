@@ -155,33 +155,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Floating category pills */}
-      <div
-        className="mt-20 flex flex-wrap justify-center gap-3 transition-all duration-700 delay-700"
-        style={{
-          opacity: phase === "done" ? 1 : 0,
-          transform: phase === "done" ? "translateY(0)" : "translateY(12px)",
-        }}
-      >
-        {[
-          { label: "Mode", cat: "Mode non-genrée" },
-          { label: "Art", cat: "Art & Culture" },
-          { label: "Bijoux", cat: "Bijoux" },
-          { label: "Zines", cat: "Zines & Édition" },
-          { label: "Corps", cat: "Corps & Soin" },
-          { label: "Intimité", cat: "Intimité" },
-          { label: "Maison", cat: "Maison" },
-        ].map(({ label, cat }, i) => (
-          <a
-            key={label}
-            href={`/decouvrir?category=${encodeURIComponent(cat)}`}
-            className="font-mono text-xs tracking-widest uppercase px-4 py-1.5 rounded-full border border-[#F3EADB]/15 text-[#F3EADB]/50 hover:border-[#E0337E]/40 hover:text-[#E0337E] transition-all duration-200"
-            style={{ animationDelay: `${i * 60}ms` }}
-          >
-            {label}
-          </a>
-        ))}
-      </div>
 
     </section>
   );
