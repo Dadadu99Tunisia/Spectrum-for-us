@@ -212,11 +212,11 @@ export function Header() {
                 {activeMenu === item.href && (
                   <div className="absolute left-0 top-full pt-2 z-50" role="region" aria-label={item.label}>
                     <div className="absolute -top-2 left-0 right-0 h-2" aria-hidden="true" />
-                    <div className="bg-[#1e0f35] border border-[#F3EADB]/10 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden"
-                      style={{ minWidth: item.mega ? "560px" : "260px" }}>
+                    <div className="bg-[#1e0f35] border border-[#F3EADB]/10 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden flex flex-col"
+                      style={{ minWidth: item.mega ? "560px" : "260px", maxHeight: "calc(100vh - 120px)" }}>
 
                       {/* Header */}
-                      <div className="px-5 pt-4 pb-3 border-b border-[#F3EADB]/8 flex items-center justify-between">
+                      <div className="px-5 pt-4 pb-3 border-b border-[#F3EADB]/8 flex items-center justify-between shrink-0">
                         <Link href={item.href} onClick={() => setActiveMenu(null)}
                           className="flex items-center gap-2 font-fraunces text-sm text-[#F3EADB] hover:text-[#E0337E] transition-colors">
                           {item.label} <ArrowRight size={13} />
@@ -229,7 +229,7 @@ export function Header() {
 
                       {/* Méga menu — catégories + sous-catégories */}
                       {item.mega && (
-                        <div className="p-5 grid gap-6"
+                        <div className="p-5 grid gap-6 overflow-y-auto"
                           style={{ gridTemplateColumns: `repeat(${item.mega.length}, 1fr)` }}>
                           {item.mega.map((section) => (
                             <div key={section.heading}>
@@ -289,7 +289,7 @@ export function Header() {
 
                       {/* Simple links menu */}
                       {item.links && (
-                        <div className="p-3">
+                        <div className="p-3 overflow-y-auto">
                           {item.links.map((link) => (
                             <Link key={link.href} href={link.href} onClick={() => setActiveMenu(null)}
                               className="flex flex-col px-4 py-3 rounded-xl hover:bg-[#F3EADB]/5 transition-colors group">
@@ -476,8 +476,8 @@ export function Header() {
 
                   {/* Contenu accordéon */}
                   <div className={cn(
-                    "overflow-hidden transition-all duration-300",
-                    isExpanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+                    "overflow-hidden transition-all duration-500",
+                    isExpanded ? "max-h-[3000px] opacity-100" : "max-h-0 opacity-0"
                   )}>
                     <div className="pb-2">
                       {/* Lien vers la page principale */}
@@ -537,7 +537,7 @@ export function Header() {
                                   {/* Sous-catégories */}
                                   <div className={cn(
                                     "overflow-hidden transition-all duration-200",
-                                    catExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                                    catExpanded ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
                                   )}>
                                     <ul className="pl-6 py-1">
                                       {subs.map((sub) => (
