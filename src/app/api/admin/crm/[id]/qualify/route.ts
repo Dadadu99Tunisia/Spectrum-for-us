@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
@@ -41,8 +41,8 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const auth = await requireAdmin(["super_admin", "ceo", "marketing", "commercial"]);
   if ("error" in auth) return auth.error;
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return apiError("ANTHROPIC_API_KEY manquant dans les variables d'environnement", 503);
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return apiError("OPENAI_API_KEY manquant dans les variables d'environnement", 503);
 
   const { id } = await params;
   const supabase = await createClient();
@@ -62,21 +62,23 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
 - Source : ${lead.source ?? "—"}
 - Notes : ${lead.notes ?? "—"}`;
 
-  const client = new Anthropic({ apiKey });
-  const msg = await client.messages.create({
-    model: "claude-haiku-4-5",
+  const client = new OpenAI({ apiKey });
+  const msg = await client.chat.completions.create({
+    model: "gpt-4o-mini",
     max_tokens: 200,
-    system: SYSTEM,
-    messages: [{ role: "user", content: userMsg }],
+    messages: [
+      { role: "system", content: SYSTEM },
+      { role: "user",   content: userMsg },
+    ],
   });
 
-  const raw    = msg.content[0].type === "text" ? msg.content[0].text : "";
+  const raw    = msg.choices[0]?.message?.content ?? "";
   const result = parseResult(raw);
 
   const stageMap = {
-    accept:     "qualified",
-    follow_up:  "nurturing",
-    reject:     "rejected",
+    accept:    "qualified",
+    follow_up: "nurturing",
+    reject:    "rejected",
   } as const;
 
   const newStage  = stageMap[result.decision];
