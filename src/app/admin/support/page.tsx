@@ -118,7 +118,7 @@ export default function SupportPage() {
                   <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
                     ticket.priority === "urgent" ? "bg-red-400 animate-pulse" :
                     ticket.priority === "high"   ? "bg-[#CF3F7C]" :
-                    ticket.priority === "medium" ? "bg-[#E0901E]" : "bg-white/[0.07]0"
+                    ticket.priority === "medium" ? "bg-[#E0901E]" : "bg-white/[0.07]"
                   }`} />
 
                   {/* Content */}

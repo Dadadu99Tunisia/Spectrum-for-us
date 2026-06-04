@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
@@ -15,9 +16,8 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const auth = await requireAdmin(["super_admin", "ceo", "marketing", "commercial"]);
   if ("error" in auth) return auth.error;
 
-  if (!process.env.OPENAI_API_KEY) {
-    return apiError("OPENAI_API_KEY manquant dans les variables d'environnement", 503);
-  }
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return apiError("ANTHROPIC_API_KEY manquant dans les variables d'environnement", 503);
 
   const { id } = await params;
   const supabase = await createClient();
@@ -38,34 +38,18 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
 
 Objectif : les inviter à rejoindre Spectrum For Us pour vendre leurs créations.`;
 
-  const oaRes = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: SYSTEM },
-        { role: "user",   content: userMsg },
-      ],
-      temperature: 0.8,
-      max_tokens: 300,
-    }),
+  const client  = new Anthropic({ apiKey });
+  const msg     = await client.messages.create({
+    model: "claude-haiku-4-5",
+    max_tokens: 300,
+    system: SYSTEM,
+    messages: [{ role: "user", content: userMsg }],
   });
 
-  if (!oaRes.ok) {
-    const err = await oaRes.text();
-    return apiError(`OpenAI error: ${err}`, 502);
-  }
-
-  const oaJson  = await oaRes.json();
-  let message   = oaJson.choices?.[0]?.message?.content?.trim() ?? "";
+  let message = msg.content[0].type === "text" ? msg.content[0].text.trim() : "";
   if (message.length > 600) message = message.slice(0, 600).trimEnd() + "…";
 
-  // Append message to notes
-  const dateStr  = new Date().toLocaleDateString("fr-FR");
+  const dateStr   = new Date().toLocaleDateString("fr-FR");
   const noteEntry = `\n\n[MESSAGE PRÊT — ${dateStr}]\n${message}`;
   const newNotes  = lead.notes ? `${lead.notes}${noteEntry}` : noteEntry.trim();
 
@@ -76,11 +60,8 @@ Objectif : les inviter à rejoindre Spectrum For Us pour vendre leurs créations
       stage:      lead.stage === "qualified" ? "contacted" : lead.stage,
       updated_at: new Date().toISOString(),
     })
-    .eq("id", id)
-    .select()
-    .single();
+    .eq("id", id).select().single();
 
   if (updateErr) return apiError(updateErr.message);
-
   return apiResponse({ message, contact: updated });
 }

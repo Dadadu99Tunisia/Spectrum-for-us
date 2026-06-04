@@ -57,15 +57,23 @@ export async function GET() {
     revenue: Math.round(revenue * 100) / 100,
   }));
 
-  // Top vendeurs
+  // Top vendeurs — join shop names
   const vendorMap: Record<string, number> = {};
   for (const o of topVendors.data ?? []) {
     if (!o.shop_id) continue;
     vendorMap[o.shop_id] = (vendorMap[o.shop_id] ?? 0) + Number(o.total_amount || 0);
   }
-  const topVendorsList = Object.entries(vendorMap)
-    .sort(([,a],[,b]) => b - a).slice(0, 5)
-    .map(([shop_id, revenue]) => ({ shop_id, revenue: Math.round(revenue * 100) / 100 }));
+  const topShopIds = Object.entries(vendorMap).sort(([,a],[,b]) => b - a).slice(0, 5).map(([id]) => id);
+  const { data: shopNames } = topShopIds.length > 0
+    ? await supabase.from("shops").select("id, name, slug").in("id", topShopIds)
+    : { data: [] };
+  const shopMap = Object.fromEntries((shopNames ?? []).map(s => [s.id, s]));
+  const topVendorsList = topShopIds.map(shop_id => ({
+    shop_id,
+    shop_name: shopMap[shop_id]?.name ?? shop_id.slice(0, 12),
+    shop_slug: shopMap[shop_id]?.slug ?? null,
+    revenue:   Math.round((vendorMap[shop_id] ?? 0) * 100) / 100,
+  }));
 
   return NextResponse.json({
     data: {

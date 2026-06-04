@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
@@ -23,7 +24,7 @@ function parseResult(raw: string) {
     const p = JSON.parse(cleaned);
     const score = Number(p.score);
     const decision = p.decision as string;
-    if (!score || !["accept", "follow_up", "reject"].includes(decision)) throw new Error("bad json");
+    if (!score || !["accept", "follow_up", "reject"].includes(decision)) throw new Error("bad");
     return { score, decision: decision as "accept" | "follow_up" | "reject", reason: String(p.reason ?? "") };
   } catch {
     const m = raw.match(/score["\s:]+(\d)/i);
@@ -40,9 +41,8 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const auth = await requireAdmin(["super_admin", "ceo", "marketing", "commercial"]);
   if ("error" in auth) return auth.error;
 
-  if (!process.env.OPENAI_API_KEY) {
-    return apiError("OPENAI_API_KEY manquant dans les variables d'environnement", 503);
-  }
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return apiError("ANTHROPIC_API_KEY manquant dans les variables d'environnement", 503);
 
   const { id } = await params;
   const supabase = await createClient();
@@ -62,31 +62,15 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
 - Source : ${lead.source ?? "—"}
 - Notes : ${lead.notes ?? "—"}`;
 
-  // Call OpenAI
-  const oaRes = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: SYSTEM },
-        { role: "user",   content: userMsg },
-      ],
-      temperature: 0.3,
-      max_tokens: 200,
-    }),
+  const client = new Anthropic({ apiKey });
+  const msg = await client.messages.create({
+    model: "claude-haiku-4-5",
+    max_tokens: 200,
+    system: SYSTEM,
+    messages: [{ role: "user", content: userMsg }],
   });
 
-  if (!oaRes.ok) {
-    const err = await oaRes.text();
-    return apiError(`OpenAI error: ${err}`, 502);
-  }
-
-  const oaJson = await oaRes.json();
-  const raw = oaJson.choices?.[0]?.message?.content ?? "";
+  const raw    = msg.content[0].type === "text" ? msg.content[0].text : "";
   const result = parseResult(raw);
 
   const stageMap = {
@@ -104,17 +88,9 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
 
   const { data: updated, error: updateErr } = await supabase
     .from("crm_contacts")
-    .update({
-      stage:      newStage,
-      tags:       newTags,
-      notes:      newNotes,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", id)
-    .select()
-    .single();
+    .update({ stage: newStage, tags: newTags, notes: newNotes, updated_at: new Date().toISOString() })
+    .eq("id", id).select().single();
 
   if (updateErr) return apiError(updateErr.message);
-
   return apiResponse({ ...result, newStage, contact: updated });
 }
