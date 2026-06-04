@@ -12,6 +12,7 @@ import { VendreIci } from "@/components/sections/VendreIci";
 import { Newsletter } from "@/components/sections/Newsletter";
 import { Footer } from "@/components/Footer";
 import { MarqueeBanner } from "@/components/ui/MarqueeBanner";
+import { EcoBanner } from "@/components/EcoBanner";
 
 export default function Home() {
   return (
@@ -47,6 +48,7 @@ export default function Home() {
         <VendreIci />
         <Newsletter />
       </main>
+      <EcoBanner />
       <Footer />
     </>
   );
