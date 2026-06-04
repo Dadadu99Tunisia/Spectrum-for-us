@@ -6,7 +6,7 @@ import { ORGS, COUNTRIES } from "@/data/annuaire-orgs";
 export const metadata = {
   title: "Annuaire LGBTQIA+ Europe — Spectrum For Us",
   description:
-    "Carte interactive des organisations, associations, centres et ressources LGBTQIA+ à travers toute l'Europe.",
+    "Organisations, associations, centres et ressources LGBTQIA+ à travers toute l'Europe.",
 };
 
 export default function AnnuairePage() {
@@ -75,11 +75,8 @@ export default function AnnuairePage() {
 
         {/* ─── Interactive directory ─── */}
         <section
-          className="flex-1 mx-4 md:mx-6 mb-8 rounded-2xl border border-[#F3EADB]/8 overflow-hidden flex flex-col"
-          style={{
-            background: "rgba(243,234,219,0.02)",
-            minHeight: "680px",
-          }}
+          className="mx-4 md:mx-6 mb-8 rounded-2xl border border-[#F3EADB]/8 overflow-hidden"
+          style={{ background: "rgba(243,234,219,0.02)" }}
         >
           <AnnuaireClient />
         </section>
