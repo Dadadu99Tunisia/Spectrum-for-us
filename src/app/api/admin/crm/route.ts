@@ -14,11 +14,11 @@ export async function GET(req: NextRequest) {
   const supabase = await createClient();
   let query = supabase
     .from("crm_contacts")
-    .select(`
-      id, name, email, company, contact_type, stage, source,
-      next_followup_at, created_at, updated_at, tags,
-      profiles!crm_contacts_assigned_to_fkey(id, full_name)
-    `, { count: "exact" })
+    .select(
+      `id, name, email, company, contact_type, stage, source,
+       next_followup_at, created_at, updated_at, tags, notes`,
+      { count: "exact" }
+    )
     .order("updated_at", { ascending: false });
 
   if (stage)  query = query.eq("stage", stage);
