@@ -15,6 +15,13 @@ const AnnuaireMap = lazy(() =>
 
 type View = "split" | "list" | "map";
 
+// Derive flag emoji from ISO 3166-1 alpha-2 country code
+function codeToFlag(code: string) {
+  return [...code.toUpperCase()]
+    .map((c) => String.fromCodePoint(c.charCodeAt(0) + 127397))
+    .join("");
+}
+
 export function AnnuaireClient() {
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<OrgCategory[]>([]);
@@ -270,7 +277,7 @@ export function AnnuaireClient() {
                             : "transparent",
                         }}
                       >
-                        <span className="text-lg leading-none shrink-0">{orgs[0].flag}</span>
+                        <span className="text-lg leading-none shrink-0">{codeToFlag(orgs[0].countryCode)}</span>
                         <div className="flex-1 min-w-0">
                           <span className="font-bricolage font-semibold text-sm text-[#F3EADB]/80 group-hover:text-[#F3EADB] transition-colors">
                             {country}
