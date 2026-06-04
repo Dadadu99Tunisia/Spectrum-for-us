@@ -104,7 +104,8 @@ const ROUTE_LABELS: Record<string, string> = {
   "/admin/articles":      "Articles",
   "/admin/ambassadeurs":  "Ambassadeurs",
   "/admin/communication": "Communication",
-  "/admin/ai":            "IA Spectrum",
+  "/admin/agents":        "Agents IA",
+  "/admin/ai":            "Agents IA",
   "/admin/settings":      "Paramètres",
 };
 
