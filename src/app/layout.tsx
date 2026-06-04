@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Bricolage_Grotesque, Hanken_Grotesk, Space_Mono } from "next/font/google";
 import "./globals.css";
+import { EcoBanner } from "@/components/EcoBanner";
 import { CustomCursor } from "@/components/animations/CustomCursor";
 import { PrismParticles } from "@/components/animations/PrismParticles";
 import { PageTransition } from "@/components/animations/PageTransition";
@@ -113,6 +114,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-to-content">
           Aller au contenu principal
         </a>
+        <EcoBanner />
         <ScrollProgress />
         <CustomCursor />
         <PrismParticles />
