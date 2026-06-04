@@ -183,14 +183,6 @@ export function Hero() {
         ))}
       </div>
 
-      {/* Scroll indicator */}
-      <div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 transition-all duration-700 delay-1000"
-        style={{ opacity: phase === "done" ? 0.4 : 0 }}
-      >
-        <span className="font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/50">Défiler</span>
-        <div className="w-px h-12 bg-gradient-to-b from-[#F3EADB]/30 to-transparent animate-pulse" />
-      </div>
     </section>
   );
 }
