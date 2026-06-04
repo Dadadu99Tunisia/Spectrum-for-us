@@ -17,9 +17,9 @@ type Product = {
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   active:   { label: "Actif",        color: "text-green-400 bg-green-400/10 border-green-400/20" },
   pending:  { label: "En attente",   color: "text-[#E0901E] bg-[#E0901E]/10 border-[#E0901E]/20" },
-  draft:    { label: "Brouillon",    color: "text-[#F3EADB]/40 bg-[#F3EADB]/5 border-[#F3EADB]/10" },
+  draft:    { label: "Brouillon",    color: "text-[#F3EADB]/40 bg-white/[0.05] border-white/[0.09]" },
   rejected: { label: "Rejeté",       color: "text-red-400 bg-red-400/10 border-red-400/20" },
-  inactive: { label: "Inactif",      color: "text-[#F3EADB]/30 bg-[#F3EADB]/3 border-[#F3EADB]/8" },
+  inactive: { label: "Inactif",      color: "text-[#F3EADB]/30 bg-[#F3EADB]/3 border-white/[0.08]" },
 };
 
 const STATUS_TABS = ["","pending","active","draft","rejected","inactive"];
@@ -94,7 +94,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Status tabs */}
-      <div className="flex gap-1 p-1 bg-[#F3EADB]/4 rounded-xl w-fit flex-wrap">
+      <div className="flex gap-1 p-1 bg-white/[0.04] rounded-xl w-fit flex-wrap">
         {STATUS_TABS.map(s => (
           <button key={s} onClick={() => setStatus(s)}
             className={`px-3 py-1.5 rounded-lg font-mono text-[10px] transition-all ${
@@ -111,7 +111,7 @@ export default function ProductsPage() {
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25" />
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher un produit…"
-            className="w-full pl-9 pr-4 py-2 bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/50 transition-colors" />
+            className="w-full pl-9 pr-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
         </div>
         {selected.size > 0 && (
           <div className="flex items-center gap-2">
@@ -139,10 +139,10 @@ export default function ProductsPage() {
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-[#F3EADB]/8 overflow-hidden">
+          <div className="rounded-xl border border-white/[0.08] overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#F3EADB]/6 bg-[#F3EADB]/2">
+                <tr className="border-b border-white/[0.07] bg-white/[0.03]">
                   <th className="px-4 py-3 w-8">
                     <input type="checkbox" checked={selected.size === products.length && products.length > 0}
                       onChange={toggleAll}
@@ -157,7 +157,7 @@ export default function ProductsPage() {
                 {products.map(p => {
                   const statusUi = STATUS_CONFIG[p.status] ?? STATUS_CONFIG.draft;
                   return (
-                    <tr key={p.id} className={`border-b border-[#F3EADB]/4 transition-colors ${selected.has(p.id) ? "bg-[#E0337E]/4" : "hover:bg-[#F3EADB]/2"}`}>
+                    <tr key={p.id} className={`border-b border-white/[0.05] transition-colors ${selected.has(p.id) ? "bg-[#E0337E]/4" : "hover:bg-white/[0.03]"}`}>
                       <td className="px-4 py-3">
                         <input type="checkbox" checked={selected.has(p.id)} onChange={() => toggleSelect(p.id)}
                           className="w-3.5 h-3.5 rounded accent-[#E0337E] cursor-pointer" />
@@ -165,9 +165,9 @@ export default function ProductsPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           {p.image_url ? (
-                            <img src={p.image_url} alt="" className="w-9 h-9 rounded-lg object-cover border border-[#F3EADB]/10 flex-shrink-0" />
+                            <img src={p.image_url} alt="" className="w-9 h-9 rounded-lg object-cover border border-white/[0.09] flex-shrink-0" />
                           ) : (
-                            <div className="w-9 h-9 rounded-lg bg-[#F3EADB]/5 border border-[#F3EADB]/10 flex items-center justify-center flex-shrink-0">
+                            <div className="w-9 h-9 rounded-lg bg-white/[0.05] border border-white/[0.09] flex items-center justify-center flex-shrink-0">
                               <Package size={14} className="text-[#F3EADB]/20" />
                             </div>
                           )}
@@ -212,7 +212,7 @@ export default function ProductsPage() {
                           )}
                           {p.shops?.slug && (
                             <a href={`/boutique/${p.shops.slug}`} target="_blank" rel="noreferrer"
-                              className="p-1.5 rounded-lg text-[#F3EADB]/25 hover:text-[#F3EADB] border border-transparent hover:border-[#F3EADB]/10 transition-colors">
+                              className="p-1.5 rounded-lg text-[#F3EADB]/25 hover:text-[#F3EADB] border border-transparent hover:border-white/[0.09] transition-colors">
                               <Eye size={12} />
                             </a>
                           )}
@@ -232,9 +232,9 @@ export default function ProductsPage() {
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                  className="px-3 py-1.5 rounded-lg border border-[#F3EADB]/10 font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">← Préc.</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">← Préc.</button>
                 <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total}
-                  className="px-3 py-1.5 rounded-lg border border-[#F3EADB]/10 font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">Suiv. →</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">Suiv. →</button>
               </div>
             </div>
           )}

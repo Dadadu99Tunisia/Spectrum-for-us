@@ -81,13 +81,13 @@ export default function ModerationPage() {
           <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">File de validation des contenus</p>
         </div>
         <button onClick={() => { fetchItems(); fetchCounts(); }}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#F3EADB]/10 text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors text-sm">
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/[0.09] text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors text-sm">
           <RefreshCw size={13} /> Actualiser
         </button>
       </div>
 
       {/* Status tabs */}
-      <div className="flex gap-1 p-1 bg-[#F3EADB]/4 rounded-xl w-fit">
+      <div className="flex gap-1 p-1 bg-white/[0.04] rounded-xl w-fit">
         {STATUS_TABS.map(s => (
           <button key={s} onClick={() => setStatus(s)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs transition-all ${
@@ -142,11 +142,11 @@ export default function ModerationPage() {
                 className={`rounded-xl border transition-all ${
                   isSelected
                     ? "border-[#E0337E]/40 bg-[#E0337E]/5"
-                    : "border-[#F3EADB]/8 bg-[#F3EADB]/2 hover:border-[#F3EADB]/15"
+                    : "border-white/[0.08] bg-white/[0.03] hover:border-[#F3EADB]/15"
                 }`}>
                 <div className="flex items-center gap-4 p-4">
                   {/* Type icon */}
-                  <div className={`w-9 h-9 rounded-lg bg-[#F3EADB]/5 flex items-center justify-center flex-shrink-0 ${cfg.color}`}>
+                  <div className={`w-9 h-9 rounded-lg bg-white/[0.05] flex items-center justify-center flex-shrink-0 ${cfg.color}`}>
                     <Icon size={15} />
                   </div>
 
@@ -176,7 +176,7 @@ export default function ModerationPage() {
                   {item.mod_status === "pending" ? (
                     <div className="flex items-center gap-2">
                       <button onClick={() => { setSelected(isSelected ? null : item); setNotesInput(""); }}
-                        className="p-2 rounded-lg border border-[#F3EADB]/10 text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors">
+                        className="p-2 rounded-lg border border-white/[0.09] text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors">
                         <Eye size={13} />
                       </button>
                       <button
@@ -205,13 +205,13 @@ export default function ModerationPage() {
 
                 {/* Expanded panel */}
                 {isSelected && (
-                  <div className="px-4 pb-4 border-t border-[#F3EADB]/6 pt-4">
+                  <div className="px-4 pb-4 border-t border-white/[0.07] pt-4">
                     <textarea
                       value={notesInput}
                       onChange={e => setNotesInput(e.target.value)}
                       placeholder="Notes de modération (optionnel)…"
                       rows={2}
-                      className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/50 resize-none mb-3" />
+                      className="w-full bg-white/[0.05] border border-white/[0.09] rounded-lg px-3 py-2 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 resize-none mb-3" />
                     <div className="flex gap-2">
                       <button
                         disabled={!!actionLoading}

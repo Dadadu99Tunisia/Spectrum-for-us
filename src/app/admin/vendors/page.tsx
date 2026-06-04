@@ -20,7 +20,7 @@ type Vendor = {
 };
 
 const KYC_CONFIG: Record<string, { label: string; icon: React.ElementType; color: string; bg: string }> = {
-  pending:   { label: "En attente",  icon: Clock,        color: "text-[#F3EADB]/40", bg: "bg-[#F3EADB]/5 border-[#F3EADB]/10" },
+  pending:   { label: "En attente",  icon: Clock,        color: "text-[#F3EADB]/40", bg: "bg-white/[0.05] border-white/[0.09]" },
   submitted: { label: "À vérifier",  icon: AlertCircle,  color: "text-[#E0901E]",    bg: "bg-[#E0901E]/10 border-[#E0901E]/20" },
   verified:  { label: "Vérifié",     icon: CheckCircle,  color: "text-green-400",    bg: "bg-green-500/10 border-green-500/20" },
   rejected:  { label: "Rejeté",      icon: XCircle,      color: "text-red-400",      bg: "bg-red-500/10 border-red-500/20" },
@@ -66,9 +66,9 @@ export default function VendorsPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher une boutique…"
-            className="w-full pl-9 pr-4 py-2 bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/50 transition-colors" />
+            className="w-full pl-9 pr-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
         </div>
-        <div className="flex gap-1 p-1 bg-[#F3EADB]/4 rounded-lg">
+        <div className="flex gap-1 p-1 bg-white/[0.04] rounded-lg">
           {[["","Tous"],["submitted","À vérifier"],["verified","Vérifiés"],["pending","En attente"],["rejected","Rejetés"]].map(([val, label]) => (
             <button key={val} onClick={() => setKycFilter(val)}
               className={`px-3 py-1.5 rounded-md font-mono text-[10px] transition-all ${
@@ -90,10 +90,10 @@ export default function VendorsPage() {
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-[#F3EADB]/8 overflow-hidden">
+          <div className="rounded-xl border border-white/[0.08] overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#F3EADB]/6 bg-[#F3EADB]/2">
+                <tr className="border-b border-white/[0.07] bg-white/[0.03]">
                   {["Boutique","Propriétaire","KYC","SIRET","Active","Inscription",""].map(h => (
                     <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/25">{h}</th>
                   ))}
@@ -106,7 +106,7 @@ export default function VendorsPage() {
                   const cfg = KYC_CONFIG[kycStatus] ?? KYC_CONFIG.pending;
                   const Icon = cfg.icon;
                   return (
-                    <tr key={v.id} className="border-b border-[#F3EADB]/4 hover:bg-[#F3EADB]/2 transition-colors">
+                    <tr key={v.id} className="border-b border-white/[0.05] hover:bg-white/[0.03] transition-colors">
                       <td className="px-4 py-3">
                         <div>
                           <p className="font-hanken text-sm text-[#F3EADB]">{v.name}</p>
@@ -155,11 +155,11 @@ export default function VendorsPage() {
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                  className="px-3 py-1.5 rounded-lg border border-[#F3EADB]/10 font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">
                   ← Préc.
                 </button>
                 <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total}
-                  className="px-3 py-1.5 rounded-lg border border-[#F3EADB]/10 font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">
                   Suiv. →
                 </button>
               </div>

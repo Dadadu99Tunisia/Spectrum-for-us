@@ -21,7 +21,7 @@ type Outreach = {
 };
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  pending:   { label: "À contacter", color: "text-[#F3EADB]/40 bg-[#F3EADB]/5 border-[#F3EADB]/10",  icon: Clock },
+  pending:   { label: "À contacter", color: "text-[#F3EADB]/40 bg-white/[0.05] border-white/[0.09]",  icon: Clock },
   contacted: { label: "Contacté",    color: "text-[#E0901E] bg-[#E0901E]/10 border-[#E0901E]/20",    icon: Send },
   replied:   { label: "A répondu",   color: "text-[#6D2DB5] bg-[#6D2DB5]/10 border-[#6D2DB5]/20",    icon: CheckCircle },
   converted: { label: "Converti ✓",  color: "text-green-400 bg-green-400/10 border-green-400/20",    icon: CheckCircle },
@@ -114,7 +114,7 @@ export default function OutreachPage() {
           const count = items.filter(i => i.outreach_status === s).length;
           return (
             <button key={s} onClick={() => setStatusFilter(statusFilter === s ? "" : s)}
-              className={`p-3 rounded-xl border text-left transition-all ${statusFilter === s ? "border-[#E0337E]/40 bg-[#E0337E]/5" : "border-[#F3EADB]/8 hover:border-[#F3EADB]/15"}`}>
+              className={`p-3 rounded-xl border text-left transition-all ${statusFilter === s ? "border-[#E0337E]/40 bg-[#E0337E]/5" : "border-white/[0.08] hover:border-[#F3EADB]/15"}`}>
               <p className="font-fraunces text-xl text-[#F3EADB]">{count}</p>
               <p className={`font-mono text-[9px] uppercase tracking-wide mt-0.5 flex items-center gap-1 ${cfg.color.split(" ")[0]}`}>
                 <Icon size={8} /> {cfg.label}
@@ -127,16 +127,16 @@ export default function OutreachPage() {
       <div className="relative">
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25" />
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher…"
-          className="w-full max-w-sm pl-9 pr-4 py-2 bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/50 transition-colors" />
+          className="w-full max-w-sm pl-9 pr-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-20"><SpectrumLoader size="sm" /></div>
       ) : (
-        <div className="rounded-xl border border-[#F3EADB]/8 overflow-hidden">
+        <div className="rounded-xl border border-white/[0.08] overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#F3EADB]/6 bg-[#F3EADB]/2">
+              <tr className="border-b border-white/[0.07] bg-white/[0.03]">
                 {["Nom","Plateforme","Contact","Catégorie","Abonnés","Statut","Action"].map(h => (
                   <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/25">{h}</th>
                 ))}
@@ -147,7 +147,7 @@ export default function OutreachPage() {
                 const cfg = STATUS_CONFIG[item.outreach_status] ?? STATUS_CONFIG.pending;
                 const Icon = cfg.icon;
                 return (
-                  <tr key={item.id} className="border-b border-[#F3EADB]/4 hover:bg-[#F3EADB]/2 transition-colors">
+                  <tr key={item.id} className="border-b border-white/[0.05] hover:bg-white/[0.03] transition-colors">
                     <td className="px-4 py-3">
                       <p className="font-hanken text-sm text-[#F3EADB]">{item.name}</p>
                       {item.notes && <p className="font-mono text-[9px] text-[#F3EADB]/25 truncate max-w-[140px]">{item.notes}</p>}
@@ -183,7 +183,7 @@ export default function OutreachPage() {
                     </td>
                     <td className="px-4 py-3">
                       <select value={item.outreach_status} onChange={e => updateStatus(item.id, e.target.value)}
-                        className="bg-[#0e061a] border border-[#F3EADB]/10 rounded px-2 py-1 font-mono text-[9px] text-[#F3EADB]/50 focus:outline-none focus:border-[#E0337E]/40 transition-colors">
+                        className="bg-[#0e061a] border border-white/[0.09] rounded px-2 py-1 font-mono text-[9px] text-[#F3EADB]/50 focus:outline-none focus:border-[#E0337E]/40 transition-colors">
                         {STATUSES.map(s => <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>)}
                       </select>
                     </td>
@@ -201,7 +201,7 @@ export default function OutreachPage() {
       {/* Modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={e => e.target === e.currentTarget && setShowForm(false)}>
-          <div className="bg-[#0e061a] border border-[#F3EADB]/10 rounded-2xl p-6 w-full max-w-md space-y-4">
+          <div className="bg-[#0e061a] border border-white/[0.09] rounded-2xl p-6 w-full max-w-md space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="font-fraunces text-lg text-[#F3EADB]">Nouveau contact outreach</h2>
               <button onClick={() => setShowForm(false)} className="text-[#F3EADB]/30 hover:text-[#F3EADB]"><X size={16} /></button>
@@ -218,7 +218,7 @@ export default function OutreachPage() {
                 <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1.5">{f.label}</label>
                 <input value={(form as Record<string, string>)[f.key]} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
                   placeholder={f.placeholder}
-                  className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#E0337E]/50 transition-colors" />
+                  className="w-full bg-white/[0.05] border border-white/[0.09] rounded-lg px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
               </div>
             ))}
             <button onClick={addContact} disabled={!form.name || saving}

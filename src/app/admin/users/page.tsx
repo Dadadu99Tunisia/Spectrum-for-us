@@ -24,8 +24,8 @@ const ROLE_COLOR: Record<string, string> = {
   marketing:   "text-blue-400 bg-blue-400/10 border-blue-400/20",
   commercial:  "text-green-400 bg-green-400/10 border-green-400/20",
   hr:          "text-purple-400 bg-purple-400/10 border-purple-400/20",
-  vendor:      "text-[#F3EADB]/60 bg-[#F3EADB]/5 border-[#F3EADB]/10",
-  buyer:       "text-[#F3EADB]/30 bg-[#F3EADB]/3 border-[#F3EADB]/8",
+  vendor:      "text-[#F3EADB]/60 bg-white/[0.05] border-white/[0.09]",
+  buyer:       "text-[#F3EADB]/30 bg-[#F3EADB]/3 border-white/[0.08]",
 };
 
 export default function UsersPage() {
@@ -102,10 +102,10 @@ export default function UsersPage() {
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25" />
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher…"
-            className="w-full pl-9 pr-4 py-2 bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/50 transition-colors" />
+            className="w-full pl-9 pr-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
         </div>
         <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)}
-          className="bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 font-mono text-xs text-[#F3EADB]/60 focus:outline-none focus:border-[#E0337E]/50 transition-colors">
+          className="bg-white/[0.05] border border-white/[0.09] rounded-lg px-3 py-2 font-mono text-xs text-[#F3EADB]/60 focus:outline-none focus:border-[#a78bfa]/50 transition-colors">
           {ROLES.map(r => <option key={r} value={r}>{r === "" ? "Tous les rôles" : r}</option>)}
         </select>
       </div>
@@ -116,10 +116,10 @@ export default function UsersPage() {
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-[#F3EADB]/8 overflow-hidden">
+          <div className="rounded-xl border border-white/[0.08] overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#F3EADB]/6 bg-[#F3EADB]/2">
+                <tr className="border-b border-white/[0.07] bg-white/[0.03]">
                   {["Utilisateur","Rôle","Statut","Dernière connexion","Inscription","Actions"].map(h => (
                     <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/25">{h}</th>
                   ))}
@@ -127,7 +127,7 @@ export default function UsersPage() {
               </thead>
               <tbody>
                 {users.map(u => (
-                  <tr key={u.id} className={`border-b border-[#F3EADB]/4 transition-colors ${u.is_suspended ? "bg-red-500/3" : "hover:bg-[#F3EADB]/2"}`}>
+                  <tr key={u.id} className={`border-b border-white/[0.05] transition-colors ${u.is_suspended ? "bg-red-500/3" : "hover:bg-white/[0.03]"}`}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-7 h-7 rounded-lg bg-[#E0337E]/10 border border-[#E0337E]/20 flex items-center justify-center flex-shrink-0">
@@ -153,7 +153,7 @@ export default function UsersPage() {
                         </div>
                       ) : (
                         <button onClick={() => setEditRole({ id: u.id, current: u.role })}
-                          className={`flex items-center gap-1 font-mono text-[9px] px-2 py-1 rounded-full border transition-colors hover:opacity-80 ${ROLE_COLOR[u.role] ?? "text-[#F3EADB]/30 bg-[#F3EADB]/5 border-[#F3EADB]/10"}`}>
+                          className={`flex items-center gap-1 font-mono text-[9px] px-2 py-1 rounded-full border transition-colors hover:opacity-80 ${ROLE_COLOR[u.role] ?? "text-[#F3EADB]/30 bg-white/[0.05] border-white/[0.09]"}`}>
                           {u.role} <ChevronDown size={8} />
                         </button>
                       )}
@@ -186,7 +186,7 @@ export default function UsersPage() {
                         className={`p-1.5 rounded-lg transition-colors disabled:opacity-40 ${
                           u.is_suspended
                             ? "text-green-400/60 hover:text-green-400 border border-green-500/20 hover:border-green-500/40"
-                            : "text-[#F3EADB]/25 hover:text-red-400 border border-[#F3EADB]/8 hover:border-red-500/20"
+                            : "text-[#F3EADB]/25 hover:text-red-400 border border-white/[0.08] hover:border-red-500/20"
                         }`}>
                         {u.is_suspended ? <RotateCcw size={12} /> : <Ban size={12} />}
                       </button>
@@ -204,9 +204,9 @@ export default function UsersPage() {
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                  className="px-3 py-1.5 rounded-lg border border-[#F3EADB]/10 font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">← Préc.</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">← Préc.</button>
                 <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total}
-                  className="px-3 py-1.5 rounded-lg border border-[#F3EADB]/10 font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">Suiv. →</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">Suiv. →</button>
               </div>
             </div>
           )}

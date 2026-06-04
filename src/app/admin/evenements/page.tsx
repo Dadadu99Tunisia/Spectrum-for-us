@@ -80,7 +80,7 @@ export default function EvenementsPage() {
           <h1 className="font-fraunces text-2xl text-[#F3EADB]">Événements</h1>
           <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">{total} événement{total !== 1 ? "s" : ""}</p>
         </div>
-        <button onClick={fetch_} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#F3EADB]/10 text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors text-sm">
+        <button onClick={fetch_} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/[0.09] text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors text-sm">
           <RefreshCw size={13} />
         </button>
       </div>
@@ -89,9 +89,9 @@ export default function EvenementsPage() {
         <div className="relative flex-1 min-w-48">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher un événement…"
-            className="w-full pl-9 pr-4 py-2 bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/50 transition-colors" />
+            className="w-full pl-9 pr-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
         </div>
-        <div className="flex gap-1 p-1 bg-[#F3EADB]/4 rounded-lg">
+        <div className="flex gap-1 p-1 bg-white/[0.04] rounded-lg">
           {[["pending","En attente"],["approved","Approuvés"],["rejected","Rejetés"],["","Tous"]].map(([v,l]) => (
             <button key={v} onClick={() => setModFilter(v)}
               className={`px-3 py-1.5 rounded-md font-mono text-[10px] transition-all ${modFilter === v ? "bg-[#E0337E] text-white" : "text-[#F3EADB]/40 hover:text-[#F3EADB]"}`}>{l}</button>
@@ -109,7 +109,7 @@ export default function EvenementsPage() {
             const modUi = MOD_CONFIG[ev.moderation] ?? MOD_CONFIG.pending;
             const isPast = ev.date_start && new Date(ev.date_start) < new Date();
             return (
-              <div key={ev.id} className={`rounded-2xl border overflow-hidden transition-all ${isPast ? "opacity-50 border-[#F3EADB]/5" : "border-[#F3EADB]/8 hover:border-[#F3EADB]/20"}`}>
+              <div key={ev.id} className={`rounded-2xl border overflow-hidden transition-all ${isPast ? "opacity-50 border-[#F3EADB]/5" : "border-white/[0.08] hover:border-[#F3EADB]/20"}`}>
                 {ev.image_url ? (
                   <img src={ev.image_url} alt={ev.title} className="w-full h-32 object-cover" />
                 ) : (
@@ -136,12 +136,12 @@ export default function EvenementsPage() {
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-[#F3EADB]/6">
+                  <div className="flex items-center justify-between pt-2 border-t border-white/[0.07]">
                     <span className={`font-mono text-[9px] px-2 py-1 rounded-full border ${modUi.color}`}>{modUi.label}</span>
                     <div className="flex gap-1">
                       {ev.url && (
                         <a href={ev.url} target="_blank" rel="noreferrer"
-                          className="p-1.5 rounded-lg text-[#F3EADB]/25 hover:text-[#F3EADB] border border-transparent hover:border-[#F3EADB]/10 transition-colors">
+                          className="p-1.5 rounded-lg text-[#F3EADB]/25 hover:text-[#F3EADB] border border-transparent hover:border-white/[0.09] transition-colors">
                           <ExternalLink size={11} />
                         </a>
                       )}

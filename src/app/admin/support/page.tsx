@@ -18,7 +18,7 @@ type Ticket = {
 };
 
 const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
-  low:    { label: "Basse",   color: "text-[#F3EADB]/40 border-[#F3EADB]/10" },
+  low:    { label: "Basse",   color: "text-[#F3EADB]/40 border-white/[0.09]" },
   medium: { label: "Moyenne", color: "text-[#E0901E] border-[#E0901E]/20" },
   high:   { label: "Haute",   color: "text-[#CF3F7C] border-[#CF3F7C]/20" },
   urgent: { label: "Urgent",  color: "text-red-400 border-red-400/30" },
@@ -28,7 +28,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   open:        { label: "Ouvert",      color: "text-[#E0901E] bg-[#E0901E]/10 border-[#E0901E]/20" },
   assigned:    { label: "Assigné",     color: "text-[#6D2DB5] bg-[#6D2DB5]/10 border-[#6D2DB5]/20" },
   in_progress: { label: "En cours",    color: "text-[#1C9C95] bg-[#1C9C95]/10 border-[#1C9C95]/20" },
-  waiting:     { label: "En attente",  color: "text-[#F3EADB]/40 bg-[#F3EADB]/5 border-[#F3EADB]/10" },
+  waiting:     { label: "En attente",  color: "text-[#F3EADB]/40 bg-white/[0.05] border-white/[0.09]" },
   resolved:    { label: "Résolu",      color: "text-green-400 bg-green-400/10 border-green-400/20" },
   closed:      { label: "Fermé",       color: "text-[#F3EADB]/20 bg-[#F3EADB]/3 border-[#F3EADB]/5" },
 };
@@ -70,7 +70,7 @@ export default function SupportPage() {
       </div>
 
       {/* Status tabs */}
-      <div className="flex gap-1 p-1 bg-[#F3EADB]/4 rounded-xl w-fit flex-wrap">
+      <div className="flex gap-1 p-1 bg-white/[0.04] rounded-xl w-fit flex-wrap">
         {STATUS_TABS.map(s => (
           <button key={s} onClick={() => setStatus(s)}
             className={`px-3 py-1.5 rounded-lg font-mono text-[10px] transition-all ${
@@ -112,13 +112,13 @@ export default function SupportPage() {
               return (
                 <Link key={ticket.id} href={`/admin/support/${ticket.id}`}
                   className={`flex items-center gap-4 p-4 rounded-xl border transition-all hover:border-[#F3EADB]/15 group ${
-                    slaBreached ? "border-red-500/20 bg-red-500/3" : "border-[#F3EADB]/8 bg-[#F3EADB]/[0.01]"
+                    slaBreached ? "border-red-500/20 bg-red-500/3" : "border-white/[0.08] bg-[#F3EADB]/[0.01]"
                   }`}>
                   {/* Priority dot */}
                   <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
                     ticket.priority === "urgent" ? "bg-red-400 animate-pulse" :
                     ticket.priority === "high"   ? "bg-[#CF3F7C]" :
-                    ticket.priority === "medium" ? "bg-[#E0901E]" : "bg-[#F3EADB]/20"
+                    ticket.priority === "medium" ? "bg-[#E0901E]" : "bg-white/[0.03]0"
                   }`} />
 
                   {/* Content */}
@@ -126,7 +126,7 @@ export default function SupportPage() {
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <span className="font-mono text-[10px] text-[#F3EADB]/25">{ticket.ticket_number}</span>
                       {ticket.category && (
-                        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#F3EADB]/5 text-[#F3EADB]/30 uppercase">
+                        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-white/[0.05] text-[#F3EADB]/30 uppercase">
                           {ticket.category}
                         </span>
                       )}
@@ -174,9 +174,9 @@ export default function SupportPage() {
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                  className="px-3 py-1.5 rounded-lg border border-[#F3EADB]/10 font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">← Préc.</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">← Préc.</button>
                 <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total}
-                  className="px-3 py-1.5 rounded-lg border border-[#F3EADB]/10 font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">Suiv. →</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">Suiv. →</button>
               </div>
             </div>
           )}
