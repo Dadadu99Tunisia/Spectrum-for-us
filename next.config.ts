@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["leaflet", "react-leaflet"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**.supabase.co" },
@@ -27,12 +28,12 @@ const nextConfig: NextConfig = {
           key: "Content-Security-Policy",
           value: [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://challenges.cloudflare.com",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://challenges.cloudflare.com https://unpkg.com",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
             "font-src 'self' https://fonts.gstatic.com",
-            "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://images.unsplash.com https://cdn.spectrumforus.com",
+            "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://images.unsplash.com https://cdn.spectrumforus.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://unpkg.com",
             "frame-src https://js.stripe.com https://hooks.stripe.com",
-            "connect-src 'self' https://*.supabase.co https://*.supabase.in https://api.stripe.com https://r.stripe.com",
+            "connect-src 'self' https://*.supabase.co https://*.supabase.in https://api.stripe.com https://r.stripe.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",
