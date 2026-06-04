@@ -34,7 +34,7 @@ export default function Home() {
           speed="slow"
           reverse
           items={[
-            "✦ Ce n'est pas une tolérance — c'est un droit",
+            "✦ Ce n'est pas une tolérance : c'est un droit",
             "◈ Chaque achat soutient un·e créateur·rice",
             "✦ Mode sans genre",
             "◈ Art queer sans filtre",
