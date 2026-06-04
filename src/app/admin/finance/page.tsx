@@ -101,7 +101,7 @@ export default function FinancePage() {
         {kpis.map(k => {
           const Icon = k.icon;
           return (
-            <div key={k.label} className="p-5 rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+            <div key={k.label} className="p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
               <div className="flex items-start justify-between mb-4">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center"
                   style={{ background: `${k.color}15`, border: `1px solid ${k.color}25` }}>
@@ -125,7 +125,7 @@ export default function FinancePage() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Revenue trend */}
-        <div className="lg:col-span-2 p-5 rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+        <div className="lg:col-span-2 p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
           <p className="font-fraunces text-base text-[#F3EADB] mb-1">Revenus — 30 derniers jours</p>
           <p className="font-mono text-[10px] text-[#F3EADB]/30 uppercase mb-5">CA journalier payé</p>
           {data.chartRevenue.length > 0 ? (
@@ -156,7 +156,7 @@ export default function FinancePage() {
         </div>
 
         {/* Répartition par statut */}
-        <div className="p-5 rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+        <div className="p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
           <p className="font-fraunces text-base text-[#F3EADB] mb-1">Par statut</p>
           <p className="font-mono text-[10px] text-[#F3EADB]/30 uppercase mb-5">CA toutes périodes</p>
           {barData.length > 0 ? (
@@ -182,11 +182,11 @@ export default function FinancePage() {
       </div>
 
       {/* Détail statuts */}
-      <div className="p-5 rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+      <div className="p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
         <p className="font-fraunces text-base text-[#F3EADB] mb-4">Détail par statut de commande</p>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {Object.entries(data.statusBreakdown).map(([status, d]) => (
-            <div key={status} className="p-3 rounded-xl border border-white/[0.07]">
+            <div key={status} className="p-3 rounded-xl border border-white/[0.12]">
               <div className="w-2 h-2 rounded-full mb-2" style={{ background: STATUS_COLORS[status] ?? "#F3EADB" }} />
               <p className="font-mono text-[9px] text-[#F3EADB]/30 uppercase mb-1">{STATUS_LABELS[status] ?? status}</p>
               <p className="font-fraunces text-lg text-[#F3EADB]">{fmt(d.revenue)}</p>
@@ -198,7 +198,7 @@ export default function FinancePage() {
 
       {/* Top vendeurs */}
       {data.topVendors.length > 0 && (
-        <div className="p-5 rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+        <div className="p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
           <p className="font-fraunces text-base text-[#F3EADB] mb-4">Top vendeurs (CA annuel)</p>
           <div className="space-y-3">
             {data.topVendors.map((v, i) => {
@@ -211,7 +211,7 @@ export default function FinancePage() {
                       <span className="font-mono text-[10px] text-[#F3EADB]/40">{v.shop_id.slice(0,12)}…</span>
                       <span className="font-fraunces text-sm text-[#F3EADB]">{fmt(v.revenue)}</span>
                     </div>
-                    <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-white/[0.09] rounded-full overflow-hidden">
                       <div className="h-full rounded-full"
                         style={{ width: `${pct}%`, background: "linear-gradient(90deg, #E0337E, #6D2DB5)" }} />
                     </div>

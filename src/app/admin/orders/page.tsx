@@ -85,7 +85,7 @@ export default function OrdersPage() {
           <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">{total} commande{total !== 1 ? "s" : ""}</p>
         </div>
         <button onClick={fetchOrders}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/[0.09] text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors text-sm">
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/[0.14] text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors text-sm">
           <RefreshCw size={13} />
         </button>
       </div>
@@ -98,9 +98,9 @@ export default function OrdersPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher…"
-            className="w-full pl-9 pr-4 py-2 bg-white/[0.05] border border-white/[0.09] rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
+            className="w-full pl-9 pr-4 py-2 bg-white/[0.09] border border-white/[0.14] rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
         </div>
-        <div className="flex gap-1 p-1 bg-white/[0.04] rounded-lg flex-wrap">
+        <div className="flex gap-1 p-1 bg-white/[0.08] rounded-lg flex-wrap">
           {STATUS_FILTERS.map(s => (
             <button key={s} onClick={() => setStatusFilter(s)}
               className={`px-3 py-1.5 rounded-md font-mono text-[10px] transition-all ${
@@ -124,10 +124,10 @@ export default function OrdersPage() {
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-white/[0.08] overflow-hidden">
+          <div className="rounded-xl border border-white/[0.13] overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/[0.07] bg-white/[0.03]">
+                <tr className="border-b border-white/[0.12] bg-white/[0.07]">
                   {["ID","Client","Statut","Total","Litige","Remboursement","Date","Actions"].map(h => (
                     <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/25">{h}</th>
                   ))}
@@ -135,9 +135,9 @@ export default function OrdersPage() {
               </thead>
               <tbody>
                 {orders.map(order => {
-                  const statusUi = STATUS_CONFIG[order.status] ?? { label: order.status, color: "text-[#F3EADB]/40 bg-white/[0.05] border-white/[0.09]" };
+                  const statusUi = STATUS_CONFIG[order.status] ?? { label: order.status, color: "text-[#F3EADB]/40 bg-white/[0.09] border-white/[0.14]" };
                   return (
-                    <tr key={order.id} className="border-b border-white/[0.05] hover:bg-white/[0.03] transition-colors">
+                    <tr key={order.id} className="border-b border-white/[0.05] hover:bg-white/[0.07] transition-colors">
                       <td className="px-4 py-3">
                         <span className="font-mono text-[10px] text-[#F3EADB]/30">
                           #{order.id.slice(0,8).toUpperCase()}
@@ -210,11 +210,11 @@ export default function OrdersPage() {
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">
                   ← Préc.
                 </button>
                 <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total}
-                  className="px-3 py-1.5 rounded-lg border border-white/[0.09] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">
                   Suiv. →
                 </button>
               </div>

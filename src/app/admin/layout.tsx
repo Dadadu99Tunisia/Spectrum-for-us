@@ -130,7 +130,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (loading || !isAdmin) {
     return (
-      <div className="min-h-screen bg-[#1a1535] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1e1730] flex items-center justify-center">
         <SpectrumLoader size="md" label="Chargement…" />
       </div>
     );
@@ -142,7 +142,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pageTitle = getPageTitle(pathname);
 
   return (
-    <div className="min-h-screen bg-[#1a1535] text-[#F3EADB] flex">
+    <div className="min-h-screen bg-[#1e1730] text-[#F3EADB] flex">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -153,7 +153,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* ════════════════ SIDEBAR ════════════════ */}
       <aside className={`
         fixed top-0 left-0 h-full w-[248px] z-50 flex flex-col
-        bg-[#120d24] border-r border-white/[0.07]
+        bg-[#160f26] border-r border-white/[0.12]
         transition-transform duration-300
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:flex
       `}
@@ -164,7 +164,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           style={{ background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)" }} />
 
         {/* Logo */}
-        <div className="px-5 py-4 border-b border-white/[0.06] shrink-0">
+        <div className="px-5 py-4 border-b border-white/[0.10] shrink-0">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-fraunces text-[15px] text-[#F3EADB]">
@@ -207,7 +207,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       transition-all duration-150 mb-0.5 group
                       ${active
                         ? "text-[#F3EADB] font-medium"
-                        : "text-[#F3EADB]/45 hover:text-[#F3EADB]/80 hover:bg-white/[0.04]"
+                        : "text-[#F3EADB]/45 hover:text-[#F3EADB]/80 hover:bg-white/[0.08]"
                       }
                     `}
                     style={active ? {
@@ -232,7 +232,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* User footer */}
-        <div className="px-3 py-3 border-t border-white/[0.06] bg-black/10 shrink-0">
+        <div className="px-3 py-3 border-t border-white/[0.10] bg-black/10 shrink-0">
           <div className="flex items-center gap-2.5 mb-2.5 px-1">
             <div className="w-7 h-7 rounded-lg bg-[#E0337E]/20 border border-[#E0337E]/25 flex items-center justify-center shrink-0">
               <span className="font-fraunces text-[11px] text-[#E0337E]">
@@ -242,7 +242,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <p className="font-mono text-[10px] text-[#F3EADB]/35 truncate flex-1">{user?.email}</p>
           </div>
           <div className="flex gap-1.5">
-            <Link href="/" className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg border border-white/[0.08] font-mono text-[9px] text-[#F3EADB]/30 hover:text-[#F3EADB]/60 hover:bg-white/[0.04] transition-all">
+            <Link href="/" className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg border border-white/[0.13] font-mono text-[9px] text-[#F3EADB]/30 hover:text-[#F3EADB]/60 hover:bg-white/[0.08] transition-all">
               <ExternalLink size={9} /> Site
             </Link>
             <button onClick={signOut}
@@ -257,7 +257,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
 
         {/* ── Topbar ── */}
-        <header className="sticky top-0 z-30 h-14 bg-[#1a1535]/95 backdrop-blur-md border-b border-white/[0.07] px-5 flex items-center gap-4 shrink-0">
+        <header className="sticky top-0 z-30 h-14 bg-[#1e1730]/95 backdrop-blur-md border-b border-white/[0.12] px-5 flex items-center gap-4 shrink-0">
           {/* Mobile menu button */}
           <button onClick={() => setSidebarOpen(true)}
             className="md:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-[#F3EADB]/50 hover:text-[#F3EADB] transition-colors">
@@ -274,23 +274,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Right actions */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Quick search shortcut */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.07] cursor-pointer hover:bg-white/[0.06] transition-colors">
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.08] border border-white/[0.12] cursor-pointer hover:bg-white/[0.06] transition-colors">
               <Search size={12} className="text-[#F3EADB]/25" />
               <span className="font-mono text-[10px] text-[#F3EADB]/25">Recherche rapide</span>
-              <kbd className="ml-2 font-mono text-[9px] text-[#F3EADB]/20 bg-white/[0.05] px-1.5 py-0.5 rounded">⌘K</kbd>
+              <kbd className="ml-2 font-mono text-[9px] text-[#F3EADB]/20 bg-white/[0.09] px-1.5 py-0.5 rounded">⌘K</kbd>
             </div>
 
             {/* Notification bell */}
             <div className="relative">
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.07] text-[#F3EADB]/40 hover:text-[#F3EADB] hover:bg-white/[0.07] transition-colors">
+              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.08] border border-white/[0.12] text-[#F3EADB]/40 hover:text-[#F3EADB] hover:bg-white/[0.07] transition-colors">
                 <Bell size={14} />
               </button>
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#E0901E] border-2 border-[#1a1535]" />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#E0901E] border-2 border-[#2d2050]" />
             </div>
 
             {/* Quick link to site */}
             <Link href="/" target="_blank"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.07] font-mono text-[10px] text-[#F3EADB]/35 hover:text-[#F3EADB]/70 hover:bg-white/[0.06] transition-all">
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.08] border border-white/[0.12] font-mono text-[10px] text-[#F3EADB]/35 hover:text-[#F3EADB]/70 hover:bg-white/[0.06] transition-all">
               <Zap size={10} />
               spectrumforus.com
             </Link>

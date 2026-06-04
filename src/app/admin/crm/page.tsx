@@ -98,7 +98,7 @@ function PipelineBar({ contacts }: { contacts: Contact[] }) {
   const active = ["identified","qualified","nurturing","contacted","partner"] as Stage[];
 
   return (
-    <div className="bg-[#0a0412] border border-[#F3EADB]/8 rounded-2xl p-5">
+    <div className="bg-[#1c1235] border border-[#F3EADB]/8 rounded-2xl p-5">
       {/* Bar */}
       <div className="flex h-2 rounded-full overflow-hidden gap-px mb-5">
         {active.map(s => {
@@ -252,7 +252,7 @@ function ContactPanel({
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       <div ref={panelRef}
-        className="relative z-10 w-full max-w-[420px] bg-[#080212] border-l border-[#F3EADB]/8 flex flex-col h-full shadow-2xl"
+        className="relative z-10 w-full max-w-[420px] bg-[#1a1030] border-l border-[#F3EADB]/8 flex flex-col h-full shadow-2xl"
         style={{ boxShadow: "-20px 0 60px rgba(0,0,0,.6)" }}>
 
         {/* Prism accent bar */}
@@ -926,7 +926,7 @@ export default function CRMPage() {
       {showForm && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={e => e.target === e.currentTarget && setShowForm(false)}>
-          <div className="bg-[#0a0412] border border-[#F3EADB]/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+          <div className="bg-[#1c1235] border border-[#F3EADB]/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-fraunces text-lg text-[#F3EADB]">Nouveau contact</h2>
               <button onClick={() => setShowForm(false)}

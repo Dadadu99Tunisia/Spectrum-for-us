@@ -50,8 +50,8 @@ function KpiCard({
 }) {
   const content = (
     <div className={`
-      relative p-5 rounded-2xl border bg-white/[0.03] hover:bg-white/[0.055] transition-all group cursor-default
-      ${alert ? "border-[#E0901E]/30" : "border-white/[0.08]"}
+      relative p-5 rounded-2xl border bg-white/[0.07] hover:bg-white/[0.055] transition-all group cursor-default
+      ${alert ? "border-[#E0901E]/30" : "border-white/[0.13]"}
     `}
       style={alert ? { boxShadow: "0 0 0 1px rgba(224,144,30,.15)" } : {}}>
       {/* Left accent */}
@@ -94,7 +94,7 @@ function SectionTitle({ children, action }: { children: React.ReactNode; action?
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`p-5 rounded-2xl border border-white/[0.08] bg-white/[0.03] ${className}`}>
+    <div className={`p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07] ${className}`}>
       {children}
     </div>
   );
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
           <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">Vue d'ensemble de la marketplace</p>
         </div>
         <button onClick={handleRefresh} disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/[0.08] bg-white/[0.03] font-hanken text-sm text-[#F3EADB]/50 hover:text-[#F3EADB] hover:bg-white/[0.06] transition-all disabled:opacity-40">
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/[0.13] bg-white/[0.07] font-hanken text-sm text-[#F3EADB]/50 hover:text-[#F3EADB] hover:bg-white/[0.06] transition-all disabled:opacity-40">
           <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
           Actualiser
         </button>
@@ -197,7 +197,7 @@ export default function AdminDashboard() {
       {/* ── KPI Grid ── */}
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 animate-pulse">
-          {[...Array(8)].map((_, i) => <div key={i} className="h-28 rounded-2xl bg-white/[0.04]" />)}
+          {[...Array(8)].map((_, i) => <div key={i} className="h-28 rounded-2xl bg-white/[0.08]" />)}
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -264,7 +264,7 @@ export default function AdminDashboard() {
                   className={`flex items-center gap-3 p-3 rounded-xl border transition-all group ${
                     a.urgent
                       ? "border-[#E0901E]/25 bg-[#E0901E]/5 hover:bg-[#E0901E]/10"
-                      : "border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.04]"
+                      : "border-white/[0.10] hover:border-white/[0.12] hover:bg-white/[0.08]"
                   }`}>
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                     style={{ background: `${a.color}15` }}>
@@ -296,7 +296,7 @@ export default function AdminDashboard() {
             Dernières commandes
           </SectionTitle>
           {loading ? (
-            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-xl bg-white/[0.04]" />)}</div>
+            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-xl bg-white/[0.08]" />)}</div>
           ) : recentOrders.length === 0 ? (
             <div className="py-10 text-center">
               <ShoppingCart size={28} className="text-[#F3EADB]/10 mx-auto mb-2" />
@@ -306,9 +306,9 @@ export default function AdminDashboard() {
             <div className="space-y-1">
               {recentOrders.map(o => (
                 <div key={String(o.id)}
-                  className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/[0.03] transition-colors cursor-pointer"
+                  className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/[0.07] transition-colors cursor-pointer"
                   onClick={() => router.push("/admin/orders")}>
-                  <div className="w-7 h-7 rounded-lg bg-white/[0.05] flex items-center justify-center shrink-0">
+                  <div className="w-7 h-7 rounded-lg bg-white/[0.09] flex items-center justify-center shrink-0">
                     <Package size={12} className="text-[#F3EADB]/30" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -318,7 +318,7 @@ export default function AdminDashboard() {
                     </p>
                   </div>
                   <span className="font-mono text-sm text-[#F3EADB]/80">{fmtSm(Number(o.total_amount ?? o.total ?? 0))}</span>
-                  <span className={`font-mono text-[9px] px-2 py-0.5 rounded-full border ${STATUS_PILL[String(o.status)] ?? "bg-white/[0.06] text-[#F3EADB]/40 border-white/[0.08]"}`}>
+                  <span className={`font-mono text-[9px] px-2 py-0.5 rounded-full border ${STATUS_PILL[String(o.status)] ?? "bg-white/[0.06] text-[#F3EADB]/40 border-white/[0.13]"}`}>
                     {STATUS_LABEL[String(o.status)] ?? String(o.status)}
                   </span>
                 </div>
@@ -337,7 +337,7 @@ export default function AdminDashboard() {
             Nouveaux vendeur·ses
           </SectionTitle>
           {loading ? (
-            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-xl bg-white/[0.04]" />)}</div>
+            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-xl bg-white/[0.08]" />)}</div>
           ) : recentVendors.length === 0 ? (
             <div className="py-10 text-center">
               <Store size={28} className="text-[#F3EADB]/10 mx-auto mb-2" />
@@ -347,7 +347,7 @@ export default function AdminDashboard() {
             <div className="space-y-1">
               {recentVendors.map(v => (
                 <div key={String(v.id)}
-                  className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/[0.03] transition-colors cursor-pointer"
+                  className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/[0.07] transition-colors cursor-pointer"
                   onClick={() => router.push("/admin/vendors")}>
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                     style={{ background: "#E0337E18", border: "1px solid #E0337E22" }}>
@@ -382,14 +382,14 @@ export default function AdminDashboard() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {ALL_TOOLS.map(section => (
-            <div key={section.section} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
+            <div key={section.section} className="rounded-2xl border border-white/[0.12] bg-white/[0.02] p-4">
               <p className="font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/25 mb-3">{section.section}</p>
               <div className="space-y-1">
                 {section.tools.map(t => {
                   const Icon = t.icon;
                   return (
                     <Link key={t.href} href={t.href}
-                      className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/[0.05] transition-colors group">
+                      className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/[0.09] transition-colors group">
                       <Icon size={13} className="text-[#F3EADB]/30 group-hover:text-[#F3EADB]/60 transition-colors" />
                       <span className="font-hanken text-sm text-[#F3EADB]/50 group-hover:text-[#F3EADB]/80 transition-colors">{t.label}</span>
                     </Link>
@@ -402,7 +402,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* ── Status bar ── */}
-      <div className="flex items-center gap-4 py-3 px-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+      <div className="flex items-center gap-4 py-3 px-4 rounded-xl bg-white/[0.02] border border-white/[0.10]">
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="font-mono text-[10px] text-[#F3EADB]/35">API opérationnelle</span>
