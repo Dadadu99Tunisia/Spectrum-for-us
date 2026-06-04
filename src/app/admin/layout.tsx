@@ -183,14 +183,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
-          {NAV_SECTIONS.map(section => (
-            <div key={section.label}>
+        <nav className="flex-1 overflow-y-auto py-2 px-2 space-y-0.5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/10">
+          {NAV_SECTIONS.map((section, si) => (
+            <div key={section.label} className={si > 0 ? "pt-2" : ""}>
               {/* Section header */}
-              <div className="flex items-center gap-2 px-3 mb-1.5">
+              <div className="flex items-center gap-2 px-3 mb-1">
                 <span className="w-1.5 h-1.5 rounded-full shrink-0"
                   style={{ background: section.accent }} />
-                <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-[#F3EADB]/25">
+                <p className="font-mono text-[8.5px] uppercase tracking-[0.12em] text-[#F3EADB]/22">
                   {section.label}
                 </p>
               </div>
@@ -203,8 +203,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Link key={item.href} href={item.href}
                     onClick={() => setSidebarOpen(false)}
                     className={`
-                      relative flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px]
-                      transition-all duration-150 mb-0.5 group
+                      relative flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px]
+                      transition-all duration-150 mb-px group
                       ${active
                         ? "text-[#F3EADB] font-medium"
                         : "text-[#F3EADB]/45 hover:text-[#F3EADB]/80 hover:bg-white/[0.08]"
@@ -215,20 +215,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       borderLeft: `3px solid ${section.accent}`,
                       paddingLeft: "9px",
                     } : {}}>
-                    <Icon size={14} className={active ? "" : "text-[#F3EADB]/30 group-hover:text-[#F3EADB]/50"}
+                    <Icon size={13} className={active ? "" : "text-[#F3EADB]/30 group-hover:text-[#F3EADB]/50"}
                       style={active ? { color: section.accent } : {}} />
-                    <span className="font-hanken flex-1 leading-none">{item.label}</span>
+                    <span className="font-hanken flex-1 leading-none text-[12.5px]">{item.label}</span>
                     {item.badge && !active && (
                       <span className="w-1.5 h-1.5 rounded-full bg-[#E0901E] shrink-0" />
                     )}
                     {active && (
-                      <ChevronRight size={10} style={{ color: `${section.accent}70` }} className="shrink-0" />
+                      <ChevronRight size={9} style={{ color: `${section.accent}70` }} className="shrink-0" />
                     )}
                   </Link>
                 );
               })}
             </div>
           ))}
+          <div className="h-2" />
         </nav>
 
         {/* User footer */}
