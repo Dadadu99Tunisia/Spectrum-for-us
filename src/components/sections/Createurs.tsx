@@ -1,8 +1,8 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useInView } from "@/lib/useInView";
-import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
+import { ArrowRight } from "lucide-react";
 
 const CREATORS = [
   {
@@ -12,9 +12,10 @@ const CREATORS = [
     shop: "Maëlis Artwork",
     category: "Art & Illustration",
     categoryVariant: "magenta" as const,
-    bio: "Créations numériques et prints autour de l'identité queer, du corps et de la joie.",
-    bg: "#2a1040",
-    accent: "#6D2DB5",
+    quote: "J'ai été shadowbanné trois fois pour avoir dessiné deux hommes qui s'embrassaient. Ici, c'est mon œuvre principale.",
+    bio: "Créations numériques et prints autour de l'identité queer, du corps et de la joie radicale.",
+    accentColor: "#6D2DB5",
+    bgColor: "#1a0d28",
   },
   {
     id: 2,
@@ -23,9 +24,10 @@ const CREATORS = [
     shop: "Atelier Lumis",
     category: "Bijoux",
     categoryVariant: "teal" as const,
-    bio: "Bijoux forgés à la main, pièces uniques et petites séries. Matériaux durables.",
-    bg: "#0e1e1f",
-    accent: "#1C9C95",
+    quote: "Mes bijoux ont une histoire — ils ont été portés à des mariages que la loi ne reconnaissait pas encore.",
+    bio: "Bijoux forgés à la main, pièces uniques. Chaque métal porte la trace d'une célébration.",
+    accentColor: "#1C9C95",
+    bgColor: "#0a1a1b",
   },
   {
     id: 3,
@@ -34,9 +36,10 @@ const CREATORS = [
     shop: "Bare Lab",
     category: "Corps & Soin",
     categoryVariant: "peach" as const,
-    bio: "Formulations naturelles pour des rituels de soin inclusifs et sans compromis.",
-    bg: "#1f1408",
-    accent: "#F2B79E",
+    quote: "J'ai commencé à formuler pour moi. Parce que je ne me reconnaissais pas dans les soins qu'on me vendait.",
+    bio: "Formulations naturelles pour des rituels de soin inclusifs — faits pour tous les corps, sans exception.",
+    accentColor: "#F2B79E",
+    bgColor: "#1f1408",
   },
   {
     id: 4,
@@ -45,11 +48,108 @@ const CREATORS = [
     shop: "Collectif Roseau",
     category: "Zines & Édition",
     categoryVariant: "magenta" as const,
-    bio: "Fanzines, publications indépendantes et ateliers d'écriture queer.",
-    bg: "#1a0d28",
-    accent: "#E0337E",
+    quote: "On publie des histoires que les maisons d'édition trouvent \"trop spécifiques\". Trop spécifiques pour qui ?",
+    bio: "Fanzines, publications indépendantes et ateliers d'écriture queer. La marge est un endroit.",
+    accentColor: "#E0337E",
+    bgColor: "#1a0d28",
   },
 ];
+
+function CreatorCard({
+  creator,
+  index,
+  inView,
+}: {
+  creator: typeof CREATORS[0];
+  index: number;
+  inView: boolean;
+}) {
+  const [flipped, setFlipped] = useState(false);
+
+  return (
+    <div
+      className="transition-all duration-700 cursor-pointer"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(28px)",
+        transitionDelay: `${index * 100}ms`,
+      }}
+      onClick={() => setFlipped(!flipped)}
+    >
+      <div className="relative h-full" style={{ perspective: "1000px" }}>
+        <div
+          className="relative transition-transform duration-500"
+          style={{
+            transformStyle: "preserve-3d",
+            transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+          }}
+        >
+          {/* Front */}
+          <div
+            className="rounded-2xl overflow-hidden border border-[#F3EADB]/8 hover:border-[#F3EADB]/15 transition-colors"
+            style={{ backfaceVisibility: "hidden", background: creator.bgColor }}
+          >
+            {/* Quote strip */}
+            <div className="relative px-6 pt-8 pb-5">
+              <div
+                className="absolute top-5 left-5 font-fraunces text-5xl leading-none opacity-20"
+                style={{ color: creator.accentColor }}
+              >
+                "
+              </div>
+              <p
+                className="font-fraunces text-base text-[#F3EADB] leading-snug pl-4 italic relative z-10"
+              >
+                {creator.quote}
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div
+              className="mx-6 h-px opacity-20"
+              style={{ background: creator.accentColor }}
+            />
+
+            {/* Identity */}
+            <div className="p-5">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-fraunces font-semibold"
+                    style={{ background: `${creator.accentColor}25`, color: creator.accentColor }}
+                  >
+                    {creator.name[0]}
+                  </div>
+                  <div>
+                    <h3 className="font-bricolage font-bold text-[#F3EADB] text-sm leading-tight">
+                      {creator.name}
+                    </h3>
+                    <span className="font-mono text-[10px] text-[#F3EADB]/30">
+                      {creator.pronouns}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <Tag variant={creator.categoryVariant} className="mb-3 text-[10px]">
+                {creator.category}
+              </Tag>
+              <p className="font-hanken text-xs text-[#F3EADB]/45 leading-relaxed">
+                {creator.bio}
+              </p>
+              <div
+                className="mt-4 flex items-center gap-1 font-mono text-[10px] tracking-wider transition-colors duration-200"
+                style={{ color: `${creator.accentColor}70` }}
+              >
+                <span>Voir la boutique</span>
+                <ArrowRight size={10} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Createurs() {
   const ref = useRef<HTMLElement>(null);
@@ -66,65 +166,18 @@ export function Createurs() {
             Les visages
           </span>
           <h2 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight">
-            Créateur·rice·s{" "}
-            <span className="italic text-[#F2B79E]">du spectre</span>
+            Iels créent.{" "}
+            <span className="italic text-[#F2B79E]">Iels racontent.</span>
           </h2>
+          <p className="font-hanken text-[#F3EADB]/50 mt-3 max-w-xl text-lg leading-relaxed">
+            Derrière chaque boutique, une personne qui a décidé que son art
+            méritait un espace à lui.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {CREATORS.map((c, i) => (
-            <div
-              key={c.id}
-              className="transition-all duration-700"
-              style={{
-                opacity: inView ? 1 : 0,
-                transform: inView ? "translateY(0)" : "translateY(28px)",
-                transitionDelay: `${i * 80}ms`,
-              }}
-            >
-              <Card className="overflow-hidden group cursor-pointer">
-                {/* Avatar area */}
-                <div
-                  className="relative h-48 flex items-center justify-center overflow-hidden"
-                  style={{ backgroundColor: c.bg }}
-                >
-                  <div
-                    className="w-20 h-20 rounded-full border-2 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
-                    style={{ borderColor: c.accent, backgroundColor: `${c.accent}20` }}
-                  >
-                    <span className="font-fraunces text-2xl font-semibold" style={{ color: c.accent }}>
-                      {c.name[0]}
-                    </span>
-                  </div>
-                  <div
-                    className="absolute inset-0 pointer-events-none opacity-20"
-                    style={{
-                      background: `radial-gradient(circle at 50% 70%, ${c.accent}40, transparent 60%)`,
-                    }}
-                  />
-                </div>
-
-                <div className="p-5">
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <h3 className="font-bricolage font-bold text-[#F3EADB] text-lg leading-tight">
-                      {c.name}
-                    </h3>
-                    <span className="font-mono text-[10px] text-[#F3EADB]/35 whitespace-nowrap mt-1">
-                      {c.pronouns}
-                    </span>
-                  </div>
-                  <Tag variant={c.categoryVariant} className="mb-3">
-                    {c.category}
-                  </Tag>
-                  <p className="font-hanken text-sm text-[#F3EADB]/55 leading-relaxed">
-                    {c.bio}
-                  </p>
-                  <div className="mt-4 font-mono text-xs text-[#F3EADB]/30 group-hover:text-[#E0337E] transition-colors duration-200">
-                    ( Voir la boutique )
-                  </div>
-                </div>
-              </Card>
-            </div>
+          {CREATORS.map((creator, i) => (
+            <CreatorCard key={creator.id} creator={creator} index={i} inView={inView} />
           ))}
         </div>
 
@@ -133,10 +186,10 @@ export function Createurs() {
           style={{ opacity: inView ? 1 : 0 }}
         >
           <a
-            href="#"
+            href="/decouvrir"
             className="font-mono text-xs tracking-widest uppercase text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors duration-200"
           >
-            ( Tous les créateur·rice·s )
+            ( Toutes les boutiques )
           </a>
         </div>
       </div>

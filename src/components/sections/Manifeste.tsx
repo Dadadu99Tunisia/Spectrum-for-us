@@ -1,84 +1,33 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import { useInView } from "@/lib/useInView";
-import { useSiteContent } from "@/lib/useSiteContent";
 
-function useCMS(key: string, fallback: string) {
-  const { value } = useSiteContent(key);
-  return value ?? fallback;
-}
-
-// ── Animated counter ──────────────────────────────────────
-function AnimatedCounter({
-  value,
-  suffix = "",
-  prefix = "",
-  duration = 1800,
-  inView,
-}: {
-  value: string;
-  suffix?: string;
-  prefix?: string;
-  duration?: number;
-  inView: boolean;
-}) {
-  const [display, setDisplay] = useState("0");
-  const started = useRef(false);
-
-  // Try to parse a numeric target
-  const numericMatch = value.match(/[\d.]+/);
-  const numericTarget = numericMatch ? parseFloat(numericMatch[0]) : null;
-  const isNumeric = numericTarget !== null && !isNaN(numericTarget);
-
-  useEffect(() => {
-    if (!inView || started.current || !isNumeric) {
-      if (!isNumeric) setDisplay(value);
-      return;
-    }
-    started.current = true;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      // Ease out expo
-      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-      const current = eased * numericTarget!;
-
-      if (Number.isInteger(numericTarget)) {
-        setDisplay(Math.round(current).toString());
-      } else {
-        setDisplay(current.toFixed(1));
-      }
-
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, [inView, isNumeric, numericTarget, duration, value]);
-
-  return (
-    <span>
-      {prefix}{display}{suffix}
-    </span>
-  );
-}
+const DECLARATIONS = [
+  {
+    text: "On n'a pas construit une marketplace.",
+    emphasis: "On a construit un refus.",
+    delay: 0,
+  },
+  {
+    text: "Le refus de disparaître des algorithmes.",
+    emphasis: "Le refus d'être une niche rentable pour d'autres.",
+    delay: 120,
+  },
+  {
+    text: "Le refus que nos créations soient shadowbannées.",
+    emphasis: "Que nos corps soient modérés.",
+    delay: 240,
+  },
+  {
+    text: "Le refus que l'argent de nos achats finance des espaces qui nous tolèrent",
+    emphasis: "mais ne nous appartiennent pas.",
+    delay: 360,
+  },
+];
 
 export function Manifeste() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref);
-
-  const eyebrow      = useCMS("manifeste_eyebrow",      "Notre manifeste");
-  const title        = useCMS("manifeste_title",        "Cultiver les différences pour une société");
-  const titleItalic  = useCMS("manifeste_title_italic", "plus ouverte.");
-  const p1           = useCMS("manifeste_p1",           "Spectrum For Us est une marketplace en ligne où vous pouvez découvrir, acheter et vendre des créations, des services et des expériences uniques.");
-  const p2           = useCMS("manifeste_p2",           "Un espace simple pour connecter des <strong>créateur·ices, artisan·es et professionnel·les LGBTQIA+</strong> et allié·es à des personnes qui recherchent des produits et services authentiques et indépendants.");
-  const p3           = useCMS("manifeste_p3",           "La plateforme accueille également des marques et entreprises qui souhaitent s'inscrire dans une démarche respectueuse, inclusive et alignée avec les valeurs de la communauté.");
-
-  const stats = [
-    { num: "4",    suffix: "ème", label: useCMS("manifeste_stat1_label", "économie mondiale") },
-    { num: "100",  suffix: "%",   label: useCMS("manifeste_stat2_label", "communautaire") },
-    { num: "3",    suffix: "",    label: useCMS("manifeste_stat3_label", "types d'offres") },
-    { num: "Safe", suffix: "",    label: useCMS("manifeste_stat4_label", "space garanti") },
-  ];
 
   return (
     <section
@@ -94,59 +43,90 @@ export function Manifeste() {
         }}
       />
 
+      {/* Subtle background texture */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.025]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+          backgroundSize: "200px 200px",
+        }}
+      />
+
       <div className="max-w-3xl mx-auto">
         <span
-          className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-8 transition-all duration-700"
+          className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-12 transition-all duration-700"
           style={{
             opacity: inView ? 1 : 0,
             transform: inView ? "translateY(0)" : "translateY(16px)",
           }}
         >
-          {eyebrow}
+          ✦ Notre manifeste
         </span>
 
-        <h2
-          className="font-fraunces text-4xl md:text-5xl lg:text-6xl text-[#F3EADB] leading-[1.05] mb-10 transition-all duration-700 delay-100"
-          style={{
-            opacity: inView ? 1 : 0,
-            transform: inView ? "translateY(0)" : "translateY(24px)",
-          }}
-        >
-          {title}{" "}
-          <span className="italic text-[#F2B79E]">{titleItalic}</span>
-        </h2>
-
-        <div
-          className="space-y-5 text-[#F3EADB]/70 text-lg leading-relaxed transition-all duration-700 delay-200"
-          style={{
-            opacity: inView ? 1 : 0,
-            transform: inView ? "translateY(0)" : "translateY(16px)",
-          }}
-        >
-          <p dangerouslySetInnerHTML={{ __html: p1 }} />
-          <p dangerouslySetInnerHTML={{ __html: p2 }} />
-          <p dangerouslySetInnerHTML={{ __html: p3 }} />
+        {/* Declaration blocks */}
+        <div className="space-y-10 mb-16">
+          {DECLARATIONS.map((d, i) => (
+            <div
+              key={i}
+              className="transition-all duration-700"
+              style={{
+                opacity: inView ? 1 : 0,
+                transform: inView ? "translateY(0)" : "translateY(24px)",
+                transitionDelay: `${100 + d.delay}ms`,
+              }}
+            >
+              <p className="font-hanken text-xl md:text-2xl text-[#F3EADB]/50 leading-relaxed">
+                {d.text}
+              </p>
+              <p className="font-fraunces text-xl md:text-2xl text-[#F3EADB] leading-relaxed italic">
+                {d.emphasis}
+              </p>
+            </div>
+          ))}
         </div>
 
-        {/* Stats with animated counters */}
+        {/* The turn */}
         <div
-          className="mt-12 pt-8 border-t border-[#F3EADB]/10 flex flex-wrap gap-8 transition-all duration-700 delay-400"
+          className="pt-10 border-t border-[#F3EADB]/10 space-y-6 transition-all duration-700 delay-500"
+          style={{
+            opacity: inView ? 1 : 0,
+            transform: inView ? "translateY(0)" : "translateY(20px)",
+          }}
+        >
+          <p className="font-fraunces text-3xl md:text-4xl text-[#F3EADB] leading-tight">
+            Spectrum For Us, c&apos;est l&apos;espace{" "}
+            <span className="italic text-[#E0337E]">qu&apos;on s&apos;est fait.</span>
+          </p>
+          <p className="font-hanken text-lg text-[#F3EADB]/60 leading-relaxed max-w-2xl">
+            Un endroit où chaque achat va directement dans les mains d&apos;une personne
+            qui a décidé que son identité était une force. Où chaque boutique est
+            un acte de visibilité. Où chaque vente dit : <em className="text-[#F3EADB]/80 not-italic font-medium">nous existons, et nous créons.</em>
+          </p>
+          <p className="font-hanken text-lg text-[#F3EADB]/60 leading-relaxed max-w-2xl">
+            Ce n&apos;est pas une alternative à Amazon ou Etsy.{" "}
+            <strong className="text-[#F3EADB]/90 font-semibold">C&apos;est leur réponse.</strong>
+          </p>
+        </div>
+
+        {/* Stats — reframed as facts, not features */}
+        <div
+          className="mt-14 pt-8 border-t border-[#F3EADB]/8 grid grid-cols-2 md:grid-cols-4 gap-8 transition-all duration-700 delay-700"
           style={{
             opacity: inView ? 1 : 0,
             transform: inView ? "translateY(0)" : "translateY(16px)",
           }}
         >
-          {stats.map(({ num, suffix, label }, i) => (
-            <div key={label} style={{ transitionDelay: `${400 + i * 80}ms` }}>
-              <div className="font-fraunces text-3xl text-[#E0337E] leading-none tabular-nums">
-                <AnimatedCounter
-                  value={num}
-                  suffix={suffix}
-                  duration={1600 + i * 200}
-                  inView={inView}
-                />
+          {[
+            { value: "100%", label: "des revenus restent\nchez les créateur·ices" },
+            { value: "0", label: "tolérance pour\nla discrimination" },
+            { value: "3", label: "façons d'exister\nici (produit, service, expérience)" },
+            { value: "Safe", label: "pour toi,\nquoi que tu sois" },
+          ].map(({ value, label }) => (
+            <div key={label}>
+              <div className="font-fraunces text-3xl text-[#E0337E] leading-none tabular-nums mb-2">
+                {value}
               </div>
-              <div className="font-mono text-xs tracking-wide text-[#F3EADB]/40 uppercase mt-1">
+              <div className="font-mono text-[10px] tracking-wide text-[#F3EADB]/35 uppercase leading-relaxed whitespace-pre-line">
                 {label}
               </div>
             </div>

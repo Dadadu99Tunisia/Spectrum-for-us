@@ -3,9 +3,11 @@ import { PrideCountdown } from "@/components/PrideCountdown";
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { Hero } from "@/components/sections/Hero";
 import { Manifeste } from "@/components/sections/Manifeste";
+import { Origines } from "@/components/sections/Origines";
 import { Univers } from "@/components/sections/Univers";
 import { CoupsDeCoeur } from "@/components/sections/CoupsDeCoeur";
 import { Createurs } from "@/components/sections/Createurs";
+import { Voix } from "@/components/sections/Voix";
 import { Experiences } from "@/components/sections/Experiences";
 import { RejoindreCTA } from "@/components/sections/RejoindreCTA";
 import { VendreIci } from "@/components/sections/VendreIci";
@@ -25,24 +27,26 @@ export default function Home() {
         <Hero />
         <MarqueeBanner variant="default" />
         <Manifeste />
+        <Origines />
         <Univers />
         <MarqueeBanner
           variant="bold"
           speed="slow"
           reverse
           items={[
-            "✦ Safe space",
+            "✦ Ce n'est pas une tolérance — c'est un droit",
             "◈ Chaque achat soutient un·e créateur·rice",
             "✦ Mode sans genre",
-            "◈ Art queer",
+            "◈ Art queer sans filtre",
             "✦ Bijoux uniques",
             "◈ Corps & Soin inclusif",
             "✦ Zines & édition indépendante",
-            "◈ Communauté avant tout",
+            "◈ Nous existons, et nous créons",
           ]}
         />
         <CoupsDeCoeur />
         <Createurs />
+        <Voix />
         <Experiences />
         <RejoindreCTA />
         <VendreIci />

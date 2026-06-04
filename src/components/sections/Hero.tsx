@@ -53,11 +53,11 @@ export function Hero() {
       "radial-gradient(ellipse 70% 60% at 50% 60%, rgba(110,45,181,0.18) 0%, transparent 70%)";
   }, []);
 
-  const description = useCMS("hero_description", "La première marketplace queer francophone. Créations, services et expériences — par et pour la communauté.");
-  const btn1Label   = useCMS("hero_btn1_label", "Explorer la marketplace");
+  const description = useCMS("hero_description", "Parce que nos mains créent, nos voix existent, et nos histoires ont une valeur. Un espace construit par et pour la communauté queer — pour vendre, acheter, et exister.");
+  const btn1Label   = useCMS("hero_btn1_label", "Découvrir les créations");
   const btn1Url     = useCMS("hero_btn1_url", "/decouvrir");
-  const btn2Label   = useCMS("hero_btn2_label", "Vendre ici");
-  const btn2Url     = useCMS("hero_btn2_url", "/vendeur/onboarding");
+  const btn2Label   = useCMS("hero_btn2_label", "Rejoindre le mouvement");
+  const btn2Url     = useCMS("hero_btn2_url", "/rejoindre");
 
   return (
     <section
@@ -148,13 +148,25 @@ export function Hero() {
           <Button variant="secondary" href={btn2Url} className="text-base px-8 py-3.5">
             {btn2Label}
           </Button>
-          <Button variant="ghost" href="/rejoindre"
-            className="text-base px-8 py-3.5 border border-[#E0337E]/30 text-[#E0337E] hover:bg-[#E0337E]/8 rounded-2xl font-hanken">
-            🏳️‍🌈 Rejoindre le mouvement
+          <Button variant="ghost" href="/vendre"
+            className="text-base px-8 py-3.5 border border-[#F3EADB]/15 text-[#F3EADB]/60 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 rounded-2xl font-hanken">
+            Vendre ici
           </Button>
         </div>
       </div>
 
+      {/* Scroll indicator */}
+      <div
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 transition-all duration-700 delay-[1200ms]"
+        style={{
+          opacity: phase === "done" ? 0.5 : 0,
+        }}
+      >
+        <p className="font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40">
+          Ce n&apos;est pas juste une marketplace
+        </p>
+        <div className="w-px h-8 bg-gradient-to-b from-[#F3EADB]/20 to-transparent animate-pulse" />
+      </div>
 
     </section>
   );
