@@ -44,7 +44,8 @@ export default function AdminRejoindrePage() {
   useEffect(() => {
     fetch("/api/admin/rejoindre")
       .then(r => r.json())
-      .then(d => { setRequests(d); setLoading(false); });
+      .then(d => { setRequests(Array.isArray(d) ? d : (d.data ?? [])); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
   const updateStatus = async (id: string, status: string) => {
