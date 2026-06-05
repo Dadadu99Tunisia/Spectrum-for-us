@@ -8,7 +8,7 @@
  * en plein écran puis se retire.
  *
  * Comportement :
- *  - Joue une seule fois par visiteur (localStorage `sfu_intro_seen`).
+ *  - Joue une fois par session de navigation (sessionStorage `sfu_intro_seen`).
  *  - Sauté si prefers-reduced-motion: reduce.
  *  - Skippable (bouton, Échap, Entrée). Auto-dismiss ~4,6 s.
  *  - 60fps : seuls transform / opacity / filter sont animés (GPU).
@@ -32,14 +32,14 @@ export function IntroSplash({ force = false }: { force?: boolean }) {
     const decide = () => {
       if (force) { setShow(true); return; }
       let seen = false;
-      try { seen = !!localStorage.getItem(STORAGE_KEY); } catch {}
+      try { seen = !!sessionStorage.getItem(STORAGE_KEY); } catch {}
       setShow(!seen && !reduce);
     };
     decide();
   }, [reduce, force]);
 
   const finish = useCallback(() => {
-    try { localStorage.setItem(STORAGE_KEY, "1"); } catch {}
+    try { sessionStorage.setItem(STORAGE_KEY, "1"); } catch {}
     setShow(false);
   }, []);
 
