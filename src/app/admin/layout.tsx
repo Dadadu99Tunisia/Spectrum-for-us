@@ -31,7 +31,7 @@ type NavSection = {
 const NAV_SECTIONS: NavSection[] = [
   {
     label: "Pilotage",
-    accent: "#E0337E",
+    accent: "#FF3D7F",
     items: [
       { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
     ]
@@ -147,7 +147,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pageTitle = getPageTitle(pathname);
 
   return (
-    <div className="min-h-screen bg-[#1e1730] text-[#F3EADB] flex">
+    <div className="min-h-screen bg-[#1e1730] text-[#1A1612] flex">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -172,16 +172,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="px-5 py-4 border-b border-white/[0.10] shrink-0">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-fraunces text-[15px] text-[#F3EADB]">
-                Spectrum <span className="text-[#E0337E]">Admin</span>
+              <p className="font-fraunces text-[15px] text-[#1A1612]">
+                Spectrum <span className="text-[#FF3D7F]">Admin</span>
               </p>
               <div className="flex items-center gap-1.5 mt-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <p className="font-mono text-[9px] text-[#F3EADB]/30 uppercase tracking-widest">Système actif</p>
+                <p className="font-mono text-[9px] text-[#1A1612]/30 uppercase tracking-widest">Système actif</p>
               </div>
             </div>
             <button onClick={() => setSidebarOpen(false)}
-              className="md:hidden w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 text-[#F3EADB]/40">
+              className="md:hidden w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 text-[#1A1612]/40">
               <X size={14} />
             </button>
           </div>
@@ -195,7 +195,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div className="flex items-center gap-2 px-3 mb-1">
                 <span className="w-1.5 h-1.5 rounded-full shrink-0"
                   style={{ background: section.accent }} />
-                <p className="font-mono text-[8.5px] uppercase tracking-[0.12em] text-[#F3EADB]/22">
+                <p className="font-mono text-[8.5px] uppercase tracking-[0.12em] text-[#1A1612]/22">
                   {section.label}
                 </p>
               </div>
@@ -211,8 +211,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       relative flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px]
                       transition-all duration-150 mb-px group
                       ${active
-                        ? "text-[#F3EADB] font-medium"
-                        : "text-[#F3EADB]/45 hover:text-[#F3EADB]/80 hover:bg-white/[0.08]"
+                        ? "text-[#1A1612] font-medium"
+                        : "text-[#1A1612]/45 hover:text-[#1A1612]/80 hover:bg-white/[0.08]"
                       }
                     `}
                     style={active ? {
@@ -220,7 +220,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       borderLeft: `3px solid ${section.accent}`,
                       paddingLeft: "9px",
                     } : {}}>
-                    <Icon size={13} className={active ? "" : "text-[#F3EADB]/30 group-hover:text-[#F3EADB]/50"}
+                    <Icon size={13} className={active ? "" : "text-[#1A1612]/30 group-hover:text-[#1A1612]/50"}
                       style={active ? { color: section.accent } : {}} />
                     <span className="font-hanken flex-1 leading-none text-[12.5px]">{item.label}</span>
                     {item.badge && !active && (
@@ -240,15 +240,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* User footer */}
         <div className="px-3 py-3 border-t border-white/[0.10] bg-black/10 shrink-0">
           <div className="flex items-center gap-2.5 mb-2.5 px-1">
-            <div className="w-7 h-7 rounded-lg bg-[#E0337E]/20 border border-[#E0337E]/25 flex items-center justify-center shrink-0">
-              <span className="font-fraunces text-[11px] text-[#E0337E]">
+            <div className="w-7 h-7 rounded-lg bg-[#FF3D7F]/20 border border-[#FF3D7F]/25 flex items-center justify-center shrink-0">
+              <span className="font-fraunces text-[11px] text-[#FF3D7F]">
                 {(user?.email ?? "A")[0].toUpperCase()}
               </span>
             </div>
-            <p className="font-mono text-[10px] text-[#F3EADB]/35 truncate flex-1">{user?.email}</p>
+            <p className="font-mono text-[10px] text-[#1A1612]/35 truncate flex-1">{user?.email}</p>
           </div>
           <div className="flex gap-1.5">
-            <Link href="/" className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg border border-white/[0.13] font-mono text-[9px] text-[#F3EADB]/30 hover:text-[#F3EADB]/60 hover:bg-white/[0.08] transition-all">
+            <Link href="/" className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg border border-white/[0.13] font-mono text-[9px] text-[#1A1612]/30 hover:text-[#1A1612]/60 hover:bg-white/[0.08] transition-all">
               <ExternalLink size={9} /> Site
             </Link>
             <button onClick={signOut}
@@ -266,29 +266,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <header className="sticky top-0 z-30 h-14 bg-[#1e1730]/95 backdrop-blur-md border-b border-white/[0.12] px-5 flex items-center gap-4 shrink-0">
           {/* Mobile menu button */}
           <button onClick={() => setSidebarOpen(true)}
-            className="md:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-[#F3EADB]/50 hover:text-[#F3EADB] transition-colors">
+            className="md:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-[#1A1612]/50 hover:text-[#1A1612] transition-colors">
             <Menu size={16} />
           </button>
 
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <span className="font-mono text-[10px] text-[#F3EADB]/25 hidden sm:block">Admin</span>
-            <ChevronRight size={10} className="text-[#F3EADB]/15 hidden sm:block" />
-            <h1 className="font-hanken text-[15px] font-medium text-[#F3EADB] truncate">{pageTitle}</h1>
+            <span className="font-mono text-[10px] text-[#1A1612]/25 hidden sm:block">Admin</span>
+            <ChevronRight size={10} className="text-[#1A1612]/15 hidden sm:block" />
+            <h1 className="font-hanken text-[15px] font-medium text-[#1A1612] truncate">{pageTitle}</h1>
           </div>
 
           {/* Right actions */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Quick search shortcut */}
             <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.08] border border-white/[0.12] cursor-pointer hover:bg-white/[0.06] transition-colors">
-              <Search size={12} className="text-[#F3EADB]/25" />
-              <span className="font-mono text-[10px] text-[#F3EADB]/25">Recherche rapide</span>
-              <kbd className="ml-2 font-mono text-[9px] text-[#F3EADB]/20 bg-white/[0.09] px-1.5 py-0.5 rounded">⌘K</kbd>
+              <Search size={12} className="text-[#1A1612]/25" />
+              <span className="font-mono text-[10px] text-[#1A1612]/25">Recherche rapide</span>
+              <kbd className="ml-2 font-mono text-[9px] text-[#1A1612]/20 bg-white/[0.09] px-1.5 py-0.5 rounded">⌘K</kbd>
             </div>
 
             {/* Notification bell */}
             <div className="relative">
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.08] border border-white/[0.12] text-[#F3EADB]/40 hover:text-[#F3EADB] hover:bg-white/[0.07] transition-colors">
+              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.08] border border-white/[0.12] text-[#1A1612]/40 hover:text-[#1A1612] hover:bg-white/[0.07] transition-colors">
                 <Bell size={14} />
               </button>
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#E0901E] border-2 border-[#2d2050]" />
@@ -296,7 +296,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             {/* Quick link to site */}
             <Link href="/" target="_blank"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.08] border border-white/[0.12] font-mono text-[10px] text-[#F3EADB]/35 hover:text-[#F3EADB]/70 hover:bg-white/[0.06] transition-all">
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.08] border border-white/[0.12] font-mono text-[10px] text-[#1A1612]/35 hover:text-[#1A1612]/70 hover:bg-white/[0.06] transition-all">
               <Zap size={10} />
               spectrumforus.com
             </Link>
@@ -304,7 +304,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* Bottom prism line */}
           <div className="absolute bottom-0 left-0 right-0 h-[1px]"
-            style={{ background: "linear-gradient(90deg,transparent,#E0337E40,#6D2DB540,#1C9C9540,transparent)" }} />
+            style={{ background: "linear-gradient(90deg,transparent,#FF3D7F40,#6D2DB540,#1C9C9540,transparent)" }} />
         </header>
 
         {/* ── Page content ── */}

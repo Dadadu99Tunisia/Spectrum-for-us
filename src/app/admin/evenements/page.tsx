@@ -78,28 +78,28 @@ export default function EvenementsPage() {
 
   return (
     <div className="space-y-6">
-      {toast && <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#E0337E] text-white font-hanken text-sm shadow-xl">{toast}</div>}
+      {toast && <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#FF3D7F] text-white font-hanken text-sm shadow-xl">{toast}</div>}
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#F3EADB]">Événements</h1>
-          <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">{total} événement{total !== 1 ? "s" : ""}</p>
+          <h1 className="font-fraunces text-2xl text-[#1A1612]">Événements</h1>
+          <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">{total} événement{total !== 1 ? "s" : ""}</p>
         </div>
-        <button onClick={fetch_} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/[0.14] text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors text-sm">
+        <button onClick={fetch_} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/[0.14] text-[#1A1612]/40 hover:text-[#1A1612] transition-colors text-sm">
           <RefreshCw size={13} />
         </button>
       </div>
 
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-48">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1A1612]/25" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher un événement…"
-            className="w-full pl-9 pr-4 py-2 bg-white/[0.09] border border-white/[0.14] rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
+            className="w-full pl-9 pr-4 py-2 bg-white/[0.09] border border-white/[0.14] rounded-lg font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
         </div>
         <div className="flex gap-1 p-1 bg-white/[0.08] rounded-lg">
           {[["pending","En attente"],["approved","Approuvés"],["rejected","Rejetés"],["","Tous"]].map(([v,l]) => (
             <button key={v} onClick={() => setModFilter(v)}
-              className={`px-3 py-1.5 rounded-md font-mono text-[10px] transition-all ${modFilter === v ? "bg-[#E0337E] text-white" : "text-[#F3EADB]/40 hover:text-[#F3EADB]"}`}>{l}</button>
+              className={`px-3 py-1.5 rounded-md font-mono text-[10px] transition-all ${modFilter === v ? "bg-[#FF3D7F] text-white" : "text-[#1A1612]/40 hover:text-[#1A1612]"}`}>{l}</button>
           ))}
         </div>
       </div>
@@ -107,36 +107,36 @@ export default function EvenementsPage() {
       {loading ? (
         <div className="flex items-center justify-center py-20"><SpectrumLoader size="sm" /></div>
       ) : events.length === 0 ? (
-        <div className="text-center py-20"><CalendarDays size={40} className="mx-auto mb-3 text-[#F3EADB]/10" /><p className="font-hanken text-[#F3EADB]/30">Aucun événement</p></div>
+        <div className="text-center py-20"><CalendarDays size={40} className="mx-auto mb-3 text-[#1A1612]/10" /><p className="font-hanken text-[#1A1612]/30">Aucun événement</p></div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {events.map(ev => {
             const modUi = MOD_CONFIG[ev.moderation] ?? MOD_CONFIG.pending;
             const isPast = ev.date_start && new Date(ev.date_start) < new Date();
             return (
-              <div key={ev.id} className={`rounded-2xl border overflow-hidden transition-all ${isPast ? "opacity-50 border-[#F3EADB]/5" : "border-white/[0.13] hover:border-[#F3EADB]/20"}`}>
+              <div key={ev.id} className={`rounded-2xl border overflow-hidden transition-all ${isPast ? "opacity-50 border-[#1A1612]/5" : "border-white/[0.13] hover:border-[#1A1612]/20"}`}>
                 {ev.image_url ? (
                   <img src={ev.image_url} alt={ev.title} className="w-full h-32 object-cover" />
                 ) : (
-                  <div className="w-full h-32 bg-gradient-to-br from-[#E0337E]/10 to-[#6D2DB5]/10 flex items-center justify-center">
-                    <CalendarDays size={28} className="text-[#F3EADB]/15" />
+                  <div className="w-full h-32 bg-gradient-to-br from-[#FF3D7F]/10 to-[#6D2DB5]/10 flex items-center justify-center">
+                    <CalendarDays size={28} className="text-[#1A1612]/15" />
                   </div>
                 )}
                 <div className="p-4 space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-fraunces text-sm text-[#F3EADB] leading-snug flex-1">{ev.title}</h3>
+                    <h3 className="font-fraunces text-sm text-[#1A1612] leading-snug flex-1">{ev.title}</h3>
                     <button onClick={() => toggleFeatured(ev.id, ev.is_featured)}
-                      className={`flex-shrink-0 p-1 rounded transition-colors ${ev.is_featured ? "text-[#E0901E]" : "text-[#F3EADB]/15 hover:text-[#E0901E]"}`}>
+                      className={`flex-shrink-0 p-1 rounded transition-colors ${ev.is_featured ? "text-[#E0901E]" : "text-[#1A1612]/15 hover:text-[#E0901E]"}`}>
                       <Star size={13} fill={ev.is_featured ? "currentColor" : "none"} />
                     </button>
                   </div>
                   <div className="space-y-1">
-                    <div className="flex items-center gap-1.5 font-mono text-[10px] text-[#F3EADB]/35">
+                    <div className="flex items-center gap-1.5 font-mono text-[10px] text-[#1A1612]/35">
                       <Clock size={9} />
                       {new Date(ev.date_start).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                     </div>
                     {ev.city && (
-                      <div className="flex items-center gap-1.5 font-mono text-[10px] text-[#F3EADB]/35">
+                      <div className="flex items-center gap-1.5 font-mono text-[10px] text-[#1A1612]/35">
                         <MapPin size={9} /> {ev.city}{ev.venue ? ` · ${ev.venue}` : ""}
                       </div>
                     )}
@@ -146,7 +146,7 @@ export default function EvenementsPage() {
                     <div className="flex gap-1">
                       {ev.url && (
                         <a href={ev.url} target="_blank" rel="noreferrer"
-                          className="p-1.5 rounded-lg text-[#F3EADB]/25 hover:text-[#F3EADB] border border-transparent hover:border-white/[0.14] transition-colors">
+                          className="p-1.5 rounded-lg text-[#1A1612]/25 hover:text-[#1A1612] border border-transparent hover:border-white/[0.14] transition-colors">
                           <ExternalLink size={11} />
                         </a>
                       )}

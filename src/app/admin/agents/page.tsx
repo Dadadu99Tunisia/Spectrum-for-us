@@ -46,13 +46,13 @@ function Bubble({ msg, color, initial }: { msg: Message; color: string; initial:
       )}
       <div className={`max-w-[85%] flex flex-col gap-1 ${isUser ? "items-end" : "items-start"}`}>
         <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed font-hanken ${
-          isUser ? "bg-[#E0337E] text-white rounded-tr-sm" : "bg-[#F3EADB]/[0.055] border border-[#F3EADB]/8 text-[#F3EADB]/80 rounded-tl-sm"
+          isUser ? "bg-[#FF3D7F] text-white rounded-tr-sm" : "bg-[#1A1612]/[0.055] border border-[#1A1612]/8 text-[#1A1612]/80 rounded-tl-sm"
         }`}>
           <p className="whitespace-pre-wrap">{parts}</p>
         </div>
         <div className={`flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity ${isUser ? "flex-row-reverse" : ""}`}>
-          <span className="font-mono text-[9px] text-[#F3EADB]/18">{fmt(msg.ts)}</span>
-          <button onClick={copy} className="font-mono text-[9px] text-[#F3EADB]/22 hover:text-[#F3EADB]/60 flex items-center gap-1 transition-colors">
+          <span className="font-mono text-[9px] text-[#1A1612]/18">{fmt(msg.ts)}</span>
+          <button onClick={copy} className="font-mono text-[9px] text-[#1A1612]/22 hover:text-[#1A1612]/60 flex items-center gap-1 transition-colors">
             {copied ? <><CheckCheck size={8} className="text-[#34d399]" /> copié</> : <><Copy size={8} /> copier</>}
           </button>
         </div>
@@ -83,21 +83,21 @@ function TaskButton({ task, onResult }: { task: AgentTask; onResult: (result: st
       className={`flex items-center gap-2.5 w-full px-3.5 py-3 rounded-xl border text-left transition-all group ${
         status === "done"  ? "border-[#34d399]/30 bg-[#34d399]/5" :
         status === "error" ? "border-[#f87171]/25 bg-[#f87171]/5" :
-        "border-[#F3EADB]/8 bg-[#F3EADB]/[0.02] hover:border-[#F3EADB]/16 hover:bg-[#F3EADB]/[0.04]"
+        "border-[#1A1612]/8 bg-[#1A1612]/[0.02] hover:border-[#1A1612]/16 hover:bg-[#1A1612]/[0.04]"
       } disabled:opacity-50`}>
-      <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-[#F3EADB]/30 group-hover:text-[#F3EADB]/60 transition-colors">
+      <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-[#1A1612]/30 group-hover:text-[#1A1612]/60 transition-colors">
         {status === "running" ? <Loader2 size={14} className="animate-spin text-[#a78bfa]" />
          : status === "done"  ? <CheckCircle2 size={14} className="text-[#34d399]" />
          : status === "error" ? <AlertCircle size={14} className="text-[#f87171]" />
          : task.icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className={`font-hanken text-sm ${status === "done" ? "text-[#34d399]" : status === "error" ? "text-[#f87171]" : "text-[#F3EADB]/70"}`}>
+        <p className={`font-hanken text-sm ${status === "done" ? "text-[#34d399]" : status === "error" ? "text-[#f87171]" : "text-[#1A1612]/70"}`}>
           {status === "running" ? "En cours…" : status === "done" ? "Terminé ✓" : status === "error" ? "Erreur" : task.label}
         </p>
-        <p className="font-mono text-[9px] text-[#F3EADB]/22 truncate">{task.description}</p>
+        <p className="font-mono text-[9px] text-[#1A1612]/22 truncate">{task.description}</p>
       </div>
-      {status === "idle" && <Play size={11} className="text-[#F3EADB]/15 group-hover:text-[#F3EADB]/40 shrink-0 transition-colors" />}
+      {status === "idle" && <Play size={11} className="text-[#1A1612]/15 group-hover:text-[#1A1612]/40 shrink-0 transition-colors" />}
     </button>
   );
 }
@@ -148,7 +148,7 @@ function AgentPanel({ agent }: { agent: AgentConfig }) {
   return (
     <div className="flex flex-col h-full">
       {/* Agent identity */}
-      <div className="flex items-center gap-3 pb-4 mb-4 border-b border-[#F3EADB]/6">
+      <div className="flex items-center gap-3 pb-4 mb-4 border-b border-[#1A1612]/6">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
           style={{ background: `${agent.color}15` }}>
           <Icon size={20} style={{ color: agent.color }} />
@@ -162,13 +162,13 @@ function AgentPanel({ agent }: { agent: AgentConfig }) {
               disponible
             </span>
           </div>
-          <p className="font-mono text-[10px] text-[#F3EADB]/30">{agent.jobTitle}</p>
+          <p className="font-mono text-[10px] text-[#1A1612]/30">{agent.jobTitle}</p>
         </div>
       </div>
 
       {/* Tasks */}
       <div className="mb-4">
-        <p className="font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/22 mb-2.5 flex items-center gap-1.5">
+        <p className="font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/22 mb-2.5 flex items-center gap-1.5">
           <Zap size={8} /> Tâches assignées
         </p>
         <div className="space-y-1.5">
@@ -179,13 +179,13 @@ function AgentPanel({ agent }: { agent: AgentConfig }) {
       </div>
 
       {/* Chat */}
-      <div className="flex-1 flex flex-col min-h-0 bg-[#F3EADB]/[0.015] rounded-xl border border-[#F3EADB]/6 overflow-hidden">
-        <div className="px-3 py-2 border-b border-[#F3EADB]/5 flex items-center justify-between">
-          <p className="font-mono text-[9px] text-[#F3EADB]/25 uppercase tracking-widest flex items-center gap-1.5">
+      <div className="flex-1 flex flex-col min-h-0 bg-[#1A1612]/[0.015] rounded-xl border border-[#1A1612]/6 overflow-hidden">
+        <div className="px-3 py-2 border-b border-[#1A1612]/5 flex items-center justify-between">
+          <p className="font-mono text-[9px] text-[#1A1612]/25 uppercase tracking-widest flex items-center gap-1.5">
             <Bot size={8} /> Instructions directes
           </p>
           {messages.length > 0 && (
-            <button onClick={() => setMessages([])} className="font-mono text-[9px] text-[#F3EADB]/18 hover:text-[#f87171]/60 flex items-center gap-1 transition-colors">
+            <button onClick={() => setMessages([])} className="font-mono text-[9px] text-[#1A1612]/18 hover:text-[#f87171]/60 flex items-center gap-1 transition-colors">
               <Trash2 size={8} /> effacer
             </button>
           )}
@@ -194,14 +194,14 @@ function AgentPanel({ agent }: { agent: AgentConfig }) {
         <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
           {messages.length === 0 && (
             <div className="text-center py-6">
-              <p className="font-hanken text-xs text-[#F3EADB]/20 leading-relaxed">
+              <p className="font-hanken text-xs text-[#1A1612]/20 leading-relaxed">
                 Donne une instruction à {agent.name}<br />
-                <span className="text-[#F3EADB]/12">ou lance une tâche ci-dessus</span>
+                <span className="text-[#1A1612]/12">ou lance une tâche ci-dessus</span>
               </p>
               <div className="flex flex-wrap gap-1.5 justify-center mt-3">
                 {agent.starters.map((s, i) => (
                   <button key={i} onClick={() => send(s)}
-                    className="font-mono text-[9px] px-2.5 py-1.5 rounded-lg border border-[#F3EADB]/8 text-[#F3EADB]/30 hover:text-[#F3EADB]/60 hover:border-[#F3EADB]/16 transition-all">
+                    className="font-mono text-[9px] px-2.5 py-1.5 rounded-lg border border-[#1A1612]/8 text-[#1A1612]/30 hover:text-[#1A1612]/60 hover:border-[#1A1612]/16 transition-all">
                     {s}
                   </button>
                 ))}
@@ -213,7 +213,7 @@ function AgentPanel({ agent }: { agent: AgentConfig }) {
             <div className="flex gap-2.5">
               <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-fraunces text-xs"
                 style={{ background: `${agent.color}18`, color: agent.color }}>{agent.name[0]}</div>
-              <div className="px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-[#F3EADB]/[0.055] border border-[#F3EADB]/8 flex items-center gap-1.5">
+              <div className="px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-[#1A1612]/[0.055] border border-[#1A1612]/8 flex items-center gap-1.5">
                 {[0,1,2].map(i => (
                   <span key={i} className="w-1.5 h-1.5 rounded-full animate-bounce"
                     style={{ background: agent.color, animationDelay: `${i*0.15}s` }} />
@@ -224,11 +224,11 @@ function AgentPanel({ agent }: { agent: AgentConfig }) {
           <div ref={endRef} />
         </div>
 
-        <div className="px-3 py-2.5 border-t border-[#F3EADB]/5 flex gap-2 items-end">
+        <div className="px-3 py-2.5 border-t border-[#1A1612]/5 flex gap-2 items-end">
           <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)}
             onKeyDown={onKeyDown} rows={1} disabled={loading}
             placeholder={`Instruction pour ${agent.name}…`}
-            className="flex-1 bg-transparent font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/18 focus:outline-none resize-none disabled:opacity-40 max-h-20 overflow-y-auto" />
+            className="flex-1 bg-transparent font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/18 focus:outline-none resize-none disabled:opacity-40 max-h-20 overflow-y-auto" />
           <button onClick={() => send(input)} disabled={!input.trim() || loading}
             className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all disabled:opacity-25"
             style={{ background: agent.color }}>
@@ -256,7 +256,7 @@ const buildAgents = (): AgentConfig[] => [
     id: "aria",
     name: "Aria",
     jobTitle: "Responsable Croissance & Partenariats",
-    color: "#E0337E",
+    color: "#FF3D7F",
     icon: TrendingUp,
     starters: ["Rapport pipeline du jour", "Qui relancer cette semaine ?", "Analyse les leads à fort potentiel"],
     tasks: (push) => [
@@ -498,8 +498,8 @@ export default function AgentsPage() {
       {/* ── Left: agent roster ── */}
       <div className="w-52 flex-shrink-0 flex flex-col gap-2">
         <div className="mb-1">
-          <h1 className="font-fraunces text-xl text-[#F3EADB]">Équipe IA</h1>
-          <p className="font-mono text-[10px] text-[#F3EADB]/28 mt-0.5">Tes salarié·es virtuels</p>
+          <h1 className="font-fraunces text-xl text-[#1A1612]">Équipe IA</h1>
+          <p className="font-mono text-[10px] text-[#1A1612]/28 mt-0.5">Tes salarié·es virtuels</p>
         </div>
 
         {agents.map(a => {
@@ -508,19 +508,19 @@ export default function AgentsPage() {
           return (
             <button key={a.id} onClick={() => setActiveId(a.id)}
               className={`w-full text-left p-3.5 rounded-xl border transition-all ${
-                active ? "" : "border-[#F3EADB]/6 hover:border-[#F3EADB]/12 hover:bg-[#F3EADB]/[0.02]"
+                active ? "" : "border-[#1A1612]/6 hover:border-[#1A1612]/12 hover:bg-[#1A1612]/[0.02]"
               }`}
               style={active ? { borderColor: `${a.color}35`, background: `${a.color}08` } : {}}>
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: active ? `${a.color}18` : "rgba(243,234,219,.04)", color: a.color }}>
+                  style={{ background: active ? `${a.color}18` : "rgba(26,22,18,.04)", color: a.color }}>
                   <AIcon size={15} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-hanken text-sm font-medium truncate" style={{ color: active ? a.color : "#F3EADB" }}>
+                  <p className="font-hanken text-sm font-medium truncate" style={{ color: active ? a.color : "#1A1612" }}>
                     {a.name}
                   </p>
-                  <p className="font-mono text-[8.5px] text-[#F3EADB]/25 truncate leading-tight mt-0.5">{a.jobTitle}</p>
+                  <p className="font-mono text-[8.5px] text-[#1A1612]/25 truncate leading-tight mt-0.5">{a.jobTitle}</p>
                 </div>
                 {active && <ChevronRight size={11} style={{ color: `${a.color}60` }} className="shrink-0" />}
               </div>
@@ -529,8 +529,8 @@ export default function AgentsPage() {
         })}
 
         {/* Team note */}
-        <div className="mt-auto p-3 rounded-xl bg-[#F3EADB]/[0.025] border border-[#F3EADB]/6">
-          <p className="font-mono text-[9px] text-[#F3EADB]/22 leading-relaxed">
+        <div className="mt-auto p-3 rounded-xl bg-[#1A1612]/[0.025] border border-[#1A1612]/6">
+          <p className="font-mono text-[9px] text-[#1A1612]/22 leading-relaxed">
             Chaque agent a accès aux données en temps réel et peut exécuter des tâches réelles.
           </p>
         </div>

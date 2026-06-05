@@ -33,21 +33,21 @@ type Testimonial = {
 
 // ─── Sections sidebar ───────────────────────────────────────────────
 const SECTIONS = [
-  { id:"banners",   label:"Bandeaux",         icon:Megaphone,        color:"#E0337E",  group:"Visibilité" },
+  { id:"banners",   label:"Bandeaux",         icon:Megaphone,        color:"#FF3D7F",  group:"Visibilité" },
   { id:"promo",     label:"Promotions",        icon:Sparkles,         color:"#E0901E",  group:"Visibilité" },
   { id:"hero",      label:"Page d'accueil",    icon:Monitor,          color:"#6D2DB5",  group:"Pages" },
-  { id:"manifeste", label:"Section Manifeste", icon:Type,             color:"#F2B79E",  group:"Pages" },
+  { id:"manifeste", label:"Section Manifeste", icon:Type,             color:"#1A1612",  group:"Pages" },
   { id:"boutique",  label:"Boutique",          icon:ShoppingBag,      color:"#1C9C95",  group:"Pages" },
-  { id:"vendeurs",  label:"Page vendeurs",     icon:Store,            color:"#E0337E",  group:"Pages" },
+  { id:"vendeurs",  label:"Page vendeurs",     icon:Store,            color:"#FF3D7F",  group:"Pages" },
   { id:"stats",     label:"Chiffres clés",     icon:BarChart2,        color:"#6D2DB5",  group:"Pages" },
   { id:"theme",     label:"Thème & couleurs",  icon:Palette,          color:"#E0901E",  group:"Design" },
   { id:"social",    label:"Réseaux sociaux",   icon:Share2,           color:"#1C9C95",  group:"Design" },
   { id:"seo",       label:"SEO",               icon:Globe,            color:"#6D2DB5",  group:"Design" },
-  { id:"emails",    label:"Emails",            icon:Mail,             color:"#E0337E",  group:"Système" },
+  { id:"emails",    label:"Emails",            icon:Mail,             color:"#FF3D7F",  group:"Système" },
   { id:"footer",    label:"Footer",            icon:Layout,           color:"#E0901E",  group:"Système" },
   { id:"__pages",   label:"Pages personnalisées", icon:FileText,      color:"#1C9C95",  group:"Avancé" },
   { id:"__nav",     label:"Navigation",        icon:Navigation,       color:"#6D2DB5",  group:"Avancé" },
-  { id:"__popups",  label:"Popups",            icon:MousePointerClick,color:"#E0337E",  group:"Avancé" },
+  { id:"__popups",  label:"Popups",            icon:MousePointerClick,color:"#FF3D7F",  group:"Avancé" },
   { id:"__testimonials", label:"Avis / Témoignages", icon:Star,       color:"#E0901E",  group:"Avancé" },
 ];
 
@@ -55,14 +55,14 @@ const GROUPS = ["Visibilité","Pages","Design","Système","Avancé"];
 
 // ─── Field editor ────────────────────────────────────────────────────
 function FieldEditor({ block, value, onChange }: { block: ContentBlock; value: string; onChange: (v:string)=>void }) {
-  const base = "font-hanken text-sm text-[#F3EADB] bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 focus:outline-none focus:border-[#E0337E]/50 transition-colors w-full placeholder-[#F3EADB]/20";
+  const base = "font-hanken text-sm text-[#1A1612] bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-2 focus:outline-none focus:border-[#FF3D7F]/50 transition-colors w-full placeholder-[#1A1612]/20";
 
   if (block.type === "boolean") {
     const on = value === "true";
     return (
       <button onClick={() => onChange(on ? "false" : "true")}
-        className={`flex items-center gap-2.5 px-4 py-2 rounded-xl border font-hanken text-sm transition-all ${on ? "bg-[#E0337E]/10 border-[#E0337E]/30 text-[#E0337E]" : "bg-[#F3EADB]/5 border-[#F3EADB]/10 text-[#F3EADB]/40"}`}>
-        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${on ? "border-[#E0337E] bg-[#E0337E]" : "border-[#F3EADB]/20"}`}>
+        className={`flex items-center gap-2.5 px-4 py-2 rounded-xl border font-hanken text-sm transition-all ${on ? "bg-[#FF3D7F]/10 border-[#FF3D7F]/30 text-[#FF3D7F]" : "bg-[#1A1612]/5 border-[#1A1612]/10 text-[#1A1612]/40"}`}>
+        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${on ? "border-[#FF3D7F] bg-[#FF3D7F]" : "border-[#1A1612]/20"}`}>
           {on && <Check size={10} className="text-white" />}
         </div>
         {on ? "Activé" : "Désactivé"}
@@ -73,12 +73,12 @@ function FieldEditor({ block, value, onChange }: { block: ContentBlock; value: s
     return (
       <div className="flex items-center gap-3">
         <div className="relative">
-          <input type="color" value={value || "#E0337E"} onChange={e => onChange(e.target.value)}
-            className="w-12 h-12 rounded-xl border border-[#F3EADB]/10 cursor-pointer bg-transparent p-0.5" />
+          <input type="color" value={value || "#FF3D7F"} onChange={e => onChange(e.target.value)}
+            className="w-12 h-12 rounded-xl border border-[#1A1612]/10 cursor-pointer bg-transparent p-0.5" />
         </div>
         <input type="text" value={value} onChange={e => onChange(e.target.value)}
-          className="w-32 bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 font-mono text-sm text-[#F3EADB] focus:outline-none focus:border-[#E0337E]/50" />
-        <div className="w-8 h-8 rounded-lg border border-[#F3EADB]/10" style={{ background: value }} />
+          className="w-32 bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-2 font-mono text-sm text-[#1A1612] focus:outline-none focus:border-[#FF3D7F]/50" />
+        <div className="w-8 h-8 rounded-lg border border-[#1A1612]/10" style={{ background: value }} />
       </div>
     );
   }
@@ -87,7 +87,7 @@ function FieldEditor({ block, value, onChange }: { block: ContentBlock; value: s
       <div className="space-y-1">
         <textarea value={value} onChange={e => onChange(e.target.value)} rows={6}
           className={`${base} resize-y font-mono text-xs leading-relaxed`} />
-        <p className="font-mono text-[9px] text-[#F3EADB]/20">HTML supporté</p>
+        <p className="font-mono text-[9px] text-[#1A1612]/20">HTML supporté</p>
       </div>
     );
   }
@@ -95,7 +95,7 @@ function FieldEditor({ block, value, onChange }: { block: ContentBlock; value: s
     return (
       <div className="space-y-2">
         <input type="url" value={value} onChange={e => onChange(e.target.value)} placeholder="https://..." className={base} />
-        {value && <img src={value} alt="" className="h-24 rounded-xl object-cover border border-[#F3EADB]/10" />}
+        {value && <img src={value} alt="" className="h-24 rounded-xl object-cover border border-[#1A1612]/10" />}
       </div>
     );
   }
@@ -179,26 +179,26 @@ export default function ContenuPage() {
 
   // ─── Theme preview colors
   const themeColors = {
-    primary:   blocks.find(b => b.key === "theme_color_primary")?.value ?? "#E0337E",
+    primary:   blocks.find(b => b.key === "theme_color_primary")?.value ?? "#FF3D7F",
     secondary: blocks.find(b => b.key === "theme_color_secondary")?.value ?? "#6D2DB5",
     accent:    blocks.find(b => b.key === "theme_color_accent")?.value ?? "#E0901E",
-    bg:        blocks.find(b => b.key === "theme_color_bg")?.value ?? "#3D1F5C",
-    text:      blocks.find(b => b.key === "theme_color_text")?.value ?? "#F3EADB",
+    bg:        blocks.find(b => b.key === "theme_color_bg")?.value ?? "#FBF9F5",
+    text:      blocks.find(b => b.key === "theme_color_text")?.value ?? "#1A1612",
   };
 
   return (
     <div className="space-y-5 max-w-5xl">
-      {toast && <div className="fixed top-16 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0e061a] border border-[#E0337E]/30 text-[#F3EADB] font-hanken text-sm shadow-2xl"><Check size={13} className="text-[#E0337E]" />{toast}</div>}
+      {toast && <div className="fixed top-16 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0e061a] border border-[#FF3D7F]/30 text-[#1A1612] font-hanken text-sm shadow-2xl"><Check size={13} className="text-[#FF3D7F]" />{toast}</div>}
 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#F3EADB]">Site & Contenu</h1>
-          <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">Gérez chaque aspect de votre site sans toucher au code</p>
+          <h1 className="font-fraunces text-2xl text-[#1A1612]">Site & Contenu</h1>
+          <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">Gérez chaque aspect de votre site sans toucher au code</p>
         </div>
         {!activeSection.startsWith("__") && (
           <button onClick={save} disabled={dirtyCount === 0 || saving}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#E0337E]/90 disabled:opacity-40 transition-all">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#FF3D7F]/90 disabled:opacity-40 transition-all">
             <Save size={13} /> {saving ? "Sauvegarde…" : dirtyCount > 0 ? `Sauvegarder (${dirtyCount})` : "Sauvegarder"}
           </button>
         )}
@@ -209,16 +209,16 @@ export default function ContenuPage() {
         <div className="w-52 flex-shrink-0 space-y-4">
           {search && (
             <div className="relative">
-              <SearchIcon size={11} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#F3EADB]/25" />
+              <SearchIcon size={11} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1A1612]/25" />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Filtrer…"
-                className="w-full pl-7 pr-3 py-1.5 bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg font-hanken text-xs text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none" />
+                className="w-full pl-7 pr-3 py-1.5 bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg font-hanken text-xs text-[#1A1612] placeholder-[#1A1612]/25 focus:outline-none" />
             </div>
           )}
           {GROUPS.map(group => {
             const groupSections = SECTIONS.filter(s => s.group === group);
             return (
               <div key={group}>
-                <p className="font-mono text-[8px] uppercase tracking-widest text-[#F3EADB]/20 px-2 mb-1.5">{group}</p>
+                <p className="font-mono text-[8px] uppercase tracking-widest text-[#1A1612]/20 px-2 mb-1.5">{group}</p>
                 {groupSections.map(s => {
                   const Icon = s.icon;
                   const isActive = activeSection === s.id;
@@ -226,12 +226,12 @@ export default function ContenuPage() {
                   return (
                     <button key={s.id} onClick={() => { setActiveSection(s.id); setSearch(""); }}
                       className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-hanken text-sm transition-all mb-0.5 ${
-                        isActive ? "text-[#F3EADB] border" : "text-[#F3EADB]/40 hover:text-[#F3EADB] hover:bg-[#F3EADB]/4 border border-transparent"
+                        isActive ? "text-[#1A1612] border" : "text-[#1A1612]/40 hover:text-[#1A1612] hover:bg-[#1A1612]/4 border border-transparent"
                       }`}
                       style={isActive ? { background: `${s.color}18`, borderColor: `${s.color}35` } : {}}>
                       <Icon size={13} style={isActive ? { color: s.color } : {}} />
-                      <span className={isActive ? "text-[#F3EADB]" : ""}>{s.label}</span>
-                      {hasDirty && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#E0337E] flex-shrink-0" />}
+                      <span className={isActive ? "text-[#1A1612]" : ""}>{s.label}</span>
+                      {hasDirty && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#FF3D7F] flex-shrink-0" />}
                     </button>
                   );
                 })}
@@ -245,9 +245,9 @@ export default function ContenuPage() {
           {/* Search bar for content blocks */}
           {!activeSection.startsWith("__") && (
             <div className="relative mb-4">
-              <SearchIcon size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25" />
+              <SearchIcon size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1A1612]/25" />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher un bloc de contenu…"
-                className="w-full pl-9 pr-4 py-2 bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-xl font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/50 transition-colors" />
+                className="w-full pl-9 pr-4 py-2 bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/50 transition-colors" />
             </div>
           )}
 
@@ -259,24 +259,24 @@ export default function ContenuPage() {
               </div>
             ) : filtered.length === 0 ? (
               <div className="text-center py-16">
-                <Type size={32} className="mx-auto mb-3 text-[#F3EADB]/10" />
-                <p className="font-hanken text-[#F3EADB]/30">Aucun bloc dans cette section</p>
+                <Type size={32} className="mx-auto mb-3 text-[#1A1612]/10" />
+                <p className="font-hanken text-[#1A1612]/30">Aucun bloc dans cette section</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {/* Theme preview */}
                 {activeSection === "theme" && (
-                  <div className="p-5 rounded-2xl border border-[#F3EADB]/8 mb-4 space-y-3">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/30">Aperçu du thème</p>
+                  <div className="p-5 rounded-2xl border border-[#1A1612]/8 mb-4 space-y-3">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-[#1A1612]/30">Aperçu du thème</p>
                     <div className="flex gap-2">
                       {Object.entries(themeColors).map(([k, c]) => (
                         <div key={k} className="flex flex-col items-center gap-1">
                           <div className="w-8 h-8 rounded-lg border border-white/10" style={{ background: c }} />
-                          <span className="font-mono text-[8px] text-[#F3EADB]/30 capitalize">{k}</span>
+                          <span className="font-mono text-[8px] text-[#1A1612]/30 capitalize">{k}</span>
                         </div>
                       ))}
                     </div>
-                    <div className="p-3 rounded-xl border border-[#F3EADB]/6 font-mono text-[9px] text-[#F3EADB]/30">
+                    <div className="p-3 rounded-xl border border-[#1A1612]/6 font-mono text-[9px] text-[#1A1612]/30">
                       ℹ Les changements de couleurs nécessitent un redéploiement pour être appliqués sur le site.
                     </div>
                   </div>
@@ -286,32 +286,32 @@ export default function ContenuPage() {
                   const isDirty = block.key in dirty;
                   const isOpen = collapsed[block.key] !== true;
                   return (
-                    <div key={block.key} className={`rounded-2xl border transition-all overflow-hidden ${isDirty ? "border-[#E0337E]/25 bg-[#E0337E]/[0.03]" : "border-[#F3EADB]/8 bg-[#F3EADB]/[0.015]"}`}>
+                    <div key={block.key} className={`rounded-2xl border transition-all overflow-hidden ${isDirty ? "border-[#FF3D7F]/25 bg-[#FF3D7F]/[0.03]" : "border-[#1A1612]/8 bg-[#1A1612]/[0.015]"}`}>
                       <button className="w-full flex items-center gap-3 px-5 py-3.5 text-left"
                         onClick={() => setCollapsed(c => ({ ...c, [block.key]: isOpen }))}>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-hanken text-sm text-[#F3EADB]">{block.label}</p>
-                            {isDirty && <span className="font-mono text-[8px] px-1.5 py-0.5 rounded-md bg-[#E0337E]/15 text-[#E0337E]">modifié</span>}
+                            <p className="font-hanken text-sm text-[#1A1612]">{block.label}</p>
+                            {isDirty && <span className="font-mono text-[8px] px-1.5 py-0.5 rounded-md bg-[#FF3D7F]/15 text-[#FF3D7F]">modifié</span>}
                           </div>
                           {block.description && !isOpen && (
-                            <p className="font-mono text-[10px] text-[#F3EADB]/25 mt-0.5 truncate">{block.description}</p>
+                            <p className="font-mono text-[10px] text-[#1A1612]/25 mt-0.5 truncate">{block.description}</p>
                           )}
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className="font-mono text-[8px] px-1.5 py-0.5 rounded border border-[#F3EADB]/8 text-[#F3EADB]/20 uppercase">{block.type}</span>
-                          <ChevronDown size={12} className={`text-[#F3EADB]/20 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                          <span className="font-mono text-[8px] px-1.5 py-0.5 rounded border border-[#1A1612]/8 text-[#1A1612]/20 uppercase">{block.type}</span>
+                          <ChevronDown size={12} className={`text-[#1A1612]/20 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                         </div>
                       </button>
                       {isOpen && (
-                        <div className="px-5 pb-4 space-y-3 border-t border-[#F3EADB]/5 pt-3">
-                          {block.description && <p className="font-mono text-[10px] text-[#F3EADB]/30">{block.description}</p>}
+                        <div className="px-5 pb-4 space-y-3 border-t border-[#1A1612]/5 pt-3">
+                          {block.description && <p className="font-mono text-[10px] text-[#1A1612]/30">{block.description}</p>}
                           <FieldEditor block={block} value={getValue(block)} onChange={v => setValue(block.key, v)} />
                           <div className="flex items-center justify-between">
-                            <code className="font-mono text-[9px] text-[#F3EADB]/15 bg-[#F3EADB]/4 px-1.5 py-0.5 rounded">{block.key}</code>
+                            <code className="font-mono text-[9px] text-[#1A1612]/15 bg-[#1A1612]/4 px-1.5 py-0.5 rounded">{block.key}</code>
                             {block.default_value && isDirty && (
                               <button onClick={() => resetBlock(block)}
-                                className="flex items-center gap-1 font-mono text-[9px] text-[#F3EADB]/25 hover:text-[#F3EADB] transition-colors">
+                                className="flex items-center gap-1 font-mono text-[9px] text-[#1A1612]/25 hover:text-[#1A1612] transition-colors">
                                 <RotateCcw size={9} /> Réinitialiser
                               </button>
                             )}
@@ -349,13 +349,13 @@ export default function ContenuPage() {
 
       {/* Floating save bar */}
       {dirtyCount > 0 && !activeSection.startsWith("__") && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 px-5 py-3 rounded-2xl bg-[#0e061a] border border-[#E0337E]/30 shadow-2xl">
-          <p className="font-hanken text-sm text-[#F3EADB]/60">
-            <span className="text-[#E0337E] font-medium">{dirtyCount}</span> modification{dirtyCount > 1 ? "s" : ""} non sauvegardée{dirtyCount > 1 ? "s" : ""}
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 px-5 py-3 rounded-2xl bg-[#0e061a] border border-[#FF3D7F]/30 shadow-2xl">
+          <p className="font-hanken text-sm text-[#1A1612]/60">
+            <span className="text-[#FF3D7F] font-medium">{dirtyCount}</span> modification{dirtyCount > 1 ? "s" : ""} non sauvegardée{dirtyCount > 1 ? "s" : ""}
           </p>
-          <button onClick={() => setDirty({})} className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#F3EADB] transition-colors">Annuler</button>
+          <button onClick={() => setDirty({})} className="font-mono text-[10px] text-[#1A1612]/30 hover:text-[#1A1612] transition-colors">Annuler</button>
           <button onClick={save} disabled={saving}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#E0337E]/90 disabled:opacity-60 transition-colors">
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#FF3D7F]/90 disabled:opacity-60 transition-colors">
             <Save size={12} /> {saving ? "…" : "Sauvegarder"}
           </button>
         </div>
@@ -403,8 +403,8 @@ function PagesManager({ pages, onReload, showToast }: { pages: SitePage[]; onRel
   if (editing !== null) return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <button onClick={() => setEditing(null)} className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#F3EADB]">← Retour</button>
-        <h2 className="font-fraunces text-lg text-[#F3EADB]">{editing.id ? "Modifier la page" : "Nouvelle page"}</h2>
+        <button onClick={() => setEditing(null)} className="font-mono text-[10px] text-[#1A1612]/30 hover:text-[#1A1612]">← Retour</button>
+        <h2 className="font-fraunces text-lg text-[#1A1612]">{editing.id ? "Modifier la page" : "Nouvelle page"}</h2>
       </div>
       {[
         { key:"title", label:"Titre *", placeholder:"Ma page" },
@@ -414,28 +414,28 @@ function PagesManager({ pages, onReload, showToast }: { pages: SitePage[]; onRel
         { key:"nav_label", label:"Label navigation", placeholder:"Visible dans le menu si activé" },
       ].map(f => (
         <div key={f.key}>
-          <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1.5">{f.label}</label>
+          <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1.5">{f.label}</label>
           <input value={(form as Record<string,string>)[f.key] ?? ""} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
             placeholder={f.placeholder}
-            className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#E0337E]/50" />
+            className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#FF3D7F]/50" />
         </div>
       ))}
       <div>
-        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1.5">Contenu (HTML)</label>
+        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1.5">Contenu (HTML)</label>
         <textarea value={form.content ?? ""} onChange={e => setForm(p => ({ ...p, content: e.target.value }))} rows={12}
-          className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-xl px-3 py-2 font-mono text-xs text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#E0337E]/50 resize-y" />
+          className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-3 py-2 font-mono text-xs text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#FF3D7F]/50 resize-y" />
       </div>
       <div className="flex items-center gap-6">
         {[["is_published","Publiée"],["show_in_nav","Dans la navigation"]].map(([k,l]) => (
           <label key={k} className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={Boolean((form as Record<string,unknown>)[k])} onChange={e => setForm(p => ({ ...p, [k]: e.target.checked }))}
-              className="w-4 h-4 rounded accent-[#E0337E]" />
-            <span className="font-hanken text-sm text-[#F3EADB]/60">{l}</span>
+              className="w-4 h-4 rounded accent-[#FF3D7F]" />
+            <span className="font-hanken text-sm text-[#1A1612]/60">{l}</span>
           </label>
         ))}
       </div>
       <button onClick={save} disabled={!form.title || saving}
-        className="w-full py-2.5 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#E0337E]/90 disabled:opacity-40">
+        className="w-full py-2.5 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#FF3D7F]/90 disabled:opacity-40">
         {saving ? "Sauvegarde…" : "Sauvegarder la page"}
       </button>
     </div>
@@ -444,37 +444,37 @@ function PagesManager({ pages, onReload, showToast }: { pages: SitePage[]; onRel
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <p className="font-hanken text-sm text-[#F3EADB]/40">{pages.length} page{pages.length !== 1 ? "s" : ""}</p>
+        <p className="font-hanken text-sm text-[#1A1612]/40">{pages.length} page{pages.length !== 1 ? "s" : ""}</p>
         <button onClick={openNew}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#E0337E]/90">
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#FF3D7F]/90">
           <Plus size={13} /> Nouvelle page
         </button>
       </div>
       {pages.length === 0 ? (
-        <div className="text-center py-16 border border-dashed border-[#F3EADB]/10 rounded-2xl">
-          <FileText size={32} className="mx-auto mb-3 text-[#F3EADB]/10" />
-          <p className="font-hanken text-[#F3EADB]/30 mb-4">Aucune page personnalisée</p>
-          <button onClick={openNew} className="px-4 py-2 rounded-xl border border-[#F3EADB]/15 text-[#F3EADB]/50 font-hanken text-sm hover:text-[#F3EADB]">Créer une page</button>
+        <div className="text-center py-16 border border-dashed border-[#1A1612]/10 rounded-2xl">
+          <FileText size={32} className="mx-auto mb-3 text-[#1A1612]/10" />
+          <p className="font-hanken text-[#1A1612]/30 mb-4">Aucune page personnalisée</p>
+          <button onClick={openNew} className="px-4 py-2 rounded-xl border border-[#1A1612]/15 text-[#1A1612]/50 font-hanken text-sm hover:text-[#1A1612]">Créer une page</button>
         </div>
       ) : pages.map(p => (
-        <div key={p.id} className="flex items-center gap-4 p-4 rounded-2xl border border-[#F3EADB]/8 hover:border-[#F3EADB]/15 transition-all">
+        <div key={p.id} className="flex items-center gap-4 p-4 rounded-2xl border border-[#1A1612]/8 hover:border-[#1A1612]/15 transition-all">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p className="font-hanken text-sm text-[#F3EADB]">{p.title}</p>
-              <span className={`font-mono text-[8px] px-1.5 py-0.5 rounded border ${p.is_published ? "text-green-400 border-green-400/20" : "text-[#F3EADB]/25 border-[#F3EADB]/10"}`}>
+              <p className="font-hanken text-sm text-[#1A1612]">{p.title}</p>
+              <span className={`font-mono text-[8px] px-1.5 py-0.5 rounded border ${p.is_published ? "text-green-400 border-green-400/20" : "text-[#1A1612]/25 border-[#1A1612]/10"}`}>
                 {p.is_published ? "Publiée" : "Brouillon"}
               </span>
             </div>
-            <p className="font-mono text-[10px] text-[#F3EADB]/25 mt-0.5">/{p.slug}</p>
+            <p className="font-mono text-[10px] text-[#1A1612]/25 mt-0.5">/{p.slug}</p>
           </div>
           <div className="flex items-center gap-1">
             <a href={`/${p.slug}`} target="_blank" rel="noreferrer"
-              className="p-2 rounded-lg text-[#F3EADB]/20 hover:text-[#F3EADB] transition-colors"><ExternalLink size={12} /></a>
-            <button onClick={() => toggle(p)} className="p-2 rounded-lg text-[#F3EADB]/20 hover:text-[#F3EADB] transition-colors">
+              className="p-2 rounded-lg text-[#1A1612]/20 hover:text-[#1A1612] transition-colors"><ExternalLink size={12} /></a>
+            <button onClick={() => toggle(p)} className="p-2 rounded-lg text-[#1A1612]/20 hover:text-[#1A1612] transition-colors">
               {p.is_published ? <EyeOff size={12} /> : <Eye size={12} />}
             </button>
-            <button onClick={() => openEdit(p)} className="p-2 rounded-lg text-[#F3EADB]/20 hover:text-[#F3EADB] transition-colors"><FileText size={12} /></button>
-            <button onClick={() => del(p.id)} className="p-2 rounded-lg text-[#F3EADB]/20 hover:text-red-400 transition-colors"><Trash2 size={12} /></button>
+            <button onClick={() => openEdit(p)} className="p-2 rounded-lg text-[#1A1612]/20 hover:text-[#1A1612] transition-colors"><FileText size={12} /></button>
+            <button onClick={() => del(p.id)} className="p-2 rounded-lg text-[#1A1612]/20 hover:text-red-400 transition-colors"><Trash2 size={12} /></button>
           </div>
         </div>
       ))}
@@ -521,56 +521,56 @@ function NavManager({ items, onReload, showToast }: { items: NavItem[]; onReload
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 p-1 bg-[#F3EADB]/4 rounded-xl w-fit">
+      <div className="flex gap-1 p-1 bg-[#1A1612]/4 rounded-xl w-fit">
         {NAV_LOCATIONS.map(l => (
           <button key={l.id} onClick={() => setActiveTab(l.id)}
-            className={`px-3 py-1.5 rounded-lg font-mono text-[10px] transition-all ${activeTab === l.id ? "bg-[#E0337E] text-white" : "text-[#F3EADB]/40 hover:text-[#F3EADB]"}`}>
+            className={`px-3 py-1.5 rounded-lg font-mono text-[10px] transition-all ${activeTab === l.id ? "bg-[#FF3D7F] text-white" : "text-[#1A1612]/40 hover:text-[#1A1612]"}`}>
             {l.label}
           </button>
         ))}
       </div>
 
-      <div className="rounded-2xl border border-[#F3EADB]/8 overflow-hidden">
+      <div className="rounded-2xl border border-[#1A1612]/8 overflow-hidden">
         {filtered.map((item, idx) => (
-          <div key={item.id} className={`flex items-center gap-3 px-4 py-3 border-b border-[#F3EADB]/5 last:border-0 ${!item.is_active ? "opacity-40" : ""}`}>
-            <GripVertical size={13} className="text-[#F3EADB]/15 flex-shrink-0" />
-            <span className="font-mono text-[9px] text-[#F3EADB]/20 w-4">{idx+1}</span>
+          <div key={item.id} className={`flex items-center gap-3 px-4 py-3 border-b border-[#1A1612]/5 last:border-0 ${!item.is_active ? "opacity-40" : ""}`}>
+            <GripVertical size={13} className="text-[#1A1612]/15 flex-shrink-0" />
+            <span className="font-mono text-[9px] text-[#1A1612]/20 w-4">{idx+1}</span>
             <div className="flex-1">
-              <p className="font-hanken text-sm text-[#F3EADB]">{item.label}</p>
-              <p className="font-mono text-[10px] text-[#F3EADB]/30">{item.url}</p>
+              <p className="font-hanken text-sm text-[#1A1612]">{item.label}</p>
+              <p className="font-mono text-[10px] text-[#1A1612]/30">{item.url}</p>
             </div>
-            {item.open_new_tab && <span className="font-mono text-[8px] text-[#F3EADB]/25 border border-[#F3EADB]/10 px-1.5 rounded">↗ nouvel onglet</span>}
-            <button onClick={() => toggleActive(item)} className={`p-1.5 rounded-lg transition-colors ${item.is_active ? "text-[#F3EADB]/30 hover:text-[#F3EADB]" : "text-[#F3EADB]/15 hover:text-green-400"}`}>
+            {item.open_new_tab && <span className="font-mono text-[8px] text-[#1A1612]/25 border border-[#1A1612]/10 px-1.5 rounded">↗ nouvel onglet</span>}
+            <button onClick={() => toggleActive(item)} className={`p-1.5 rounded-lg transition-colors ${item.is_active ? "text-[#1A1612]/30 hover:text-[#1A1612]" : "text-[#1A1612]/15 hover:text-green-400"}`}>
               {item.is_active ? <EyeOff size={12} /> : <Eye size={12} />}
             </button>
-            <button onClick={() => del(item.id)} className="p-1.5 rounded-lg text-[#F3EADB]/20 hover:text-red-400 transition-colors"><Trash2 size={12} /></button>
+            <button onClick={() => del(item.id)} className="p-1.5 rounded-lg text-[#1A1612]/20 hover:text-red-400 transition-colors"><Trash2 size={12} /></button>
           </div>
         ))}
-        {filtered.length === 0 && <p className="text-center py-8 font-hanken text-[#F3EADB]/25 text-sm">Aucun lien</p>}
+        {filtered.length === 0 && <p className="text-center py-8 font-hanken text-[#1A1612]/25 text-sm">Aucun lien</p>}
       </div>
 
       {adding ? (
-        <div className="p-4 rounded-2xl border border-[#E0337E]/20 bg-[#E0337E]/3 space-y-3">
-          <p className="font-fraunces text-sm text-[#F3EADB]">Nouveau lien</p>
+        <div className="p-4 rounded-2xl border border-[#FF3D7F]/20 bg-[#FF3D7F]/3 space-y-3">
+          <p className="font-fraunces text-sm text-[#1A1612]">Nouveau lien</p>
           <div className="grid grid-cols-2 gap-3">
             <input value={form.label} onChange={e => setForm(p => ({ ...p, label: e.target.value }))} placeholder="Label (ex: Boutique)"
-              className="bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#E0337E]/50" />
+              className="bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#FF3D7F]/50" />
             <input value={form.url} onChange={e => setForm(p => ({ ...p, url: e.target.value }))} placeholder="URL (ex: /boutique)"
-              className="bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#E0337E]/50" />
+              className="bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#FF3D7F]/50" />
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={form.open_new_tab} onChange={e => setForm(p => ({ ...p, open_new_tab: e.target.checked }))} className="accent-[#E0337E]" />
-            <span className="font-hanken text-sm text-[#F3EADB]/50">Ouvrir dans un nouvel onglet</span>
+            <input type="checkbox" checked={form.open_new_tab} onChange={e => setForm(p => ({ ...p, open_new_tab: e.target.checked }))} className="accent-[#FF3D7F]" />
+            <span className="font-hanken text-sm text-[#1A1612]/50">Ouvrir dans un nouvel onglet</span>
           </label>
           <div className="flex gap-2">
             <button onClick={add} disabled={!form.label || !form.url || saving}
-              className="px-4 py-1.5 rounded-xl bg-[#E0337E] text-white font-hanken text-sm disabled:opacity-40">{saving ? "…" : "Ajouter"}</button>
-            <button onClick={() => setAdding(false)} className="px-4 py-1.5 rounded-xl border border-[#F3EADB]/10 text-[#F3EADB]/40 font-hanken text-sm">Annuler</button>
+              className="px-4 py-1.5 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm disabled:opacity-40">{saving ? "…" : "Ajouter"}</button>
+            <button onClick={() => setAdding(false)} className="px-4 py-1.5 rounded-xl border border-[#1A1612]/10 text-[#1A1612]/40 font-hanken text-sm">Annuler</button>
           </div>
         </div>
       ) : (
         <button onClick={() => setAdding(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed border-[#F3EADB]/15 text-[#F3EADB]/40 font-hanken text-sm hover:text-[#F3EADB] hover:border-[#F3EADB]/25 transition-colors w-full justify-center">
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed border-[#1A1612]/15 text-[#1A1612]/40 font-hanken text-sm hover:text-[#1A1612] hover:border-[#1A1612]/25 transition-colors w-full justify-center">
           <Plus size={13} /> Ajouter un lien
         </button>
       )}
@@ -594,7 +594,7 @@ function PopupsManager({ popups, onReload, showToast }: { popups: Popup[]; onRel
   const [saving, setSaving]   = useState(false);
 
   const openNew = () => {
-    setForm({ name:"", title:"", body:"", cta_label:"", cta_url:"", trigger:"delay", trigger_value:5, bg_color:"#3D1F5C", is_active:false, show_once:true });
+    setForm({ name:"", title:"", body:"", cta_label:"", cta_url:"", trigger:"delay", trigger_value:5, bg_color:"#FBF9F5", is_active:false, show_once:true });
     setEditing({ id:"" } as Popup);
   };
 
@@ -623,8 +623,8 @@ function PopupsManager({ popups, onReload, showToast }: { popups: Popup[]; onRel
   if (editing !== null) return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <button onClick={() => setEditing(null)} className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#F3EADB]">← Retour</button>
-        <h2 className="font-fraunces text-lg text-[#F3EADB]">{editing.id ? "Modifier le popup" : "Nouveau popup"}</h2>
+        <button onClick={() => setEditing(null)} className="font-mono text-[10px] text-[#1A1612]/30 hover:text-[#1A1612]">← Retour</button>
+        <h2 className="font-fraunces text-lg text-[#1A1612]">{editing.id ? "Modifier le popup" : "Nouveau popup"}</h2>
       </div>
       {[
         { key:"name", label:"Nom interne *", placeholder:"Ex: Popup bienvenue" },
@@ -634,40 +634,40 @@ function PopupsManager({ popups, onReload, showToast }: { popups: Popup[]; onRel
         { key:"image_url", label:"Image (URL)", placeholder:"https://..." },
       ].map(f => (
         <div key={f.key}>
-          <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1.5">{f.label}</label>
+          <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1.5">{f.label}</label>
           <input value={(form as Record<string,string>)[f.key] ?? ""} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.placeholder}
-            className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#E0337E]/50" />
+            className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#FF3D7F]/50" />
         </div>
       ))}
       <div>
-        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1.5">Corps du texte</label>
+        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1.5">Corps du texte</label>
         <textarea value={form.body ?? ""} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} rows={4}
-          className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#E0337E]/50 resize-y" />
+          className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#FF3D7F]/50 resize-y" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1.5">Déclencheur</label>
+          <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1.5">Déclencheur</label>
           <select value={form.trigger ?? "delay"} onChange={e => setForm(p => ({ ...p, trigger: e.target.value }))}
-            className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#F3EADB] focus:outline-none">
+            className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#1A1612] focus:outline-none">
             {TRIGGER_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
         <div>
-          <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1.5">Valeur (sec / %)</label>
+          <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1.5">Valeur (sec / %)</label>
           <input type="number" value={form.trigger_value ?? 5} onChange={e => setForm(p => ({ ...p, trigger_value: Number(e.target.value) }))}
-            className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#F3EADB] focus:outline-none" />
+            className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-3 py-2 font-hanken text-sm text-[#1A1612] focus:outline-none" />
         </div>
       </div>
       <div className="flex items-center gap-6">
         {[["is_active","Actif"],["show_once","Afficher une seule fois"]].map(([k,l]) => (
           <label key={k} className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={Boolean((form as Record<string,unknown>)[k])} onChange={e => setForm(p => ({ ...p, [k]: e.target.checked }))} className="accent-[#E0337E]" />
-            <span className="font-hanken text-sm text-[#F3EADB]/60">{l}</span>
+            <input type="checkbox" checked={Boolean((form as Record<string,unknown>)[k])} onChange={e => setForm(p => ({ ...p, [k]: e.target.checked }))} className="accent-[#FF3D7F]" />
+            <span className="font-hanken text-sm text-[#1A1612]/60">{l}</span>
           </label>
         ))}
       </div>
       <button onClick={save} disabled={!form.name || saving}
-        className="w-full py-2.5 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#E0337E]/90 disabled:opacity-40">
+        className="w-full py-2.5 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#FF3D7F]/90 disabled:opacity-40">
         {saving ? "Sauvegarde…" : "Sauvegarder"}
       </button>
     </div>
@@ -676,35 +676,35 @@ function PopupsManager({ popups, onReload, showToast }: { popups: Popup[]; onRel
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <p className="font-hanken text-sm text-[#F3EADB]/40">{popups.length} popup{popups.length !== 1 ? "s" : ""}</p>
-        <button onClick={openNew} className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#E0337E]/90">
+        <p className="font-hanken text-sm text-[#1A1612]/40">{popups.length} popup{popups.length !== 1 ? "s" : ""}</p>
+        <button onClick={openNew} className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#FF3D7F]/90">
           <Plus size={13} /> Nouveau popup
         </button>
       </div>
       {popups.length === 0 ? (
-        <div className="text-center py-16 border border-dashed border-[#F3EADB]/10 rounded-2xl">
-          <MousePointerClick size={32} className="mx-auto mb-3 text-[#F3EADB]/10" />
-          <p className="font-hanken text-[#F3EADB]/30 mb-4">Aucun popup configuré</p>
+        <div className="text-center py-16 border border-dashed border-[#1A1612]/10 rounded-2xl">
+          <MousePointerClick size={32} className="mx-auto mb-3 text-[#1A1612]/10" />
+          <p className="font-hanken text-[#1A1612]/30 mb-4">Aucun popup configuré</p>
         </div>
       ) : popups.map(p => (
-        <div key={p.id} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${p.is_active ? "border-[#E0337E]/20 bg-[#E0337E]/3" : "border-[#F3EADB]/8"}`}>
+        <div key={p.id} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${p.is_active ? "border-[#FF3D7F]/20 bg-[#FF3D7F]/3" : "border-[#1A1612]/8"}`}>
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <p className="font-hanken text-sm text-[#F3EADB]">{p.name}</p>
-              <span className={`font-mono text-[8px] px-1.5 py-0.5 rounded border ${p.is_active ? "text-[#E0337E] border-[#E0337E]/20" : "text-[#F3EADB]/25 border-[#F3EADB]/10"}`}>
+              <p className="font-hanken text-sm text-[#1A1612]">{p.name}</p>
+              <span className={`font-mono text-[8px] px-1.5 py-0.5 rounded border ${p.is_active ? "text-[#FF3D7F] border-[#FF3D7F]/20" : "text-[#1A1612]/25 border-[#1A1612]/10"}`}>
                 {p.is_active ? "Actif" : "Inactif"}
               </span>
             </div>
-            <p className="font-mono text-[10px] text-[#F3EADB]/25 mt-0.5">
+            <p className="font-mono text-[10px] text-[#1A1612]/25 mt-0.5">
               {TRIGGER_OPTIONS.find(o => o.value === p.trigger)?.label} · {p.show_once ? "une seule fois" : "à chaque visite"}
             </p>
           </div>
           <div className="flex items-center gap-1">
-            <button onClick={() => toggleActive(p)} className="p-2 rounded-lg text-[#F3EADB]/25 hover:text-[#F3EADB] transition-colors">
+            <button onClick={() => toggleActive(p)} className="p-2 rounded-lg text-[#1A1612]/25 hover:text-[#1A1612] transition-colors">
               {p.is_active ? <EyeOff size={12} /> : <Eye size={12} />}
             </button>
-            <button onClick={() => { setEditing(p); setForm(p); }} className="p-2 rounded-lg text-[#F3EADB]/25 hover:text-[#F3EADB] transition-colors"><Layers size={12} /></button>
-            <button onClick={() => del(p.id)} className="p-2 rounded-lg text-[#F3EADB]/20 hover:text-red-400 transition-colors"><Trash2 size={12} /></button>
+            <button onClick={() => { setEditing(p); setForm(p); }} className="p-2 rounded-lg text-[#1A1612]/25 hover:text-[#1A1612] transition-colors"><Layers size={12} /></button>
+            <button onClick={() => del(p.id)} className="p-2 rounded-lg text-[#1A1612]/20 hover:text-red-400 transition-colors"><Trash2 size={12} /></button>
           </div>
         </div>
       ))}
@@ -740,68 +740,68 @@ function TestimonialsManager({ items, onReload, showToast }: { items: Testimonia
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <p className="font-hanken text-sm text-[#F3EADB]/40">{items.length} témoignage{items.length !== 1 ? "s" : ""}</p>
-        <button onClick={() => setAdding(true)} className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#E0337E]/90">
+        <p className="font-hanken text-sm text-[#1A1612]/40">{items.length} témoignage{items.length !== 1 ? "s" : ""}</p>
+        <button onClick={() => setAdding(true)} className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#FF3D7F]/90">
           <Plus size={13} /> Ajouter
         </button>
       </div>
 
       {adding && (
-        <div className="p-4 rounded-2xl border border-[#E0337E]/20 bg-[#E0337E]/3 space-y-3">
+        <div className="p-4 rounded-2xl border border-[#FF3D7F]/20 bg-[#FF3D7F]/3 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             {[["author","Auteur *","Prénom Nom"],["role","Rôle","Cliente, Vendeur·se…"],["avatar_url","Avatar URL","https://…"]].map(([k,l,ph]) => (
               <div key={k} className={k === "author" ? "" : ""}>
-                <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1">{l}</label>
+                <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1">{l}</label>
                 <input value={(form as Record<string,string|number>)[k] as string ?? ""} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} placeholder={ph}
-                  className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none" />
+                  className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none" />
               </div>
             ))}
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1">Note (1-5)</label>
+              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1">Note (1-5)</label>
               <input type="number" min={1} max={5} value={form.rating} onChange={e => setForm(p => ({ ...p, rating: Number(e.target.value) }))}
-                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#F3EADB] focus:outline-none" />
+                className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#1A1612] focus:outline-none" />
             </div>
           </div>
           <div>
-            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1">Témoignage *</label>
+            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1">Témoignage *</label>
             <textarea value={form.content} onChange={e => setForm(p => ({ ...p, content: e.target.value }))} rows={3} placeholder="Texte du témoignage…"
-              className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none resize-none" />
+              className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-2 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none resize-none" />
           </div>
           <div className="flex gap-2">
             <button onClick={add} disabled={!form.author || !form.content || saving}
-              className="px-4 py-1.5 rounded-xl bg-[#E0337E] text-white font-hanken text-sm disabled:opacity-40">{saving ? "…" : "Ajouter"}</button>
-            <button onClick={() => setAdding(false)} className="px-4 py-1.5 rounded-xl border border-[#F3EADB]/10 text-[#F3EADB]/40 font-hanken text-sm">Annuler</button>
+              className="px-4 py-1.5 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm disabled:opacity-40">{saving ? "…" : "Ajouter"}</button>
+            <button onClick={() => setAdding(false)} className="px-4 py-1.5 rounded-xl border border-[#1A1612]/10 text-[#1A1612]/40 font-hanken text-sm">Annuler</button>
           </div>
         </div>
       )}
 
       {items.length === 0 && !adding ? (
-        <div className="text-center py-16 border border-dashed border-[#F3EADB]/10 rounded-2xl">
-          <Star size={32} className="mx-auto mb-3 text-[#F3EADB]/10" />
-          <p className="font-hanken text-[#F3EADB]/30">Aucun témoignage</p>
+        <div className="text-center py-16 border border-dashed border-[#1A1612]/10 rounded-2xl">
+          <Star size={32} className="mx-auto mb-3 text-[#1A1612]/10" />
+          <p className="font-hanken text-[#1A1612]/30">Aucun témoignage</p>
         </div>
       ) : items.map(t => (
-        <div key={t.id} className={`flex items-start gap-4 p-4 rounded-2xl border transition-all ${!t.is_active ? "opacity-40" : "border-[#F3EADB]/8 hover:border-[#F3EADB]/15"}`}>
-          <div className="w-10 h-10 rounded-full bg-[#E0337E]/10 border border-[#E0337E]/20 flex items-center justify-center flex-shrink-0">
-            {t.avatar_url ? <img src={t.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="font-fraunces text-[#E0337E] text-base">{t.author[0]}</span>}
+        <div key={t.id} className={`flex items-start gap-4 p-4 rounded-2xl border transition-all ${!t.is_active ? "opacity-40" : "border-[#1A1612]/8 hover:border-[#1A1612]/15"}`}>
+          <div className="w-10 h-10 rounded-full bg-[#FF3D7F]/10 border border-[#FF3D7F]/20 flex items-center justify-center flex-shrink-0">
+            {t.avatar_url ? <img src={t.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="font-fraunces text-[#FF3D7F] text-base">{t.author[0]}</span>}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p className="font-hanken text-sm text-[#F3EADB] font-medium">{t.author}</p>
-              {t.role && <p className="font-mono text-[10px] text-[#F3EADB]/30">{t.role}</p>}
+              <p className="font-hanken text-sm text-[#1A1612] font-medium">{t.author}</p>
+              {t.role && <p className="font-mono text-[10px] text-[#1A1612]/30">{t.role}</p>}
               <div className="flex gap-0.5 ml-auto">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={10} className={i < t.rating ? "text-[#E0901E]" : "text-[#F3EADB]/15"} fill={i < t.rating ? "currentColor" : "none"} />
+                  <Star key={i} size={10} className={i < t.rating ? "text-[#E0901E]" : "text-[#1A1612]/15"} fill={i < t.rating ? "currentColor" : "none"} />
                 ))}
               </div>
             </div>
-            <p className="font-hanken text-xs text-[#F3EADB]/50 mt-1 line-clamp-2">{t.content}</p>
+            <p className="font-hanken text-xs text-[#1A1612]/50 mt-1 line-clamp-2">{t.content}</p>
           </div>
           <div className="flex gap-1 flex-shrink-0">
-            <button onClick={() => toggleActive(t)} className="p-1.5 rounded-lg text-[#F3EADB]/20 hover:text-[#F3EADB] transition-colors">
+            <button onClick={() => toggleActive(t)} className="p-1.5 rounded-lg text-[#1A1612]/20 hover:text-[#1A1612] transition-colors">
               {t.is_active ? <EyeOff size={12} /> : <Eye size={12} />}
             </button>
-            <button onClick={() => del(t.id)} className="p-1.5 rounded-lg text-[#F3EADB]/20 hover:text-red-400 transition-colors"><Trash2 size={12} /></button>
+            <button onClick={() => del(t.id)} className="p-1.5 rounded-lg text-[#1A1612]/20 hover:text-red-400 transition-colors"><Trash2 size={12} /></button>
           </div>
         </div>
       ))}

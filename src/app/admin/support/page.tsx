@@ -18,7 +18,7 @@ type Ticket = {
 };
 
 const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
-  low:    { label: "Basse",   color: "text-[#F3EADB]/40 border-white/[0.14]" },
+  low:    { label: "Basse",   color: "text-[#1A1612]/40 border-white/[0.14]" },
   medium: { label: "Moyenne", color: "text-[#E0901E] border-[#E0901E]/20" },
   high:   { label: "Haute",   color: "text-[#CF3F7C] border-[#CF3F7C]/20" },
   urgent: { label: "Urgent",  color: "text-red-400 border-red-400/30" },
@@ -28,9 +28,9 @@ const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   open:        { label: "Ouvert",      color: "text-[#E0901E] bg-[#E0901E]/10 border-[#E0901E]/20" },
   assigned:    { label: "Assigné",     color: "text-[#6D2DB5] bg-[#6D2DB5]/10 border-[#6D2DB5]/20" },
   in_progress: { label: "En cours",    color: "text-[#1C9C95] bg-[#1C9C95]/10 border-[#1C9C95]/20" },
-  waiting:     { label: "En attente",  color: "text-[#F3EADB]/40 bg-white/[0.09] border-white/[0.14]" },
+  waiting:     { label: "En attente",  color: "text-[#1A1612]/40 bg-white/[0.09] border-white/[0.14]" },
   resolved:    { label: "Résolu",      color: "text-green-400 bg-green-400/10 border-green-400/20" },
-  closed:      { label: "Fermé",       color: "text-[#F3EADB]/20 bg-[#F3EADB]/3 border-[#F3EADB]/5" },
+  closed:      { label: "Fermé",       color: "text-[#1A1612]/20 bg-[#1A1612]/3 border-[#1A1612]/5" },
 };
 
 const STATUS_TABS = ["open","in_progress","waiting","resolved","closed",""];
@@ -70,8 +70,8 @@ export default function SupportPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-fraunces text-2xl text-[#F3EADB]">Support</h1>
-        <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">{total} ticket{total !== 1 ? "s" : ""}</p>
+        <h1 className="font-fraunces text-2xl text-[#1A1612]">Support</h1>
+        <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">{total} ticket{total !== 1 ? "s" : ""}</p>
       </div>
 
       {/* Status tabs */}
@@ -79,7 +79,7 @@ export default function SupportPage() {
         {STATUS_TABS.map(s => (
           <button key={s} onClick={() => setStatus(s)}
             className={`px-3 py-1.5 rounded-lg font-mono text-[10px] transition-all ${
-              status === s ? "bg-[#E0337E] text-white" : "text-[#F3EADB]/40 hover:text-[#F3EADB]"
+              status === s ? "bg-[#FF3D7F] text-white" : "text-[#1A1612]/40 hover:text-[#1A1612]"
             }`}>
             {s === "" ? "Tous" : STATUS_CONFIG[s]?.label ?? s}
           </button>
@@ -92,8 +92,8 @@ export default function SupportPage() {
           <button key={v} onClick={() => setPriority(v)}
             className={`px-3 py-1 rounded-lg font-mono text-[10px] transition-all border ${
               priority === v
-                ? "bg-[#F3EADB]/10 text-[#F3EADB] border-[#F3EADB]/20"
-                : "text-[#F3EADB]/30 border-transparent hover:text-[#F3EADB]/60"
+                ? "bg-[#1A1612]/10 text-[#1A1612] border-[#1A1612]/20"
+                : "text-[#1A1612]/30 border-transparent hover:text-[#1A1612]/60"
             }`}>{l}</button>
         ))}
       </div>
@@ -104,8 +104,8 @@ export default function SupportPage() {
         </div>
       ) : tickets.length === 0 ? (
         <div className="text-center py-20">
-          <MessageSquare size={40} className="mx-auto mb-3 text-[#F3EADB]/10" />
-          <p className="font-hanken text-[#F3EADB]/30">Aucun ticket</p>
+          <MessageSquare size={40} className="mx-auto mb-3 text-[#1A1612]/10" />
+          <p className="font-hanken text-[#1A1612]/30">Aucun ticket</p>
         </div>
       ) : (
         <>
@@ -116,8 +116,8 @@ export default function SupportPage() {
               const statUi = STATUS_CONFIG[ticket.ticket_status] ?? STATUS_CONFIG.open;
               return (
                 <Link key={ticket.id} href={`/admin/support/${ticket.id}`}
-                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all hover:border-[#F3EADB]/15 group ${
-                    slaBreached ? "border-red-500/20 bg-red-500/3" : "border-white/[0.13] bg-[#F3EADB]/[0.01]"
+                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all hover:border-[#1A1612]/15 group ${
+                    slaBreached ? "border-red-500/20 bg-red-500/3" : "border-white/[0.13] bg-[#1A1612]/[0.01]"
                   }`}>
                   {/* Priority dot */}
                   <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
@@ -129,9 +129,9 @@ export default function SupportPage() {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="font-mono text-[10px] text-[#F3EADB]/25">{ticket.ticket_number}</span>
+                      <span className="font-mono text-[10px] text-[#1A1612]/25">{ticket.ticket_number}</span>
                       {ticket.category && (
-                        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-white/[0.09] text-[#F3EADB]/30 uppercase">
+                        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-white/[0.09] text-[#1A1612]/30 uppercase">
                           {ticket.category}
                         </span>
                       )}
@@ -141,14 +141,14 @@ export default function SupportPage() {
                         </span>
                       )}
                     </div>
-                    <p className="font-hanken text-sm text-[#F3EADB] truncate">{ticket.subject}</p>
+                    <p className="font-hanken text-sm text-[#1A1612] truncate">{ticket.subject}</p>
                     <div className="flex items-center gap-3 mt-1">
                       {ticket.profiles?.full_name && (
-                        <span className="flex items-center gap-1 font-mono text-[9px] text-[#F3EADB]/25">
+                        <span className="flex items-center gap-1 font-mono text-[9px] text-[#1A1612]/25">
                           <User size={9} /> {ticket.profiles.full_name}
                         </span>
                       )}
-                      <span className="flex items-center gap-1 font-mono text-[9px] text-[#F3EADB]/20">
+                      <span className="flex items-center gap-1 font-mono text-[9px] text-[#1A1612]/20">
                         <Clock size={9} /> {new Date(ticket.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                       </span>
                     </div>
@@ -163,9 +163,9 @@ export default function SupportPage() {
                       {priUi.label}
                     </span>
                     {ticket.assigned && (
-                      <span className="font-mono text-[9px] text-[#F3EADB]/25">{ticket.assigned.full_name}</span>
+                      <span className="font-mono text-[9px] text-[#1A1612]/25">{ticket.assigned.full_name}</span>
                     )}
-                    <ChevronRight size={12} className="text-[#F3EADB]/20 group-hover:text-[#F3EADB]/50 transition-colors" />
+                    <ChevronRight size={12} className="text-[#1A1612]/20 group-hover:text-[#1A1612]/50 transition-colors" />
                   </div>
                 </Link>
               );
@@ -174,14 +174,14 @@ export default function SupportPage() {
 
           {total > LIMIT && (
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] text-[#F3EADB]/25">
+              <span className="font-mono text-[10px] text-[#1A1612]/25">
                 {(page - 1) * LIMIT + 1}–{Math.min(page * LIMIT, total)} sur {total}
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">← Préc.</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#1A1612]/40 hover:text-[#1A1612] disabled:opacity-30 transition-colors">← Préc.</button>
                 <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total}
-                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">Suiv. →</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#1A1612]/40 hover:text-[#1A1612] disabled:opacity-30 transition-colors">Suiv. →</button>
               </div>
             </div>
           )}
