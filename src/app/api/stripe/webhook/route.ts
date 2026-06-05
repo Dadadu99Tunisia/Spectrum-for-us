@@ -160,6 +160,52 @@ export async function POST(req: Request) {
 
     await supabase.from("order_items").insert(orderItems);
 
+    // ── Commissions (par boutique) — traçables, non bloquant ────────────────
+    // Taux : 0 % si avantage fondateur·ice actif · sinon override · sinon défaut.
+    try {
+      const grossByShop: Record<string, number> = {};
+      for (const item of cart) {
+        const p = productMap[item.id];
+        if (!p?.shop_id) continue;
+        grossByShop[p.shop_id] = (grossByShop[p.shop_id] ?? 0) + Number(p.price) * item.quantity;
+      }
+      const shopIdList = Object.keys(grossByShop);
+      if (shopIdList.length > 0) {
+        const { data: setting } = await supabase
+          .from("admin_settings").select("value").eq("key", "commission_rate").maybeSingle();
+        const cfg = Number(setting?.value);
+        const defaultRate = Number.isFinite(cfg) ? cfg : 8; // % par défaut
+
+        const { data: founders } = await supabase
+          .from("founder_program_members")
+          .select("shop_id, commission_free_until, commission_rate_override")
+          .in("shop_id", shopIdList);
+        const founderByShop = Object.fromEntries((founders ?? []).map(f => [f.shop_id, f]));
+        const nowMs = Date.now();
+
+        const commissionRows = shopIdList.map(shopId => {
+          const f = founderByShop[shopId] as { commission_free_until: string | null; commission_rate_override: number | null } | undefined;
+          let rate = defaultRate;
+          if (f?.commission_free_until && new Date(f.commission_free_until).getTime() > nowMs) {
+            rate = 0; // avantage fondateur·ice actif
+          } else if (f?.commission_rate_override != null) {
+            rate = Number(f.commission_rate_override);
+          }
+          const gross = Math.round(grossByShop[shopId] * 100) / 100;
+          const amount = Math.round(gross * (rate / 100) * 100) / 100;
+          return {
+            order_id: order.id, shop_id: shopId,
+            gross_amount: gross, commission_rate: rate,
+            commission_amount: amount, platform_fee: amount, status: "pending",
+          };
+        });
+        const { error: cErr } = await supabase.from("commissions").insert(commissionRows);
+        if (cErr) console.error("[webhook] commissions insert", cErr);
+      }
+    } catch (e) {
+      console.error("[webhook] commission calc failed (non-blocking)", e);
+    }
+
     // Décrémenter le stock des produits physiques (atomique)
     const physicalItems = cart.filter(item => {
       const p = productMap[item.id];

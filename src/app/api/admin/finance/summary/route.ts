@@ -14,7 +14,7 @@ export async function GET() {
   const yearStart      = new Date(now.getFullYear(), 0, 1).toISOString();
   const last30         = new Date(Date.now() - 30 * 86400000).toISOString();
 
-  const [thisMonth, prevMonth, thisYear, byStatus, daily, topVendors] = await Promise.all([
+  const [thisMonth, prevMonth, thisYear, byStatus, daily, topVendors, commissionsYear] = await Promise.all([
     supabase.from("orders").select("total_amount").eq("status","paid").gte("created_at", monthStart),
     supabase.from("orders").select("total_amount").eq("status","paid").gte("created_at", prevMonthStart).lte("created_at", prevMonthEnd),
     supabase.from("orders").select("total_amount").eq("status","paid").gte("created_at", yearStart),
@@ -23,7 +23,9 @@ export async function GET() {
     supabase.from("order_items")
       .select("vendor_id, quantity, price_at_purchase, orders!inner(status, created_at)")
       .eq("orders.status","paid").gte("orders.created_at", yearStart),
+    supabase.from("commissions").select("commission_amount").gte("created_at", yearStart),
   ]);
+  const realCommissions = (commissionsYear.data ?? []).reduce((s, c) => s + Number(c.commission_amount || 0), 0);
 
   if (thisMonth.error) return apiError(thisMonth.error.message);
 
@@ -83,8 +85,8 @@ export async function GET() {
       revenuePrevMonth:  Math.round(revenuePrevMonth * 100) / 100,
       revenueYear:       Math.round(revenueYear * 100) / 100,
       monthGrowthPct:    Math.round(growth * 100) / 100,
-      commissionRate:    15, // % Spectrum
-      estimatedCommissions: Math.round(revenueYear * 0.15 * 100) / 100,
+      commissionRate:    revenueYear > 0 ? Math.round((realCommissions / revenueYear) * 1000) / 10 : 0, // % effectif
+      estimatedCommissions: Math.round(realCommissions * 100) / 100, // commissions réelles (table commissions)
       statusBreakdown,
       chartRevenue,
       topVendors: topVendorsList,
