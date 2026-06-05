@@ -1,497 +1,507 @@
 "use client";
-import { useState, useEffect } from "react";
+
+/**
+ * Dashboard vendeur·euse — Spectrum For Us
+ * Design : "Dashboard Vendeur Spectrum" (Claude Design handoff).
+ * Thème clair back-office (Bricolage / Hanken / Space Mono), câblé aux données réelles
+ * (boutique, produits, commandes via order_items.vendor_id, revenus, rang Fondateur·ice).
+ */
+
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
-import { Header } from "@/components/Header";
-import { Card } from "@/components/ui/Card";
-import { Tag } from "@/components/ui/Tag";
-import { Button } from "@/components/ui/Button";
-import {
-  Euro, Package, BarChart3, Star, Plus, Settings,
-  Eye, EyeOff, Pencil, CheckCircle2, Circle,
-  ArrowRight, ExternalLink, ImageIcon, Mail, Zap,
-} from "lucide-react";
-import { FounderBanner } from "@/components/founder/FounderBanner";
-import { FounderBadge, type FounderStatus } from "@/components/founder/FounderBadge";
-import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import Link from "next/link";
+import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
+import {
+  Home, Package, Boxes, Store, CircleDollarSign, BarChart3, CreditCard,
+  Settings, Search, Bell, Plus, Menu, ExternalLink, Check, ArrowUpRight,
+} from "lucide-react";
+
+// ── Palette (design tokens) ───────────────────────────────────────────────
+const C = {
+  bg: "#FBF9F5", panel: "#fff", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285",
+  line: "#ECE6DB", line2: "#D8CFC0", mag: "#FF3D7F", grn: "#16A06A", amb: "#F2A03D",
+  vio: "#6A44D6", cya: "#1FB6C9", red: "#E0335E",
+  spec: "linear-gradient(90deg,#FF3D7F,#C44CFF,#6B5CFF,#1FB6C9,#16A06A,#F2A03D)",
+};
 
 type Shop = {
   id: string; name: string; slug: string; is_active: boolean;
-  logo_url: string | null; banner_url: string | null;
-  contact_email: string | null; description: string | null;
+  logo_url: string | null; banner_url: string | null; contact_email: string | null;
+  description: string | null; subscription_status: string | null;
 };
 type Product = {
   id: string; name: string; title: string; price: number;
   quantity: number; category: string; is_active: boolean; created_at: string;
 };
-
 type VendorOrder = {
-  id: string;
-  order_id: string;
-  quantity: number;
-  price_at_purchase: number;
-  created_at: string;
+  id: string; order_id: string; quantity: number; price_at_purchase: number; created_at: string;
   products: { name: string; title: string } | null;
   orders: { status: string; created_at: string; shipping_name: string | null } | null;
 };
 
-const TABS = ["Vue d'ensemble", "Produits", "Commandes", "Finances"] as const;
-type Tab = typeof TABS[number];
+type Metrics = {
+  paid: VendorOrder[]; revenueMonth: number; totalRevenue: number; orderCount: number;
+  toPrepare: Set<string>; weeks: number[]; maxWeek: number; recent: VendorOrder[];
+  amount: (o: VendorOrder) => number;
+};
 
-export default function VendeurPage() {
+type View = "overview" | "products" | "orders" | "shop" | "revenue" | "stats" | "subscription" | "settings";
+const PAID = ["paid", "shipped", "delivered"];
+const eur = (n: number) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Math.round(n)) + " €";
+
+const STATUS: Record<string, { label: string; bg: string; fg: string }> = {
+  paid:      { label: "À préparer", bg: "#FCEAD2", fg: "#9A6516" },
+  pending:   { label: "En attente", bg: "#EEEAE1", fg: C.soft },
+  shipped:   { label: "Expédié",    bg: "#DDEBFB", fg: "#2660B8" },
+  delivered: { label: "Livré",      bg: "#DCF0E5", fg: C.grn },
+  failed:    { label: "Échec",      bg: "#FBE0E6", fg: C.red },
+  cancelled: { label: "Annulé",     bg: "#FBE0E6", fg: C.red },
+};
+
+const NAV: { v: View; label: string; icon: React.ElementType; section?: string }[] = [
+  { v: "overview", label: "Vue d'ensemble", icon: Home },
+  { v: "products", label: "Produits", icon: Package },
+  { v: "orders", label: "Commandes", icon: Boxes },
+  { v: "shop", label: "Ma boutique", icon: Store },
+  { v: "revenue", label: "Revenus", icon: CircleDollarSign, section: "Business" },
+  { v: "stats", label: "Statistiques", icon: BarChart3 },
+  { v: "subscription", label: "Abonnement", icon: CreditCard },
+  { v: "settings", label: "Paramètres", icon: Settings, section: "Compte" },
+];
+const TITLES: Record<View, string> = {
+  overview: "Vue d'ensemble", products: "Produits", orders: "Commandes", shop: "Ma boutique",
+  revenue: "Revenus", stats: "Statistiques", subscription: "Abonnement", settings: "Paramètres",
+};
+
+export default function VendeurDashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [tab, setTab]               = useState<Tab>("Vue d'ensemble");
-  const [shop, setShop]             = useState<Shop | null>(null);
-  const [products, setProducts]     = useState<Product[]>([]);
-  const [vendorOrders, setVendorOrders] = useState<VendorOrder[]>([]);
-  const [totalRevenue, setTotalRevenue] = useState(0);
-  const [loadingData, setLoading]   = useState(true);
-  const [togglingId, setTogglingId] = useState<string | null>(null);
-  const [founderStatus, setFounderStatus] = useState<{ status: FounderStatus; rank: number } | null>(null);
+  const [shop, setShop] = useState<Shop | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<VendorOrder[]>([]);
+  const [founderRank, setFounderRank] = useState<number | null>(null);
+  const [loadingData, setLoading] = useState(true);
+  const [view, setView] = useState<View>("overview");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) { router.push("/auth?redirect=/vendeur"); return; }
     if (!user) return;
     const supabase = createClient();
-    const load = async () => {
+    (async () => {
       try {
         const { data: shopData } = await supabase.from("shops").select("*").eq("owner_id", user.id).single();
         if (!shopData) { router.push("/vendeur/onboarding"); return; }
         setShop(shopData as Shop);
-        // Fetch founder program status silently
-        supabase.from("founder_program_members")
-          .select("status, rank")
-          .eq("user_id", user.id)
-          .single()
-          .then(({ data: fp }) => {
-            if (fp) setFounderStatus({ status: fp.status as FounderStatus, rank: fp.rank });
-          });
+        supabase.from("founder_program_members").select("rank").eq("user_id", user.id).single()
+          .then(({ data }) => { if (data) setFounderRank(data.rank as number); });
         const [prodRes, orderRes] = await Promise.all([
           supabase.from("products").select("*").eq("shop_id", shopData.id).order("created_at", { ascending: false }),
           supabase.from("order_items")
             .select("id, order_id, quantity, price_at_purchase, created_at, products(name,title), orders(status, created_at, shipping_name)")
-            .eq("vendor_id", user.id)
-            .order("created_at", { ascending: false }),
+            .eq("vendor_id", user.id).order("created_at", { ascending: false }),
         ]);
-        setProducts(prodRes.data ?? []);
-        const orders = ((orderRes.data ?? []) as unknown) as VendorOrder[];
-        setVendorOrders(orders);
-        const revenue = orders
-          .filter(o => o.orders?.status === "paid" || o.orders?.status === "shipped" || o.orders?.status === "delivered")
-          .reduce((sum, o) => sum + (Number(o.price_at_purchase) * o.quantity), 0);
-        setTotalRevenue(revenue);
+        setProducts((prodRes.data ?? []) as Product[]);
+        setOrders(((orderRes.data ?? []) as unknown) as VendorOrder[]);
       } finally {
         setLoading(false);
       }
-    };
-    load();
+    })();
   }, [user, loading, router]);
 
-  const toggleProduct = async (p: Product) => {
-    setTogglingId(p.id);
-    await createClient().from("products").update({ is_active: !p.is_active }).eq("id", p.id);
-    setProducts(prev => prev.map(x => x.id === p.id ? { ...x, is_active: !x.is_active } : x));
-    setTogglingId(null);
-  };
+  // ── Dérivés ──────────────────────────────────────────────────────────────
+  const m = useMemo(() => {
+    const paid = orders.filter(o => o.orders && PAID.includes(o.orders.status));
+    const amount = (o: VendorOrder) => Number(o.price_at_purchase) * o.quantity;
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    const revenueMonth = paid.filter(o => new Date(o.orders!.created_at).getTime() >= monthStart).reduce((s, o) => s + amount(o), 0);
+    const totalRevenue = paid.reduce((s, o) => s + amount(o), 0);
+    const orderCount = new Set(orders.map(o => o.order_id)).size;
+    const toPrepare = new Set(orders.filter(o => o.orders?.status === "paid").map(o => o.order_id));
+    // 12 semaines glissantes
+    const weeks: number[] = Array(12).fill(0);
+    const weekMs = 7 * 86400000;
+    const base = now.getTime() - 11 * weekMs;
+    for (const o of paid) {
+      const idx = Math.floor((new Date(o.orders!.created_at).getTime() - base) / weekMs);
+      if (idx >= 0 && idx < 12) weeks[idx] += amount(o);
+    }
+    const maxWeek = Math.max(...weeks, 1);
+    const recent = orders.slice(0, 4);
+    return { paid, revenueMonth, totalRevenue, orderCount, toPrepare, weeks, maxWeek, recent, amount };
+  }, [orders]);
+
+  const checklist = shop ? [
+    { label: "Compléter ta boutique (logo, bannière, contact)", done: !!(shop.logo_url && shop.banner_url && shop.contact_email), href: "/vendeur/boutique" },
+    { label: products.length === 0 ? "Ajouter ton premier produit" : "Ajouter plus de produits (boost visibilité)", done: products.length >= 3, href: "/vendeur/nouveau-produit" },
+    { label: m.toPrepare.size > 0 ? `Préparer ${m.toPrepare.size} commande${m.toPrepare.size > 1 ? "s" : ""}` : "Aucune commande à préparer", done: m.toPrepare.size === 0, href: "#orders" },
+    { label: "Connecter les paiements (Stripe)", done: shop.subscription_status === "active", href: "/vendeur/abonnement" },
+  ] : [];
 
   if (loading || loadingData) return (
-    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center" style={{ background: C.bg }}>
       <SpectrumLoader size="md" />
     </div>
   );
   if (!shop) return null;
 
-  const activeProducts = products.filter(p => p.is_active);
-
-  /* ── Checklist ── */
-  const checklist = [
-    {
-      id: "logo",
-      label: "Ajouter un logo",
-      done: !!shop.logo_url,
-      href: "/vendeur/boutique",
-      icon: ImageIcon,
-    },
-    {
-      id: "banner",
-      label: "Ajouter une bannière",
-      done: !!shop.banner_url,
-      href: "/vendeur/boutique",
-      icon: ImageIcon,
-    },
-    {
-      id: "contact",
-      label: "Renseigner un email de contact",
-      done: !!shop.contact_email,
-      href: "/vendeur/boutique",
-      icon: Mail,
-    },
-    {
-      id: "product",
-      label: "Ajouter ton premier produit",
-      done: products.length > 0,
-      href: "/vendeur/nouveau-produit",
-      icon: Package,
-    },
-  ];
-  const doneCount  = checklist.filter(c => c.done).length;
-  const setupDone  = doneCount === checklist.length;
-  const pct        = Math.round((doneCount / checklist.length) * 100);
+  const activeCount = products.filter(p => p.is_active).length;
 
   return (
-    <div className="min-h-screen bg-[#3D1F5C]">
-      <Header />
-      <div className="pt-20 flex min-h-screen">
+    <div className="flex min-h-screen" style={{ background: C.bg, color: C.ink, fontFamily: "var(--font-hanken),sans-serif" }}>
+      {/* backdrop mobile */}
+      {menuOpen && <div className="fixed inset-0 z-50 bg-black/30 lg:hidden" onClick={() => setMenuOpen(false)} />}
 
-        {/* ── Sidebar ── */}
-        <aside className="hidden lg:flex flex-col w-60 border-r border-[#F3EADB]/8 min-h-screen pt-8 px-4 gap-1 shrink-0">
-          {/* Shop identity */}
-          <div className="mb-6 px-2">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl overflow-hidden bg-[#E0337E]/10 border border-[#E0337E]/20 flex items-center justify-center shrink-0">
-                {shop.logo_url
-                  ? <img src={shop.logo_url} alt={shop.name} className="w-full h-full object-cover" />
-                  : <span className="font-fraunces text-lg text-[#E0337E]">{shop.name[0]}</span>
-                }
-              </div>
-              <div className="min-w-0">
-                <p className="font-bricolage font-bold text-[#F3EADB] text-sm leading-tight truncate">{shop.name}</p>
-                <a href={`/boutique/${shop.slug}`} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] transition-colors tracking-widest">
-                  voir ma boutique <ExternalLink size={8} />
-                </a>
-              </div>
+      {/* ── SIDEBAR ── */}
+      <aside
+        className="fixed lg:sticky top-0 z-[60] flex flex-col h-screen w-[248px] shrink-0 px-3.5 py-5 transition-[left] duration-200"
+        style={{ background: C.panel, borderRight: `1px solid ${C.line}`, left: menuOpen ? 0 : undefined }}
+        data-open={menuOpen}
+      >
+        <div className="flex items-center gap-2.5 px-2 pb-4">
+          <span className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bricolage font-extrabold text-sm shrink-0"
+            style={{ background: C.spec }}>S</span>
+          <span className="font-bricolage font-extrabold text-[17px]">spectrum</span>
+        </div>
+
+        <nav className="flex flex-col gap-0.5 overflow-y-auto">
+          {NAV.map(({ v, label, icon: Icon, section }) => (
+            <div key={v}>
+              {section && <p className="font-mono text-[10px] tracking-[0.12em] uppercase px-2.5 pt-3.5 pb-1.5" style={{ color: C.faint }}>{section}</p>}
+              <button
+                onClick={() => { setView(v); setMenuOpen(false); }}
+                className="flex items-center gap-3 w-full text-left px-2.5 py-2.5 rounded-[10px] text-[14.5px] transition-colors"
+                style={view === v
+                  ? { background: C.ink, color: "#fff", fontWeight: 600 }
+                  : { color: C.soft, fontWeight: 500 }}
+              >
+                <Icon size={18} strokeWidth={1.7} className="shrink-0" />
+                <span className="flex-1">{label}</span>
+                {v === "orders" && m.toPrepare.size > 0 && (
+                  <span className="font-mono text-[10px] font-bold text-white rounded-full px-1.5 py-px" style={{ background: C.mag }}>{m.toPrepare.size}</span>
+                )}
+              </button>
             </div>
-            {/* Setup progress bar */}
-            {!setupDone && (
-              <div className="px-1 mb-2">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-mono text-[9px] text-[#F3EADB]/30 uppercase tracking-wider">Profil</span>
-                  <span className="font-mono text-[9px] text-[#E0901E]">{pct}%</span>
-                </div>
-                <div className="h-1 rounded-full bg-[#F3EADB]/8 overflow-hidden">
-                  <div className="h-full rounded-full bg-[#E0901E] transition-all duration-500"
-                    style={{ width: `${pct}%` }} />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {TABS.map((t) => (
-            <button key={t} onClick={() => setTab(t)}
-              className={`text-left px-3 py-2.5 rounded-xl text-sm font-hanken transition-all duration-200 ${
-                tab === t ? "bg-[#E0337E]/10 text-[#E0337E]" : "text-[#F3EADB]/50 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5"
-              }`}>{t}</button>
           ))}
+        </nav>
 
-          <div className="mt-auto pb-6 px-2 space-y-2">
-            <Link href="/vendeur/nouveau-produit"
-              className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl text-sm font-hanken text-[#E0337E] bg-[#E0337E]/8 hover:bg-[#E0337E]/15 transition-colors">
-              <Plus size={14} /> Nouveau produit
-            </Link>
-            <Link href="/vendeur/boutique"
-              className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl text-sm font-hanken text-[#F3EADB]/40 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 transition-colors">
-              <Settings size={14} /> Ma boutique
-            </Link>
+        <div className="mt-auto flex items-center gap-2.5 p-2.5 rounded-xl" style={{ border: `1px solid ${C.line}` }}>
+          <span className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-white font-bricolage font-bold text-[15px] shrink-0 overflow-hidden" style={{ background: C.spec }}>
+            {shop.logo_url ? <img src={shop.logo_url} alt="" className="w-full h-full object-cover" /> : shop.name[0]?.toUpperCase()}
+          </span>
+          <div className="min-w-0 flex-1">
+            <b className="font-bricolage text-sm leading-tight block truncate">{shop.name}</b>
+            <a href={`/boutique/${shop.slug}`} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-[11.5px] hover:underline" style={{ color: C.faint }}>
+              voir ma boutique <ExternalLink size={9} />
+            </a>
           </div>
-        </aside>
+        </div>
+      </aside>
 
-        {/* ── Main ── */}
-        <main className="flex-1 px-4 md:px-8 py-8 overflow-auto">
-
-          {/* Mobile tabs */}
-          <div className="lg:hidden flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-hide">
-            {TABS.map((t) => (
-              <button key={t} onClick={() => setTab(t)}
-                className={`shrink-0 px-4 py-2 rounded-full text-xs font-hanken border transition-all ${
-                  tab === t ? "border-[#E0337E] text-[#E0337E] bg-[#E0337E]/10" : "border-[#F3EADB]/15 text-[#F3EADB]/50"
-                }`}>{t}</button>
-            ))}
+      {/* ── MAIN ── */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        {/* TOPBAR */}
+        <div className="sticky top-0 z-10 flex items-center gap-4 px-5 lg:px-8 py-4"
+          style={{ background: "rgba(251,249,245,.86)", backdropFilter: "blur(10px)", borderBottom: `1px solid ${C.line}` }}>
+          <button onClick={() => setMenuOpen(true)} className="lg:hidden w-[42px] h-[42px] rounded-[11px] flex items-center justify-center" style={{ border: `1px solid ${C.line}`, background: "#fff" }}>
+            <Menu size={20} />
+          </button>
+          <h1 className="font-bricolage font-bold text-[22px] lg:text-2xl tracking-[-0.01em]">{TITLES[view]}</h1>
+          <div className="flex-1" />
+          <div className="hidden md:flex items-center gap-2 rounded-[11px] px-3 py-2.5 w-[260px]" style={{ background: "#fff", border: `1px solid ${C.line}`, color: C.faint }}>
+            <Search size={16} />
+            <input placeholder="Rechercher…" className="bg-transparent outline-none text-sm w-full" style={{ color: C.ink }} />
           </div>
+          <button className="relative w-[42px] h-[42px] rounded-[11px] flex items-center justify-center" style={{ border: `1px solid ${C.line}`, background: "#fff" }}>
+            <Bell size={19} strokeWidth={1.7} />
+            {m.toPrepare.size > 0 && <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full" style={{ background: C.mag, border: "2px solid #fff" }} />}
+          </button>
+          <Link href="/vendeur/nouveau-produit" className="inline-flex items-center gap-2 rounded-[11px] font-bold text-sm text-white px-4 py-2.5" style={{ background: C.mag }}>
+            <Plus size={17} strokeWidth={2.2} /> <span className="hidden sm:inline">Ajouter un produit</span>
+          </Link>
+        </div>
 
-          {/* ══ VUE D'ENSEMBLE ══ */}
-          {tab === "Vue d'ensemble" && (
-            <div className="space-y-6">
-
-              {/* Founder banner — shown only if no status yet (program still open) */}
-              {!founderStatus && <FounderBanner compact dismissible />}
-
-              {/* Header */}
-              <div className="flex items-start justify-between gap-4 flex-wrap">
-                <div>
-                  <h1 className="font-fraunces text-3xl text-[#F3EADB]">
-                    Bonjour <span className="text-[#E0337E]">✦</span>
-                  </h1>
-                  <div className="flex items-center gap-3 mt-1">
-                    <p className="font-hanken text-[#F3EADB]/40 text-sm">{shop.name}</p>
-                    {founderStatus && founderStatus.status !== "STANDARD" && (
-                      <FounderBadge status={founderStatus.status} rank={founderStatus.rank} size="sm" showRank />
-                    )}
-                  </div>
-                </div>
-                <a href={`/boutique/${shop.slug}`} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#F3EADB]/15 text-[#F3EADB]/50 font-hanken text-sm hover:border-[#E0337E]/30 hover:text-[#E0337E] transition-all">
-                  <ExternalLink size={13} /> Voir ma boutique
-                </a>
-              </div>
-
-              {/* Checklist — affiché si profil incomplet */}
-              {!setupDone && (
-                <div className="rounded-2xl border border-[#E0901E]/25 bg-[#E0901E]/5 p-6">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="w-8 h-8 rounded-full bg-[#E0901E]/15 flex items-center justify-center">
-                      <Zap size={15} className="text-[#E0901E]" />
-                    </div>
-                    <div>
-                      <p className="font-bricolage font-semibold text-[#F3EADB] text-sm">
-                        Configure ta boutique ({doneCount}/{checklist.length})
-                      </p>
-                      <p className="font-hanken text-xs text-[#F3EADB]/40">
-                        Une boutique complète attire 3× plus de clients
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-2.5">
-                    {checklist.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <Link key={item.id} href={item.done ? "#" : item.href}
-                          className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${
-                            item.done
-                              ? "opacity-50 cursor-default"
-                              : "bg-[#F3EADB]/5 hover:bg-[#F3EADB]/8 group"
-                          }`}>
-                          {item.done
-                            ? <CheckCircle2 size={16} className="text-[#1C9C95] shrink-0" />
-                            : <Circle size={16} className="text-[#F3EADB]/25 shrink-0" />
-                          }
-                          <Icon size={14} className={item.done ? "text-[#F3EADB]/30" : "text-[#F3EADB]/50"} />
-                          <span className={`font-hanken text-sm flex-1 ${item.done ? "line-through text-[#F3EADB]/30" : "text-[#F3EADB]/70"}`}>
-                            {item.label}
-                          </span>
-                          {!item.done && (
-                            <ArrowRight size={13} className="text-[#F3EADB]/20 group-hover:text-[#E0337E] transition-colors" />
-                          )}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Stats */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                  { label: "Revenus", value: `${totalRevenue.toFixed(2)} €`, icon: Euro, color: "#E0337E" },
-                  { label: "Produits actifs", value: String(activeProducts.length), icon: Package, color: "#1C9C95" },
-                  { label: "Note moyenne", value: "—", icon: Star, color: "#E0901E" },
-                  { label: "Vues boutique", value: "—", icon: BarChart3, color: "#6D2DB5" },
-                ].map(({ label, value, icon: Icon, color }) => (
-                  <Card key={label} hoverable={false} className="p-5">
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style={{ backgroundColor: `${color}18` }}>
-                      <Icon size={16} style={{ color }} />
-                    </div>
-                    <div className="font-fraunces text-2xl text-[#F3EADB] mb-1">{value}</div>
-                    <div className="font-hanken text-xs text-[#F3EADB]/40">{label}</div>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Empty products CTA */}
-              {products.length === 0 && (
-                <Card hoverable={false} className="p-8 text-center border-dashed border-[#E0337E]/20">
-                  <Package size={36} className="mx-auto mb-4 text-[#F3EADB]/20" />
-                  <p className="font-hanken text-[#F3EADB]/50 mb-1">Ta boutique n&apos;a pas encore de produits.</p>
-                  <p className="font-hanken text-xs text-[#F3EADB]/30 mb-5">Ajoute ton premier produit pour apparaître dans la marketplace.</p>
-                  <Button variant="primary" href="/vendeur/nouveau-produit" className="text-sm">
-                    <Plus size={14} /> Ajouter mon premier produit
-                  </Button>
-                </Card>
-              )}
-
-              {/* Recent products preview */}
-              {products.length > 0 && (
-                <Card hoverable={false} className="overflow-hidden">
-                  <div className="flex items-center justify-between px-5 py-4 border-b border-[#F3EADB]/8">
-                    <h2 className="font-bricolage font-semibold text-[#F3EADB] text-sm">Produits récents</h2>
-                    <button onClick={() => setTab("Produits")}
-                      className="font-mono text-[10px] text-[#E0337E]/60 hover:text-[#E0337E] uppercase tracking-widest transition-colors">
-                      Voir tout →
-                    </button>
-                  </div>
-                  <div className="divide-y divide-[#F3EADB]/5">
-                    {products.slice(0, 4).map((p) => (
-                      <div key={p.id} className="flex items-center justify-between px-5 py-3.5">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-2 h-2 rounded-full ${p.is_active ? "bg-[#1C9C95]" : "bg-[#F3EADB]/20"}`} />
-                          <span className="font-hanken text-sm text-[#F3EADB]/80 truncate max-w-[160px]">{p.name || p.title}</span>
-                        </div>
-                        <div className="flex items-center gap-3 shrink-0">
-                          <span className="font-mono text-xs text-[#F3EADB]/40">{Number(p.price).toFixed(2)} €</span>
-                          <Link href={`/vendeur/produit/${p.id}`}
-                            className="p-1.5 rounded-lg border border-[#F3EADB]/10 text-[#F3EADB]/30 hover:text-[#E0337E] hover:border-[#E0337E]/30 transition-colors">
-                            <Pencil size={11} />
-                          </Link>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              )}
-            </div>
+        <div className="px-5 lg:px-8 py-6 pb-16 w-full max-w-[1180px]">
+          {view === "overview" && <Overview m={m} shop={shop} products={products} activeCount={activeCount} founderRank={founderRank} checklist={checklist} go={setView} />}
+          {view === "products" && <Products products={products} />}
+          {view === "orders" && <Orders orders={orders} toPrepare={m.toPrepare} />}
+          {view === "revenue" && <Revenue total={m.totalRevenue} />}
+          {view === "subscription" && <Subscription shop={shop} founderRank={founderRank} />}
+          {(view === "shop" || view === "stats" || view === "settings") && (
+            <Placeholder view={view} shopSlug={shop.slug} />
           )}
-
-          {/* ══ PRODUITS ══ */}
-          {tab === "Produits" && (
-            <div className="space-y-5">
-              <div className="flex items-center justify-between">
-                <h1 className="font-fraunces text-3xl text-[#F3EADB]">Mes produits</h1>
-                <Button variant="primary" href="/vendeur/nouveau-produit" className="text-sm px-4 py-2.5">
-                  <Plus size={14} /> Ajouter
-                </Button>
-              </div>
-              {products.length === 0 ? (
-                <Card hoverable={false} className="p-8 text-center">
-                  <p className="font-hanken text-[#F3EADB]/40 mb-4">Aucun produit encore.</p>
-                  <Button variant="primary" href="/vendeur/nouveau-produit" className="text-sm">Ajouter un produit</Button>
-                </Card>
-              ) : (
-                <Card hoverable={false} className="overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[500px]">
-                      <thead>
-                        <tr className="border-b border-[#F3EADB]/8">
-                          {["Nom", "Prix", "Stock", "Catégorie", "Statut", "Actions"].map((h) => (
-                            <th key={h} className="text-left px-5 py-3 font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/30">{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {products.map((p) => (
-                          <tr key={p.id} className="border-b border-[#F3EADB]/6 last:border-0 hover:bg-[#F3EADB]/[0.02] transition-colors">
-                            <td className="px-5 py-4 font-hanken text-sm text-[#F3EADB]">{p.name || p.title}</td>
-                            <td className="px-5 py-4 font-mono text-sm text-[#F3EADB]">{Number(p.price).toFixed(2)} €</td>
-                            <td className="px-5 py-4 font-mono text-sm">
-                              <span className={p.quantity === 0 ? "text-red-400" : "text-[#F3EADB]/60"}>{p.quantity}</span>
-                            </td>
-                            <td className="px-5 py-4"><Tag variant="default">{p.category || "—"}</Tag></td>
-                            <td className="px-5 py-4"><Tag variant={p.is_active ? "teal" : "default"}>{p.is_active ? "en ligne" : "hors ligne"}</Tag></td>
-                            <td className="px-5 py-4">
-                              <div className="flex items-center gap-1">
-                                <button onClick={() => toggleProduct(p)} disabled={togglingId === p.id}
-                                  title={p.is_active ? "Désactiver" : "Activer"}
-                                  className={`p-1.5 rounded-lg border transition-colors disabled:opacity-40 ${
-                                    p.is_active
-                                      ? "border-red-400/20 text-red-400/50 hover:text-red-400 hover:border-red-400/40"
-                                      : "border-green-400/20 text-green-400/50 hover:text-green-400 hover:border-green-400/40"
-                                  }`}>
-                                  {p.is_active ? <EyeOff size={13} /> : <Eye size={13} />}
-                                </button>
-                                <Link href={`/vendeur/produit/${p.id}`}
-                                  className="p-1.5 rounded-lg border border-[#F3EADB]/10 text-[#F3EADB]/30 hover:text-[#E0337E] hover:border-[#E0337E]/30 transition-colors">
-                                  <Pencil size={13} />
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </Card>
-              )}
-            </div>
-          )}
-
-          {/* ══ COMMANDES ══ */}
-          {tab === "Commandes" && (
-            <div className="space-y-5">
-              <h1 className="font-fraunces text-3xl text-[#F3EADB]">Mes commandes</h1>
-              {vendorOrders.length === 0 ? (
-                <Card hoverable={false} className="p-8 text-center">
-                  <Package size={36} className="mx-auto mb-4 text-[#F3EADB]/20" />
-                  <p className="font-hanken text-[#F3EADB]/40">Aucune commande pour l&apos;instant.</p>
-                  <p className="font-hanken text-xs text-[#F3EADB]/25 mt-1">Elles apparaîtront dès qu&apos;un·e acheteur·se commandera tes produits.</p>
-                </Card>
-              ) : (
-                <Card hoverable={false} className="overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[500px]">
-                      <thead>
-                        <tr className="border-b border-[#F3EADB]/8">
-                          {["Produit", "Acheteur·se", "Qté", "Montant", "Statut", "Date"].map(h => (
-                            <th key={h} className="text-left px-5 py-3 font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/30">{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {vendorOrders.map(o => {
-                          const statusColors: Record<string, string> = {
-                            paid: "text-[#1C9C95]", shipped: "text-[#6D2DB5]",
-                            delivered: "text-[#1C9C95]", pending: "text-[#E0901E]", cancelled: "text-red-400",
-                          };
-                          const statusLabels: Record<string, string> = {
-                            paid: "Payé", shipped: "Expédié", delivered: "Livré",
-                            pending: "En attente", cancelled: "Annulé",
-                          };
-                          const st = o.orders?.status ?? "pending";
-                          return (
-                            <tr key={o.id} className="border-b border-[#F3EADB]/6 last:border-0 hover:bg-[#F3EADB]/[0.02] transition-colors">
-                              <td className="px-5 py-4 font-hanken text-sm text-[#F3EADB] truncate max-w-[160px]">
-                                {(o.products as {name?:string;title?:string}|null)?.name || (o.products as {name?:string;title?:string}|null)?.title || "—"}
-                              </td>
-                              <td className="px-5 py-4 font-hanken text-sm text-[#F3EADB]/60">{o.orders?.shipping_name ?? "—"}</td>
-                              <td className="px-5 py-4 font-mono text-sm text-[#F3EADB]/60">{o.quantity}</td>
-                              <td className="px-5 py-4 font-mono text-sm text-[#F3EADB]">{(Number(o.price_at_purchase) * o.quantity).toFixed(2)} €</td>
-                              <td className="px-5 py-4">
-                                <span className={`font-mono text-[10px] ${statusColors[st] ?? "text-[#F3EADB]/40"}`}>
-                                  {statusLabels[st] ?? st}
-                                </span>
-                              </td>
-                              <td className="px-5 py-4 font-mono text-xs text-[#F3EADB]/30">
-                                {new Date(o.created_at).toLocaleDateString("fr-FR")}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </Card>
-              )}
-            </div>
-          )}
-
-          {/* ══ FINANCES ══ */}
-          {tab === "Finances" && (
-            <div>
-              <h1 className="font-fraunces text-3xl text-[#F3EADB] mb-6">Finances</h1>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                {[
-                  { label: "CA total encaissé", value: `${totalRevenue.toFixed(2)} €`, color: "#E0337E" },
-                  { label: "Commandes reçues", value: String(vendorOrders.filter(o => o.orders?.status === "paid" || o.orders?.status === "shipped" || o.orders?.status === "delivered").length), color: "#E0901E" },
-                  { label: "En attente paiement", value: `${vendorOrders.filter(o => o.orders?.status === "pending").reduce((s,o) => s + Number(o.price_at_purchase)*o.quantity, 0).toFixed(2)} €`, color: "#1C9C95" },
-                ].map(({ label, value, color }) => (
-                  <Card key={label} hoverable={false} className="p-6">
-                    <div className="font-fraunces text-3xl mb-1" style={{ color }}>{value}</div>
-                    <div className="font-hanken text-sm text-[#F3EADB]/40">{label}</div>
-                  </Card>
-                ))}
-              </div>
-              <Card hoverable={false} className="p-6">
-                <h2 className="font-bricolage font-bold text-[#F3EADB] mb-3">Reversements automatiques</h2>
-                <p className="font-hanken text-sm text-[#F3EADB]/50 leading-relaxed mb-4">
-                  Les paiements sont gérés via <strong className="text-[#F3EADB]/70">Stripe Connect</strong>. Configure tes coordonnées bancaires pour recevoir tes revenus automatiquement.
-                </p>
-                <Button variant="secondary" className="text-sm py-2 px-5">Configurer Stripe Connect</Button>
-              </Card>
-            </div>
-          )}
-        </main>
+        </div>
       </div>
     </div>
+  );
+}
+
+// ── Panels réutilisables ───────────────────────────────────────────────────
+function Panel({ children, className = "", style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return <div className={`rounded-2xl p-5 ${className}`} style={{ background: C.panel, border: `1px solid ${C.line}`, ...style }}>{children}</div>;
+}
+function PanelHead({ title, action }: { title: string; action?: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="font-bricolage font-bold text-[17px]">{title}</h3>
+      {action}
+    </div>
+  );
+}
+function Pill({ status }: { status: string }) {
+  const s = STATUS[status] ?? { label: status, bg: "#EEEAE1", fg: C.soft };
+  return <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.03em] px-2.5 py-1 rounded-full whitespace-nowrap" style={{ background: s.bg, color: s.fg }}>{s.label}</span>;
+}
+const TH = "font-mono text-[10.5px] tracking-[0.06em] uppercase text-left pb-3 px-3 font-bold";
+const TD = "px-3 py-3.5 text-sm align-middle";
+
+// ── Overview ───────────────────────────────────────────────────────────────
+function Overview({ m, shop, products, activeCount, founderRank, checklist, go }: {
+  m: Metrics; shop: Shop; products: Product[]; activeCount: number;
+  founderRank: number | null; checklist: { label: string; done: boolean; href: string }[]; go: (v: View) => void;
+}) {
+  void shop;
+  return (
+    <>
+      {/* KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4.5" style={{ marginBottom: 18 }}>
+        <Kpi tint="#DCF0E5" label="Revenus ce mois" value={eur(m.revenueMonth)} delta="ce mois-ci" deltaColor={C.faint} />
+        <Kpi tint="#FCEAD2" label="Commandes" value={String(m.orderCount)} delta={`${m.toPrepare.size} à préparer`} deltaColor={m.toPrepare.size ? C.amb : C.faint} />
+        <Kpi tint="#EAE0FB" label="Produits actifs" value={`${activeCount}/${products.length}`} delta="en ligne" deltaColor={C.faint} />
+        <Kpi tint="#FBEAD3" label="Total encaissé" value={eur(m.totalRevenue)} delta="depuis le début" deltaColor={C.grn} />
+      </div>
+
+      <div className="grid lg:grid-cols-[1.7fr_1fr] gap-4">
+        {/* Chart */}
+        <Panel>
+          <PanelHead title="Revenus — 12 dernières semaines" action={<button onClick={() => go("revenue")} className="text-[13px] font-bold" style={{ color: C.mag }}>Voir le détail</button>} />
+          <div className="flex items-end gap-2.5 h-[150px] pt-2">
+            {m.weeks.map((v, i) => (
+              <div key={i} className="flex-1 rounded-t-md min-h-[6px]" title={eur(v)}
+                style={{ height: `${Math.max(6, (v / m.maxWeek) * 100)}%`, background: C.spec, opacity: 0.85, borderRadius: "6px 6px 3px 3px" }} />
+            ))}
+          </div>
+          <div className="flex gap-2.5 mt-2">
+            {["S1", "S3", "S5", "S7", "S9", "S11"].map(s => <span key={s} className="flex-1 text-center font-mono text-[10px]" style={{ color: C.faint }}>{s}</span>)}
+          </div>
+        </Panel>
+
+        {/* Founder */}
+        <div className="rounded-2xl p-5 relative overflow-hidden text-white" style={{ background: "linear-gradient(120deg,#241038,#6A1E4E)" }}>
+          <div className="absolute inset-0" style={{ background: C.spec, opacity: 0.16, mixBlendMode: "screen" }} />
+          <div className="relative">
+            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold rounded-full px-2.5 py-1 mb-3" style={{ background: "rgba(255,255,255,.16)" }}>
+              ✦ {founderRank ? `Fondateur·ice #${String(founderRank).padStart(3, "0")}` : "Programme Fondateur·ice"}
+            </span>
+            <h3 className="font-bricolage font-extrabold text-[21px] mb-2">Tes avantages à vie</h3>
+            <p className="text-[13.5px] leading-relaxed mb-3.5" style={{ color: "rgba(255,255,255,.82)" }}>
+              0 % de commission pendant 12 mois · abonnement déclenché à ta 1re vente · badge sur ton profil.
+            </p>
+            {founderRank ? (
+              <>
+                <div className="h-[7px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,.2)" }}>
+                  <i className="block h-full rounded-full" style={{ width: "64%", background: "#fff" }} />
+                </div>
+                <small className="block mt-2 font-mono text-[11px]" style={{ color: "rgba(255,255,255,.7)" }}>Commission gratuite — bénéfice fondateur·ice actif</small>
+              </>
+            ) : (
+              <Link href="/programme-fondateur" className="inline-flex items-center gap-1.5 font-bold text-[13px] rounded-lg px-3.5 py-2" style={{ background: "#fff", color: "#241038" }}>
+                Rejoindre <ArrowUpRight size={14} />
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-[1.7fr_1fr] gap-4 mt-4">
+        {/* Recent orders */}
+        <Panel>
+          <PanelHead title="Commandes récentes" action={<button onClick={() => go("orders")} className="text-[13px] font-bold" style={{ color: C.mag }}>Tout voir</button>} />
+          {ordersTable(m.recent, false)}
+        </Panel>
+        {/* To-do */}
+        <Panel>
+          <PanelHead title="À faire" />
+          {checklist.map((t, i) => (
+            <Link key={i} href={t.href.startsWith("#") ? "#" : t.href}
+              className="flex items-center gap-3 py-3 last:border-0" style={{ borderBottom: `1px solid ${C.line}` }}>
+              <span className="w-[22px] h-[22px] rounded-[7px] shrink-0 flex items-center justify-center"
+                style={t.done ? { background: C.grn, border: `2px solid ${C.grn}` } : { border: `2px solid ${C.line2}` }}>
+                {t.done && <Check size={13} color="#fff" strokeWidth={3} />}
+              </span>
+              <span className="flex-1 text-[13.5px]" style={t.done ? { color: C.faint, textDecoration: "line-through" } : undefined}>{t.label}</span>
+            </Link>
+          ))}
+        </Panel>
+      </div>
+    </>
+  );
+}
+
+function Kpi({ tint, label, value, delta, deltaColor }: { tint: string; label: string; value: string; delta: string; deltaColor: string }) {
+  return (
+    <Panel className="!p-[18px]">
+      <div className="flex items-center gap-2 text-[13px]" style={{ color: C.soft }}>
+        <span className="w-[26px] h-[26px] rounded-lg" style={{ background: tint }} />
+        {label}
+      </div>
+      <div className="font-bricolage font-bold text-[30px] tracking-[-0.01em] mt-2 mb-1">{value}</div>
+      <div className="font-mono text-[12px] font-bold" style={{ color: deltaColor }}>{delta}</div>
+    </Panel>
+  );
+}
+
+// ── Tables ─────────────────────────────────────────────────────────────────
+function ordersTable(rows: VendorOrder[], full: boolean) {
+  if (rows.length === 0) return <p className="text-sm py-6 text-center" style={{ color: C.faint }}>Aucune commande pour l&apos;instant.</p>;
+  return (
+    <table className="w-full border-collapse">
+      <thead><tr>
+        {full && <th className={TH} style={{ color: C.faint }}>N°</th>}
+        <th className={TH} style={{ color: C.faint }}>Produit</th>
+        <th className={TH} style={{ color: C.faint }}>Client</th>
+        {full && <th className={TH} style={{ color: C.faint }}>Date</th>}
+        <th className={TH} style={{ color: C.faint }}>Montant</th>
+        <th className={TH} style={{ color: C.faint }}>Statut</th>
+      </tr></thead>
+      <tbody>
+        {rows.map(o => (
+          <tr key={o.id}>
+            {full && <td className={`${TD} font-mono text-[12.5px]`} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>#{o.order_id.slice(0, 5).toUpperCase()}</td>}
+            <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}>
+              <div className="flex items-center gap-2.5">
+                <span className="w-[42px] h-[42px] rounded-[9px] shrink-0" style={{ background: "#FBEAD3" }} />
+                <b>{o.products?.name || o.products?.title || "Produit"}</b>
+              </div>
+            </td>
+            <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{o.orders?.shipping_name || "—"}</td>
+            {full && <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{o.orders ? new Date(o.orders.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "—"}</td>}
+            <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><b>{eur(Number(o.price_at_purchase) * o.quantity)}</b></td>
+            <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><Pill status={o.orders?.status ?? "pending"} /></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function Products({ products }: { products: Product[] }) {
+  return (
+    <Panel className="!p-0">
+      <div className="flex items-center justify-between px-5 pt-5">
+        <h3 className="font-bricolage font-bold text-[17px]">Tes produits · {products.length}</h3>
+        <Link href="/vendeur/nouveau-produit" className="inline-flex items-center gap-2 rounded-[11px] font-bold text-sm text-white px-3.5 py-2.5" style={{ background: C.mag }}><Plus size={16} /> Ajouter</Link>
+      </div>
+      <div className="p-2">
+        {products.length === 0 ? <p className="text-sm py-8 text-center" style={{ color: C.faint }}>Aucun produit. Ajoute ta première création ✦</p> : (
+          <table className="w-full border-collapse">
+            <thead><tr>
+              {["Produit", "Catégorie", "Prix", "Stock", "Statut", ""].map((h, i) => <th key={i} className={TH} style={{ color: C.faint }}>{h}</th>)}
+            </tr></thead>
+            <tbody>
+              {products.map(p => (
+                <tr key={p.id}>
+                  <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><div className="flex items-center gap-2.5"><span className="w-[42px] h-[42px] rounded-[9px] shrink-0" style={{ background: "#FBEAD3" }} /><b>{p.name || p.title}</b></div></td>
+                  <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{p.category || "—"}</td>
+                  <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><b>{eur(p.price)}</b></td>
+                  <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: (p.quantity ?? 0) <= 0 ? C.red : C.soft }}>{(p.quantity ?? 0) <= 0 ? "Rupture" : p.quantity}</td>
+                  <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}>
+                    <span className="font-mono text-[10.5px] font-bold uppercase px-2.5 py-1 rounded-full" style={p.is_active ? { background: "#DCF0E5", color: C.grn } : { background: "#EEEAE1", color: C.soft }}>{p.is_active ? "Actif" : "Brouillon"}</span>
+                  </td>
+                  <td className={`${TD} text-right`} style={{ borderTop: `1px solid ${C.line}` }}>
+                    <Link href={`/vendeur/produit/${p.id}`} className="rounded-lg px-3 py-1.5 text-[12.5px] font-semibold" style={{ border: `1px solid ${C.line}`, color: C.ink }}>Éditer</Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </Panel>
+  );
+}
+
+function Orders({ orders, toPrepare }: { orders: VendorOrder[]; toPrepare: Set<string> }) {
+  const [filter, setFilter] = useState<"all" | "prep">("all");
+  const rows = filter === "prep" ? orders.filter(o => o.orders?.status === "paid") : orders;
+  return (
+    <Panel className="!p-0">
+      <div className="flex items-center justify-between px-5 pt-5 flex-wrap gap-2">
+        <h3 className="font-bricolage font-bold text-[17px]">Commandes</h3>
+        <div className="flex gap-2">
+          <button onClick={() => setFilter("prep")} className="rounded-[11px] font-bold text-sm px-3.5 py-2.5" style={filter === "prep" ? { background: C.ink, color: "#fff" } : { background: "#fff", border: `1px solid ${C.line}` }}>À préparer ({toPrepare.size})</button>
+          <button onClick={() => setFilter("all")} className="rounded-[11px] font-bold text-sm px-3.5 py-2.5" style={filter === "all" ? { background: C.ink, color: "#fff" } : { background: "#fff", border: `1px solid ${C.line}` }}>Toutes</button>
+        </div>
+      </div>
+      <div className="p-2">{ordersTable(rows, true)}</div>
+    </Panel>
+  );
+}
+
+function Revenue({ total }: { total: number }) {
+  return (
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <Kpi tint="#DCF0E5" label="Total encaissé" value={eur(total)} delta="commandes payées" deltaColor={C.grn} />
+        <Kpi tint="#FCEAD2" label="Commission plateforme" value="0 €" delta="avantage fondateur·ice" deltaColor={C.grn} />
+        <Kpi tint="#EAE0FB" label="Net pour toi" value={eur(total)} delta="100 % reversé" deltaColor={C.faint} />
+      </div>
+      <Panel>
+        <PanelHead title="Versements" />
+        <div className="rounded-xl p-5 text-sm" style={{ background: "#F7F3EC", color: C.soft }}>
+          Les virements automatiques arrivent bientôt. En attendant, tes encaissements Stripe te sont reversés manuellement —
+          contacte le support pour tout versement. Aucune commission n&apos;est prélevée pendant ton avantage fondateur·ice.
+        </div>
+      </Panel>
+    </>
+  );
+}
+
+function Subscription({ shop, founderRank }: { shop: Shop; founderRank: number | null }) {
+  const active = shop.subscription_status === "active";
+  return (
+    <div className="grid lg:grid-cols-2 gap-4">
+      <Panel>
+        <PanelHead title="Ton abonnement" />
+        <div className="flex items-baseline gap-2"><span className="font-bricolage font-extrabold text-[34px]">9,90 €</span><span style={{ color: C.soft }}>/ mois</span></div>
+        <p className="text-sm leading-relaxed mt-2" style={{ color: C.soft }}>
+          {active
+            ? <>Abonnement <b style={{ color: C.ink }}>actif</b>. Boutique, outils et mise en avant éditoriale inclus.</>
+            : <>Déclenché à ta <b style={{ color: C.ink }}>première vente</b> — tu n&apos;as encore rien payé. Boutique, outils, mise en avant éditoriale inclus.</>}
+        </p>
+        <div className="flex gap-2.5 mt-3 flex-wrap">
+          <Link href="/vendeur/abonnement" className="rounded-[11px] font-bold text-sm px-4 py-2.5" style={{ background: "#fff", border: `1px solid ${C.line}` }}>Gérer l&apos;abonnement</Link>
+        </div>
+      </Panel>
+      <div className="rounded-2xl p-5 relative overflow-hidden text-white" style={{ background: "linear-gradient(120deg,#241038,#6A1E4E)" }}>
+        <div className="absolute inset-0" style={{ background: C.spec, opacity: 0.16, mixBlendMode: "screen" }} />
+        <div className="relative">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold rounded-full px-2.5 py-1 mb-3" style={{ background: "rgba(255,255,255,.16)" }}>✦ Programme Fondateur·ice</span>
+          <h3 className="font-bricolage font-extrabold text-[21px] mb-2">{founderRank ? `Place #${String(founderRank).padStart(3, "0")} / 100` : "100 places"}</h3>
+          <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,.82)" }}>0 % commission 12 mois · 3 ans d&apos;abonnement offerts (rang 1–20) ou 6 mois (rang 21–100) · mise en avant prioritaire.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Placeholder({ view, shopSlug }: { view: View; shopSlug: string }) {
+  const map: Record<string, { title: string; body: React.ReactNode; cta?: React.ReactNode }> = {
+    shop: { title: "Ma boutique", body: "Bio, pronoms, ville, badges, cover, mise en avant.", cta: <a href={`/boutique/${shopSlug}`} target="_blank" rel="noopener noreferrer" className="rounded-[11px] font-bold text-sm text-white px-4 py-2.5" style={{ background: C.mag }}>Voir en public</a> },
+    stats: { title: "Statistiques", body: "Trafic, sources, taux de conversion, produits les plus vus." },
+    settings: { title: "Paramètres", body: "Profil, expédition, paiements (Stripe), notifications, accessibilité." },
+  };
+  const p = map[view];
+  const editHref = view === "shop" ? "/vendeur/boutique" : view === "settings" ? "/compte" : null;
+  return (
+    <Panel>
+      <PanelHead title={p.title} action={p.cta} />
+      <p className="text-sm" style={{ color: C.soft }}>{p.body}</p>
+      {editHref && <Link href={editHref} className="inline-block mt-4 rounded-[11px] font-bold text-sm px-4 py-2.5" style={{ background: "#fff", border: `1px solid ${C.line}` }}>Configurer →</Link>}
+    </Panel>
   );
 }

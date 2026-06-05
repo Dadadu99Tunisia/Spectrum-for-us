@@ -20,7 +20,8 @@ export function BottomNav() {
   if (
     pathname.startsWith("/admin") ||
     pathname.startsWith("/auth") ||
-    pathname.startsWith("/checkout")
+    pathname.startsWith("/checkout") ||
+    pathname === "/vendeur"
   ) return null;
 
   const isActive = (href: string) =>
