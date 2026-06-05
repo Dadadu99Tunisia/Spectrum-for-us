@@ -3,6 +3,7 @@ import { PrideCountdown } from "@/components/PrideCountdown";
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { Hero } from "@/components/sections/Hero";
 import { Manifeste } from "@/components/sections/Manifeste";
+import { FounderBanner } from "@/components/founder/FounderBanner";
 import { Origines } from "@/components/sections/Origines";
 import { Univers } from "@/components/sections/Univers";
 import { CoupsDeCoeur } from "@/components/sections/CoupsDeCoeur";
@@ -26,6 +27,9 @@ export default function Home() {
       <main id="main-content">
         <Hero />
         <MarqueeBanner variant="default" />
+        <div className="max-w-4xl mx-auto px-6 py-10">
+          <FounderBanner dismissible />
+        </div>
         <Manifeste />
         <Origines />
         <Univers />
