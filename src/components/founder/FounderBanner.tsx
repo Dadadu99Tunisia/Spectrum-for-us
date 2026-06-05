@@ -74,7 +74,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             </p>
           )}
         </div>
-        <Link href="/vendre-ici"
+        <Link href="/vendeur/onboarding"
           className="flex items-center gap-1 font-mono text-[10px] text-[#a78bfa] hover:text-[#F3EADB] transition-colors shrink-0 whitespace-nowrap">
           Rejoindre <ArrowRight size={10} />
         </Link>
@@ -233,7 +233,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
         {/* CTA */}
         <div className="flex flex-col sm:flex-row items-center gap-4">
           {!hideCta && (
-            <Link href="/vendre-ici"
+            <Link href="/vendeur/onboarding"
               className="flex items-center gap-2.5 px-6 py-3 rounded-xl font-hanken font-semibold text-sm text-white transition-all hover:scale-105 active:scale-95"
               style={{
                 background: "linear-gradient(135deg,#6D2DB5,#E0337E)",

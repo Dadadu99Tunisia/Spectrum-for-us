@@ -3,10 +3,10 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { Search, X, Store, Heart, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { useCart } from "@/store/cart";
 
-const CATEGORIES = ["Tout", "Mode", "Art", "Bijoux", "Zines", "Corps & Soin", "Services", "Expériences"];
+const CHIPS = ["Tout", "Mode", "Art & Culture", "Bijoux", "Zines", "Corps & Soin", "Services", "Expériences"];
 
 interface Product {
   id: string;
@@ -21,69 +21,81 @@ interface Product {
   shops: { name: string; slug: string } | null;
 }
 
-function SkeletonCard() {
+const PAGE_SIZE = 12;
+
+function Skeleton() {
   return (
-    <div className="rounded-2xl overflow-hidden bg-white/5 animate-pulse">
-      <div className="aspect-square bg-white/8" />
+    <div className="rounded-2xl overflow-hidden animate-pulse"
+      style={{ background: "rgba(243,234,219,0.05)" }}>
+      <div className="aspect-square" />
       <div className="p-3 space-y-2">
-        <div className="h-3 bg-white/8 rounded w-3/4" />
-        <div className="h-3 bg-white/8 rounded w-1/2" />
-        <div className="h-4 bg-white/8 rounded w-1/3" />
+        <div className="h-2.5 rounded w-3/4" style={{ background: "rgba(243,234,219,0.08)" }} />
+        <div className="h-3 rounded w-1/3" style={{ background: "rgba(243,234,219,0.06)" }} />
       </div>
     </div>
   );
 }
 
-function FeedCard({ p }: { p: Product }) {
-  const img = p.images?.[0] ?? p.image_url;
-  const shopName = p.shops && !Array.isArray(p.shops) ? p.shops.name : null;
-  const [liked, setLiked] = useState(false);
+function Card({ p }: { p: Product }) {
+  const img     = p.images?.[0] ?? p.image_url;
+  const shop    = !Array.isArray(p.shops) ? p.shops?.name : null;
+  const [liked, setLiked] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try { return JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]").includes(p.id); }
+    catch { return false; }
+  });
   const { add } = useCart();
 
+  const toggleLike = (e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    const favs: string[] = JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]");
+    const next = liked ? favs.filter(f => f !== p.id) : [...favs, p.id];
+    localStorage.setItem("spectrum_favorites", JSON.stringify(next));
+    setLiked(!liked);
+  };
+
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/8 bg-[#2d1050]/60">
+    <div className="rounded-2xl overflow-hidden"
+      style={{ background: "rgba(243,234,219,0.04)", border: "1px solid rgba(243,234,219,0.07)" }}>
       <Link href={`/produit/${p.slug}`} className="block">
-        <div className="aspect-square relative overflow-hidden bg-white/5">
+        <div className="aspect-square relative overflow-hidden"
+          style={{ background: "rgba(243,234,219,0.04)" }}>
           {img ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={img}
-              alt={p.name || p.title}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
+            <img src={img} alt={p.name || p.title}
+              className="w-full h-full object-cover" loading="lazy" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Store size={32} className="text-white/10" />
+              <span className="text-4xl opacity-10">✦</span>
             </div>
           )}
+          {/* Like */}
+          <button onClick={toggleLike}
+            className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90"
+            style={{
+              background: liked ? "rgba(224,51,126,.90)" : "rgba(32,10,55,.70)",
+              border: `1px solid ${liked ? "transparent" : "rgba(243,234,219,.15)"}`,
+            }}>
+            <span className="text-[14px]">{liked ? "♥" : "♡"}</span>
+          </button>
           {/* Type badge */}
           {p.type && p.type !== "product" && (
-            <span className="absolute top-2 left-2 font-mono text-[8px] uppercase tracking-wider px-2 py-1 rounded-full"
-              style={{ background: "rgba(28,12,48,.8)", color: "rgba(243,234,219,.6)", border: "1px solid rgba(243,234,219,.12)" }}>
+            <span className="absolute bottom-2 left-2 font-mono text-[8px] uppercase tracking-wider px-2 py-0.5 rounded-full"
+              style={{ background: "rgba(32,10,55,.80)", color: "rgba(243,234,219,.50)", border: "1px solid rgba(243,234,219,.10)" }}>
               {p.type === "service" ? "Service" : "Événement"}
             </span>
           )}
-          {/* Like button */}
-          <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setLiked(l => !l); }}
-            className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90"
-            style={{ background: liked ? "rgba(224,51,126,.9)" : "rgba(28,12,48,.7)", border: "1px solid rgba(224,51,126,.3)" }}
-          >
-            <Heart size={14} fill={liked ? "white" : "none"} className="text-white" />
-          </button>
         </div>
       </Link>
       <div className="p-3">
-        <p className="font-hanken text-[12px] text-[#F3EADB]/80 leading-tight line-clamp-2">{p.name || p.title}</p>
-        {shopName && <p className="font-mono text-[9px] text-[#F3EADB]/30 mt-0.5">{shopName}</p>}
+        <p className="font-hanken text-[11px] text-[#F3EADB]/75 line-clamp-2 leading-tight">{p.name || p.title}</p>
+        {shop && <p className="font-mono text-[8px] text-[#F3EADB]/28 mt-0.5">{shop}</p>}
         <div className="flex items-center justify-between mt-2">
-          <p className="font-fraunces text-[15px] text-[#E0337E]">{p.price.toFixed(2)} €</p>
+          <p className="font-fraunces text-[14px]" style={{ color: "#F2B79E" }}>{p.price.toFixed(2)} €</p>
           <button
-            onClick={() => add({ id: p.id, name: p.name || p.title, price: p.price, image: img ?? undefined, creator: "", quantity: 1, type: (p.type as "product" | "service" | "event") ?? "product" })}
-            className="font-mono text-[9px] px-2.5 py-1.5 rounded-xl active:scale-90 transition-transform"
-            style={{ background: "rgba(224,51,126,.15)", color: "#E0337E", border: "1px solid rgba(224,51,126,.25)" }}
-          >
+            onClick={() => add({ id: p.id, name: p.name || p.title, price: p.price, image: img ?? undefined, creator: shop ?? "", quantity: 1, type: (p.type as "product" | "service" | "event") ?? "product" })}
+            className="font-mono text-[8px] uppercase tracking-wider px-2.5 py-1.5 rounded-lg active:scale-90 transition-transform"
+            style={{ background: "rgba(224,51,126,.12)", color: "#E0337E", border: "1px solid rgba(224,51,126,.20)" }}>
             + Panier
           </button>
         </div>
@@ -92,21 +104,19 @@ function FeedCard({ p }: { p: Product }) {
   );
 }
 
-const PAGE_SIZE = 12;
-
 export function ExploreFeed() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products,    setProducts]    = useState<Product[]>([]);
+  const [loading,     setLoading]     = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("Tout");
-  const [page, setPage] = useState(0);
+  const [hasMore,     setHasMore]     = useState(true);
+  const [search,      setSearch]      = useState("");
+  const [chip,        setChip]        = useState("Tout");
+  const [page,        setPage]        = useState(0);
   const loaderRef = useRef<HTMLDivElement>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
+  const pageRef   = useRef(0);
 
-  const fetchProducts = useCallback(async (reset = false) => {
-    const currentPage = reset ? 0 : page;
+  const fetch_ = useCallback(async (reset: boolean) => {
+    const p = reset ? 0 : pageRef.current;
     if (reset) setLoading(true); else setLoadingMore(true);
 
     const supabase = createClient();
@@ -115,125 +125,117 @@ export function ExploreFeed() {
       .select("id,name,title,price,images,image_url,slug,category,type,shops(name,slug)")
       .eq("is_active", true)
       .order("created_at", { ascending: false })
-      .range(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE - 1);
+      .range(p * PAGE_SIZE, (p + 1) * PAGE_SIZE - 1);
 
-    if (category !== "Tout") q = q.ilike("category", `%${category}%`);
-    if (search.trim()) q = q.or(`name.ilike.%${search}%,title.ilike.%${search}%`);
+    if (chip !== "Tout") q = q.ilike("category", `%${chip}%`);
+    if (search.trim())   q = q.or(`name.ilike.%${search}%,title.ilike.%${search}%`);
 
     const { data } = await q;
     const rows = (data ?? []) as unknown as Product[];
 
     if (reset) {
       setProducts(rows);
-      setPage(1);
+      pageRef.current = 1;
     } else {
       setProducts(prev => [...prev, ...rows]);
-      setPage(p => p + 1);
+      pageRef.current = p + 1;
     }
     setHasMore(rows.length === PAGE_SIZE);
+    setPage(pageRef.current);
     setLoading(false);
     setLoadingMore(false);
-  }, [category, search, page]);
+  }, [chip, search]);
 
-  // Reset on filter change
-  useEffect(() => {
-    setPage(0);
-    setHasMore(true);
-    fetchProducts(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, search]);
+  useEffect(() => { fetch_(true); }, [chip, search, fetch_]);
 
-  // Infinite scroll observer
   useEffect(() => {
     const el = loaderRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
-          fetchProducts(false);
-        }
-      },
+      ([entry]) => { if (entry.isIntersecting && hasMore && !loadingMore && !loading) fetch_(false); },
       { rootMargin: "200px" }
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [hasMore, loadingMore, loading, fetchProducts]);
+  }, [hasMore, loadingMore, loading, fetch_]);
 
   return (
-    <div className="md:hidden min-h-screen bg-[#3D1F5C] text-[#F3EADB]">
+    <div className="md:hidden min-h-screen text-[#F3EADB]" style={{ background: "#3D1F5C" }}>
 
-      {/* ── Sticky header ── */}
-      <div className="sticky top-0 z-40 px-4 pt-4 pb-3"
+      {/* Ambient */}
+      <div className="fixed inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(110,45,181,0.18) 0%, transparent 65%)" }} />
+
+      {/* Sticky header */}
+      <div className="sticky top-0 z-40 px-4 pt-4 pb-3 relative"
         style={{
           background: "rgba(45,16,78,0.97)",
-          backdropFilter: "blur(16px)",
-          borderBottom: "1px solid rgba(243,234,219,0.07)",
+          backdropFilter: "blur(20px)",
         }}>
-        <p className="font-fraunces text-[17px] mb-3">Explorer</p>
+        {/* Top prism line */}
+        <div className="absolute top-0 left-0 right-0 h-px"
+          style={{ background: "linear-gradient(90deg, #E0533A, #CF3F7C, #6D2DB5, #1C9C95)" }} />
 
-        {/* Search bar */}
+        <h1 className="font-fraunces text-[20px] text-[#F3EADB] mb-3">Explorer ✦</h1>
+
+        {/* Search */}
         <div className="relative mb-3">
-          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#F3EADB]/25" />
           <input
-            ref={searchRef}
             type="search"
-            placeholder="Rechercher…"
+            placeholder="Rechercher une création…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-9 py-2.5 rounded-2xl font-hanken text-[13px] text-[#F3EADB] placeholder-[#F3EADB]/25 outline-none"
-            style={{ background: "rgba(243,234,219,0.07)", border: "1px solid rgba(243,234,219,0.10)" }}
+            className="w-full pl-4 pr-8 py-2.5 rounded-xl font-hanken text-[13px] text-[#F3EADB] placeholder-[#F3EADB]/25 outline-none"
+            style={{ background: "rgba(243,234,219,0.06)", border: "1px solid rgba(243,234,219,0.09)" }}
           />
           {search && (
             <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2">
-              <X size={13} className="text-[#F3EADB]/35" />
+              <X size={12} className="text-[#F3EADB]/35" />
             </button>
           )}
         </div>
 
         {/* Category chips */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setCategory(cat)}
-              className="flex-shrink-0 px-3.5 py-1.5 rounded-full font-mono text-[10px] transition-all active:scale-90"
+        <div className="flex gap-2 overflow-x-auto scrollbar-none -mx-4 px-4 pb-0.5">
+          {CHIPS.map(c => (
+            <button key={c} onClick={() => setChip(c)}
+              className="flex-shrink-0 px-3.5 py-1.5 rounded-full font-mono text-[9px] uppercase tracking-wider transition-all active:scale-90"
               style={{
-                background: category === cat ? "#E0337E" : "rgba(243,234,219,0.07)",
-                color: category === cat ? "white" : "rgba(243,234,219,0.45)",
-                border: `1px solid ${category === cat ? "transparent" : "rgba(243,234,219,0.10)"}`,
-              }}
-            >
-              {cat}
+                background: chip === c ? "#E0337E" : "rgba(243,234,219,0.07)",
+                color: chip === c ? "white" : "rgba(243,234,219,0.40)",
+                border: `1px solid ${chip === c ? "transparent" : "rgba(243,234,219,0.09)"}`,
+              }}>
+              {c}
             </button>
           ))}
         </div>
       </div>
 
-      {/* ── Grid ── */}
-      <div className="px-4 py-4">
+      {/* Grid */}
+      <div className="relative z-10 px-4 py-4">
         {loading ? (
           <div className="grid grid-cols-2 gap-3">
-            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+            {[...Array(8)].map((_, i) => <Skeleton key={i} />)}
           </div>
         ) : products.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="font-fraunces text-[17px] text-[#F3EADB]/40 mb-2">Aucun résultat</p>
-            <p className="font-hanken text-[12px] text-[#F3EADB]/25">Essaie une autre catégorie</p>
+          <div className="py-20 text-center">
+            <p className="font-fraunces text-[20px] text-[#F3EADB]/30 mb-2">Rien ici</p>
+            <p className="font-hanken text-[12px] text-[#F3EADB]/20">Essaie une autre catégorie</p>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-2 gap-3">
-              {products.map(p => <FeedCard key={p.id} p={p} />)}
+              {products.map(p => <Card key={p.id} p={p} />)}
             </div>
             {loadingMore && (
               <div className="grid grid-cols-2 gap-3 mt-3">
-                {Array.from({ length: 2 }).map((_, i) => <SkeletonCard key={i} />)}
+                <Skeleton /><Skeleton />
               </div>
             )}
-            <div ref={loaderRef} className="h-8" />
+            <div ref={loaderRef} className="h-10" />
             {!hasMore && products.length > 0 && (
-              <p className="text-center font-mono text-[9px] text-[#F3EADB]/20 py-4">
-                ✦ Fin du catalogue ✦
+              <p className="text-center font-mono text-[8px] text-[#F3EADB]/18 py-4 tracking-widest">
+                ✦ Fin du spectre ✦
               </p>
             )}
           </>

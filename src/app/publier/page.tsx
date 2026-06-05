@@ -4,314 +4,310 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, ArrowRight, Package, Briefcase, Calendar, Camera, Check, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Camera, X } from "lucide-react";
 
-type PublishType = "product" | "service" | "event";
+type PType = "product" | "service" | "event";
 
-const TYPES: { id: PublishType; icon: React.ElementType; label: string; sub: string }[] = [
-  { id: "product", icon: Package,   label: "Produit",    sub: "Article physique ou numérique" },
-  { id: "service", icon: Briefcase, label: "Service",    sub: "Prestation, coaching, création" },
-  { id: "event",   icon: Calendar,  label: "Événement",  sub: "Festival, atelier, rencontre" },
+const TYPES: { id: PType; emoji: string; label: string; sub: string }[] = [
+  { id: "product", emoji: "○",  label: "Produit",    sub: "Objet, création, pièce unique" },
+  { id: "service", emoji: "◈",  label: "Service",    sub: "Coaching, soin, prestation" },
+  { id: "event",   emoji: "✦",  label: "Événement",  sub: "Atelier, expo, rencontre" },
 ];
 
 function slugify(t: string) {
   return t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + Math.random().toString(36).slice(2, 6);
 }
 
+const STEPS = ["Type", "Titre", "Détails", "Publier"] as const;
+
 export default function PublierPage() {
   const { user, loading } = useAuth();
-  const router = useRouter();
-  const [step, setStep] = useState(0);
-  const [type, setType]       = useState<PublishType>("product");
-  const [title, setTitle]     = useState("");
-  const [price, setPrice]     = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [submitting, setSubmitting]   = useState(false);
-  const [error, setError]             = useState("");
-  const [done, setDone]               = useState(false);
+  const router  = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const [step,    setStep]    = useState(0);
+  const [type,    setType]    = useState<PType>("product");
+  const [title,   setTitle]   = useState("");
+  const [price,   setPrice]   = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
+  const [file,    setFile]    = useState<File | null>(null);
+  const [saving,  setSaving]  = useState(false);
+  const [error,   setError]   = useState("");
+  const [done,    setDone]    = useState(false);
+
   if (loading) return (
-    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "#3D1F5C" }}>
+      <span className="font-fraunces text-[#F3EADB]/30 animate-pulse">Chargement…</span>
     </div>
   );
+  if (!user) { if (typeof window !== "undefined") router.replace("/auth?redirect=/publier"); return null; }
 
-  if (!user) {
-    if (typeof window !== "undefined") router.replace("/auth?redirect=/publier");
-    return null;
-  }
-
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = ev => setImagePreview(ev.target?.result as string);
-    reader.readAsDataURL(file);
+  const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setFile(f);
+    const r = new FileReader();
+    r.onload = ev => setPreview(ev.target?.result as string);
+    r.readAsDataURL(f);
   };
 
-  const handlePublish = async () => {
+  const publish = async () => {
     if (!title.trim()) return;
-    setSubmitting(true);
-    setError("");
+    setSaving(true); setError("");
 
     const supabase = createClient();
-
-    // Get vendor's shop
     const { data: shop } = await supabase
-      .from("shops")
-      .select("id")
-      .eq("owner_id", user.id)
-      .single();
+      .from("shops").select("id").eq("owner_id", user.id).single();
 
     if (!shop) {
-      setError("Tu dois d'abord créer une boutique.");
-      setSubmitting(false);
-      return;
+      setError("Crée d'abord une boutique via l'onboarding.");
+      setSaving(false); return;
     }
 
     let imageUrl: string | null = null;
-
-    // Upload image if provided
-    if (imageFile) {
-      const ext  = imageFile.name.split(".").pop() ?? "jpg";
+    if (file) {
+      const ext  = file.name.split(".").pop() ?? "jpg";
       const path = `products/${user.id}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage
-        .from("product-images")
-        .upload(path, imageFile, { upsert: true });
+      const { error: upErr } = await supabase.storage.from("product-images").upload(path, file, { upsert: true });
       if (!upErr) {
-        const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
-        imageUrl = urlData.publicUrl;
+        const { data: u } = supabase.storage.from("product-images").getPublicUrl(path);
+        imageUrl = u.publicUrl;
       }
     }
 
-    const slug = slugify(title);
-
-    const { error: insertErr } = await supabase.from("products").insert({
-      shop_id:   shop.id,
-      name:      title,
-      title:     title,
-      slug,
-      price:     price ? parseFloat(price) : 0,
-      type,
-      is_active: true,
+    const { error: err } = await supabase.from("products").insert({
+      shop_id: shop.id, name: title, title,
+      slug: slugify(title),
+      price: price ? parseFloat(price) : 0,
+      type, is_active: true,
       ...(imageUrl ? { image_url: imageUrl, images: [imageUrl] } : {}),
     });
 
-    if (insertErr) {
-      setError(insertErr.message);
-      setSubmitting(false);
-      return;
-    }
-
-    setDone(true);
-    setSubmitting(false);
+    if (err) { setError(err.message); setSaving(false); return; }
+    setDone(true); setSaving(false);
   };
 
-  // ── Done screen ──
-  if (done) {
-    return (
-      <div className="min-h-screen bg-[#3D1F5C] flex flex-col items-center justify-center px-6 text-center">
-        <div className="w-20 h-20 rounded-full bg-[#1C9C95]/15 border border-[#1C9C95]/30 flex items-center justify-center mb-6">
-          <Check size={36} className="text-[#1C9C95]" />
-        </div>
-        <h1 className="font-fraunces text-3xl text-[#F3EADB] mb-2">Publié ! ✦</h1>
-        <p className="font-hanken text-sm text-[#F3EADB]/50 mb-8">{title} est maintenant dans le spectre.</p>
-        <div className="flex gap-3 w-full max-w-xs">
-          <button onClick={() => { setDone(false); setStep(0); setTitle(""); setPrice(""); setImageFile(null); setImagePreview(null); }}
-            className="flex-1 py-3 rounded-xl border border-white/15 font-hanken text-sm text-[#F3EADB]/60 active:scale-95 transition-transform">
+  // ── Done ──────────────────────────────────────────────────────
+  if (done) return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center"
+      style={{ background: "#3D1F5C" }}>
+      <div className="fixed inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(28,156,149,.12), transparent)" }} />
+      <div className="relative z-10">
+        <p className="text-5xl mb-6">✦</p>
+        <h1 className="font-fraunces text-[34px] text-[#F3EADB] mb-2">Publié !</h1>
+        <p className="font-hanken text-[13px] text-[#F3EADB]/45 mb-8 leading-relaxed">
+          <span className="text-[#F2B79E]">{title}</span> est maintenant<br />dans le spectre.
+        </p>
+        <div className="flex gap-3">
+          <button onClick={() => { setDone(false); setStep(0); setTitle(""); setPrice(""); setFile(null); setPreview(null); }}
+            className="px-5 py-3 rounded-2xl font-mono text-[11px] uppercase tracking-wider"
+            style={{ border: "1px solid rgba(243,234,219,0.12)", color: "rgba(243,234,219,0.40)" }}>
             + Nouveau
           </button>
           <button onClick={() => router.push("/vendeur")}
-            className="flex-1 py-3 rounded-xl font-hanken text-sm text-white active:scale-95 transition-transform"
+            className="px-6 py-3 rounded-2xl font-fraunces text-[15px] text-white"
             style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)" }}>
             Ma boutique
           </button>
         </div>
       </div>
-    );
-  }
-
-  const canNext = step === 0
-    ? true
-    : step === 1 ? title.trim().length > 0
-    : true;
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB] flex flex-col">
+    <div className="min-h-screen flex flex-col text-[#F3EADB]" style={{ background: "#3D1F5C" }}>
+
+      {/* Ambient glow */}
+      <div className="fixed inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(109,45,181,.20) 0%, transparent 65%)" }} />
 
       {/* Header */}
-      <header className="px-5 pt-5 pb-4 flex items-center gap-3"
-        style={{ borderBottom: "1px solid rgba(243,234,219,0.07)" }}>
+      <header className="relative z-10 flex items-center gap-3 px-5 pt-[max(20px,env(safe-area-inset-top))] pb-4"
+        style={{ borderBottom: "1px solid rgba(243,234,219,0.06)" }}>
         <button onClick={() => step > 0 ? setStep(s => s - 1) : router.back()}
-          className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center active:scale-90 transition-transform">
-          <ArrowLeft size={16} />
+          className="w-9 h-9 rounded-xl flex items-center justify-center active:scale-90 transition-transform"
+          style={{ background: "rgba(243,234,219,0.06)" }}>
+          <ArrowLeft size={15} />
         </button>
+
         <div className="flex-1">
-          <p className="font-fraunces text-[16px]">Publier</p>
-          <p className="font-mono text-[9px] text-[#F3EADB]/30">Étape {step + 1} / 4</p>
+          <p className="font-fraunces text-[17px]">Publier</p>
+          <p className="font-mono text-[8px] text-[#F3EADB]/28 tracking-widest uppercase mt-0.5">
+            {STEPS[step]}
+          </p>
         </div>
-        {/* Progress dots */}
-        <div className="flex gap-1.5">
-          {[0,1,2,3].map(i => (
-            <div key={i} className="w-1.5 h-1.5 rounded-full transition-all"
-              style={{ background: i <= step ? "#E0337E" : "rgba(243,234,219,0.15)" }} />
+
+        {/* Step dots */}
+        <div className="flex gap-1.5 items-center">
+          {STEPS.map((_, i) => (
+            <div key={i} className="rounded-full transition-all duration-300"
+              style={{
+                width: i === step ? 14 : 5,
+                height: 5,
+                background: i <= step ? "#E0337E" : "rgba(243,234,219,0.15)",
+              }} />
           ))}
         </div>
       </header>
 
-      <div className="flex-1 px-5 py-6">
+      {/* Content */}
+      <div className="relative z-10 flex-1 px-5 py-7">
 
-        {/* Step 0 — Type */}
+        {/* ── Step 0: Type ── */}
         {step === 0 && (
           <div>
-            <h2 className="font-fraunces text-xl text-[#F3EADB] mb-1">Que publies-tu ?</h2>
-            <p className="font-hanken text-sm text-[#F3EADB]/40 mb-6">Choisis le type de création</p>
+            <h2 className="font-fraunces text-[28px] leading-tight mb-1">Que crées-tu ?</h2>
+            <p className="font-hanken text-[13px] text-[#F3EADB]/40 mb-7">Choisis le type de publication</p>
             <div className="space-y-3">
-              {TYPES.map(({ id, icon: Icon, label, sub }) => (
+              {TYPES.map(({ id, emoji, label, sub }) => (
                 <button key={id} onClick={() => setType(id)}
-                  className="w-full flex items-center gap-4 p-4 rounded-2xl border text-left transition-all active:scale-95"
+                  className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-left transition-all active:scale-[0.98]"
                   style={{
-                    background: type === id ? "rgba(224,51,126,.10)" : "rgba(243,234,219,0.04)",
-                    borderColor: type === id ? "rgba(224,51,126,.4)" : "rgba(243,234,219,0.10)",
+                    background: type === id ? "rgba(224,51,126,.08)" : "rgba(243,234,219,0.04)",
+                    border: `1px solid ${type === id ? "rgba(224,51,126,.35)" : "rgba(243,234,219,0.08)"}`,
                   }}>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: type === id ? "rgba(224,51,126,.2)" : "rgba(243,234,219,0.07)" }}>
-                    <Icon size={18} style={{ color: type === id ? "#E0337E" : "rgba(243,234,219,0.40)" }} />
-                  </div>
+                  <span className="text-[26px] leading-none"
+                    style={{ color: type === id ? "#E0337E" : "rgba(243,234,219,0.30)" }}>
+                    {emoji}
+                  </span>
                   <div>
-                    <p className="font-hanken text-sm font-medium text-[#F3EADB]">{label}</p>
-                    <p className="font-hanken text-xs text-[#F3EADB]/40">{sub}</p>
+                    <p className="font-fraunces text-[16px] text-[#F3EADB]">{label}</p>
+                    <p className="font-hanken text-[11px] text-[#F3EADB]/35">{sub}</p>
                   </div>
-                  {type === id && <Check size={14} className="ml-auto text-[#E0337E]" />}
+                  {type === id && (
+                    <span className="ml-auto font-mono text-[10px]" style={{ color: "#E0337E" }}>✓</span>
+                  )}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Step 1 — Title */}
+        {/* ── Step 1: Title ── */}
         {step === 1 && (
           <div>
-            <h2 className="font-fraunces text-xl mb-1">
-              {type === "product" ? "Nom du produit" : type === "service" ? "Nom du service" : "Titre de l'événement"}
+            <h2 className="font-fraunces text-[28px] leading-tight mb-1">
+              {type === "event" ? "L'intitulé" : "Le nom"}
             </h2>
-            <p className="font-hanken text-sm text-[#F3EADB]/40 mb-6">Court et percutant</p>
+            <p className="font-hanken text-[13px] text-[#F3EADB]/40 mb-7">Court, clair, percutant</p>
             <textarea
               autoFocus
               value={title}
               onChange={e => setTitle(e.target.value)}
-              placeholder="ex. Bague lune argent, massé inclusif, Pride Paris…"
+              placeholder={
+                type === "product" ? "ex. Bague lune, édition limitée…"
+                : type === "service" ? "ex. Massage inclusif 1h, coaching identité…"
+                : "ex. Vernissage queer, atelier sérigraphie…"
+              }
               maxLength={80}
               rows={3}
-              className="w-full rounded-2xl px-4 py-4 font-hanken text-[15px] text-[#F3EADB] placeholder-[#F3EADB]/25 outline-none resize-none"
-              style={{ background: "rgba(243,234,219,0.07)", border: "1px solid rgba(243,234,219,0.12)" }}
+              className="w-full rounded-2xl px-5 py-4 font-fraunces text-[18px] text-[#F3EADB] placeholder-[#F3EADB]/20 outline-none resize-none"
+              style={{ background: "rgba(243,234,219,0.06)", border: "1px solid rgba(243,234,219,0.10)" }}
             />
-            <p className="font-mono text-[10px] text-[#F3EADB]/25 mt-1 text-right">{title.length}/80</p>
+            <p className="font-mono text-[8px] text-[#F3EADB]/20 mt-1.5 text-right">{title.length}/80</p>
           </div>
         )}
 
-        {/* Step 2 — Price + Image */}
+        {/* ── Step 2: Price + Photo ── */}
         {step === 2 && (
-          <div className="space-y-5">
+          <div className="space-y-7">
             <div>
-              <h2 className="font-fraunces text-xl mb-1">Prix <span className="text-[#F3EADB]/30 text-base font-hanken">(optionnel)</span></h2>
-              <div className="relative mt-4">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 font-fraunces text-lg text-[#F3EADB]/40">€</span>
+              <h2 className="font-fraunces text-[28px] leading-tight mb-1">Le prix</h2>
+              <p className="font-hanken text-[13px] text-[#F3EADB]/40 mb-5">Laisse vide pour prix libre</p>
+              <div className="relative">
+                <span className="absolute left-5 top-1/2 -translate-y-1/2 font-fraunces text-[22px] text-[#F3EADB]/25">€</span>
                 <input
-                  type="number"
-                  value={price}
+                  type="number" value={price}
                   onChange={e => setPrice(e.target.value)}
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  className="w-full pl-9 pr-4 py-4 rounded-2xl font-fraunces text-[22px] text-[#F3EADB] placeholder-[#F3EADB]/25 outline-none"
-                  style={{ background: "rgba(243,234,219,0.07)", border: "1px solid rgba(243,234,219,0.12)" }}
+                  placeholder="0.00" min="0" step="0.01"
+                  className="w-full pl-10 pr-5 py-4 rounded-2xl font-fraunces text-[28px] text-[#F3EADB] placeholder-[#F3EADB]/20 outline-none"
+                  style={{ background: "rgba(243,234,219,0.06)", border: "1px solid rgba(243,234,219,0.10)" }}
                 />
               </div>
             </div>
 
             <div>
-              <h2 className="font-fraunces text-xl mb-4">Photo <span className="text-[#F3EADB]/30 text-base font-hanken">(optionnelle)</span></h2>
-              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImage} />
-              {imagePreview ? (
+              <h2 className="font-fraunces text-[22px] mb-4">Une photo ?</h2>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
+              {preview ? (
                 <div className="relative rounded-2xl overflow-hidden aspect-square">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={imagePreview} alt="" className="w-full h-full object-cover" />
-                  <button onClick={() => { setImageFile(null); setImagePreview(null); }}
-                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 flex items-center justify-center">
-                    <X size={14} className="text-white" />
+                  <img src={preview} alt="" className="w-full h-full object-cover" />
+                  <button onClick={() => { setFile(null); setPreview(null); }}
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ background: "rgba(0,0,0,.55)" }}>
+                    <X size={13} className="text-white" />
                   </button>
                 </div>
               ) : (
                 <button onClick={() => fileRef.current?.click()}
-                  className="w-full aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-3 active:scale-98 transition-transform"
-                  style={{ borderColor: "rgba(243,234,219,0.15)", background: "rgba(243,234,219,0.04)" }}>
-                  <Camera size={32} className="text-[#F3EADB]/20" />
-                  <p className="font-hanken text-sm text-[#F3EADB]/40">Ajouter une photo</p>
-                  <p className="font-mono text-[9px] text-[#F3EADB]/20">JPG, PNG, WEBP</p>
+                  className="w-full aspect-square rounded-2xl flex flex-col items-center justify-center gap-3 active:scale-[0.97] transition-transform"
+                  style={{
+                    border: "1.5px dashed rgba(243,234,219,0.14)",
+                    background: "rgba(243,234,219,0.03)",
+                  }}>
+                  <Camera size={28} className="text-[#F3EADB]/20" />
+                  <span className="font-hanken text-[13px] text-[#F3EADB]/35">Ajouter une photo</span>
+                  <span className="font-mono text-[8px] text-[#F3EADB]/18 uppercase tracking-wider">JPG · PNG · WEBP</span>
                 </button>
               )}
             </div>
           </div>
         )}
 
-        {/* Step 3 — Review & Publish */}
+        {/* ── Step 3: Review ── */}
         {step === 3 && (
           <div>
-            <h2 className="font-fraunces text-xl mb-1">Prêt·e à publier ?</h2>
-            <p className="font-hanken text-sm text-[#F3EADB]/40 mb-6">Vérifie avant de publier</p>
+            <h2 className="font-fraunces text-[28px] leading-tight mb-1">Prêt·e ?</h2>
+            <p className="font-hanken text-[13px] text-[#F3EADB]/40 mb-7">Vérifie avant de publier</p>
 
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] overflow-hidden mb-6">
-              {imagePreview && (
+            <div className="rounded-2xl overflow-hidden"
+              style={{ border: "1px solid rgba(243,234,219,0.08)", background: "rgba(243,234,219,0.03)" }}>
+              {/* Prism top */}
+              <div className="h-px" style={{ background: "linear-gradient(90deg,#E0533A,#CF3F7C,#6D2DB5,#1C9C95)" }} />
+              {preview && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={imagePreview} alt="" className="w-full aspect-video object-cover" />
+                <img src={preview} alt="" className="w-full aspect-video object-cover" />
               )}
-              <div className="p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-[9px] px-2 py-0.5 rounded-full border"
-                    style={{ borderColor: "rgba(224,51,126,.3)", color: "#E0337E" }}>
-                    {type}
-                  </span>
-                </div>
-                <p className="font-fraunces text-[17px] text-[#F3EADB]">{title || "—"}</p>
-                <p className="font-fraunces text-[20px] text-[#E0337E]">
+              <div className="p-5">
+                <span className="font-mono text-[8px] uppercase tracking-widest px-2.5 py-1 rounded-full"
+                  style={{ background: "rgba(224,51,126,.10)", color: "#E0337E", border: "1px solid rgba(224,51,126,.20)" }}>
+                  {type}
+                </span>
+                <p className="font-fraunces text-[22px] text-[#F3EADB] mt-3">{title || "—"}</p>
+                <p className="font-fraunces text-[26px] mt-1" style={{ color: "#F2B79E" }}>
                   {price ? `${parseFloat(price).toFixed(2)} €` : "Prix libre"}
                 </p>
               </div>
             </div>
 
             {error && (
-              <div className="text-sm text-red-400 bg-red-400/10 rounded-xl px-4 py-3 mb-4">{error}</div>
+              <p className="font-hanken text-[12px] text-red-400 bg-red-400/10 rounded-xl px-4 py-3 mt-4">{error}</p>
             )}
           </div>
         )}
       </div>
 
-      {/* Bottom CTA */}
-      <div className="px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-3"
-        style={{ borderTop: "1px solid rgba(243,234,219,0.07)" }}>
+      {/* CTA footer */}
+      <div className="relative z-10 px-5 pb-[max(28px,env(safe-area-inset-bottom))] pt-4"
+        style={{ borderTop: "1px solid rgba(243,234,219,0.06)" }}>
         {step < 3 ? (
           <button
             onClick={() => setStep(s => s + 1)}
-            disabled={!canNext}
-            className="w-full py-4 rounded-2xl font-hanken font-semibold text-[15px] text-white flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-40"
-            style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)" }}>
+            disabled={step === 1 && !title.trim()}
+            className="w-full py-4 rounded-2xl font-fraunces text-[17px] text-white flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-30"
+            style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)", boxShadow: "0 6px 24px rgba(109,45,181,.40)" }}>
             Continuer <ArrowRight size={16} />
           </button>
         ) : (
-          <button
-            onClick={handlePublish}
-            disabled={submitting}
-            className="w-full py-4 rounded-2xl font-hanken font-semibold text-[15px] text-white flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-60"
-            style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)", boxShadow: "0 8px 28px rgba(109,45,181,.4)" }}>
-            {submitting ? (
-              <><div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" /> Publication…</>
-            ) : (
-              <><Check size={16} /> Publier maintenant</>
-            )}
+          <button onClick={publish} disabled={saving}
+            className="w-full py-4 rounded-2xl font-fraunces text-[17px] text-white flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
+            style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)", boxShadow: "0 6px 24px rgba(109,45,181,.40)" }}>
+            {saving
+              ? <><div className="w-4 h-4 rounded-full border-2 border-white/50 border-t-white animate-spin" /> Publication…</>
+              : <>✦ Publier maintenant</>
+            }
           </button>
         )}
       </div>
