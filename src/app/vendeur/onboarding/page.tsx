@@ -6,11 +6,12 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, ArrowLeft, Check, Store, Shield, Eye, Zap } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
+import { FounderBanner } from "@/components/founder/FounderBanner";
 
 const CATEGORIES = ["Mode non-genrée", "Art & Culture", "Bijoux", "Zines & Édition", "Corps & Soin", "Intimité", "Maison", "Services", "Expériences"];
 
-const STEPS = ["Bienvenue", "Ta boutique", "Charte", "Confirmation"] as const;
-type Step = 0 | 1 | 2 | 3;
+const STEPS = ["Bienvenue", "Ta boutique", "Programme", "Charte", "Confirmation"] as const;
+type Step = 0 | 1 | 2 | 3 | 4;
 
 function slugify(text: string) {
   return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -50,7 +51,7 @@ export default function OnboardingPage() {
 
     if (shopError) { setError(shopError.message); setSubmitting(false); return; }
     await supabase.from("profiles").update({ is_vendor: true }).eq("id", user.id);
-    setStep(3);
+    setStep(4);
     setSubmitting(false);
   };
 
@@ -71,9 +72,9 @@ export default function OnboardingPage() {
         </a>
 
         {/* Progress */}
-        {step < 3 && (
+        {step < 4 && (
           <div className="flex items-center gap-2 justify-center mb-10">
-            {STEPS.slice(0, 3).map((s, i) => (
+            {STEPS.slice(0, 4).map((s, i) => (
               <div key={s} className="flex items-center gap-2">
                 <div className={`w-7 h-7 rounded-full border text-xs font-mono flex items-center justify-center transition-all duration-300 ${
                   i < step ? "bg-[#1C9C95] border-[#1C9C95] text-[#F3EADB]"
@@ -82,7 +83,7 @@ export default function OnboardingPage() {
                 }`}>
                   {i < step ? "✓" : i + 1}
                 </div>
-                {i < 2 && <div className={`w-8 h-px transition-colors ${i < step ? "bg-[#1C9C95]" : "bg-[#F3EADB]/15"}`} />}
+                {i < 3 && <div className={`w-6 h-px transition-colors ${i < step ? "bg-[#1C9C95]" : "bg-[#F3EADB]/15"}`} />}
               </div>
             ))}
           </div>
@@ -176,8 +177,27 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 2 — Charte */}
+        {/* Step 2 — Programme Fondateur */}
         {step === 2 && (
+          <div>
+            <div className="mb-6">
+              <h2 className="font-fraunces text-2xl text-[#F3EADB] mb-1">Programme Fondateur·ice</h2>
+              <p className="font-hanken text-sm text-[#F3EADB]/45">
+                En ouvrant ta boutique aujourd&apos;hui, tu rejoins automatiquement le programme — découvre tes avantages.
+              </p>
+            </div>
+            <FounderBanner hideCta />
+            <div className="flex gap-3 mt-6">
+              <Button variant="secondary" className="py-3 px-5" onClick={() => setStep(1)}><ArrowLeft size={14} /></Button>
+              <Button variant="primary" className="flex-1 py-3" onClick={() => setStep(3)}>
+                Continuer <ArrowRight size={16} />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3 — Charte */}
+        {step === 3 && (
           <div>
             <h2 className="font-fraunces text-2xl text-[#F3EADB] mb-2">Charte communautaire</h2>
             <p className="font-hanken text-sm text-[#F3EADB]/50 mb-6">Spectrum For Us est un safe space. Ces engagements sont non-négociables.</p>
@@ -204,7 +224,7 @@ export default function OnboardingPage() {
             </label>
             {error && <div className="text-sm text-red-400 bg-red-400/10 rounded-xl px-4 py-3 mb-4">{error}</div>}
             <div className="flex gap-3">
-              <Button variant="secondary" className="py-3 px-5" onClick={() => setStep(1)}><ArrowLeft size={14} /></Button>
+              <Button variant="secondary" className="py-3 px-5" onClick={() => setStep(2)}><ArrowLeft size={14} /></Button>
               <Button variant="primary" className="flex-1 py-3" disabled={!form.charter || submitting} onClick={handleSubmit}>
                 {submitting ? "Création…" : "Ouvrir ma boutique ✦"}
               </Button>
@@ -212,8 +232,8 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 3 — Confirmation */}
-        {step === 3 && (
+        {/* Step 4 — Confirmation */}
+        {step === 4 && (
           <div className="text-center">
             <div className="w-20 h-20 rounded-full bg-[#1C9C95]/10 border border-[#1C9C95]/30 flex items-center justify-center mx-auto mb-6">
               <Check size={36} className="text-[#1C9C95]" />

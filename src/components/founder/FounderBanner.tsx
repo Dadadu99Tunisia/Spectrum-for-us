@@ -18,9 +18,11 @@ interface FounderBannerProps {
   compact?: boolean;
   /** Allow user to dismiss (stored in sessionStorage) */
   dismissible?: boolean;
+  /** Hide the CTA button (e.g. when already inside onboarding) */
+  hideCta?: boolean;
 }
 
-export function FounderBanner({ compact = false, dismissible = false }: FounderBannerProps) {
+export function FounderBanner({ compact = false, dismissible = false, hideCta = false }: FounderBannerProps) {
   const [counts, setCounts]       = useState<Counts | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -230,15 +232,17 @@ export function FounderBanner({ compact = false, dismissible = false }: FounderB
 
         {/* CTA */}
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <Link href="/vendre-ici"
-            className="flex items-center gap-2.5 px-6 py-3 rounded-xl font-hanken font-semibold text-sm text-white transition-all hover:scale-105 active:scale-95"
-            style={{
-              background: "linear-gradient(135deg,#6D2DB5,#E0337E)",
-              boxShadow: "0 8px 30px rgba(109,45,181,.4)",
-            }}>
-            <span>Rejoindre le programme</span>
-            <ArrowRight size={15} />
-          </Link>
+          {!hideCta && (
+            <Link href="/vendre-ici"
+              className="flex items-center gap-2.5 px-6 py-3 rounded-xl font-hanken font-semibold text-sm text-white transition-all hover:scale-105 active:scale-95"
+              style={{
+                background: "linear-gradient(135deg,#6D2DB5,#E0337E)",
+                boxShadow: "0 8px 30px rgba(109,45,181,.4)",
+              }}>
+              <span>Rejoindre le programme</span>
+              <ArrowRight size={15} />
+            </Link>
+          )}
           <p className="font-mono text-[10px] text-[#F3EADB]/30 text-center">
             {counts.founder_count + counts.early_adopter_count} vendeur·ses déjà inscrit·es · Places non transférables
           </p>
