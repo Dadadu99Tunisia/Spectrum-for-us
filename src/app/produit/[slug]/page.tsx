@@ -1,9 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
-import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tag } from "@/components/ui/Tag";
@@ -34,8 +33,6 @@ const TYPE_CONFIG: Record<string, { label: string; icon: React.ElementType; colo
 export default function ProduitPage() {
   const params = useParams();
   const slug   = params?.slug as string;
-  const { user } = useAuth();
-  const router = useRouter();
   const [product,  setProduct]  = useState<Product | null>(null);
   const [related,  setRelated]  = useState<RelatedProduct[]>([]);
   const [loading,  setLoading]  = useState(true);
@@ -57,6 +54,12 @@ export default function ProduitPage() {
       .then(({ data }) => {
         setProduct(data as Product | null);
         setLoading(false);
+        if (data?.id) {
+          try {
+            const favs: string[] = JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]");
+            setLiked(favs.includes(data.id));
+          } catch { /* ignore */ }
+        }
         if (data?.shop_id) {
           supabase
             .from("products")
@@ -70,12 +73,18 @@ export default function ProduitPage() {
       });
   }, [slug]);
 
+  const toggleLike = () => {
+    if (!product) return;
+    try {
+      const favs: string[] = JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]");
+      const next = liked ? favs.filter(f => f !== product.id) : [...favs, product.id];
+      localStorage.setItem("spectrum_favorites", JSON.stringify(next));
+      setLiked(!liked);
+    } catch { setLiked(!liked); }
+  };
+
   const handleAdd = () => {
     if (!product || isOos) return;
-    if (!user) {
-      router.push(`/auth?redirect=/produit/${product.slug}`);
-      return;
-    }
     const shop = getShop();
     add({
       id: product.id,
@@ -183,7 +192,7 @@ export default function ProduitPage() {
                     <Package size={64} className="text-[#F3EADB]/10" />
                   </>
                 )}
-                <button onClick={() => setLiked(!liked)}
+                <button onClick={toggleLike}
                   className="absolute top-4 right-4 p-2 rounded-full bg-[#3D1F5C]/60 backdrop-blur-sm transition-all hover:scale-110">
                   <Heart size={18} className={liked ? "fill-[#E0337E] text-[#E0337E]" : "text-[#F3EADB]/50"} />
                 </button>
@@ -269,7 +278,7 @@ export default function ProduitPage() {
                 >
                   {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {isOos ? "Épuisé" : typeConf.cta}</>}
                 </button>
-                <button onClick={() => setLiked(!liked)}
+                <button onClick={toggleLike}
                   className="p-4 border border-[#F3EADB]/15 rounded-full hover:border-[#E0337E]/40 transition-colors">
                   <Heart size={18} className={liked ? "fill-[#E0337E] text-[#E0337E]" : "text-[#F3EADB]/50"} />
                 </button>
@@ -357,7 +366,7 @@ export default function ProduitPage() {
             }}>
             {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {typeConf.cta}</>}
           </button>
-          <button onClick={() => setLiked(!liked)}
+          <button onClick={toggleLike}
             className="w-12 h-12 flex items-center justify-center rounded-2xl shrink-0"
             style={{ background: liked ? "rgba(224,51,126,.15)" : "rgba(243,234,219,0.06)", border: `1px solid ${liked ? "rgba(224,51,126,.35)" : "rgba(243,234,219,.10)"}` }}>
             <Heart size={18} className={liked ? "fill-[#E0337E] text-[#E0337E]" : "text-[#F3EADB]/40"} />

@@ -1,7 +1,8 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
@@ -74,9 +75,9 @@ function AuthForm() {
       }} />
 
       <div className="relative z-10 w-full max-w-md">
-        <a href="/" className="inline-flex items-center gap-2 text-[#F3EADB]/40 hover:text-[#F3EADB] text-sm font-hanken mb-8 transition-colors">
+        <Link href="/" className="inline-flex items-center gap-2 text-[#F3EADB]/40 hover:text-[#F3EADB] text-sm font-hanken mb-8 transition-colors">
           <ArrowLeft size={14} /> Retour à l&apos;accueil
-        </a>
+        </Link>
 
         <div className="text-center mb-8">
           <span className="font-fraunces text-3xl text-[#F3EADB]">B<span className="text-[#E0337E]">(u)</span>y us</span>
@@ -231,8 +232,8 @@ function AuthForm() {
         {mode === "signup" && (
           <p className="text-center mt-5 text-xs font-hanken text-[#F3EADB]/25 leading-relaxed max-w-sm mx-auto">
             En créant un compte, tu acceptes notre{" "}
-            <a href="/charte" className="text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors">charte communautaire</a>{" "}
-            et nos <a href="/cgu" className="text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors">CGU</a>.
+            <a href="/legal/cgu" className="text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors">charte communautaire</a>{" "}
+            et nos <a href="/legal/cgu" className="text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors">CGU</a>.
             Tes données sensibles sont protégées (RGPD).
           </p>
         )}

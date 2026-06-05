@@ -17,7 +17,11 @@ export function BottomNav() {
   const { items } = useCart();
   const cartCount = items.reduce((s, i) => s + i.quantity, 0);
 
-  if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
+  if (
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/checkout")
+  ) return null;
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
