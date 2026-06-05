@@ -218,9 +218,23 @@ export function ExploreFeed() {
             {[...Array(8)].map((_, i) => <Skeleton key={i} />)}
           </div>
         ) : products.length === 0 ? (
-          <div className="py-20 text-center">
-            <p className="font-fraunces text-[20px] text-[#F3EADB]/30 mb-2">Rien ici</p>
-            <p className="font-hanken text-[12px] text-[#F3EADB]/20">Essaie une autre catégorie</p>
+          <div className="py-16 text-center">
+            <p className="text-4xl mb-5">✦</p>
+            <p className="font-fraunces text-[22px] text-[#F3EADB] mb-2">
+              {search || chip !== "Tout" ? "Aucune création trouvée" : "Le spectre se remplit"}
+            </p>
+            <p className="font-hanken text-[13px] text-[#F3EADB]/40 mb-8 leading-relaxed max-w-xs mx-auto">
+              {search || chip !== "Tout"
+                ? "Essaie une autre catégorie ou efface ta recherche."
+                : "Sois parmi les premiers créateur·ices à rejoindre la marketplace queer."}
+            </p>
+            {(!search && chip === "Tout") && (
+              <Link href="/vendeur/onboarding"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-fraunces text-[15px] text-white"
+                style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)" }}>
+                Ouvrir ma boutique <ArrowRight size={15} />
+              </Link>
+            )}
           </div>
         ) : (
           <>

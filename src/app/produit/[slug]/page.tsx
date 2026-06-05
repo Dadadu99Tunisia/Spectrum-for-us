@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer";
 import { Tag } from "@/components/ui/Tag";
 import { Heart, ArrowLeft, ShoppingBag, Check, Package, Zap, CalendarDays, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 
 type Product = {
   id: string; name: string; title: string; description: string;
@@ -139,12 +140,16 @@ export default function ProduitPage() {
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen pt-24 pb-20 px-6">
+      {/* Desktop header */}
+      <div className="hidden md:block"><Header /></div>
+      {/* Mobile header */}
+      <MobilePageHeader title={productName} backHref="/decouvrir" />
+
+      <main className="min-h-screen md:pt-24 pb-20 md:pb-20 px-4 md:px-6">
         <div className="max-w-6xl mx-auto">
 
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 mb-8 flex-wrap">
+          {/* Breadcrumb — desktop only */}
+          <div className="hidden md:flex items-center gap-2 mb-8 flex-wrap">
             <Link href="/decouvrir" className="flex items-center gap-1.5 text-[#F3EADB]/40 hover:text-[#E0337E] text-sm font-hanken transition-colors">
               <ArrowLeft size={14} /> Découvrir
             </Link>
@@ -319,7 +324,48 @@ export default function ProduitPage() {
           )}
         </div>
       </main>
-      <Footer />
+
+      {/* ── Mobile sticky CTA bar ── */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-3"
+        style={{
+          background: "rgba(28,8,50,0.97)",
+          backdropFilter: "blur(20px)",
+          borderTop: "1px solid rgba(243,234,219,0.09)",
+        }}>
+        <div className="flex items-center gap-3">
+          <div className="shrink-0">
+            <p className="font-fraunces text-[22px] leading-none text-[#F3EADB]">
+              {(Number(product.price) * qty).toFixed(2)} €
+            </p>
+            {ptype === "product" && !isOos && (
+              <div className="flex items-center gap-1.5 mt-1">
+                <button onClick={() => setQty(Math.max(1, qty - 1))}
+                  className="w-6 h-6 rounded-lg flex items-center justify-center text-[#F3EADB]/50 text-xl"
+                  style={{ background: "rgba(243,234,219,0.08)" }}>−</button>
+                <span className="font-mono text-[11px] text-[#F3EADB]/60 w-4 text-center">{qty}</span>
+                <button onClick={() => setQty(Math.min(product.quantity || 99, qty + 1))}
+                  className="w-6 h-6 rounded-lg flex items-center justify-center text-[#F3EADB]/50 text-xl"
+                  style={{ background: "rgba(243,234,219,0.08)" }}>+</button>
+              </div>
+            )}
+          </div>
+          <button onClick={handleAdd}
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-fraunces text-[16px] text-white active:scale-[0.97] transition-transform"
+            style={{
+              background: added ? "#1C9C95" : `linear-gradient(135deg,${typeConf.color}dd,${typeConf.color})`,
+              boxShadow: `0 4px 20px ${typeConf.color}40`,
+            }}>
+            {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {typeConf.cta}</>}
+          </button>
+          <button onClick={() => setLiked(!liked)}
+            className="w-12 h-12 flex items-center justify-center rounded-2xl shrink-0"
+            style={{ background: liked ? "rgba(224,51,126,.15)" : "rgba(243,234,219,0.06)", border: `1px solid ${liked ? "rgba(224,51,126,.35)" : "rgba(243,234,219,.10)"}` }}>
+            <Heart size={18} className={liked ? "fill-[#E0337E] text-[#E0337E]" : "text-[#F3EADB]/40"} />
+          </button>
+        </div>
+      </div>
+
+      <div className="hidden md:block"><Footer /></div>
     </>
   );
 }

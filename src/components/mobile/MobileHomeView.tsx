@@ -217,6 +217,17 @@ export function MobileHomeView() {
                 </div>
               ))}
             </div>
+          ) : products.length === 0 ? (
+            <Link href="/vendeur/onboarding"
+              className="flex items-center gap-4 px-5 py-4 rounded-2xl active:scale-[0.98] transition-transform"
+              style={{ background: "rgba(243,234,219,0.04)", border: "1px dashed rgba(243,234,219,0.12)" }}>
+              <span className="text-3xl">✦</span>
+              <div>
+                <p className="font-fraunces text-[14px] text-[#F3EADB]">Sois le premier à vendre ici</p>
+                <p className="font-mono text-[9px] text-[#F3EADB]/35 mt-0.5">Ouvre ta boutique · Gratuit</p>
+              </div>
+              <ArrowRight size={14} className="ml-auto text-[#E0337E]" />
+            </Link>
           ) : (
             <div className="flex gap-3 overflow-x-auto pb-2 -mx-5 px-5 scrollbar-none">
               {products.map(p => {
