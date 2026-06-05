@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { MapPin, Package, CheckCircle, Mail } from "lucide-react";
 import Link from "next/link";
 import { ShopOwnerBar } from "@/components/ShopOwnerBar";
@@ -77,7 +78,8 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
 
   return (
     <>
-      <Header />
+      <div className="hidden md:block"><Header /></div>
+      <MobilePageHeader title={shop.name as string} backHref="/decouvrir" />
 
       {/* Owner edit bar — rendered client-side, only shows if current user = owner */}
       <ShopOwnerBar ownerId={ownerId} shopSlug={slug} />
@@ -209,15 +211,10 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                 const href  = p.slug ? `/produit/${p.slug}` : "#";
                 const name  = String(p.name || p.title || "Produit");
                 const ptype = (p.type as string | null) ?? "product";
-                const isOos = ptype === "product"
-                  && (p.quantity as number | null) !== null
-                  && (p.quantity as number) <= 0;
 
                 return (
                   <Link key={p.id as string} href={href}
-                    className={`group rounded-2xl border overflow-hidden hover:border-[#E0337E]/30 transition-all ${
-                      isOos ? "opacity-60 border-[#F3EADB]/5" : "border-[#F3EADB]/8"
-                    }`}>
+                    className="group rounded-2xl border border-[#F3EADB]/8 overflow-hidden hover:border-[#E0337E]/30 transition-all">
                     <div className="aspect-square bg-[#2d1545] relative overflow-hidden">
                       {img ? (
                         <img src={img} alt={name}
@@ -232,11 +229,6 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                           <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#3D1F5C]/80 text-[#E0901E] border border-[#E0901E]/30">
                             {TYPE_LABELS[ptype] ?? ptype}
                           </span>
-                        </div>
-                      )}
-                      {isOos && (
-                        <div className="absolute inset-0 bg-[#3D1F5C]/50 flex items-center justify-center">
-                          <span className="font-mono text-xs text-[#F3EADB]/60 uppercase tracking-widest">Épuisé</span>
                         </div>
                       )}
                     </div>
@@ -258,7 +250,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
           )}
         </div>
       </main>
-      <Footer />
+      <div className="hidden md:block"><Footer /></div>
     </>
   );
 }

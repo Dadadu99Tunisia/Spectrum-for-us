@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Package, Heart, Star, Settings, Store, LogOut, LayoutDashboard, Download, Trash2 } from "lucide-react";
+import { Package, Heart, Star, Settings, Store, LogOut, LayoutDashboard, Download, Trash2, PlusCircle, ChevronRight, ArrowRight } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
 const TABS = ["Commandes", "Favoris", "Avis", "Paramètres"] as const;
@@ -26,10 +28,21 @@ export default function ComptePage() {
   const [tab, setTab] = useState<Tab>("Commandes");
   const [profile, setProfile] = useState<{ full_name?: string; pseudo?: string; pronouns?: string; is_vendor?: boolean } | null>(null);
   const [orders, setOrders] = useState<Array<{ id: string; total_amount: number; status: string; created_at: string }>>([]);
+  const [favCount, setFavCount] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) router.push("/auth?redirect=/compte");
   }, [user, loading, router]);
+
+  useEffect(() => {
+    const read = () => {
+      try { setFavCount(JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]").length); }
+      catch { setFavCount(0); }
+    };
+    read();
+    window.addEventListener("storage", read);
+    return () => window.removeEventListener("storage", read);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -64,11 +77,92 @@ export default function ComptePage() {
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen pt-24 pb-20 px-6">
+      <div className="hidden md:block"><Header /></div>
+      <MobilePageHeader title="Mon compte" backHref="/" />
+
+      <main className="min-h-screen md:pt-24 pb-24 md:pb-20 px-4 md:px-6">
         <div className="max-w-5xl mx-auto">
-          {/* Profile header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-10">
+
+          {/* ── Mobile profile card ── */}
+          <div className="md:hidden pt-4">
+            <div className="flex items-center gap-4 p-4 rounded-2xl mb-4"
+              style={{ background: "rgba(243,234,219,0.04)", border: "1px solid rgba(243,234,219,0.08)" }}>
+              <div className="w-14 h-14 rounded-2xl bg-[#E0337E]/12 border border-[#E0337E]/30 flex items-center justify-center shrink-0">
+                <span className="font-fraunces text-xl text-[#E0337E]">{(pseudo?.[0] ?? "?").toUpperCase()}</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="font-fraunces text-[19px] text-[#F3EADB] truncate">{pseudo}</h1>
+                  {pronouns && <span className="font-mono text-[10px] text-[#F3EADB]/35">{pronouns}</span>}
+                </div>
+                <p className="font-hanken text-[12px] text-[#F3EADB]/40 truncate">{user.email}</p>
+              </div>
+              <button onClick={signOut}
+                className="p-2 rounded-xl border border-[#F3EADB]/12 text-[#F3EADB]/40 active:text-red-400 transition-colors shrink-0">
+                <LogOut size={15} />
+              </button>
+            </div>
+
+            {/* Quick action tiles */}
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              <Link href="/favoris" className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
+                style={{ background: "rgba(243,234,219,0.04)", border: "1px solid rgba(243,234,219,0.08)" }}>
+                <span className="relative">
+                  <Heart size={20} className="text-[#E0337E]" />
+                  {favCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2 min-w-[15px] h-[15px] px-0.5 rounded-full text-[8px] font-mono flex items-center justify-center text-white" style={{ background: "#E0337E" }}>{favCount}</span>
+                  )}
+                </span>
+                <span className="font-mono text-[9px] uppercase tracking-wider text-[#F3EADB]/55">Favoris</span>
+              </Link>
+              <button onClick={() => setTab("Commandes")} className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
+                style={{ background: "rgba(243,234,219,0.04)", border: "1px solid rgba(243,234,219,0.08)" }}>
+                <Package size={20} className="text-[#6D2DB5]" />
+                <span className="font-mono text-[9px] uppercase tracking-wider text-[#F3EADB]/55">Commandes</span>
+              </button>
+              <Link href="/decouvrir" className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
+                style={{ background: "rgba(243,234,219,0.04)", border: "1px solid rgba(243,234,219,0.08)" }}>
+                <ArrowRight size={20} className="text-[#1C9C95]" />
+                <span className="font-mono text-[9px] uppercase tracking-wider text-[#F3EADB]/55">Explorer</span>
+              </Link>
+            </div>
+
+            {/* Vendor / become-vendor row */}
+            {isAdmin && (
+              <Link href="/admin" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-2 active:scale-[0.98] transition-transform"
+                style={{ background: "linear-gradient(135deg,rgba(224,51,126,0.14),rgba(109,45,181,0.14))", border: "1px solid rgba(224,51,126,0.25)" }}>
+                <LayoutDashboard size={17} className="text-[#E0337E]" />
+                <span className="flex-1 font-hanken text-[14px] text-[#F3EADB]">Administration</span>
+                <ChevronRight size={16} className="text-[#F3EADB]/30" />
+              </Link>
+            )}
+            {profile?.is_vendor ? (
+              <>
+                <Link href="/vendeur" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-2 active:scale-[0.98] transition-transform"
+                  style={{ background: "rgba(243,234,219,0.04)", border: "1px solid rgba(243,234,219,0.08)" }}>
+                  <Store size={17} className="text-[#1C9C95]" />
+                  <span className="flex-1 font-hanken text-[14px] text-[#F3EADB]">Espace vendeur·rice</span>
+                  <ChevronRight size={16} className="text-[#F3EADB]/30" />
+                </Link>
+                <Link href="/publier" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-4 active:scale-[0.98] transition-transform"
+                  style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)", boxShadow: "0 4px 18px rgba(109,45,181,.35)" }}>
+                  <PlusCircle size={17} className="text-white" />
+                  <span className="flex-1 font-hanken font-semibold text-[14px] text-white">Publier une création</span>
+                  <ChevronRight size={16} className="text-white/60" />
+                </Link>
+              </>
+            ) : (
+              <Link href="/vendeur/onboarding" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-4 active:scale-[0.98] transition-transform"
+                style={{ background: "linear-gradient(135deg,rgba(109,45,181,0.16),rgba(224,51,126,0.16))", border: "1px solid rgba(109,45,181,0.3)" }}>
+                <Store size={17} className="text-[#E0337E]" />
+                <span className="flex-1 font-hanken text-[14px] text-[#F3EADB]">Vends tes créations ici</span>
+                <ChevronRight size={16} className="text-[#F3EADB]/30" />
+              </Link>
+            )}
+          </div>
+
+          {/* Profile header — desktop */}
+          <div className="hidden md:flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-10">
             <div className="w-16 h-16 rounded-2xl bg-[#E0337E]/10 border border-[#E0337E]/30 flex items-center justify-center">
               <span className="font-fraunces text-2xl text-[#E0337E]">{(pseudo?.[0] ?? "?").toUpperCase()}</span>
             </div>
@@ -102,12 +196,12 @@ export default function ComptePage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-1 border-b border-[#F3EADB]/10 mb-8">
+          <div className="flex gap-1 border-b border-[#F3EADB]/10 mb-8 overflow-x-auto scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
             {TABS.map((t) => {
               const Icon = TAB_ICONS[t];
               return (
                 <button key={t} onClick={() => setTab(t)}
-                  className={`flex items-center gap-2 px-4 py-2.5 font-hanken text-sm border-b-2 transition-all duration-200 ${
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 font-hanken text-sm border-b-2 transition-all duration-200 ${
                     tab === t
                       ? "border-[#E0337E] text-[#E0337E]"
                       : "border-transparent text-[#F3EADB]/40 hover:text-[#F3EADB]/70"
@@ -171,7 +265,7 @@ export default function ComptePage() {
           )}
         </div>
       </main>
-      <Footer />
+      <div className="hidden md:block"><Footer /></div>
     </>
   );
 }

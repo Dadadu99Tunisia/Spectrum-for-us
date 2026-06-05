@@ -2,19 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/store/cart";
 
 const TABS = [
-  { href: "/",          emoji: "◈",  label: "Home" },
-  { href: "/decouvrir", emoji: "✦",  label: "Explorer" },
-  { href: "/publier",   emoji: null, label: "Publier", isPrimary: true },
-  { href: "/favoris",   emoji: "♡",  label: "Favoris" },
-  { href: "/compte",    emoji: "○",  label: "Moi" },
+  { href: "/",          symbol: "◈",  label: "Accueil"  },
+  { href: "/decouvrir", symbol: "✦",  label: "Explorer" },
+  { href: "/panier",    symbol: null, label: "Panier",  isCart: true },
+  { href: "/favoris",   symbol: "♡",  label: "Favoris"  },
+  { href: "/compte",    symbol: "○",  label: "Moi"      },
 ] as const;
 
 export function BottomNav() {
-  const pathname = usePathname();
-  const { user } = useAuth();
+  const pathname  = usePathname();
+  const { items } = useCart();
+  const cartCount = items.reduce((s, i) => s + i.quantity, 0);
 
   if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
 
@@ -23,74 +24,71 @@ export function BottomNav() {
 
   return (
     <>
-      <div className="h-20 md:hidden" aria-hidden />
+      <div className="h-[68px] md:hidden" aria-hidden />
 
-      <nav
-        className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
         style={{
-          background: "rgba(32, 10, 55, 0.98)",
+          background: "rgba(20,6,40,0.98)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
           borderTop: "1px solid rgba(243,234,219,0.07)",
-        }}
-      >
-        {/* Prism rainbow line */}
-        <div
-          className="absolute top-0 left-0 right-0 h-px"
-          style={{ background: "linear-gradient(90deg, #E0533A, #E0901E, #CF3F7C, #6D2DB5, #1C9C95)" }}
-        />
+        }}>
+        {/* Prism line */}
+        <div className="absolute top-0 left-0 right-0 h-px"
+          style={{ background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)" }} />
 
-        <div className="flex items-end justify-around px-3 pt-2.5 pb-[max(10px,env(safe-area-inset-bottom))]">
-          {TABS.map((tab) => {
-            const { href, label } = tab;
-            const emoji = "emoji" in tab ? tab.emoji : null;
-            const isPrimary = "isPrimary" in tab && tab.isPrimary;
-            const active = isActive(href);
-            const dest   = isPrimary && !user ? "/auth?redirect=/publier" : href;
+        <div className="flex items-center justify-around px-2 pt-2 pb-[max(8px,env(safe-area-inset-bottom))]">
+          {TABS.map(tab => {
+            const active = isActive(tab.href);
 
-            if (isPrimary) {
+            if ("isCart" in tab && tab.isCart) {
               return (
-                <Link key={href} href={dest}
-                  className="flex flex-col items-center gap-1 -mt-5"
-                >
-                  <span
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-[22px] shadow-lg transition-transform active:scale-90"
+                <Link key={tab.href} href={tab.href}
+                  className="flex flex-col items-center gap-0.5 px-3 active:scale-90 transition-transform">
+                  <div className="relative w-8 h-8 flex items-center justify-center rounded-xl"
                     style={{
-                      background: "linear-gradient(135deg, #6D2DB5, #E0337E)",
-                      boxShadow: "0 4px 24px rgba(224,51,126,.45), 0 0 0 3px rgba(32,10,55,1)",
-                    }}
-                  >
-                    +
-                  </span>
+                      background: active
+                        ? "linear-gradient(135deg,#6D2DB5,#E0337E)"
+                        : "rgba(243,234,219,0.07)",
+                    }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke={active ? "white" : "rgba(243,234,219,0.45)"}
+                      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                      <line x1="3" y1="6" x2="21" y2="6"/>
+                      <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 rounded-full text-[9px] font-mono flex items-center justify-center px-0.5 text-white"
+                        style={{ background: "#E0337E" }}>
+                        {cartCount > 9 ? "9+" : cartCount}
+                      </span>
+                    )}
+                  </div>
                   <span className="font-mono text-[8px] tracking-wider uppercase"
-                    style={{ color: "rgba(243,234,219,0.30)" }}>
-                    {label}
+                    style={{ color: active ? "#E0337E" : "rgba(243,234,219,0.28)" }}>
+                    {tab.label}
                   </span>
                 </Link>
               );
             }
 
             return (
-              <Link key={href} href={dest ?? href}
-                className="flex flex-col items-center gap-1 px-2 py-0.5 transition-all active:scale-90"
-              >
-                <span
-                  className="text-[19px] leading-none transition-all"
+              <Link key={tab.href} href={tab.href}
+                className="flex flex-col items-center gap-0.5 px-3 active:scale-90 transition-transform">
+                <span className="text-[18px] leading-[28px] w-8 text-center transition-all"
                   style={{
                     color: active ? "#E0337E" : "rgba(243,234,219,0.28)",
-                    textShadow: active ? "0 0 12px rgba(224,51,126,.6)" : "none",
-                    transform: active ? "scale(1.15)" : "scale(1)",
+                    textShadow: active ? "0 0 14px rgba(224,51,126,.7)" : "none",
+                    transform: active ? "scale(1.2)" : "scale(1)",
                     display: "block",
-                    transition: "all 0.15s ease",
-                  }}
-                >
-                  {emoji}
+                    transition: "all 0.15s",
+                  }}>
+                  {tab.symbol}
                 </span>
-                <span
-                  className="font-mono text-[8px] tracking-wider uppercase"
-                  style={{ color: active ? "#E0337E" : "rgba(243,234,219,0.25)" }}
-                >
-                  {label}
+                <span className="font-mono text-[8px] tracking-wider uppercase"
+                  style={{ color: active ? "#E0337E" : "rgba(243,234,219,0.28)" }}>
+                  {tab.label}
                 </span>
               </Link>
             );
