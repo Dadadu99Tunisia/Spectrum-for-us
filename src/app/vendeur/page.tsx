@@ -12,6 +12,8 @@ import {
   Eye, EyeOff, Pencil, CheckCircle2, Circle,
   ArrowRight, ExternalLink, ImageIcon, Mail, Zap,
 } from "lucide-react";
+import { FounderBanner } from "@/components/founder/FounderBanner";
+import { FounderBadge, type FounderStatus } from "@/components/founder/FounderBadge";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import Link from "next/link";
 
@@ -48,6 +50,7 @@ export default function VendeurPage() {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [loadingData, setLoading]   = useState(true);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [founderStatus, setFounderStatus] = useState<{ status: FounderStatus; rank: number } | null>(null);
 
   useEffect(() => {
     if (!loading && !user) { router.push("/auth?redirect=/vendeur"); return; }
@@ -58,6 +61,14 @@ export default function VendeurPage() {
         const { data: shopData } = await supabase.from("shops").select("*").eq("owner_id", user.id).single();
         if (!shopData) { router.push("/vendeur/onboarding"); return; }
         setShop(shopData as Shop);
+        // Fetch founder program status silently
+        supabase.from("founder_program_members")
+          .select("status, rank")
+          .eq("user_id", user.id)
+          .single()
+          .then(({ data: fp }) => {
+            if (fp) setFounderStatus({ status: fp.status as FounderStatus, rank: fp.rank });
+          });
         const [prodRes, orderRes] = await Promise.all([
           supabase.from("products").select("*").eq("shop_id", shopData.id).order("created_at", { ascending: false }),
           supabase.from("order_items")
@@ -204,13 +215,22 @@ export default function VendeurPage() {
           {/* ══ VUE D'ENSEMBLE ══ */}
           {tab === "Vue d'ensemble" && (
             <div className="space-y-6">
+
+              {/* Founder banner — shown only if no status yet (program still open) */}
+              {!founderStatus && <FounderBanner compact dismissible />}
+
               {/* Header */}
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <h1 className="font-fraunces text-3xl text-[#F3EADB]">
                     Bonjour <span className="text-[#E0337E]">✦</span>
                   </h1>
-                  <p className="font-hanken text-[#F3EADB]/40 text-sm mt-1">{shop.name}</p>
+                  <div className="flex items-center gap-3 mt-1">
+                    <p className="font-hanken text-[#F3EADB]/40 text-sm">{shop.name}</p>
+                    {founderStatus && founderStatus.status !== "STANDARD" && (
+                      <FounderBadge status={founderStatus.status} rank={founderStatus.rank} size="sm" showRank />
+                    )}
+                  </div>
                 </div>
                 <a href={`/boutique/${shop.slug}`} target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#F3EADB]/15 text-[#F3EADB]/50 font-hanken text-sm hover:border-[#E0337E]/30 hover:text-[#E0337E] transition-all">
