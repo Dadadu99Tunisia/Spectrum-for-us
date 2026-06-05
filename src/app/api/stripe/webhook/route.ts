@@ -29,8 +29,13 @@ export async function POST(req: Request) {
   let event: Stripe.Event;
   try {
     if (!webhookSecret) {
-      // Mode dev sans secret — logguer un avertissement
-      console.warn("[webhook] STRIPE_WEBHOOK_SECRET manquant — signature non vérifiée");
+      // En production, refuser tout event non signé (sinon n'importe qui peut
+      // forger un paiement). En dev seulement, on tolère l'absence de secret.
+      if (process.env.NODE_ENV === "production") {
+        console.error("[webhook] STRIPE_WEBHOOK_SECRET manquant en production — rejet");
+        return NextResponse.json({ error: "Webhook non configuré" }, { status: 503 });
+      }
+      console.warn("[webhook] STRIPE_WEBHOOK_SECRET manquant — signature non vérifiée (dev)");
       event = JSON.parse(body);
     } else {
       event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
