@@ -3,7 +3,6 @@ import { PrideCountdown } from "@/components/PrideCountdown";
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { Hero } from "@/components/sections/Hero";
 import { Manifeste } from "@/components/sections/Manifeste";
-import { FounderBanner } from "@/components/founder/FounderBanner";
 import { Origines } from "@/components/sections/Origines";
 import { Univers } from "@/components/sections/Univers";
 import { CoupsDeCoeur } from "@/components/sections/CoupsDeCoeur";
@@ -16,48 +15,56 @@ import { Newsletter } from "@/components/sections/Newsletter";
 import { Footer } from "@/components/Footer";
 import { MarqueeBanner } from "@/components/ui/MarqueeBanner";
 import { EcoBanner } from "@/components/EcoBanner";
+import { FounderProgramSection } from "@/components/founder/FounderProgramSection";
+import { MobileHomeView } from "@/components/mobile/MobileHomeView";
 
 export default function Home() {
   return (
     <>
       <WebsiteJsonLd />
       <OrganizationJsonLd />
-      <PrideCountdown />
-      <Header />
-      <main id="main-content">
-        <Hero />
-        <MarqueeBanner variant="default" />
-        <div className="max-w-4xl mx-auto px-6 py-10">
-          <FounderBanner dismissible />
-        </div>
-        <Manifeste />
-        <Origines />
-        <Univers />
-        <MarqueeBanner
-          variant="bold"
-          speed="slow"
-          reverse
-          items={[
-            "✦ Ce n'est pas une tolérance : c'est un droit",
-            "◈ Chaque achat soutient un·e créateur·rice",
-            "✦ Mode sans genre",
-            "◈ Art queer sans filtre",
-            "✦ Bijoux uniques",
-            "◈ Corps & Soin inclusif",
-            "✦ Zines & édition indépendante",
-            "◈ Nous existons, et nous créons",
-          ]}
-        />
-        <CoupsDeCoeur />
-        <Createurs />
-        <Voix />
-        <Experiences />
-        <RejoindreCTA />
-        <VendreIci />
-        <Newsletter />
-      </main>
-      <EcoBanner />
-      <Footer />
+
+      {/* ══ MOBILE EXPERIENCE (< 768px) ══ */}
+      <MobileHomeView />
+
+      {/* ══ DESKTOP EXPERIENCE (≥ 768px) ══ */}
+      <div className="hidden md:block">
+        <PrideCountdown />
+        <Header />
+        <main id="main-content">
+          <Hero />
+          <MarqueeBanner variant="default" />
+          {/* Programme Fondateur — avant le manifeste */}
+          <FounderProgramSection />
+          <Manifeste />
+          <Origines />
+          <Univers />
+          <MarqueeBanner
+            variant="bold"
+            speed="slow"
+            reverse
+            items={[
+              "✦ Ce n'est pas une tolérance : c'est un droit",
+              "◈ Chaque achat soutient un·e créateur·rice",
+              "✦ Mode sans genre",
+              "◈ Art queer sans filtre",
+              "✦ Bijoux uniques",
+              "◈ Corps & Soin inclusif",
+              "✦ Zines & édition indépendante",
+              "◈ Nous existons, et nous créons",
+            ]}
+          />
+          <CoupsDeCoeur />
+          <Createurs />
+          <Voix />
+          <Experiences />
+          <RejoindreCTA />
+          <VendreIci />
+          <Newsletter />
+        </main>
+        <EcoBanner />
+        <Footer />
+      </div>
     </>
   );
 }

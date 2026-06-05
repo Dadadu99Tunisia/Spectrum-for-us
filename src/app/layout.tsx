@@ -13,6 +13,7 @@ import { ReferralTracker } from "@/components/ReferralTracker";
 import SiteBanner from "@/components/SiteBanner";
 import { CookieBanner } from "@/components/ui/CookieBanner";
 import { AccessibilityBar } from "@/components/AccessibilityBar";
+import { BottomNav } from "@/components/mobile/BottomNav";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -113,9 +114,12 @@ export default function RootLayout({
         <a href="#main-content" className="skip-to-content">
           Aller au contenu principal
         </a>
-        <ScrollProgress />
-        <CustomCursor />
-        <PrismParticles />
+        {/* Desktop-only decorative elements */}
+        <div className="hidden md:block">
+          <ScrollProgress />
+          <CustomCursor />
+          <PrismParticles />
+        </div>
         <SiteBanner />
         <BannerProvider>
           <AuthProvider>
@@ -124,6 +128,8 @@ export default function RootLayout({
                 <ReferralTracker />
               </Suspense>
               <PageTransition>{children}</PageTransition>
+              {/* Mobile bottom navigation */}
+              <BottomNav />
               <CookieBanner />
               <AccessibilityBar />
             </I18nProvider>

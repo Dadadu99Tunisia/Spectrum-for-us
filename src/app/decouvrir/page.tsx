@@ -9,6 +9,7 @@ import { useCart } from "@/store/cart";
 import { Search, ShoppingBag, SlidersHorizontal, X, Package, Layers } from "lucide-react";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
+import { ExploreFeed } from "@/components/mobile/ExploreFeed";
 
 const ALL_CATEGORIES = ["Toutes", ...Object.keys(CATEGORIES), "Services", "Expériences"];
 
@@ -327,5 +328,14 @@ function DecouvrirContent() {
 }
 
 export default function DecouvrirPage() {
-  return <Suspense><DecouvrirContent /></Suspense>;
+  return (
+    <>
+      {/* Mobile: app-like infinite feed */}
+      <ExploreFeed />
+      {/* Desktop: standard layout */}
+      <div className="hidden md:block">
+        <Suspense><DecouvrirContent /></Suspense>
+      </div>
+    </>
+  );
 }
