@@ -12,6 +12,8 @@ interface Props {
   rightSlot?: React.ReactNode;
 }
 
+const T = { bg: "#FBF9F5", ink: "#1A1612", line: "#ECE6DB", mag: "#FF3D7F" };
+
 export function MobilePageHeader({ title, backHref, showCart = true, rightSlot }: Props) {
   const router = useRouter();
   const { items } = useCart();
@@ -20,37 +22,27 @@ export function MobilePageHeader({ title, backHref, showCart = true, rightSlot }
   return (
     <header
       className="md:hidden sticky top-0 z-40 flex items-center gap-3 px-4 h-14"
-      style={{
-        background: "rgba(32,10,55,0.97)",
-        backdropFilter: "blur(20px)",
-        borderBottom: "1px solid rgba(243,234,219,0.07)",
-      }}
+      style={{ background: "rgba(251,249,245,0.92)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${T.line}` }}
     >
-      {/* Prism line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg,transparent,rgba(224,51,126,.3),rgba(109,45,181,.3),transparent)" }} />
-
       <button
-        onClick={() => backHref ? router.push(backHref) : router.back()}
-        className="w-8 h-8 flex items-center justify-center rounded-xl active:scale-90 transition-transform"
-        style={{ background: "rgba(243,234,219,0.07)" }}
+        onClick={() => (backHref ? router.push(backHref) : router.back())}
+        className="w-9 h-9 flex items-center justify-center rounded-full active:scale-90 transition-transform"
+        style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}
       >
-        <ArrowLeft size={16} className="text-[#F3EADB]/70" />
+        <ArrowLeft size={17} style={{ color: T.ink }} />
       </button>
 
-      {title && (
-        <p className="flex-1 font-fraunces text-[15px] text-[#F3EADB] truncate">{title}</p>
-      )}
+      {title && <p className="flex-1 font-bricolage font-bold text-[16px] truncate" style={{ color: T.ink }}>{title}</p>}
 
       <div className="ml-auto flex items-center gap-2">
         {rightSlot}
         {showCart && (
-          <Link href="/panier" className="relative w-8 h-8 flex items-center justify-center rounded-xl"
-            style={{ background: "rgba(243,234,219,0.07)" }}>
-            <ShoppingBag size={15} className="text-[#F3EADB]/70" />
+          <Link href="/panier" className="relative w-9 h-9 flex items-center justify-center rounded-full"
+            style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
+            <ShoppingBag size={16} style={{ color: T.ink }} />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-mono flex items-center justify-center text-white"
-                style={{ background: "#E0337E" }}>
+              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-mono font-bold flex items-center justify-center text-white"
+                style={{ background: T.mag }}>
                 {cartCount}
               </span>
             )}
