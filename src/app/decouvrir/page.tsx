@@ -266,7 +266,7 @@ function DecouvrirContent() {
                 const oos     = isOutOfStock(p);
                 const ptype   = p.type ?? "product";
                 return (
-                  <div key={p.id} className={`rounded-[18px] border bg-[#F3EADB]/[0.02] overflow-hidden flex flex-col transition-all duration-200 hover:border-[#E0337E]/30 ${oos ? "opacity-60" : "border-[#F3EADB]/10"}`}>
+                  <div key={p.id} className="rounded-[18px] border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02] overflow-hidden flex flex-col transition-all duration-200 hover:border-[#E0337E]/30">
                     <Link href={`/produit/${p.slug || p.id}`} className="block">
                       <div className="h-48 bg-[#2d1545] relative overflow-hidden group">
                         {img ? (
@@ -279,11 +279,7 @@ function DecouvrirContent() {
                             </div>
                           </>
                         )}
-                        {oos && (
-                          <div className="absolute inset-0 bg-[#3D1F5C]/60 flex items-center justify-center">
-                            <span className="font-mono text-xs text-[#F3EADB]/60 uppercase tracking-widest">Épuisé</span>
-                          </div>
-                        )}
+
                         {ptype !== "product" && (
                           <div className="absolute top-2 left-2">
                             <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#3D1F5C]/80 backdrop-blur-sm text-[#E0901E] border border-[#E0901E]/30">
@@ -304,15 +300,14 @@ function DecouvrirContent() {
                       <span className="font-mono text-sm font-bold text-[#F3EADB]">{Number(p.price).toFixed(2)} €</span>
                       <button
                         onClick={() => handleAdd(p)}
-                        disabled={oos}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed ${
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${
                           added === p.id
                             ? "bg-[#1C9C95]/10 text-[#1C9C95]"
                             : "bg-[#E0337E]/10 text-[#E0337E] hover:bg-[#E0337E]/20"
                         }`}
                       >
                         <ShoppingBag size={11} />
-                        {added === p.id ? "✓" : oos ? "Épuisé" : ptype === "service" ? "Réserver" : ptype === "event" ? "S'inscrire" : "Ajouter"}
+                        {added === p.id ? "✓" : ptype === "service" ? "Réserver" : ptype === "event" ? "S'inscrire" : "Ajouter"}
                       </button>
                     </div>
                   </div>
