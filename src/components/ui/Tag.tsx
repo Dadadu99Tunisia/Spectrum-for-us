@@ -7,9 +7,9 @@ interface TagProps {
 }
 
 const variants = {
-  default: "border-[#F3EADB]/20 text-[#F3EADB]/60",
-  magenta: "border-[#E0337E]/40 text-[#E0337E]",
-  peach: "border-[#F2B79E]/40 text-[#F2B79E]",
+  default: "border-[#1A1612]/20 text-[#1A1612]/60",
+  magenta: "border-[#FF3D7F]/40 text-[#FF3D7F]",
+  peach: "border-[#1A1612]/40 text-[#1A1612]",
   teal: "border-[#1C9C95]/40 text-[#1C9C95]",
 };
 

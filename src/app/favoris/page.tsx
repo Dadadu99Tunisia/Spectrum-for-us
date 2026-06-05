@@ -67,8 +67,8 @@ export default function FavorisPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
+    <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center">
+      <div className="w-8 h-8 rounded-full border-2 border-[#FF3D7F] border-t-transparent animate-spin" />
     </div>
   );
 
@@ -84,23 +84,23 @@ export default function FavorisPage() {
         style={{
           background: "rgba(45,16,78,0.97)",
           backdropFilter: "blur(16px)",
-          borderBottom: "1px solid rgba(243,234,219,0.07)",
+          borderBottom: "1px solid rgba(26,22,18,0.07)",
         }}>
         <button onClick={() => router.back()}
           className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center active:scale-90 transition-transform">
           <ArrowLeft size={16} />
         </button>
         <div className="flex items-center gap-2">
-          <Heart size={16} className="text-[#E0337E]" />
+          <Heart size={16} className="text-[#FF3D7F]" />
           <p className="font-fraunces text-[16px]">Favoris</p>
         </div>
       </header>
 
-      <main className="min-h-screen bg-[#3D1F5C] text-[#F3EADB] px-4 py-5 md:max-w-4xl md:mx-auto md:px-6 md:py-12">
+      <main className="min-h-screen bg-[#FBF9F5] text-[#1A1612] px-4 py-5 md:max-w-4xl md:mx-auto md:px-6 md:py-12">
 
         {/* Desktop title */}
         <div className="hidden md:block mb-8">
-          <h1 className="font-fraunces text-3xl text-[#F3EADB]">Mes favoris</h1>
+          <h1 className="font-fraunces text-3xl text-[#1A1612]">Mes favoris</h1>
         </div>
 
         {fetching ? (
@@ -117,22 +117,22 @@ export default function FavorisPage() {
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-[#E0337E]/10 flex items-center justify-center mb-5">
-              <Heart size={28} className="text-[#E0337E]/40" />
+            <div className="w-16 h-16 rounded-2xl bg-[#FF3D7F]/10 flex items-center justify-center mb-5">
+              <Heart size={28} className="text-[#FF3D7F]/40" />
             </div>
-            <p className="font-fraunces text-xl text-[#F3EADB]/40 mb-2">Aucun favori</p>
-            <p className="font-hanken text-sm text-[#F3EADB]/25 mb-6">
+            <p className="font-fraunces text-xl text-[#1A1612]/40 mb-2">Aucun favori</p>
+            <p className="font-hanken text-sm text-[#1A1612]/25 mb-6">
               Explore les créations et clique sur ❤️ pour les retrouver ici
             </p>
             <Link href="/decouvrir"
               className="px-6 py-3 rounded-xl font-hanken text-sm text-white active:scale-95 transition-transform"
-              style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)" }}>
+              style={{ background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)" }}>
               Explorer les créations
             </Link>
           </div>
         ) : (
           <>
-            <p className="font-mono text-[10px] text-[#F3EADB]/30 mb-4">
+            <p className="font-mono text-[10px] text-[#1A1612]/30 mb-4">
               {products.length} création{products.length > 1 ? "s" : ""} sauvegardée{products.length > 1 ? "s" : ""}
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -154,21 +154,21 @@ export default function FavorisPage() {
                         <button
                           onClick={e => { e.preventDefault(); e.stopPropagation(); remove(p.id); }}
                           className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center"
-                          style={{ background: "rgba(224,51,126,.9)" }}>
+                          style={{ background: "rgba(255,61,127,.9)" }}>
                           <Heart size={14} fill="white" className="text-white" />
                         </button>
                       </div>
                     </Link>
                     <div className="p-3">
-                      <p className="font-hanken text-[12px] text-[#F3EADB]/80 leading-tight line-clamp-1">{p.name || p.title}</p>
-                      {shopName && <p className="font-mono text-[9px] text-[#F3EADB]/30">{shopName}</p>}
+                      <p className="font-hanken text-[12px] text-[#1A1612]/80 leading-tight line-clamp-1">{p.name || p.title}</p>
+                      {shopName && <p className="font-mono text-[9px] text-[#1A1612]/30">{shopName}</p>}
                       <div className="flex items-center justify-between mt-2">
-                        <p className="font-fraunces text-[14px] text-[#E0337E]">{p.price.toFixed(2)} €</p>
+                        <p className="font-fraunces text-[14px] text-[#FF3D7F]">{p.price.toFixed(2)} €</p>
                         <button
                           onClick={() => add({ id: p.id, name: p.name || p.title, price: p.price, image: img ?? undefined, creator: "", quantity: 1, type: "product" })}
                           className="p-1.5 rounded-lg active:scale-90 transition-transform"
-                          style={{ background: "rgba(224,51,126,.12)", border: "1px solid rgba(224,51,126,.2)" }}>
-                          <ShoppingBag size={13} className="text-[#E0337E]" />
+                          style={{ background: "rgba(255,61,127,.12)", border: "1px solid rgba(255,61,127,.2)" }}>
+                          <ShoppingBag size={13} className="text-[#FF3D7F]" />
                         </button>
                       </div>
                     </div>

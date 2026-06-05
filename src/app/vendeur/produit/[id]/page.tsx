@@ -99,36 +99,36 @@ export default function EditProduitPage() {
     router.push("/vendeur");
   };
 
-  const inputCls = "w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-xl px-4 py-3 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#E0337E]/50 transition-colors";
+  const inputCls = "w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-4 py-3 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#FF3D7F]/50 transition-colors";
 
   if (loading) return (
-    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
+    <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center">
+      <div className="w-8 h-8 rounded-full border-2 border-[#FF3D7F] border-t-transparent animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#3D1F5C]">
+    <div className="min-h-screen bg-[#FBF9F5]">
       <Header />
       {toast && (
-        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-[#0e061a] border border-[#E0337E]/30 text-[#F3EADB] font-hanken text-sm shadow-2xl">
+        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-[#0e061a] border border-[#FF3D7F]/30 text-[#1A1612] font-hanken text-sm shadow-2xl">
           {toast}
         </div>
       )}
       <div className="max-w-2xl mx-auto px-6 pt-28 pb-20">
         <div className="flex items-center gap-4 mb-8">
-          <button onClick={() => router.push("/vendeur")} className="p-2 rounded-xl border border-[#F3EADB]/10 text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors">
+          <button onClick={() => router.push("/vendeur")} className="p-2 rounded-xl border border-[#1A1612]/10 text-[#1A1612]/40 hover:text-[#1A1612] transition-colors">
             <ArrowLeft size={16} />
           </button>
           <div className="flex-1">
-            <h1 className="font-fraunces text-2xl text-[#F3EADB]">Modifier le produit</h1>
+            <h1 className="font-fraunces text-2xl text-[#1A1612]">Modifier le produit</h1>
           </div>
           {/* Toggle actif/inactif */}
           <button onClick={toggleActive}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border font-hanken text-sm transition-all ${
               form.is_active
                 ? "border-green-400/30 text-green-400 bg-green-400/8 hover:bg-red-400/8 hover:text-red-400 hover:border-red-400/30"
-                : "border-[#F3EADB]/15 text-[#F3EADB]/40 hover:text-green-400 hover:border-green-400/30"
+                : "border-[#1A1612]/15 text-[#1A1612]/40 hover:text-green-400 hover:border-green-400/30"
             }`}>
             {form.is_active ? <><Eye size={13} /> En ligne</> : <><EyeOff size={13} /> Hors ligne</>}
           </button>
@@ -149,51 +149,51 @@ export default function EditProduitPage() {
 
           {/* Type */}
           <div>
-            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-2">Type d&apos;offre</label>
+            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Type d&apos;offre</label>
             <div className="grid grid-cols-3 gap-2">
               {[{v:"product",l:"Produit"},{v:"service",l:"Service"},{v:"event",l:"Événement"}].map(t => (
                 <button key={t.v} type="button" onClick={() => setForm(p => ({ ...p, type: t.v }))}
                   className={`px-3 py-2 rounded-xl border text-xs font-hanken transition-all duration-200 ${
-                    form.type === t.v ? "border-[#E0337E] bg-[#E0337E]/10 text-[#E0337E]" : "border-[#F3EADB]/15 text-[#F3EADB]/50 hover:border-[#F3EADB]/30"
+                    form.type === t.v ? "border-[#FF3D7F] bg-[#FF3D7F]/10 text-[#FF3D7F]" : "border-[#1A1612]/15 text-[#1A1612]/50 hover:border-[#1A1612]/30"
                   }`}>{t.l}</button>
               ))}
             </div>
           </div>
 
           <div>
-            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-2">Nom *</label>
+            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Nom *</label>
             <input value={form.name} onChange={f("name")} placeholder="Nom du produit" className={inputCls} />
           </div>
 
           <div>
-            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-2">Description</label>
+            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Description</label>
             <textarea value={form.description} onChange={f("description")} rows={4} placeholder="Décris ton produit…"
               className={`${inputCls} resize-y`} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-2">Prix (€) *</label>
+              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Prix (€) *</label>
               <input type="number" step="0.01" min="0" value={form.price} onChange={f("price")} placeholder="0.00" className={inputCls} />
             </div>
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-2">Stock</label>
+              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Stock</label>
               <input type="number" min="0" value={form.quantity} onChange={f("quantity")} placeholder="0" className={inputCls} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-2">Catégorie</label>
+              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Catégorie</label>
               <select value={form.category} onChange={e => { setForm(p => ({ ...p, category: e.target.value, subcategory: "" })); }} className={inputCls}>
                 <option value="">— Choisir —</option>
                 {CATEGORY_LIST.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-2">
+              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">
                 Sous-catégorie
-                {!form.category && <span className="text-[#F3EADB]/20 normal-case ml-1">(choisir une catégorie d'abord)</span>}
+                {!form.category && <span className="text-[#1A1612]/20 normal-case ml-1">(choisir une catégorie d'abord)</span>}
               </label>
               <select value={form.subcategory} onChange={f("subcategory")} disabled={!form.category} className={`${inputCls} disabled:opacity-40`}>
                 <option value="">— Choisir —</option>

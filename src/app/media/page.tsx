@@ -29,15 +29,15 @@ export default function MediaPage() {
   }, [category]);
 
   return (
-    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB]">
+    <div className="min-h-screen bg-[#FBF9F5] text-[#1A1612]">
       <Header />
       {/* Hero */}
       <section className="pt-32 pb-16 px-6 text-center">
-        <p className="font-mono text-xs tracking-widest text-[#E0337E] uppercase mb-4">Média Spectrum</p>
+        <p className="font-mono text-xs tracking-widest text-[#FF3D7F] uppercase mb-4">Média Spectrum</p>
         <h1 className="font-fraunces text-5xl md:text-7xl font-light mb-4">
-          Histoires, <span className="text-[#E0337E]">modes de vie</span>,<br />actualités queer.
+          Histoires, <span className="text-[#FF3D7F]">modes de vie</span>,<br />actualités queer.
         </h1>
-        <p className="font-hanken text-[#F3EADB]/60 max-w-xl mx-auto">
+        <p className="font-hanken text-[#1A1612]/60 max-w-xl mx-auto">
           Des récits authentiques, des guides pratiques, une culture qui nous ressemble.
         </p>
       </section>
@@ -50,8 +50,8 @@ export default function MediaPage() {
             onClick={() => setCategory(cat)}
             className={`px-4 py-1.5 rounded-full font-mono text-xs tracking-wider transition-all border ${
               category === cat
-                ? "bg-[#E0337E] border-[#E0337E] text-white"
-                : "border-[#F3EADB]/15 text-[#F3EADB]/50 hover:border-[#E0337E]/40"
+                ? "bg-[#FF3D7F] border-[#FF3D7F] text-white"
+                : "border-[#1A1612]/15 text-[#1A1612]/50 hover:border-[#FF3D7F]/40"
             }`}
           >
             {cat === "Tous" ? "Tous" : CAT_LABELS[cat]}
@@ -64,42 +64,42 @@ export default function MediaPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="rounded-2xl bg-[#F3EADB]/5 h-80 animate-pulse" />
+              <div key={i} className="rounded-2xl bg-[#1A1612]/5 h-80 animate-pulse" />
             ))}
           </div>
         ) : articles.length === 0 ? (
-          <div className="text-center py-24 text-[#F3EADB]/30 font-hanken">
+          <div className="text-center py-24 text-[#1A1612]/30 font-hanken">
             Aucun article pour le moment. Revenez bientôt ✨
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {articles.map(article => (
               <Link key={article.id} href={`/media/${article.slug}`} className="group">
-                <article className="rounded-2xl overflow-hidden border border-[#F3EADB]/8 hover:border-[#E0337E]/30 transition-all duration-300 hover:-translate-y-1">
+                <article className="rounded-2xl overflow-hidden border border-[#1A1612]/8 hover:border-[#FF3D7F]/30 transition-all duration-300 hover:-translate-y-1">
                   <div className="relative h-52 bg-gradient-to-br from-[#E0533A]/20 to-[#6D2DB5]/20">
                     {article.cover_url ? (
                       <Image src={article.cover_url} alt={article.title_fr} fill className="object-cover" />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="font-fraunces text-4xl text-[#E0337E]/30">✦</span>
+                        <span className="font-fraunces text-4xl text-[#FF3D7F]/30">✦</span>
                       </div>
                     )}
-                    <span className="absolute top-3 left-3 bg-[#3D1F5C]/80 backdrop-blur px-2 py-1 rounded-full font-mono text-[10px] text-[#E0337E] uppercase tracking-wider">
+                    <span className="absolute top-3 left-3 bg-[#FBF9F5]/80 backdrop-blur px-2 py-1 rounded-full font-mono text-[10px] text-[#FF3D7F] uppercase tracking-wider">
                       {CAT_LABELS[article.category] ?? article.category}
                     </span>
                   </div>
                   <div className="p-5">
-                    <h2 className="font-fraunces text-lg text-[#F3EADB] mb-2 group-hover:text-[#E0337E] transition-colors line-clamp-2">
+                    <h2 className="font-fraunces text-lg text-[#1A1612] mb-2 group-hover:text-[#FF3D7F] transition-colors line-clamp-2">
                       {article.title_fr}
                     </h2>
                     {article.excerpt_fr && (
-                      <p className="font-hanken text-sm text-[#F3EADB]/50 line-clamp-2 mb-3">{article.excerpt_fr}</p>
+                      <p className="font-hanken text-sm text-[#1A1612]/50 line-clamp-2 mb-3">{article.excerpt_fr}</p>
                     )}
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] text-[#F3EADB]/30">
+                      <span className="font-mono text-[10px] text-[#1A1612]/30">
                         {new Date(article.published_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                       </span>
-                      <span className="font-hanken text-xs text-[#E0337E] group-hover:underline">Lire →</span>
+                      <span className="font-hanken text-xs text-[#FF3D7F] group-hover:underline">Lire →</span>
                     </div>
                   </div>
                 </article>

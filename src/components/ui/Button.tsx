@@ -13,15 +13,15 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const base =
-  "relative inline-flex items-center justify-center gap-2 font-hanken font-semibold text-sm tracking-wide transition-all duration-300 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E0337E] focus-visible:ring-offset-2 focus-visible:ring-offset-[#3D1F5C] cursor-pointer select-none";
+  "relative inline-flex items-center justify-center gap-2 font-hanken font-semibold text-sm tracking-wide transition-all duration-300 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3D7F] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF9F5] cursor-pointer select-none";
 
 const variants: Record<Variant, string> = {
   primary:
-    "rounded-full px-8 py-3 bg-[#E0337E] text-[#F3EADB] hover:brightness-110 active:scale-95",
+    "rounded-full px-8 py-3 bg-[#FF3D7F] text-white hover:brightness-110 active:scale-95",
   secondary:
-    "rounded-full px-8 py-3 border border-[#F3EADB]/40 text-[#F3EADB] hover:border-[#F3EADB] hover:bg-[#F3EADB]/5",
+    "rounded-full px-8 py-3 border border-[#1A1612]/40 text-[#1A1612] hover:border-[#1A1612] hover:bg-[#1A1612]/5",
   ghost:
-    "px-4 py-2 text-[#F3EADB]/70 hover:text-[#F3EADB]",
+    "px-4 py-2 text-[#1A1612]/70 hover:text-[#1A1612]",
 };
 
 export function Button({ variant = "primary", className, children, href, external, ...props }: ButtonProps) {

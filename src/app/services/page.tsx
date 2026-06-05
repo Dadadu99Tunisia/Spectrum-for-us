@@ -8,7 +8,7 @@ export default function ServicesPage() {
       label="Services"
       title={"Trouve le bon\nprofessionnel queer"}
       subtitle="Coaching, thérapie, design, juridique, événementiel... Des professionnel·les engagé·es pour toi et ta communauté."
-      accent="#E0337E"
+      accent="#FF3D7F"
       features={["Coaching & Psy", "Création & Freelance", "Événementiel", "Juridique & Admin", "Thérapie & Santé", "Formation"]}
       ctaLabel="Proposer mon service"
       ctaHref="/vendeur/onboarding"

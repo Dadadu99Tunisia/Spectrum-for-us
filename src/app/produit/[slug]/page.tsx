@@ -339,7 +339,7 @@ export default function ProduitPage() {
         style={{
           background: "rgba(251,249,245,0.95)",
           backdropFilter: "blur(20px)",
-          borderTop: "1px solid rgba(243,234,219,0.09)",
+          borderTop: "1px solid rgba(26,22,18,0.09)",
         }}>
         <div className="flex items-center gap-3">
           <div className="shrink-0">
@@ -350,11 +350,11 @@ export default function ProduitPage() {
               <div className="flex items-center gap-1.5 mt-1">
                 <button onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Diminuer la quantité"
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-[#1A1612]/60 text-xl active:scale-90 transition-transform"
-                  style={{ background: "rgba(243,234,219,0.08)" }}>−</button>
+                  style={{ background: "rgba(26,22,18,0.08)" }}>−</button>
                 <span className="font-mono text-[12px] text-[#1A1612]/70 w-5 text-center">{qty}</span>
                 <button onClick={() => setQty(Math.min(product.quantity || 99, qty + 1))} aria-label="Augmenter la quantité"
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-[#1A1612]/60 text-xl active:scale-90 transition-transform"
-                  style={{ background: "rgba(243,234,219,0.08)" }}>+</button>
+                  style={{ background: "rgba(26,22,18,0.08)" }}>+</button>
               </div>
             )}
           </div>
@@ -368,7 +368,7 @@ export default function ProduitPage() {
           </button>
           <button onClick={toggleLike}
             className="w-12 h-12 flex items-center justify-center rounded-2xl shrink-0"
-            style={{ background: liked ? "rgba(224,51,126,.15)" : "rgba(243,234,219,0.06)", border: `1px solid ${liked ? "rgba(224,51,126,.35)" : "rgba(243,234,219,.10)"}` }}>
+            style={{ background: liked ? "rgba(255,61,127,.15)" : "rgba(26,22,18,0.06)", border: `1px solid ${liked ? "rgba(255,61,127,.35)" : "rgba(26,22,18,.10)"}` }}>
             <Heart size={18} className={liked ? "fill-[#FF3D7F] text-[#FF3D7F]" : "text-[#1A1612]/40"} />
           </button>
         </div>

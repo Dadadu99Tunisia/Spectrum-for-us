@@ -9,7 +9,7 @@ export function EcoBanner() {
 
   return (
     <div
-      className="w-full bg-[#1a0d28] border-b border-[#F3EADB]/8 py-2.5 px-4 flex items-center justify-center gap-3 relative"
+      className="w-full bg-[#F1ECE3] border-b border-[#1A1612]/8 py-2.5 px-4 flex items-center justify-center gap-3 relative"
       role="banner"
       aria-label="Engagement écologique"
     >
@@ -30,7 +30,7 @@ export function EcoBanner() {
         <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
       </svg>
 
-      <p className="font-hanken text-xs text-[#F3EADB]/60 text-center">
+      <p className="font-hanken text-xs text-[#1A1612]/60 text-center">
         <span className="text-[#1C9C95] font-medium">Spectrum For Us est 100&nbsp;% en ligne</span>
         {" "}—{" "}
         <span>aucun stock physique, aucune boutique : une empreinte carbone réduite au minimum.</span>
@@ -39,7 +39,7 @@ export function EcoBanner() {
       <button
         onClick={() => setDismissed(true)}
         aria-label="Fermer ce message"
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25 hover:text-[#F3EADB]/60 transition-colors"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1A1612]/25 hover:text-[#1A1612]/60 transition-colors"
       >
         <X size={13} />
       </button>

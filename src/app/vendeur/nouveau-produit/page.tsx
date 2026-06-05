@@ -79,38 +79,38 @@ export default function NouveauProduitPage() {
   };
 
   if (loading || !shopId) return (
-    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
+    <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center">
+      <div className="w-8 h-8 rounded-full border-2 border-[#FF3D7F] border-t-transparent animate-spin" />
     </div>
   );
 
   if (success) return (
-    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center px-6">
       <div className="text-center">
         <div className="text-5xl mb-4">✦</div>
-        <h1 className="font-fraunces text-3xl text-[#F3EADB] mb-2">Produit ajouté !</h1>
-        <p className="font-hanken text-[#F3EADB]/50">Redirection vers ton dashboard…</p>
+        <h1 className="font-fraunces text-3xl text-[#1A1612] mb-2">Produit ajouté !</h1>
+        <p className="font-hanken text-[#1A1612]/50">Redirection vers ton dashboard…</p>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#3D1F5C] px-6 py-12">
+    <div className="min-h-screen bg-[#FBF9F5] px-6 py-12">
       <div className="max-w-xl mx-auto">
-        <Button variant="ghost" href="/vendeur" className="mb-6 text-sm text-[#F3EADB]/40">
+        <Button variant="ghost" href="/vendeur" className="mb-6 text-sm text-[#1A1612]/40">
           <ArrowLeft size={14} /> Retour au dashboard
         </Button>
-        <h1 className="font-fraunces text-3xl text-[#F3EADB] mb-8">Nouveau produit</h1>
+        <h1 className="font-fraunces text-3xl text-[#1A1612] mb-8">Nouveau produit</h1>
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           {/* Type */}
           <div>
-            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-3">Type d&apos;offre *</label>
+            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-3">Type d&apos;offre *</label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {TYPES.map((t) => (
                 <button key={t.value} type="button" onClick={() => setForm((f) => ({ ...f, type: t.value }))}
                   className={`px-3 py-2.5 rounded-xl border text-xs font-hanken text-left transition-all duration-200 ${
-                    form.type === t.value ? "border-[#E0337E] bg-[#E0337E]/10 text-[#E0337E]" : "border-[#F3EADB]/15 text-[#F3EADB]/55 hover:border-[#F3EADB]/30"
+                    form.type === t.value ? "border-[#FF3D7F] bg-[#FF3D7F]/10 text-[#FF3D7F]" : "border-[#1A1612]/15 text-[#1A1612]/55 hover:border-[#1A1612]/30"
                   }`}>{t.label}</button>
               ))}
             </div>
@@ -118,37 +118,37 @@ export default function NouveauProduitPage() {
 
           {/* Name */}
           <div>
-            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Nom du produit *</label>
+            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Nom du produit *</label>
             <input type="text" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="Bague Spectre" required
-              className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+              className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Description *</label>
+            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Description *</label>
             <textarea rows={5} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               placeholder="Décris ton produit avec précision…" required
-              className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors resize-none" />
+              className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors resize-none" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             {/* Price */}
             <div>
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Prix (€) *</label>
+              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Prix (€) *</label>
               <input type="number" min="0.01" step="0.01" value={form.price}
                 onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
                 placeholder="29.90"
-                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+                className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
             </div>
             {/* Stock */}
             {form.type === "product" && (
               <div>
-                <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Stock</label>
+                <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Stock</label>
                 <input type="number" min="0" value={form.quantity}
                   onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))}
                   placeholder="10"
-                  className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+                  className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
               </div>
             )}
           </div>
@@ -156,25 +156,25 @@ export default function NouveauProduitPage() {
           {/* Catégorie + Sous-catégorie */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Catégorie</label>
+              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Catégorie</label>
               <select value={form.category}
                 onChange={(e) => setForm((f) => ({ ...f, category: e.target.value, subcategory: "" }))}
-                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm focus:outline-none focus:border-[#E0337E]/60 transition-colors">
-                <option value="" className="bg-[#3D1F5C]">Sélectionner…</option>
-                {CATEGORY_LIST.map((c) => <option key={c} value={c} className="bg-[#3D1F5C]">{c}</option>)}
+                className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm focus:outline-none focus:border-[#FF3D7F]/60 transition-colors">
+                <option value="" className="bg-[#FBF9F5]">Sélectionner…</option>
+                {CATEGORY_LIST.map((c) => <option key={c} value={c} className="bg-[#FBF9F5]">{c}</option>)}
               </select>
             </div>
             <div>
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">
+              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">
                 Sous-catégorie
-                {!form.category && <span className="text-[#F3EADB]/20 normal-case tracking-normal ml-1">(après catégorie)</span>}
+                {!form.category && <span className="text-[#1A1612]/20 normal-case tracking-normal ml-1">(après catégorie)</span>}
               </label>
               <select value={form.subcategory}
                 onChange={(e) => setForm((f) => ({ ...f, subcategory: e.target.value }))}
                 disabled={!form.category}
-                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm focus:outline-none focus:border-[#E0337E]/60 transition-colors disabled:opacity-40">
-                <option value="" className="bg-[#3D1F5C]">— Choisir —</option>
-                {getSubcategories(form.category).map((s) => <option key={s} value={s} className="bg-[#3D1F5C]">{s}</option>)}
+                className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm focus:outline-none focus:border-[#FF3D7F]/60 transition-colors disabled:opacity-40">
+                <option value="" className="bg-[#FBF9F5]">— Choisir —</option>
+                {getSubcategories(form.category).map((s) => <option key={s} value={s} className="bg-[#FBF9F5]">{s}</option>)}
               </select>
             </div>
           </div>
@@ -182,24 +182,24 @@ export default function NouveauProduitPage() {
           {/* Variants */}
           {form.type === "product" && (
             <div>
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Variantes (taille, couleur…)</label>
+              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Variantes (taille, couleur…)</label>
               <div className="flex gap-2 mb-2">
                 <input type="text" value={variant} onChange={(e) => setVariant(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addVariant(); } }}
                   placeholder="S, M, Rouge…"
-                  className="flex-1 bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-2.5 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+                  className="flex-1 bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-2.5 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
                 <button type="button" onClick={addVariant}
-                  className="px-3 py-2.5 rounded-xl bg-[#E0337E]/10 text-[#E0337E] hover:bg-[#E0337E]/20 transition-colors">
+                  className="px-3 py-2.5 rounded-xl bg-[#FF3D7F]/10 text-[#FF3D7F] hover:bg-[#FF3D7F]/20 transition-colors">
                   <Plus size={16} />
                 </button>
               </div>
               {form.variants.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {form.variants.map((v) => (
-                    <span key={v} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 text-xs font-hanken text-[#F3EADB]/70">
+                    <span key={v} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1A1612]/5 border border-[#1A1612]/15 text-xs font-hanken text-[#1A1612]/70">
                       {v}
                       <button type="button" onClick={() => setForm((f) => ({ ...f, variants: f.variants.filter((x) => x !== v) }))}
-                        className="text-[#F3EADB]/30 hover:text-red-400 transition-colors">
+                        className="text-[#1A1612]/30 hover:text-red-400 transition-colors">
                         <X size={10} />
                       </button>
                     </span>
@@ -212,8 +212,8 @@ export default function NouveauProduitPage() {
           {/* Active toggle */}
           <label className="flex items-center gap-3 cursor-pointer group">
             <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
-              className="w-4 h-4 rounded accent-[#E0337E]" />
-            <span className="font-hanken text-sm text-[#F3EADB]/60 group-hover:text-[#F3EADB]/80">Mettre en ligne immédiatement</span>
+              className="w-4 h-4 rounded accent-[#FF3D7F]" />
+            <span className="font-hanken text-sm text-[#1A1612]/60 group-hover:text-[#1A1612]/80">Mettre en ligne immédiatement</span>
           </label>
 
           {error && <div role="alert" className="text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">{error}</div>}

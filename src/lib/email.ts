@@ -22,21 +22,21 @@ function baseLayout(title: string, body: string) {
 <body style="margin:0;padding:0;background:#3D1F5C;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#3D1F5C;padding:40px 20px;">
 <tr><td align="center">
-<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#1a0d28;border-radius:16px;overflow:hidden;border:1px solid rgba(243,234,219,0.08);">
+<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#1a0d28;border-radius:16px;overflow:hidden;border:1px solid rgba(26,22,18,0.08);">
 <!-- Prism header -->
 <tr><td style="height:4px;background:linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95);"></td></tr>
 <!-- Logo -->
 <tr><td style="padding:32px 40px 0;text-align:center;">
   <span style="font-size:28px;color:#F3EADB;font-weight:700;letter-spacing:-1px;">Spectrum <span style="color:#E0337E;">For Us</span></span>
-  <p style="margin:4px 0 0;font-size:11px;color:rgba(243,234,219,0.3);letter-spacing:3px;text-transform:uppercase;">✦ La marketplace queer</p>
+  <p style="margin:4px 0 0;font-size:11px;color:rgba(26,22,18,0.3);letter-spacing:3px;text-transform:uppercase;">✦ La marketplace queer</p>
 </td></tr>
 <!-- Body -->
 <tr><td style="padding:32px 40px;">${body}</td></tr>
 <!-- Footer -->
-<tr><td style="padding:24px 40px;border-top:1px solid rgba(243,234,219,0.06);text-align:center;">
-  <p style="font-size:11px;color:rgba(243,234,219,0.25);margin:0;">
-    Spectrum For Us · <a href="${BASE}/legal/confidentialite" style="color:rgba(243,234,219,0.25);">Confidentialité</a> ·
-    <a href="${BASE}/compte" style="color:rgba(243,234,219,0.25);">Mon compte</a>
+<tr><td style="padding:24px 40px;border-top:1px solid rgba(26,22,18,0.06);text-align:center;">
+  <p style="font-size:11px;color:rgba(26,22,18,0.25);margin:0;">
+    Spectrum For Us · <a href="${BASE}/legal/confidentialite" style="color:rgba(26,22,18,0.25);">Confidentialité</a> ·
+    <a href="${BASE}/compte" style="color:rgba(26,22,18,0.25);">Mon compte</a>
   </p>
 </td></tr>
 <!-- Prism footer -->
@@ -48,7 +48,7 @@ function baseLayout(title: string, body: string) {
 }
 
 function text(s: string) {
-  return `<p style="font-size:15px;line-height:1.7;color:rgba(243,234,219,0.75);margin:0 0 16px;">${s}</p>`;
+  return `<p style="font-size:15px;line-height:1.7;color:rgba(26,22,18,0.75);margin:0 0 16px;">${s}</p>`;
 }
 function h2(s: string) {
   return `<h2 style="font-size:20px;color:#F3EADB;margin:0 0 12px;font-weight:600;">${s}</h2>`;
@@ -58,9 +58,9 @@ function cta(label: string, href: string) {
 }
 function itemRow(name: string, price: number, qty: number) {
   return `<tr>
-    <td style="padding:10px 0;border-bottom:1px solid rgba(243,234,219,0.06);font-size:14px;color:rgba(243,234,219,0.75);">${name}</td>
-    <td style="padding:10px 0;border-bottom:1px solid rgba(243,234,219,0.06);text-align:right;font-size:14px;color:rgba(243,234,219,0.75);">×${qty}</td>
-    <td style="padding:10px 0;border-bottom:1px solid rgba(243,234,219,0.06);text-align:right;font-size:14px;color:#F3EADB;font-weight:600;">${(price * qty).toFixed(2)} €</td>
+    <td style="padding:10px 0;border-bottom:1px solid rgba(26,22,18,0.06);font-size:14px;color:rgba(26,22,18,0.75);">${name}</td>
+    <td style="padding:10px 0;border-bottom:1px solid rgba(26,22,18,0.06);text-align:right;font-size:14px;color:rgba(26,22,18,0.75);">×${qty}</td>
+    <td style="padding:10px 0;border-bottom:1px solid rgba(26,22,18,0.06);text-align:right;font-size:14px;color:#F3EADB;font-weight:600;">${(price * qty).toFixed(2)} €</td>
   </tr>`;
 }
 
@@ -80,9 +80,9 @@ export async function sendOrderConfirmation(params: {
   const body = `
     ${h2("Commande confirmée ✦")}
     ${text(`${params.shippingName ? `Merci ${params.shippingName.split(" ")[0]}` : "Merci"} ✦ Ta commande a bien été enregistrée et ton paiement est validé.`)}
-    <p style="font-family:monospace;font-size:11px;color:rgba(243,234,219,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px;">Réf. #${params.orderRef.slice(0,8).toUpperCase()}</p>
+    <p style="font-family:monospace;font-size:11px;color:rgba(26,22,18,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px;">Réf. #${params.orderRef.slice(0,8).toUpperCase()}</p>
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">${rows}
-      <tr><td colspan="2" style="padding:12px 0;font-size:15px;color:rgba(243,234,219,0.6);font-weight:600;">Total</td>
+      <tr><td colspan="2" style="padding:12px 0;font-size:15px;color:rgba(26,22,18,0.6);font-weight:600;">Total</td>
       <td style="padding:12px 0;text-align:right;font-size:18px;color:#E0337E;font-weight:700;">${params.total.toFixed(2)} €</td></tr>
     </table>
     ${text("Les créateur·ices vont préparer ta commande. Tu recevras une notification dès l'expédition.")}
@@ -109,9 +109,9 @@ export async function sendVendorNewOrder(params: {
   const body = `
     ${h2(`Nouvelle commande sur ${params.shopName} ✦`)}
     ${text(`Une nouvelle commande vient d'arriver ! Pense à préparer les articles et à mettre à jour le statut d'expédition.`)}
-    <p style="font-family:monospace;font-size:11px;color:rgba(243,234,219,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px;">Réf. #${params.orderRef.slice(0,8).toUpperCase()}</p>
+    <p style="font-family:monospace;font-size:11px;color:rgba(26,22,18,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px;">Réf. #${params.orderRef.slice(0,8).toUpperCase()}</p>
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">${rows}
-      <tr><td colspan="2" style="padding:12px 0;font-size:15px;color:rgba(243,234,219,0.6);font-weight:600;">Total</td>
+      <tr><td colspan="2" style="padding:12px 0;font-size:15px;color:rgba(26,22,18,0.6);font-weight:600;">Total</td>
       <td style="padding:12px 0;text-align:right;font-size:18px;color:#E0337E;font-weight:700;">${params.total.toFixed(2)} €</td></tr>
     </table>
     ${cta("Gérer mes commandes", `${BASE}/vendeur`)}
@@ -132,7 +132,7 @@ export async function sendShippingNotification(params: {
   carrier?: string;
 }) {
   const trackingInfo = params.trackingNumber
-    ? `<p style="font-size:14px;font-family:monospace;color:rgba(243,234,219,0.5);margin:8px 0 0;">
+    ? `<p style="font-size:14px;font-family:monospace;color:rgba(26,22,18,0.5);margin:8px 0 0;">
         ${params.carrier ?? "Transporteur"} · <strong style="color:#F3EADB;">${params.trackingNumber}</strong>
        </p>`
     : "";

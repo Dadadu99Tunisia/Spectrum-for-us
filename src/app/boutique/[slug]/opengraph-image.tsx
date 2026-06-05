@@ -46,7 +46,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
           position: "absolute", top: -80, left: -80,
           width: 500, height: 500,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(224,51,126,0.25) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255,61,127,0.25) 0%, transparent 70%)",
         }} />
         <div style={{
           position: "absolute", bottom: -100, right: -60,
@@ -91,7 +91,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               <div style={{ color: "#F3EADB", fontSize: 18, fontWeight: 700 }}>✦</div>
             </div>
             <span style={{
-              color: "rgba(243,234,219,0.5)",
+              color: "rgba(26,22,18,0.5)",
               fontSize: 18,
               fontFamily: "serif",
               letterSpacing: 3,
@@ -107,10 +107,10 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             <div style={{
               width: 120, height: 120,
               borderRadius: 24,
-              border: "3px solid rgba(224,51,126,0.4)",
+              border: "3px solid rgba(255,61,127,0.4)",
               overflow: "hidden",
               display: "flex", alignItems: "center", justifyContent: "center",
-              background: "linear-gradient(135deg, rgba(224,51,126,0.2), rgba(109,45,181,0.2))",
+              background: "linear-gradient(135deg, rgba(255,61,127,0.2), rgba(109,45,181,0.2))",
               flexShrink: 0,
             }}>
               {logoUrl ? (
@@ -138,7 +138,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               </h1>
               {tagline && (
                 <p style={{
-                  color: "rgba(243,234,219,0.6)",
+                  color: "rgba(26,22,18,0.6)",
                   fontSize: 26,
                   margin: 0,
                   fontFamily: "sans-serif",
@@ -157,8 +157,8 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               display: "flex", alignItems: "center", gap: 8,
               padding: "10px 20px",
               borderRadius: 100,
-              border: "1px solid rgba(224,51,126,0.3)",
-              background: "rgba(224,51,126,0.1)",
+              border: "1px solid rgba(255,61,127,0.3)",
+              background: "rgba(255,61,127,0.1)",
               color: "#E0337E",
               fontSize: 18,
               fontFamily: "monospace",
@@ -172,8 +172,8 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                 display: "flex", alignItems: "center", gap: 8,
                 padding: "10px 20px",
                 borderRadius: 100,
-                border: "1px solid rgba(243,234,219,0.15)",
-                color: "rgba(243,234,219,0.5)",
+                border: "1px solid rgba(26,22,18,0.15)",
+                color: "rgba(26,22,18,0.5)",
                 fontSize: 18,
                 fontFamily: "monospace",
               }}>
@@ -185,8 +185,8 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                 display: "flex", alignItems: "center", gap: 8,
                 padding: "10px 20px",
                 borderRadius: 100,
-                border: "1px solid rgba(243,234,219,0.1)",
-                color: "rgba(243,234,219,0.4)",
+                border: "1px solid rgba(26,22,18,0.1)",
+                color: "rgba(26,22,18,0.4)",
                 fontSize: 18,
                 fontFamily: "monospace",
               }}>

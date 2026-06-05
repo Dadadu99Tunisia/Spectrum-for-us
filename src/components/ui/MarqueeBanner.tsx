@@ -31,21 +31,21 @@ export function MarqueeBanner({
   const duration = speed === "slow" ? "40s" : speed === "fast" ? "18s" : "28s";
 
   const variantStyles = {
-    default: "py-3.5 border-y border-[#F3EADB]/8 bg-[#F3EADB]/[0.02]",
+    default: "py-3.5 border-y border-[#1A1612]/8 bg-[#1A1612]/[0.02]",
     minimal: "py-2.5",
-    bold: "py-4 border-y-2 border-[#E0337E]/20 bg-[#E0337E]/[0.03]",
+    bold: "py-4 border-y-2 border-[#FF3D7F]/20 bg-[#FF3D7F]/[0.03]",
   };
 
   const textStyles = {
-    default: "font-mono text-[11px] tracking-widest uppercase text-[#F3EADB]/40",
-    minimal: "font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/25",
-    bold: "font-hanken text-sm font-medium text-[#F3EADB]/60",
+    default: "font-mono text-[11px] tracking-widest uppercase text-[#1A1612]/40",
+    minimal: "font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/25",
+    bold: "font-hanken text-sm font-medium text-[#1A1612]/60",
   };
 
   const accentStyles = {
-    default: "text-[#E0337E]/60",
-    minimal: "text-[#E0337E]/40",
-    bold: "text-[#E0337E]",
+    default: "text-[#FF3D7F]/60",
+    minimal: "text-[#FF3D7F]/40",
+    bold: "text-[#FF3D7F]",
   };
 
   const doubled = [...items, ...items];

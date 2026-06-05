@@ -73,8 +73,8 @@ export function CustomCursor() {
         ref={dotRef}
         className="fixed top-0 left-0 z-[9999] pointer-events-none w-2 h-2 rounded-full"
         style={{
-          background: clicking ? "#F3EADB" : "#E0337E",
-          boxShadow: clicking ? "0 0 8px 2px rgba(243,234,219,0.6)" : "0 0 6px 1px rgba(224,51,126,0.7)",
+          background: clicking ? "#1A1612" : "#FF3D7F",
+          boxShadow: clicking ? "0 0 8px 2px rgba(26,22,18,0.6)" : "0 0 6px 1px rgba(255,61,127,0.7)",
           transition: "background 0.15s, box-shadow 0.15s, transform 0.06s",
           willChange: "transform",
         }}
@@ -90,12 +90,12 @@ export function CustomCursor() {
           marginLeft: -(haloSize / 2 - 4),
           marginTop: -(haloSize / 2 - 4),
           background: clicking
-            ? "radial-gradient(circle, rgba(243,234,219,0.18) 0%, transparent 70%)"
+            ? "radial-gradient(circle, rgba(26,22,18,0.18) 0%, transparent 70%)"
             : hovering
-            ? "radial-gradient(circle, rgba(224,51,126,0.15) 0%, transparent 70%)"
+            ? "radial-gradient(circle, rgba(255,61,127,0.15) 0%, transparent 70%)"
             : "radial-gradient(circle, rgba(110,45,181,0.10) 0%, transparent 70%)",
           boxShadow: hovering
-            ? `0 0 0 1px rgba(224,51,126,0.35), 0 0 20px rgba(224,51,126,0.1)`
+            ? `0 0 0 1px rgba(255,61,127,0.35), 0 0 20px rgba(255,61,127,0.1)`
             : "none",
           transition: "width 0.35s cubic-bezier(0.23,1,0.32,1), height 0.35s cubic-bezier(0.23,1,0.32,1), margin 0.35s cubic-bezier(0.23,1,0.32,1), background 0.2s, box-shadow 0.2s",
           willChange: "transform",
@@ -104,7 +104,7 @@ export function CustomCursor() {
         {/* Label text inside halo */}
         {text && hovering && (
           <span
-            className="font-mono text-[9px] tracking-widest uppercase text-[#F3EADB]/70 text-center leading-tight pointer-events-none select-none"
+            className="font-mono text-[9px] tracking-widest uppercase text-[#1A1612]/70 text-center leading-tight pointer-events-none select-none"
             style={{ whiteSpace: "nowrap" }}
           >
             {text}

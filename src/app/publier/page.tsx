@@ -36,8 +36,8 @@ export default function PublierPage() {
   const [done,    setDone]    = useState(false);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#3D1F5C" }}>
-      <span className="font-fraunces text-[#F3EADB]/30 animate-pulse">Chargement…</span>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "#FBF9F5" }}>
+      <span className="font-fraunces text-[#1A1612]/30 animate-pulse">Chargement…</span>
     </div>
   );
   if (!user) { if (typeof window !== "undefined") router.replace("/auth?redirect=/publier"); return null; }
@@ -90,24 +90,24 @@ export default function PublierPage() {
   // ── Done ──────────────────────────────────────────────────────
   if (done) return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center"
-      style={{ background: "#3D1F5C" }}>
+      style={{ background: "#FBF9F5" }}>
       <div className="fixed inset-0 pointer-events-none"
         style={{ background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(28,156,149,.12), transparent)" }} />
       <div className="relative z-10">
         <p className="text-5xl mb-6">✦</p>
-        <h1 className="font-fraunces text-[34px] text-[#F3EADB] mb-2">Publié !</h1>
-        <p className="font-hanken text-[13px] text-[#F3EADB]/45 mb-8 leading-relaxed">
-          <span className="text-[#F2B79E]">{title}</span> est maintenant<br />dans le spectre.
+        <h1 className="font-fraunces text-[34px] text-[#1A1612] mb-2">Publié !</h1>
+        <p className="font-hanken text-[13px] text-[#1A1612]/45 mb-8 leading-relaxed">
+          <span className="text-[#1A1612]">{title}</span> est maintenant<br />dans le spectre.
         </p>
         <div className="flex gap-3">
           <button onClick={() => { setDone(false); setStep(0); setTitle(""); setPrice(""); setFile(null); setPreview(null); }}
             className="px-5 py-3 rounded-2xl font-mono text-[11px] uppercase tracking-wider"
-            style={{ border: "1px solid rgba(243,234,219,0.12)", color: "rgba(243,234,219,0.40)" }}>
+            style={{ border: "1px solid rgba(26,22,18,0.12)", color: "rgba(26,22,18,0.40)" }}>
             + Nouveau
           </button>
           <button onClick={() => router.push("/vendeur")}
             className="px-6 py-3 rounded-2xl font-fraunces text-[15px] text-white"
-            style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)" }}>
+            style={{ background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)" }}>
             Ma boutique
           </button>
         </div>
@@ -116,7 +116,7 @@ export default function PublierPage() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col text-[#F3EADB]" style={{ background: "#3D1F5C" }}>
+    <div className="min-h-screen flex flex-col text-[#1A1612]" style={{ background: "#FBF9F5" }}>
 
       {/* Ambient glow */}
       <div className="fixed inset-0 pointer-events-none"
@@ -124,16 +124,16 @@ export default function PublierPage() {
 
       {/* Header */}
       <header className="relative z-10 flex items-center gap-3 px-5 pt-[max(20px,env(safe-area-inset-top))] pb-4"
-        style={{ borderBottom: "1px solid rgba(243,234,219,0.06)" }}>
+        style={{ borderBottom: "1px solid rgba(26,22,18,0.06)" }}>
         <button onClick={() => step > 0 ? setStep(s => s - 1) : router.back()}
           className="w-9 h-9 rounded-xl flex items-center justify-center active:scale-90 transition-transform"
-          style={{ background: "rgba(243,234,219,0.06)" }}>
+          style={{ background: "rgba(26,22,18,0.06)" }}>
           <ArrowLeft size={15} />
         </button>
 
         <div className="flex-1">
           <p className="font-fraunces text-[17px]">Publier</p>
-          <p className="font-mono text-[8px] text-[#F3EADB]/28 tracking-widest uppercase mt-0.5">
+          <p className="font-mono text-[8px] text-[#1A1612]/28 tracking-widest uppercase mt-0.5">
             {STEPS[step]}
           </p>
         </div>
@@ -145,7 +145,7 @@ export default function PublierPage() {
               style={{
                 width: i === step ? 14 : 5,
                 height: 5,
-                background: i <= step ? "#E0337E" : "rgba(243,234,219,0.15)",
+                background: i <= step ? "#FF3D7F" : "rgba(26,22,18,0.15)",
               }} />
           ))}
         </div>
@@ -158,25 +158,25 @@ export default function PublierPage() {
         {step === 0 && (
           <div>
             <h2 className="font-fraunces text-[28px] leading-tight mb-1">Que crées-tu ?</h2>
-            <p className="font-hanken text-[13px] text-[#F3EADB]/40 mb-7">Choisis le type de publication</p>
+            <p className="font-hanken text-[13px] text-[#1A1612]/40 mb-7">Choisis le type de publication</p>
             <div className="space-y-3">
               {TYPES.map(({ id, emoji, label, sub }) => (
                 <button key={id} onClick={() => setType(id)}
                   className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-left transition-all active:scale-[0.98]"
                   style={{
-                    background: type === id ? "rgba(224,51,126,.08)" : "rgba(243,234,219,0.04)",
-                    border: `1px solid ${type === id ? "rgba(224,51,126,.35)" : "rgba(243,234,219,0.08)"}`,
+                    background: type === id ? "rgba(255,61,127,.08)" : "rgba(26,22,18,0.04)",
+                    border: `1px solid ${type === id ? "rgba(255,61,127,.35)" : "rgba(26,22,18,0.08)"}`,
                   }}>
                   <span className="text-[26px] leading-none"
-                    style={{ color: type === id ? "#E0337E" : "rgba(243,234,219,0.30)" }}>
+                    style={{ color: type === id ? "#FF3D7F" : "rgba(26,22,18,0.30)" }}>
                     {emoji}
                   </span>
                   <div>
-                    <p className="font-fraunces text-[16px] text-[#F3EADB]">{label}</p>
-                    <p className="font-hanken text-[11px] text-[#F3EADB]/35">{sub}</p>
+                    <p className="font-fraunces text-[16px] text-[#1A1612]">{label}</p>
+                    <p className="font-hanken text-[11px] text-[#1A1612]/35">{sub}</p>
                   </div>
                   {type === id && (
-                    <span className="ml-auto font-mono text-[10px]" style={{ color: "#E0337E" }}>✓</span>
+                    <span className="ml-auto font-mono text-[10px]" style={{ color: "#FF3D7F" }}>✓</span>
                   )}
                 </button>
               ))}
@@ -190,7 +190,7 @@ export default function PublierPage() {
             <h2 className="font-fraunces text-[28px] leading-tight mb-1">
               {type === "event" ? "L'intitulé" : "Le nom"}
             </h2>
-            <p className="font-hanken text-[13px] text-[#F3EADB]/40 mb-7">Court, clair, percutant</p>
+            <p className="font-hanken text-[13px] text-[#1A1612]/40 mb-7">Court, clair, percutant</p>
             <textarea
               autoFocus
               value={title}
@@ -202,10 +202,10 @@ export default function PublierPage() {
               }
               maxLength={80}
               rows={3}
-              className="w-full rounded-2xl px-5 py-4 font-fraunces text-[18px] text-[#F3EADB] placeholder-[#F3EADB]/20 outline-none resize-none"
-              style={{ background: "rgba(243,234,219,0.06)", border: "1px solid rgba(243,234,219,0.10)" }}
+              className="w-full rounded-2xl px-5 py-4 font-fraunces text-[18px] text-[#1A1612] placeholder-[#1A1612]/20 outline-none resize-none"
+              style={{ background: "rgba(26,22,18,0.06)", border: "1px solid rgba(26,22,18,0.10)" }}
             />
-            <p className="font-mono text-[8px] text-[#F3EADB]/20 mt-1.5 text-right">{title.length}/80</p>
+            <p className="font-mono text-[8px] text-[#1A1612]/20 mt-1.5 text-right">{title.length}/80</p>
           </div>
         )}
 
@@ -214,15 +214,15 @@ export default function PublierPage() {
           <div className="space-y-7">
             <div>
               <h2 className="font-fraunces text-[28px] leading-tight mb-1">Le prix</h2>
-              <p className="font-hanken text-[13px] text-[#F3EADB]/40 mb-5">Laisse vide pour prix libre</p>
+              <p className="font-hanken text-[13px] text-[#1A1612]/40 mb-5">Laisse vide pour prix libre</p>
               <div className="relative">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2 font-fraunces text-[22px] text-[#F3EADB]/25">€</span>
+                <span className="absolute left-5 top-1/2 -translate-y-1/2 font-fraunces text-[22px] text-[#1A1612]/25">€</span>
                 <input
                   type="number" value={price}
                   onChange={e => setPrice(e.target.value)}
                   placeholder="0.00" min="0" step="0.01"
-                  className="w-full pl-10 pr-5 py-4 rounded-2xl font-fraunces text-[28px] text-[#F3EADB] placeholder-[#F3EADB]/20 outline-none"
-                  style={{ background: "rgba(243,234,219,0.06)", border: "1px solid rgba(243,234,219,0.10)" }}
+                  className="w-full pl-10 pr-5 py-4 rounded-2xl font-fraunces text-[28px] text-[#1A1612] placeholder-[#1A1612]/20 outline-none"
+                  style={{ background: "rgba(26,22,18,0.06)", border: "1px solid rgba(26,22,18,0.10)" }}
                 />
               </div>
             </div>
@@ -244,12 +244,12 @@ export default function PublierPage() {
                 <button onClick={() => fileRef.current?.click()}
                   className="w-full aspect-square rounded-2xl flex flex-col items-center justify-center gap-3 active:scale-[0.97] transition-transform"
                   style={{
-                    border: "1.5px dashed rgba(243,234,219,0.14)",
-                    background: "rgba(243,234,219,0.03)",
+                    border: "1.5px dashed rgba(26,22,18,0.14)",
+                    background: "rgba(26,22,18,0.03)",
                   }}>
-                  <Camera size={28} className="text-[#F3EADB]/20" />
-                  <span className="font-hanken text-[13px] text-[#F3EADB]/35">Ajouter une photo</span>
-                  <span className="font-mono text-[8px] text-[#F3EADB]/18 uppercase tracking-wider">JPG · PNG · WEBP</span>
+                  <Camera size={28} className="text-[#1A1612]/20" />
+                  <span className="font-hanken text-[13px] text-[#1A1612]/35">Ajouter une photo</span>
+                  <span className="font-mono text-[8px] text-[#1A1612]/18 uppercase tracking-wider">JPG · PNG · WEBP</span>
                 </button>
               )}
             </div>
@@ -260,10 +260,10 @@ export default function PublierPage() {
         {step === 3 && (
           <div>
             <h2 className="font-fraunces text-[28px] leading-tight mb-1">Prêt·e ?</h2>
-            <p className="font-hanken text-[13px] text-[#F3EADB]/40 mb-7">Vérifie avant de publier</p>
+            <p className="font-hanken text-[13px] text-[#1A1612]/40 mb-7">Vérifie avant de publier</p>
 
             <div className="rounded-2xl overflow-hidden"
-              style={{ border: "1px solid rgba(243,234,219,0.08)", background: "rgba(243,234,219,0.03)" }}>
+              style={{ border: "1px solid rgba(26,22,18,0.08)", background: "rgba(26,22,18,0.03)" }}>
               {/* Prism top */}
               <div className="h-px" style={{ background: "linear-gradient(90deg,#E0533A,#CF3F7C,#6D2DB5,#1C9C95)" }} />
               {preview && (
@@ -272,11 +272,11 @@ export default function PublierPage() {
               )}
               <div className="p-5">
                 <span className="font-mono text-[8px] uppercase tracking-widest px-2.5 py-1 rounded-full"
-                  style={{ background: "rgba(224,51,126,.10)", color: "#E0337E", border: "1px solid rgba(224,51,126,.20)" }}>
+                  style={{ background: "rgba(255,61,127,.10)", color: "#FF3D7F", border: "1px solid rgba(255,61,127,.20)" }}>
                   {type}
                 </span>
-                <p className="font-fraunces text-[22px] text-[#F3EADB] mt-3">{title || "—"}</p>
-                <p className="font-fraunces text-[26px] mt-1" style={{ color: "#F2B79E" }}>
+                <p className="font-fraunces text-[22px] text-[#1A1612] mt-3">{title || "—"}</p>
+                <p className="font-fraunces text-[26px] mt-1" style={{ color: "#1A1612" }}>
                   {price ? `${parseFloat(price).toFixed(2)} €` : "Prix libre"}
                 </p>
               </div>
@@ -291,19 +291,19 @@ export default function PublierPage() {
 
       {/* CTA footer */}
       <div className="relative z-10 px-5 pb-[max(28px,env(safe-area-inset-bottom))] pt-4"
-        style={{ borderTop: "1px solid rgba(243,234,219,0.06)" }}>
+        style={{ borderTop: "1px solid rgba(26,22,18,0.06)" }}>
         {step < 3 ? (
           <button
             onClick={() => setStep(s => s + 1)}
             disabled={step === 1 && !title.trim()}
             className="w-full py-4 rounded-2xl font-fraunces text-[17px] text-white flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-30"
-            style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)", boxShadow: "0 6px 24px rgba(109,45,181,.40)" }}>
+            style={{ background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)", boxShadow: "0 6px 24px rgba(109,45,181,.40)" }}>
             Continuer <ArrowRight size={16} />
           </button>
         ) : (
           <button onClick={publish} disabled={saving}
             className="w-full py-4 rounded-2xl font-fraunces text-[17px] text-white flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)", boxShadow: "0 6px 24px rgba(109,45,181,.40)" }}>
+            style={{ background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)", boxShadow: "0 6px 24px rgba(109,45,181,.40)" }}>
             {saving
               ? <><div className="w-4 h-4 rounded-full border-2 border-white/50 border-t-white animate-spin" /> Publication…</>
               : <>✦ Publier maintenant</>

@@ -110,7 +110,7 @@ export default function RootLayout({
       lang="fr"
       className={`${fraunces.variable} ${bricolage.variable} ${hanken.variable} ${spaceMono.variable}`}
     >
-      <body className="bg-[#3D1F5C] text-[#F3EADB] antialiased cursor-none">
+      <body className="bg-[#FBF9F5] text-[#1A1612] antialiased cursor-none">
         {/* Gate pré-paint : pose le voile sombre AVANT le premier paint si l'intro
             doit jouer cette session → zéro flash de la home avant l'animation. */}
         <script

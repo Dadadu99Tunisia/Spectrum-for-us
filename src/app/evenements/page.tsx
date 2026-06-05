@@ -46,9 +46,9 @@ function sourceLabel(source?: string) {
 function sourceBadgeColor(source?: string): string {
   const map: Record<string, string> = {
     eventbrite: "#E0533A", shotgun: "#6D2DB5", timeout: "#E0901E",
-    "inter-lgbt": "#E0337E", tetu: "#CF3F7C", facebook: "#1C9C95", manual: "#E0337E",
+    "inter-lgbt": "#FF3D7F", tetu: "#CF3F7C", facebook: "#1C9C95", manual: "#FF3D7F",
   };
-  return map[source ?? ""] ?? "#F3EADB";
+  return map[source ?? ""] ?? "#1A1612";
 }
 
 export default function EvenementsPage() {
@@ -89,10 +89,10 @@ export default function EvenementsPage() {
           {/* Header */}
           <div className="mb-10">
             <span className="font-mono text-[11px] tracking-widest uppercase text-[#1C9C95] block mb-2">Agenda</span>
-            <h1 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] mb-3">
-              Événements <span className="italic text-[#F2B79E]">queer</span>
+            <h1 className="font-fraunces text-4xl md:text-5xl text-[#1A1612] mb-3">
+              Événements <span className="italic text-[#1A1612]">queer</span>
             </h1>
-            <p className="font-hanken text-[#F3EADB]/60 max-w-xl">
+            <p className="font-hanken text-[#1A1612]/60 max-w-xl">
               Soirées, festivals, expos, ateliers, Pride... Tous les événements LGBTQIA+ de France centralisés.
             </p>
           </div>
@@ -100,23 +100,23 @@ export default function EvenementsPage() {
           {/* Search */}
           <div className="flex gap-3 mb-6 flex-wrap">
             <div className="flex-1 min-w-[220px] relative">
-              <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#F3EADB]/30" />
+              <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1612]/30" />
               <input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Chercher un événement, un organisateur…"
-                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-full pl-10 pr-4 py-2.5 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/30 focus:outline-none focus:border-[#1C9C95]/50 transition-colors" />
-              {search && <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/30 hover:text-[#F3EADB]/60"><X size={13} /></button>}
+                className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-full pl-10 pr-4 py-2.5 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/30 focus:outline-none focus:border-[#1C9C95]/50 transition-colors" />
+              {search && <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1A1612]/30 hover:text-[#1A1612]/60"><X size={13} /></button>}
             </div>
             <select value={city} onChange={e => setCity(e.target.value)}
-              className="bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-full px-4 py-2.5 text-[#F3EADB]/70 font-hanken text-sm focus:outline-none focus:border-[#1C9C95]/50 transition-colors">
-              {CITIES.map(c => <option key={c} value={c} className="bg-[#3D1F5C]">{c}</option>)}
+              className="bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-full px-4 py-2.5 text-[#1A1612]/70 font-hanken text-sm focus:outline-none focus:border-[#1C9C95]/50 transition-colors">
+              {CITIES.map(c => <option key={c} value={c} className="bg-[#FBF9F5]">{c}</option>)}
             </select>
             <select value={category} onChange={e => setCategory(e.target.value)}
-              className="bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-full px-4 py-2.5 text-[#F3EADB]/70 font-hanken text-sm focus:outline-none focus:border-[#1C9C95]/50 transition-colors">
-              {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#3D1F5C]">{c}</option>)}
+              className="bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-full px-4 py-2.5 text-[#1A1612]/70 font-hanken text-sm focus:outline-none focus:border-[#1C9C95]/50 transition-colors">
+              {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#FBF9F5]">{c}</option>)}
             </select>
           </div>
 
-          <p className="font-mono text-xs text-[#F3EADB]/30 mb-8">
+          <p className="font-mono text-xs text-[#1A1612]/30 mb-8">
             {loading ? "Chargement…" : `${filtered.length} événement${filtered.length > 1 ? "s" : ""}`}
           </p>
 
@@ -124,11 +124,11 @@ export default function EvenementsPage() {
           {loading && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 animate-pulse">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="rounded-2xl border border-[#F3EADB]/8 overflow-hidden">
-                  <div className="h-44 bg-[#F3EADB]/5" />
+                <div key={i} className="rounded-2xl border border-[#1A1612]/8 overflow-hidden">
+                  <div className="h-44 bg-[#1A1612]/5" />
                   <div className="p-4 space-y-2">
-                    <div className="h-3 bg-[#F3EADB]/8 rounded w-3/4" />
-                    <div className="h-3 bg-[#F3EADB]/5 rounded w-1/2" />
+                    <div className="h-3 bg-[#1A1612]/8 rounded w-3/4" />
+                    <div className="h-3 bg-[#1A1612]/5 rounded w-1/2" />
                   </div>
                 </div>
               ))}
@@ -141,8 +141,8 @@ export default function EvenementsPage() {
               <div className="w-20 h-20 rounded-3xl bg-[#1C9C95]/10 border border-[#1C9C95]/20 flex items-center justify-center mx-auto mb-6">
                 <CalendarDays size={36} className="text-[#1C9C95]" />
               </div>
-              <p className="font-fraunces text-2xl text-[#F3EADB]/40 mb-3">Agenda en cours de construction</p>
-              <p className="font-hanken text-sm text-[#F3EADB]/30 max-w-sm mx-auto">
+              <p className="font-fraunces text-2xl text-[#1A1612]/40 mb-3">Agenda en cours de construction</p>
+              <p className="font-hanken text-sm text-[#1A1612]/30 max-w-sm mx-auto">
                 Les événements sont en cours d&apos;intégration. Reviens très bientôt !
               </p>
             </div>
@@ -152,8 +152,8 @@ export default function EvenementsPage() {
           {featured.length > 0 && (
             <div className="mb-10">
               <div className="flex items-center gap-2 mb-5">
-                <Sparkles size={14} className="text-[#E0337E]" />
-                <span className="font-mono text-[10px] tracking-widest uppercase text-[#E0337E]">À la une</span>
+                <Sparkles size={14} className="text-[#FF3D7F]" />
+                <span className="font-mono text-[10px] tracking-widest uppercase text-[#FF3D7F]">À la une</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {featured.map(e => <EventCard key={e.id} event={e} featured />)}
@@ -171,17 +171,17 @@ export default function EvenementsPage() {
           {/* No results after filter */}
           {!loading && events.length > 0 && filtered.length === 0 && (
             <div className="text-center py-20">
-              <p className="font-fraunces text-2xl text-[#F3EADB]/30 mb-2">Aucun résultat</p>
-              <p className="font-hanken text-sm text-[#F3EADB]/25">Essaie une autre ville ou catégorie.</p>
+              <p className="font-fraunces text-2xl text-[#1A1612]/30 mb-2">Aucun résultat</p>
+              <p className="font-hanken text-sm text-[#1A1612]/25">Essaie une autre ville ou catégorie.</p>
             </div>
           )}
 
           {/* Submit CTA */}
-          <div className="mt-16 p-8 rounded-2xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02] text-center">
-            <h3 className="font-fraunces text-2xl text-[#F3EADB] mb-2">Tu organises un événement ?</h3>
-            <p className="font-hanken text-sm text-[#F3EADB]/50 mb-6">Soumets-le ici pour le faire apparaître dans l&apos;agenda.</p>
+          <div className="mt-16 p-8 rounded-2xl border border-[#1A1612]/10 bg-[#1A1612]/[0.02] text-center">
+            <h3 className="font-fraunces text-2xl text-[#1A1612] mb-2">Tu organises un événement ?</h3>
+            <p className="font-hanken text-sm text-[#1A1612]/50 mb-6">Soumets-le ici pour le faire apparaître dans l&apos;agenda.</p>
             <a href="mailto:hello@spectrumforus.com?subject=Soumettre un événement&body=Nom de l'événement :%0ADate :%0ALieu :%0ADescription :%0AURL :"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1C9C95] text-[#F3EADB] font-hanken font-medium text-sm hover:brightness-110 transition-all">
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1C9C95] text-[#1A1612] font-hanken font-medium text-sm hover:brightness-110 transition-all">
               <CalendarDays size={15} /> Soumettre mon événement
             </a>
           </div>
@@ -197,9 +197,9 @@ function EventCard({ event: e, featured }: { event: QueerEvent; featured?: boole
   const accent = sourceBadgeColor(e.source);
 
   return (
-    <div className={`rounded-2xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02] overflow-hidden group hover:border-[#F3EADB]/20 transition-all duration-300 ${featured ? "sm:col-span-1" : ""}`}>
+    <div className={`rounded-2xl border border-[#1A1612]/10 bg-[#1A1612]/[0.02] overflow-hidden group hover:border-[#1A1612]/20 transition-all duration-300 ${featured ? "sm:col-span-1" : ""}`}>
       {/* Image / placeholder */}
-      <div className="relative h-44 overflow-hidden bg-[#2d1545] flex items-center justify-center">
+      <div className="relative h-44 overflow-hidden bg-[#F1ECE3] flex items-center justify-center">
         {e.image_url ? (
           <img src={e.image_url} alt={e.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
@@ -215,40 +215,40 @@ function EventCard({ event: e, featured }: { event: QueerEvent; featured?: boole
         {/* Price badge */}
         {e.price && (
           <div className="absolute top-3 right-3">
-            <span className="px-2 py-1 rounded-full text-[9px] font-mono tracking-widest uppercase bg-[#F3EADB]/10 text-[#F3EADB]/70 border border-[#F3EADB]/15">
+            <span className="px-2 py-1 rounded-full text-[9px] font-mono tracking-widest uppercase bg-[#1A1612]/10 text-[#1A1612]/70 border border-[#1A1612]/15">
               {e.price}
             </span>
           </div>
         )}
         {!e.image_url && (
-          <span className="font-fraunces text-5xl text-[#F3EADB]/10 select-none relative z-10">(u)</span>
+          <span className="font-fraunces text-5xl text-[#1A1612]/10 select-none relative z-10">(u)</span>
         )}
       </div>
 
       <div className="p-4">
         {e.category && <Tag variant="teal" className="mb-2 text-[9px]">{e.category}</Tag>}
-        <h3 className="font-fraunces text-lg text-[#F3EADB] leading-tight mb-2 line-clamp-2">{e.title}</h3>
+        <h3 className="font-fraunces text-lg text-[#1A1612] leading-tight mb-2 line-clamp-2">{e.title}</h3>
 
         {dateStr && (
-          <div className="flex items-center gap-1.5 text-[#F3EADB]/50 mb-1.5">
+          <div className="flex items-center gap-1.5 text-[#1A1612]/50 mb-1.5">
             <CalendarDays size={12} className="shrink-0" />
             <span className="font-mono text-[11px] capitalize">{dateStr}</span>
           </div>
         )}
         {(e.venue || e.city) && (
-          <div className="flex items-center gap-1.5 text-[#F3EADB]/50 mb-3">
+          <div className="flex items-center gap-1.5 text-[#1A1612]/50 mb-3">
             <MapPin size={12} className="shrink-0" />
             <span className="font-hanken text-xs">{[e.venue, e.city].filter(Boolean).join(" · ")}</span>
           </div>
         )}
 
         {e.description && (
-          <p className="font-hanken text-xs text-[#F3EADB]/40 line-clamp-2 mb-3">{e.description}</p>
+          <p className="font-hanken text-xs text-[#1A1612]/40 line-clamp-2 mb-3">{e.description}</p>
         )}
 
         {e.url && (
           <a href={e.url} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-widest uppercase text-[#1C9C95] hover:text-[#F3EADB] transition-colors">
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-widest uppercase text-[#1C9C95] hover:text-[#1A1612] transition-colors">
             Voir l&apos;événement <ExternalLink size={10} />
           </a>
         )}

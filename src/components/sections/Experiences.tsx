@@ -41,7 +41,7 @@ const EVENTS = [
       { name: "Solidaire", price: "5 €" },
       { name: "Soutien", price: "20 €" },
     ],
-    bg: "#1a0d28",
+    bg: "#F1ECE3",
     accent: "#CF3F7C",
   },
   {
@@ -70,18 +70,18 @@ export function Experiences() {
   const inView = useInView(ref);
 
   return (
-    <section ref={ref} id="experiences" className="py-24 px-6 bg-[#F3EADB]/[0.02]">
+    <section ref={ref} id="experiences" className="py-24 px-6 bg-[#1A1612]/[0.02]">
       <div className="max-w-7xl mx-auto">
         <div
           className="mb-14 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-3">
+          <span className="font-mono text-[11px] tracking-widest uppercase text-[#FF3D7F] block mb-3">
             À venir
           </span>
-          <h2 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight">
+          <h2 className="font-fraunces text-4xl md:text-5xl text-[#1A1612] leading-tight">
             Expériences &{" "}
-            <span className="italic text-[#F2B79E]">événements</span>
+            <span className="italic text-[#1A1612]">événements</span>
           </h2>
         </div>
 
@@ -116,12 +116,12 @@ export function Experiences() {
                 </div>
 
                 <div className="p-5 flex flex-col flex-1">
-                  <h3 className="font-bricolage font-bold text-[#F3EADB] text-lg leading-tight mb-1">
+                  <h3 className="font-bricolage font-bold text-[#1A1612] text-lg leading-tight mb-1">
                     {ev.title}
                   </h3>
-                  <p className="font-mono text-xs text-[#F3EADB]/40 mb-4">{ev.organizer}</p>
+                  <p className="font-mono text-xs text-[#1A1612]/40 mb-4">{ev.organizer}</p>
 
-                  <div className="flex flex-col gap-2 text-sm text-[#F3EADB]/60 mb-5">
+                  <div className="flex flex-col gap-2 text-sm text-[#1A1612]/60 mb-5">
                     <div className="flex items-center gap-2">
                       <Calendar size={13} className="shrink-0" />
                       {ev.date}
@@ -137,15 +137,15 @@ export function Experiences() {
                   </div>
 
                   {/* Tickets */}
-                  <div className="mt-auto border-t border-[#F3EADB]/8 pt-4">
-                    <p className="font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/30 mb-2">
+                  <div className="mt-auto border-t border-[#1A1612]/8 pt-4">
+                    <p className="font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/30 mb-2">
                       Billetterie
                     </p>
                     <div className="flex gap-2 flex-wrap">
                       {ev.tickets.map((t) => (
                         <button
                           key={t.name}
-                          className="px-3 py-1.5 rounded-full border border-[#F3EADB]/15 text-xs font-hanken text-[#F3EADB]/70 hover:border-[#E0337E]/50 hover:text-[#E0337E] transition-all duration-200"
+                          className="px-3 py-1.5 rounded-full border border-[#1A1612]/15 text-xs font-hanken text-[#1A1612]/70 hover:border-[#FF3D7F]/50 hover:text-[#FF3D7F] transition-all duration-200"
                         >
                           {t.name} · {t.price}
                         </button>

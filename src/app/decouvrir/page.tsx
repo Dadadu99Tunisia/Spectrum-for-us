@@ -118,24 +118,24 @@ function DecouvrirContent() {
 
           {/* Header */}
           <div className="mb-8">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-2">Marketplace</span>
-            <h1 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB]">Découvrir</h1>
+            <span className="font-mono text-[11px] tracking-widest uppercase text-[#FF3D7F] block mb-2">Marketplace</span>
+            <h1 className="font-fraunces text-4xl md:text-5xl text-[#1A1612]">Découvrir</h1>
           </div>
 
           {/* Search + sort + filters */}
           <div className="flex gap-3 mb-4 flex-wrap">
             <div className="flex-1 min-w-[200px] relative">
-              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#F3EADB]/30" />
+              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1612]/30" />
               <input
                 ref={searchRef}
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Rechercher une création, un atelier, un zine…"
-                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-full pl-10 pr-4 py-2.5 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/30 focus:outline-none focus:border-[#E0337E]/50 transition-colors"
+                className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-full pl-10 pr-4 py-2.5 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/30 focus:outline-none focus:border-[#FF3D7F]/50 transition-colors"
               />
               {search && (
-                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/30 hover:text-[#F3EADB]/60">
+                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1A1612]/30 hover:text-[#1A1612]/60">
                   <X size={14} />
                 </button>
               )}
@@ -143,14 +143,14 @@ function DecouvrirContent() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-full px-4 py-2.5 text-[#F3EADB]/70 font-hanken text-sm focus:outline-none focus:border-[#E0337E]/50 transition-colors"
+              className="bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-full px-4 py-2.5 text-[#1A1612]/70 font-hanken text-sm focus:outline-none focus:border-[#FF3D7F]/50 transition-colors"
             >
-              {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value} className="bg-[#3D1F5C]">{o.label}</option>)}
+              {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value} className="bg-[#FBF9F5]">{o.label}</option>)}
             </select>
             <button
               onClick={() => setFiltersOpen(!filtersOpen)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-full border font-hanken text-sm transition-all duration-200 ${
-                filtersOpen ? "border-[#E0337E] text-[#E0337E] bg-[#E0337E]/10" : "border-[#F3EADB]/15 text-[#F3EADB]/60 hover:border-[#F3EADB]/30"
+                filtersOpen ? "border-[#FF3D7F] text-[#FF3D7F] bg-[#FF3D7F]/10" : "border-[#1A1612]/15 text-[#1A1612]/60 hover:border-[#1A1612]/30"
               }`}
             >
               <SlidersHorizontal size={14} /> Filtres
@@ -159,14 +159,14 @@ function DecouvrirContent() {
 
           {/* Filter panel */}
           {filtersOpen && (
-            <div className="mb-4 p-5 rounded-2xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02]">
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-3">
+            <div className="mb-4 p-5 rounded-2xl border border-[#1A1612]/10 bg-[#1A1612]/[0.02]">
+              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-3">
                 Prix max : {maxPrice} €
               </label>
               <input
                 type="range" min={5} max={500} step={5} value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="w-full max-w-xs accent-[#E0337E]"
+                className="w-full max-w-xs accent-[#FF3D7F]"
               />
             </div>
           )}
@@ -179,8 +179,8 @@ function DecouvrirContent() {
                 onClick={() => handleCategoryChange(c)}
                 className={`shrink-0 px-4 py-1.5 rounded-full font-mono text-xs tracking-widest uppercase border transition-all duration-200 ${
                   category === c
-                    ? "border-[#E0337E] bg-[#E0337E]/10 text-[#E0337E]"
-                    : "border-[#F3EADB]/15 text-[#F3EADB]/50 hover:border-[#F3EADB]/30 hover:text-[#F3EADB]/70"
+                    ? "border-[#FF3D7F] bg-[#FF3D7F]/10 text-[#FF3D7F]"
+                    : "border-[#1A1612]/15 text-[#1A1612]/50 hover:border-[#1A1612]/30 hover:text-[#1A1612]/70"
                 }`}
               >
                 {c}
@@ -196,7 +196,7 @@ function DecouvrirContent() {
                 className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[11px] tracking-widest uppercase border transition-all duration-200 ${
                   !subcategory
                     ? "border-[#6D2DB5]/60 bg-[#6D2DB5]/10 text-[#9B6DD5]"
-                    : "border-[#F3EADB]/10 text-[#F3EADB]/35 hover:border-[#F3EADB]/25"
+                    : "border-[#1A1612]/10 text-[#1A1612]/35 hover:border-[#1A1612]/25"
                 }`}
               >
                 <Layers size={10} /> Toutes
@@ -208,7 +208,7 @@ function DecouvrirContent() {
                   className={`shrink-0 px-3 py-1 rounded-full font-mono text-[11px] tracking-widest uppercase border transition-all duration-200 ${
                     subcategory === s
                       ? "border-[#6D2DB5]/60 bg-[#6D2DB5]/10 text-[#9B6DD5]"
-                      : "border-[#F3EADB]/10 text-[#F3EADB]/35 hover:border-[#F3EADB]/25"
+                      : "border-[#1A1612]/10 text-[#1A1612]/35 hover:border-[#1A1612]/25"
                   }`}
                 >
                   {s}
@@ -218,7 +218,7 @@ function DecouvrirContent() {
           )}
 
           {/* Results count */}
-          <p className="font-mono text-xs text-[#F3EADB]/30 mb-6">
+          <p className="font-mono text-xs text-[#1A1612]/30 mb-6">
             {loading ? "Chargement…" : `${filtered.length} résultat${filtered.length > 1 ? "s" : ""}`}
             {subcategory && <span className="ml-2 text-[#9B6DD5]">· {subcategory}</span>}
           </p>
@@ -227,11 +227,11 @@ function DecouvrirContent() {
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="rounded-[18px] border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02] overflow-hidden animate-pulse">
-                  <div className="h-48 bg-[#F3EADB]/5" />
+                <div key={i} className="rounded-[18px] border border-[#1A1612]/8 bg-[#1A1612]/[0.02] overflow-hidden animate-pulse">
+                  <div className="h-48 bg-[#1A1612]/5" />
                   <div className="p-4 space-y-2">
-                    <div className="h-3 bg-[#F3EADB]/8 rounded w-3/4" />
-                    <div className="h-3 bg-[#F3EADB]/5 rounded w-1/2" />
+                    <div className="h-3 bg-[#1A1612]/8 rounded w-3/4" />
+                    <div className="h-3 bg-[#1A1612]/5 rounded w-1/2" />
                   </div>
                 </div>
               ))}
@@ -245,15 +245,15 @@ function DecouvrirContent() {
                 </div>
                 <span className="absolute -top-1 -right-1 text-xl">✦</span>
               </div>
-              <h2 className="font-fraunces text-2xl text-[#F3EADB] mb-3">Aucun résultat</h2>
-              <p className="font-hanken text-[#F3EADB]/50 mb-6 leading-relaxed">
+              <h2 className="font-fraunces text-2xl text-[#1A1612] mb-3">Aucun résultat</h2>
+              <p className="font-hanken text-[#1A1612]/50 mb-6 leading-relaxed">
                 {search
                   ? `Aucune création ne correspond à "${search}". Essaie d'autres mots ou explore une catégorie.`
                   : "Aucune création dans cette catégorie pour le moment. Revenez bientôt ✦"}
               </p>
               <button
                 onClick={() => { setSearch(""); setCategory(""); setSubcategory(""); }}
-                className="font-mono text-xs tracking-widest uppercase text-[#E0337E]/70 hover:text-[#E0337E] transition-colors border border-[#E0337E]/20 hover:border-[#E0337E]/40 px-4 py-2 rounded-xl"
+                className="font-mono text-xs tracking-widest uppercase text-[#FF3D7F]/70 hover:text-[#FF3D7F] transition-colors border border-[#FF3D7F]/20 hover:border-[#FF3D7F]/40 px-4 py-2 rounded-xl"
               >
                 Effacer les filtres
               </button>
@@ -266,23 +266,23 @@ function DecouvrirContent() {
                 const oos     = isOutOfStock(p);
                 const ptype   = p.type ?? "product";
                 return (
-                  <div key={p.id} className="rounded-[18px] border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02] overflow-hidden flex flex-col transition-all duration-200 hover:border-[#E0337E]/30">
+                  <div key={p.id} className="rounded-[18px] border border-[#1A1612]/10 bg-[#1A1612]/[0.02] overflow-hidden flex flex-col transition-all duration-200 hover:border-[#FF3D7F]/30">
                     <Link href={`/produit/${p.slug || p.id}`} className="block">
-                      <div className="h-48 bg-[#2d1545] relative overflow-hidden group">
+                      <div className="h-48 bg-[#F1ECE3] relative overflow-hidden group">
                         {img ? (
                           <img src={img} alt={p.name || p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                         ) : (
                           <>
-                            <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 40% 40%, #E0337E40, transparent 60%)" }} />
+                            <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 40% 40%, #FF3D7F40, transparent 60%)" }} />
                             <div className="w-full h-full flex items-center justify-center">
-                              <Package size={32} className="text-[#F3EADB]/10" />
+                              <Package size={32} className="text-[#1A1612]/10" />
                             </div>
                           </>
                         )}
 
                         {ptype !== "product" && (
                           <div className="absolute top-2 left-2">
-                            <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#3D1F5C]/80 backdrop-blur-sm text-[#E0901E] border border-[#E0901E]/30">
+                            <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#FBF9F5]/80 backdrop-blur-sm text-[#E0901E] border border-[#E0901E]/30">
                               {TYPE_LABELS[ptype]}
                             </span>
                           </div>
@@ -290,20 +290,20 @@ function DecouvrirContent() {
                       </div>
                       <div className="p-4 pb-2">
                         {p.category && <Tag variant="magenta" className="mb-2 text-[10px]">{p.category}</Tag>}
-                        <h3 className="font-bricolage font-semibold text-[#F3EADB] text-sm leading-tight mb-1 line-clamp-2">{p.name || p.title}</h3>
+                        <h3 className="font-bricolage font-semibold text-[#1A1612] text-sm leading-tight mb-1 line-clamp-2">{p.name || p.title}</h3>
                         {shop && (
-                          <p className="font-hanken text-xs text-[#F3EADB]/40 truncate">par {shop.name}</p>
+                          <p className="font-hanken text-xs text-[#1A1612]/40 truncate">par {shop.name}</p>
                         )}
                       </div>
                     </Link>
                     <div className="px-4 pb-4 mt-auto flex items-center justify-between">
-                      <span className="font-mono text-sm font-bold text-[#F3EADB]">{Number(p.price).toFixed(2)} €</span>
+                      <span className="font-mono text-sm font-bold text-[#1A1612]">{Number(p.price).toFixed(2)} €</span>
                       <button
                         onClick={() => handleAdd(p)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${
                           added === p.id
                             ? "bg-[#1C9C95]/10 text-[#1C9C95]"
-                            : "bg-[#E0337E]/10 text-[#E0337E] hover:bg-[#E0337E]/20"
+                            : "bg-[#FF3D7F]/10 text-[#FF3D7F] hover:bg-[#FF3D7F]/20"
                         }`}
                       >
                         <ShoppingBag size={11} />

@@ -36,7 +36,7 @@ export default function PanierPage() {
             <div className="flex flex-col items-center text-center py-16 max-w-sm mx-auto">
               <div className="relative mb-8">
                 <div className="w-24 h-24 rounded-3xl flex items-center justify-center"
-                  style={{ background: "linear-gradient(135deg,rgba(224,51,126,0.12),rgba(109,45,181,0.12))", border: "1px solid rgba(224,51,126,0.2)" }}>
+                  style={{ background: "linear-gradient(135deg,rgba(255,61,127,0.12),rgba(109,45,181,0.12))", border: "1px solid rgba(255,61,127,0.2)" }}>
                   <ShoppingBag size={40} className="text-[#FF3D7F]/50" />
                 </div>
                 <span className="absolute -top-2 -right-2 text-2xl">✦</span>
@@ -58,7 +58,7 @@ export default function PanierPage() {
               <div className="lg:col-span-2 space-y-3">
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-3 p-3 md:p-4 rounded-2xl"
-                    style={{ border: "1px solid rgba(243,234,219,0.09)", background: "rgba(243,234,219,0.025)" }}>
+                    style={{ border: "1px solid rgba(26,22,18,0.09)", background: "rgba(26,22,18,0.025)" }}>
                     <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden shrink-0 flex items-center justify-center"
                       style={{ background: "#F1ECE3" }}>
                       {item.image
@@ -70,7 +70,7 @@ export default function PanierPage() {
                       {item.creator && <p className="font-mono text-[10px] text-[#1A1612]/35">{item.creator}</p>}
                       <div className="flex items-center gap-2 mt-2">
                         <div className="flex items-center rounded-lg overflow-hidden"
-                          style={{ border: "1px solid rgba(243,234,219,0.12)" }}>
+                          style={{ border: "1px solid rgba(26,22,18,0.12)" }}>
                           <button onClick={() => update(item.id, item.quantity - 1)}
                             className="w-7 h-7 text-[#1A1612]/55 text-base active:bg-white/5 transition-colors">−</button>
                           <span className="w-6 text-center font-mono text-[11px] text-[#1A1612]">{item.quantity}</span>
@@ -118,7 +118,7 @@ export default function PanierPage() {
                   </div>
                   <Link href="/checkout">
                     <button className="w-full flex items-center justify-center gap-2 py-4 rounded-full text-white font-hanken font-semibold hover:brightness-110 transition-all active:scale-95"
-                      style={{ background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)", boxShadow: "0 6px 24px rgba(224,51,126,.3)" }}>
+                      style={{ background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)", boxShadow: "0 6px 24px rgba(255,61,127,.3)" }}>
                       Commander <ArrowRight size={16} />
                     </button>
                   </Link>
@@ -138,7 +138,7 @@ export default function PanierPage() {
           style={{
             background: "rgba(251,249,245,0.95)",
             backdropFilter: "blur(20px)",
-            borderTop: "1px solid rgba(243,234,219,0.09)",
+            borderTop: "1px solid rgba(26,22,18,0.09)",
           }}>
           <div className="flex items-center gap-3">
             <div className="shrink-0">

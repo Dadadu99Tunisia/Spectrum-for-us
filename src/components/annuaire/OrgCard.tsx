@@ -29,8 +29,8 @@ export function OrgCard({ org, selected, hovered, onClick, onHover, compact }: P
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick?.(); } }}
       className="group relative rounded-2xl border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2"
       style={{
-        borderColor: selected ? org.accent : hovered ? `${org.accent}55` : "rgba(243,234,219,0.07)",
-        background: selected ? `${org.accent}0d` : hovered ? `${org.accent}06` : "rgba(243,234,219,0.015)",
+        borderColor: selected ? org.accent : hovered ? `${org.accent}55` : "rgba(26,22,18,0.07)",
+        background: selected ? `${org.accent}0d` : hovered ? `${org.accent}06` : "rgba(26,22,18,0.015)",
         boxShadow: selected
           ? `0 0 0 1px ${org.accent}33, 0 6px 24px ${org.accent}18`
           : hovered ? `0 2px 12px ${org.accent}10` : "none",
@@ -68,17 +68,17 @@ export function OrgCard({ org, selected, hovered, onClick, onHover, compact }: P
 
           {/* Title + meta */}
           <div className="flex-1 min-w-0">
-            <h3 className="font-bricolage font-bold text-[#F3EADB] leading-tight truncate"
+            <h3 className="font-bricolage font-bold text-[#1A1612] leading-tight truncate"
               style={{ fontSize: compact ? 13 : 15 }}>
               {org.shortName ?? org.name}
             </h3>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="text-xs" aria-hidden>{org.flag}</span>
-              <span className="font-mono text-[10px] text-[#F3EADB]/35 truncate">
+              <span className="font-mono text-[10px] text-[#1A1612]/35 truncate">
                 {org.city}{!compact && `, ${org.country}`}
               </span>
               {org.founded && !compact && (
-                <span className="flex items-center gap-0.5 font-mono text-[9px] text-[#F3EADB]/20 ml-auto shrink-0">
+                <span className="flex items-center gap-0.5 font-mono text-[9px] text-[#1A1612]/20 ml-auto shrink-0">
                   <Calendar size={8} />
                   {org.founded}
                 </span>
@@ -94,7 +94,7 @@ export function OrgCard({ org, selected, hovered, onClick, onHover, compact }: P
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               aria-label={`Visiter ${org.name}`}
-              className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-[#F3EADB]/8"
+              className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-[#1A1612]/8"
               style={{ color: org.accent }}
             >
               <ExternalLink size={12} />
@@ -126,7 +126,7 @@ export function OrgCard({ org, selected, hovered, onClick, onHover, compact }: P
 
         {/* Description — only expanded or non-compact */}
         {(selected || !compact) && (
-          <p className="font-hanken text-xs text-[#F3EADB]/50 leading-relaxed mt-2.5 line-clamp-2">
+          <p className="font-hanken text-xs text-[#1A1612]/50 leading-relaxed mt-2.5 line-clamp-2">
             {org.description}
           </p>
         )}

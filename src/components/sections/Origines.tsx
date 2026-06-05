@@ -10,7 +10,7 @@ export function Origines() {
   const { t } = useI18n();
 
   const FACTS = [
-    { number: t("origines.fact1_num"), text: t("origines.fact1_text"), color: "#E0337E" },
+    { number: t("origines.fact1_num"), text: t("origines.fact1_text"), color: "#FF3D7F" },
     { number: t("origines.fact2_num"), text: t("origines.fact2_text"), color: "#6D2DB5" },
     { number: t("origines.fact3_num"), text: t("origines.fact3_text"), color: "#1C9C95" },
   ];
@@ -23,7 +23,7 @@ export function Origines() {
       {/* Prism top line */}
       <div
         className="absolute top-0 left-0 right-0 h-[2px]"
-        style={{ background: "linear-gradient(90deg, transparent, #E0337E60, #6D2DB560, #1C9C9560, transparent)" }}
+        style={{ background: "linear-gradient(90deg, transparent, #FF3D7F60, #6D2DB560, #1C9C9560, transparent)" }}
       />
 
       {/* Ambient glow — purple left */}
@@ -48,22 +48,22 @@ export function Origines() {
             {t("origines.eyebrow")}
           </span>
 
-          <blockquote className="font-fraunces text-3xl md:text-4xl lg:text-5xl text-[#F3EADB] leading-[1.2] max-w-3xl">
+          <blockquote className="font-fraunces text-3xl md:text-4xl lg:text-5xl text-[#1A1612] leading-[1.2] max-w-3xl">
             {t("origines.quote_main")}{" "}
-            <span className="text-[#F3EADB]/40">{t("origines.quote_dim")}</span>{" "}
-            <span className="italic text-[#F2B79E]">{t("origines.quote_em")}</span>
+            <span className="text-[#1A1612]/40">{t("origines.quote_dim")}</span>{" "}
+            <span className="italic text-[#1A1612]">{t("origines.quote_em")}</span>
           </blockquote>
         </div>
 
         {/* Facts grid */}
         <div
-          className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#F3EADB]/6 rounded-2xl overflow-hidden mb-16 transition-all duration-700 delay-200"
+          className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#1A1612]/6 rounded-2xl overflow-hidden mb-16 transition-all duration-700 delay-200"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)" }}
         >
           {FACTS.map((fact, i) => (
             <div
               key={i}
-              className="bg-[#0e0818] p-8 hover:bg-[#1a0d28] transition-colors duration-300"
+              className="bg-[#0e0818] p-8 hover:bg-[#F1ECE3] transition-colors duration-300"
             >
               <div
                 className="font-fraunces text-4xl md:text-5xl mb-4 leading-none"
@@ -71,7 +71,7 @@ export function Origines() {
               >
                 {fact.number}
               </div>
-              <p className="font-hanken text-sm text-[#F3EADB]/55 leading-relaxed">
+              <p className="font-hanken text-sm text-[#1A1612]/55 leading-relaxed">
                 {fact.text}
               </p>
             </div>
@@ -84,12 +84,12 @@ export function Origines() {
           style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)" }}
         >
           <div className="space-y-5">
-            <p className="font-hanken text-lg text-[#F3EADB]/65 leading-relaxed">
+            <p className="font-hanken text-lg text-[#1A1612]/65 leading-relaxed">
               {t("origines.p1")}
             </p>
-            <p className="font-hanken text-lg text-[#F3EADB]/65 leading-relaxed">
+            <p className="font-hanken text-lg text-[#1A1612]/65 leading-relaxed">
               {t("origines.p2_before")}{" "}
-              <strong className="text-[#F3EADB]/90">{t("origines.p2_em")}</strong>{" "}
+              <strong className="text-[#1A1612]/90">{t("origines.p2_em")}</strong>{" "}
               {t("origines.p2_after")}
             </p>
           </div>
@@ -106,16 +106,16 @@ export function Origines() {
                 <span
                   className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
                   style={{
-                    background: check ? "#1C9C9520" : "#E0337E15",
-                    border: `1px solid ${check ? "#1C9C9540" : "#E0337E30"}`,
-                    color: check ? "#1C9C95" : "#E0337E60",
+                    background: check ? "#1C9C9520" : "#FF3D7F15",
+                    border: `1px solid ${check ? "#1C9C9540" : "#FF3D7F30"}`,
+                    color: check ? "#1C9C95" : "#FF3D7F60",
                   }}
                 >
                   {check ? "✓" : "✕"}
                 </span>
                 <span
                   className="font-hanken text-sm"
-                  style={{ color: check ? "#F3EADB80" : "#F3EADB30", textDecoration: check ? "none" : "line-through" }}
+                  style={{ color: check ? "#1A161280" : "#1A161230", textDecoration: check ? "none" : "line-through" }}
                 >
                   {label}
                 </span>
@@ -124,7 +124,7 @@ export function Origines() {
 
             <Link
               href="/rejoindre"
-              className="inline-flex items-center gap-2 mt-4 font-mono text-xs tracking-widest uppercase text-[#E0337E] hover:text-[#F2B79E] transition-colors"
+              className="inline-flex items-center gap-2 mt-4 font-mono text-xs tracking-widest uppercase text-[#FF3D7F] hover:text-[#1A1612] transition-colors"
             >
               {t("origines.cta")}
             </Link>

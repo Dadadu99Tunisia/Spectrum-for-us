@@ -25,7 +25,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
   const TYPE_LABELS: Record<string, { label: string; color: string; bg: string }> = {
     service: { label: "Service",     color: "#1C9C95", bg: "rgba(28,156,149,0.15)" },
     event:   { label: "Événement",   color: "#E0901E", bg: "rgba(224,144,30,0.15)" },
-    product: { label: "Création",    color: "#E0337E", bg: "rgba(224,51,126,0.15)" },
+    product: { label: "Création",    color: "#E0337E", bg: "rgba(255,61,127,0.15)" },
   };
   const typeInfo = TYPE_LABELS[type] ?? TYPE_LABELS.product;
 
@@ -45,7 +45,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
         <div style={{
           position: "absolute", top: -60, left: -60,
           width: 400, height: 400, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(224,51,126,0.2) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255,61,127,0.2) 0%, transparent 70%)",
         }} />
         <div style={{
           position: "absolute", bottom: -80, right: 300,
@@ -99,7 +99,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               <div style={{ color: "#F3EADB", fontSize: 14, fontWeight: 700 }}>✦</div>
             </div>
             <span style={{
-              color: "rgba(243,234,219,0.4)", fontSize: 15,
+              color: "rgba(26,22,18,0.4)", fontSize: 15,
               fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase",
             }}>
               Spectrum For Us
@@ -133,7 +133,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
 
             {category && (
               <p style={{
-                color: "rgba(243,234,219,0.45)",
+                color: "rgba(26,22,18,0.45)",
                 fontSize: 18, margin: 0,
                 fontFamily: "monospace",
                 textTransform: "uppercase",
@@ -156,7 +156,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               </div>
             )}
             <div style={{
-              color: "rgba(243,234,219,0.35)",
+              color: "rgba(26,22,18,0.35)",
               fontSize: 18, fontFamily: "monospace",
               letterSpacing: 2, textTransform: "uppercase",
             }}>

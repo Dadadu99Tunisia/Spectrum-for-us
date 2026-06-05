@@ -98,12 +98,12 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(135deg, #1a0d28 0%, #2d0f3f 40%, #0e1e1f 100%)",
+                  "linear-gradient(135deg, #F1ECE3 0%, #F1ECE3 40%, #0e1e1f 100%)",
               }}
             >
               {/* Glows */}
               <div className="absolute inset-0 opacity-40"
-                style={{ background: "radial-gradient(ellipse at 25% 60%, #E0337E30, transparent 55%)" }} />
+                style={{ background: "radial-gradient(ellipse at 25% 60%, #FF3D7F30, transparent 55%)" }} />
               <div className="absolute inset-0 opacity-25"
                 style={{ background: "radial-gradient(ellipse at 75% 40%, #6D2DB540, transparent 55%)" }} />
               {/* Prism particles */}
@@ -115,7 +115,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                       height: `${4 + (i % 4) * 3}px`,
                       left: `${(i * 31 + 7) % 95}%`,
                       top: `${(i * 17 + 11) % 85}%`,
-                      background: ["#E0337E", "#6D2DB5", "#1C9C95", "#E0901E"][i % 4],
+                      background: ["#FF3D7F", "#6D2DB5", "#1C9C95", "#E0901E"][i % 4],
                     }}
                   />
                 ))}
@@ -127,7 +127,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
             style={{ background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)" }} />
           {/* Gradient fade at bottom for smooth transition */}
           <div className="absolute bottom-0 left-0 right-0 h-20"
-            style={{ background: "linear-gradient(to top, #3D1F5C, transparent)" }} />
+            style={{ background: "linear-gradient(to top, #FBF9F5, transparent)" }} />
         </div>
 
         <div className="max-w-6xl mx-auto px-6">
@@ -135,16 +135,16 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
           {/* ── Shop header — overlaps banner bottom ── */}
           <div className="flex flex-col md:flex-row md:items-end gap-6 -mt-14 mb-10 relative z-10">
             {/* Logo */}
-            <div className="w-24 h-24 rounded-2xl border-4 border-[#3D1F5C] overflow-hidden bg-gradient-to-br from-[#E0337E]/20 to-[#6D2DB5]/20 flex items-center justify-center shrink-0 shadow-xl shadow-black/30">
+            <div className="w-24 h-24 rounded-2xl border-4 border-[#FBF9F5] overflow-hidden bg-gradient-to-br from-[#FF3D7F]/20 to-[#6D2DB5]/20 flex items-center justify-center shrink-0 shadow-xl shadow-black/30">
               {logoUrl
                 ? <img src={logoUrl} alt={shop.name as string} className="w-full h-full object-cover" />
-                : <span className="font-fraunces text-4xl text-[#E0337E]">{String(shop.name)[0]?.toUpperCase()}</span>
+                : <span className="font-fraunces text-4xl text-[#FF3D7F]">{String(shop.name)[0]?.toUpperCase()}</span>
               }
             </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-3 mb-1">
-                <h1 className="font-fraunces text-3xl md:text-4xl text-[#F3EADB]">{shop.name as string}</h1>
+                <h1 className="font-fraunces text-3xl md:text-4xl text-[#1A1612]">{shop.name as string}</h1>
                 {isVerified && (
                   <span className="flex items-center gap-1 font-mono text-[10px] tracking-widest uppercase px-2.5 py-1 border border-[#1C9C95]/40 text-[#1C9C95] rounded-full bg-[#1C9C95]/8">
                     <CheckCircle size={10} /> Vérifié·e
@@ -152,9 +152,9 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                 )}
               </div>
               {shop.tagline && (
-                <p className="font-hanken text-[#F3EADB]/60 text-base mb-2">{shop.tagline as string}</p>
+                <p className="font-hanken text-[#1A1612]/60 text-base mb-2">{shop.tagline as string}</p>
               )}
-              <div className="flex flex-wrap items-center gap-4 font-mono text-[11px] text-[#F3EADB]/35 uppercase tracking-widest">
+              <div className="flex flex-wrap items-center gap-4 font-mono text-[11px] text-[#1A1612]/35 uppercase tracking-widest">
                 {shop.city && (
                   <span className="flex items-center gap-1"><MapPin size={10} />{shop.city as string}</span>
                 )}
@@ -168,7 +168,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
             {contactEmail && (
               <a
                 href={`mailto:${contactEmail}`}
-                className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#F3EADB]/15 text-[#F3EADB]/60 font-hanken text-sm hover:border-[#E0337E]/40 hover:text-[#E0337E] transition-all duration-200"
+                className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#1A1612]/15 text-[#1A1612]/60 font-hanken text-sm hover:border-[#FF3D7F]/40 hover:text-[#FF3D7F] transition-all duration-200"
               >
                 <Mail size={14} /> Contacter
               </a>
@@ -178,28 +178,28 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
           {/* Description */}
           {shop.description && (
             <div className="max-w-2xl mb-10">
-              <p className="font-hanken text-[#F3EADB]/65 leading-relaxed">{shop.description as string}</p>
+              <p className="font-hanken text-[#1A1612]/65 leading-relaxed">{shop.description as string}</p>
             </div>
           )}
 
           {/* ── Products ── */}
-          <h2 className="font-fraunces text-xl text-[#F3EADB] mb-5">
+          <h2 className="font-fraunces text-xl text-[#1A1612] mb-5">
             Créations ({productList.length})
           </h2>
 
           {productList.length === 0 ? (
-            <div className="flex flex-col items-center text-center py-20 border border-dashed border-[#F3EADB]/10 rounded-2xl px-8">
+            <div className="flex flex-col items-center text-center py-20 border border-dashed border-[#1A1612]/10 rounded-2xl px-8">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
-                style={{ background: "rgba(224,51,126,0.08)", border: "1px dashed rgba(224,51,126,0.2)" }}>
-                <Package size={28} className="text-[#E0337E]/40" />
+                style={{ background: "rgba(255,61,127,0.08)", border: "1px dashed rgba(255,61,127,0.2)" }}>
+                <Package size={28} className="text-[#FF3D7F]/40" />
               </div>
-              <p className="font-fraunces text-lg text-[#F3EADB]/50 mb-2">Bientôt disponible</p>
-              <p className="font-hanken text-sm text-[#F3EADB]/30 leading-relaxed max-w-xs">
+              <p className="font-fraunces text-lg text-[#1A1612]/50 mb-2">Bientôt disponible</p>
+              <p className="font-hanken text-sm text-[#1A1612]/30 leading-relaxed max-w-xs">
                 Cette boutique prépare ses créations. Revenez dans quelques jours ✦
               </p>
               {contactEmail && (
                 <a href={`mailto:${contactEmail}`}
-                  className="mt-6 font-mono text-[10px] tracking-widest uppercase text-[#E0337E]/50 hover:text-[#E0337E] transition-colors">
+                  className="mt-6 font-mono text-[10px] tracking-widest uppercase text-[#FF3D7F]/50 hover:text-[#FF3D7F] transition-colors">
                   Contacter la boutique →
                 </a>
               )}
@@ -214,32 +214,32 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
 
                 return (
                   <Link key={p.id as string} href={href}
-                    className="group rounded-2xl border border-[#F3EADB]/8 overflow-hidden hover:border-[#E0337E]/30 transition-all">
-                    <div className="aspect-square bg-[#2d1545] relative overflow-hidden">
+                    className="group rounded-2xl border border-[#1A1612]/8 overflow-hidden hover:border-[#FF3D7F]/30 transition-all">
+                    <div className="aspect-square bg-[#F1ECE3] relative overflow-hidden">
                       {img ? (
                         <img src={img} alt={name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Package size={28} className="text-[#F3EADB]/15" />
+                          <Package size={28} className="text-[#1A1612]/15" />
                         </div>
                       )}
                       {ptype !== "product" && (
                         <div className="absolute top-2 left-2">
-                          <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#3D1F5C]/80 text-[#E0901E] border border-[#E0901E]/30">
+                          <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#FBF9F5]/80 text-[#E0901E] border border-[#E0901E]/30">
                             {TYPE_LABELS[ptype] ?? ptype}
                           </span>
                         </div>
                       )}
                     </div>
                     <div className="p-3">
-                      <p className="font-hanken text-sm text-[#F3EADB] truncate">{name}</p>
+                      <p className="font-hanken text-sm text-[#1A1612] truncate">{name}</p>
                       {p.category && (
-                        <p className="font-mono text-[9px] text-[#F3EADB]/30 uppercase tracking-wide mt-0.5">
+                        <p className="font-mono text-[9px] text-[#1A1612]/30 uppercase tracking-wide mt-0.5">
                           {p.category as string}
                         </p>
                       )}
-                      <p className="font-fraunces text-base text-[#E0337E] mt-1">
+                      <p className="font-fraunces text-base text-[#FF3D7F] mt-1">
                         {Number(p.price).toFixed(2)} €
                       </p>
                     </div>

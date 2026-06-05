@@ -25,7 +25,7 @@ export default function OGImage() {
         <div style={{
           position: "absolute", top: -120, left: -80,
           width: 600, height: 600, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(224,51,126,0.2) 0%, transparent 65%)",
+          background: "radial-gradient(circle, rgba(255,61,127,0.2) 0%, transparent 65%)",
         }} />
         <div style={{
           position: "absolute", bottom: -100, right: -60,
@@ -59,7 +59,7 @@ export default function OGImage() {
             width: 80, height: 80, borderRadius: 20,
             background: "linear-gradient(135deg, #E0337E, #6D2DB5)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 0 60px rgba(224,51,126,0.4)",
+            boxShadow: "0 0 60px rgba(255,61,127,0.4)",
           }}>
             <span style={{ color: "#F3EADB", fontSize: 40, fontWeight: 700 }}>✦</span>
           </div>
@@ -80,7 +80,7 @@ export default function OGImage() {
 
           {/* Tagline */}
           <p style={{
-            color: "rgba(243,234,219,0.55)",
+            color: "rgba(26,22,18,0.55)",
             fontSize: 28,
             fontFamily: "sans-serif",
             margin: 0,
@@ -113,7 +113,7 @@ export default function OGImage() {
 
           {/* URL */}
           <p style={{
-            color: "rgba(243,234,219,0.25)",
+            color: "rgba(26,22,18,0.25)",
             fontSize: 18,
             fontFamily: "monospace",
             margin: 0,
