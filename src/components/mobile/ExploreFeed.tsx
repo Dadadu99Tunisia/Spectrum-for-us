@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, X, Heart, Plus, Check } from "lucide-react";
 import { useCart } from "@/store/cart";
 
 const CHIPS = ["Tout", "Mode", "Art & Culture", "Bijoux", "Zines", "Corps & Soin", "Services", "Expériences"];
@@ -45,6 +45,7 @@ function Card({ p }: { p: Product }) {
     catch { return false; }
   });
   const { add } = useCart();
+  const [added, setAdded] = useState(false);
 
   const toggleLike = (e: React.MouseEvent) => {
     e.preventDefault(); e.stopPropagation();
@@ -52,6 +53,12 @@ function Card({ p }: { p: Product }) {
     const next = liked ? favs.filter(f => f !== p.id) : [...favs, p.id];
     localStorage.setItem("spectrum_favorites", JSON.stringify(next));
     setLiked(!liked);
+  };
+
+  const handleAdd = () => {
+    add({ id: p.id, name: p.name || p.title, price: p.price, image: img ?? undefined, creator: shop ?? "", quantity: 1, type: (p.type as "product" | "service" | "event") ?? "product" });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
   };
 
   return (
@@ -70,13 +77,14 @@ function Card({ p }: { p: Product }) {
             </div>
           )}
           {/* Like */}
-          <button onClick={toggleLike}
-            className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90"
+          <button onClick={toggleLike} aria-label={liked ? "Retirer des favoris" : "Ajouter aux favoris"}
+            className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center transition-all active:scale-90"
             style={{
-              background: liked ? "rgba(224,51,126,.90)" : "rgba(32,10,55,.70)",
+              background: liked ? "rgba(224,51,126,.92)" : "rgba(20,6,40,.6)",
               border: `1px solid ${liked ? "transparent" : "rgba(243,234,219,.15)"}`,
+              backdropFilter: "blur(4px)",
             }}>
-            <span className="text-[14px]">{liked ? "♥" : "♡"}</span>
+            <Heart size={15} className={liked ? "fill-white text-white" : "text-[#F3EADB]/85"} />
           </button>
           {/* Type badge */}
           {p.type && p.type !== "product" && (
@@ -88,15 +96,18 @@ function Card({ p }: { p: Product }) {
         </div>
       </Link>
       <div className="p-3">
-        <p className="font-hanken text-[11px] text-[#F3EADB]/75 line-clamp-2 leading-tight">{p.name || p.title}</p>
-        {shop && <p className="font-mono text-[8px] text-[#F3EADB]/28 mt-0.5">{shop}</p>}
-        <div className="flex items-center justify-between mt-2">
-          <p className="font-fraunces text-[14px]" style={{ color: "#F2B79E" }}>{p.price.toFixed(2)} €</p>
-          <button
-            onClick={() => add({ id: p.id, name: p.name || p.title, price: p.price, image: img ?? undefined, creator: shop ?? "", quantity: 1, type: (p.type as "product" | "service" | "event") ?? "product" })}
-            className="font-mono text-[8px] uppercase tracking-wider px-2.5 py-1.5 rounded-lg active:scale-90 transition-transform"
-            style={{ background: "rgba(224,51,126,.12)", color: "#E0337E", border: "1px solid rgba(224,51,126,.20)" }}>
-            + Panier
+        <p className="font-hanken text-[12px] text-[#F3EADB]/85 line-clamp-2 leading-snug">{p.name || p.title}</p>
+        {shop && <p className="font-mono text-[9px] text-[#F3EADB]/45 mt-1 truncate">{shop}</p>}
+        <div className="flex items-center justify-between mt-2.5">
+          <p className="font-fraunces text-[15px]" style={{ color: "#F2B79E" }}>{p.price.toFixed(2)} €</p>
+          <button onClick={handleAdd} aria-label="Ajouter au panier"
+            className="flex items-center gap-1 h-8 px-2.5 rounded-xl font-mono text-[9px] uppercase tracking-wider active:scale-90 transition-all"
+            style={{
+              background: added ? "rgba(28,156,149,.18)" : "rgba(224,51,126,.14)",
+              color: added ? "#1C9C95" : "#E0337E",
+              border: `1px solid ${added ? "rgba(28,156,149,.35)" : "rgba(224,51,126,.28)"}`,
+            }}>
+            {added ? <Check size={12} /> : <><Plus size={12} /> Panier</>}
           </button>
         </div>
       </div>

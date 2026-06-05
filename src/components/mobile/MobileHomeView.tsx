@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
-import { Search, ShoppingBag, ArrowRight, Heart } from "lucide-react";
+import { Search, ShoppingBag, ArrowRight, Heart, Plus, Check } from "lucide-react";
 
 const CATS = ["Tout", "Mode", "Art", "Bijoux", "Zines", "Corps & Soin", "Services"];
 
@@ -61,25 +61,25 @@ function ProductCard({ p }: { p: Product }) {
           : <div className="w-full h-full flex items-center justify-center"><span className="text-3xl opacity-10">✦</span></div>
         }
         {/* Like */}
-        <button onClick={toggleLike}
-          className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center active:scale-90"
-          style={{ background: liked ? "rgba(224,51,126,.9)" : "rgba(20,6,40,.65)", border: "1px solid rgba(243,234,219,.1)" }}>
-          <span className="text-[12px] leading-none">{liked ? "♥" : "♡"}</span>
+        <button onClick={toggleLike} aria-label={liked ? "Retirer des favoris" : "Ajouter aux favoris"}
+          className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+          style={{ background: liked ? "rgba(224,51,126,.92)" : "rgba(20,6,40,.6)", border: "1px solid rgba(243,234,219,.12)", backdropFilter: "blur(4px)" }}>
+          <Heart size={15} className={liked ? "fill-white text-white" : "text-[#F3EADB]/85"} />
         </button>
       </div>
       <div className="p-2.5">
-        <p className="font-hanken text-[11px] text-[#F3EADB]/80 line-clamp-2 leading-tight">{p.name || p.title}</p>
-        {shopName && <p className="font-mono text-[8px] text-[#F3EADB]/28 mt-0.5">{shopName}</p>}
-        <div className="flex items-center justify-between mt-2">
-          <p className="font-fraunces text-[14px]" style={{ color: "#F2B79E" }}>{Number(p.price).toFixed(2)} €</p>
-          <button onClick={handleAdd}
-            className="px-2 py-1 rounded-lg font-mono text-[8px] uppercase tracking-wider active:scale-90 transition-all"
+        <p className="font-hanken text-[12px] text-[#F3EADB]/85 line-clamp-2 leading-snug">{p.name || p.title}</p>
+        {shopName && <p className="font-mono text-[9px] text-[#F3EADB]/45 mt-1 truncate">{shopName}</p>}
+        <div className="flex items-center justify-between mt-2.5">
+          <p className="font-fraunces text-[15px]" style={{ color: "#F2B79E" }}>{Number(p.price).toFixed(2)} €</p>
+          <button onClick={handleAdd} aria-label="Ajouter au panier"
+            className="flex items-center gap-1 h-8 px-2.5 rounded-xl font-mono text-[9px] uppercase tracking-wider active:scale-90 transition-all"
             style={{
-              background: added ? "rgba(28,156,149,.2)" : "rgba(224,51,126,.12)",
+              background: added ? "rgba(28,156,149,.18)" : "rgba(224,51,126,.14)",
               color: added ? "#1C9C95" : "#E0337E",
-              border: `1px solid ${added ? "rgba(28,156,149,.3)" : "rgba(224,51,126,.2)"}`,
+              border: `1px solid ${added ? "rgba(28,156,149,.35)" : "rgba(224,51,126,.28)"}`,
             }}>
-            {added ? "✓" : "+ Panier"}
+            {added ? <Check size={12} /> : <><Plus size={12} /> Panier</>}
           </button>
         </div>
       </div>
@@ -100,8 +100,8 @@ function ShopCard({ s }: { s: Shop }) {
         }
       </div>
       <div className="p-2.5">
-        <p className="font-hanken text-[11px] text-[#F3EADB]/80 font-medium truncate">{s.name}</p>
-        {s.tagline && <p className="font-mono text-[8px] text-[#F3EADB]/28 mt-0.5 line-clamp-1">{s.tagline}</p>}
+        <p className="font-hanken text-[12px] text-[#F3EADB]/85 font-medium truncate">{s.name}</p>
+        {s.tagline && <p className="font-mono text-[9px] text-[#F3EADB]/45 mt-0.5 line-clamp-1">{s.tagline}</p>}
       </div>
     </Link>
   );
@@ -163,7 +163,7 @@ export function MobileHomeView() {
 
       {/* ── Sticky header ── */}
       <header className="sticky top-0 z-40 px-4 pt-[max(14px,env(safe-area-inset-top))] pb-3 relative"
-        style={{ background: "rgba(28,8,50,0.97)", backdropFilter: "blur(20px)" }}>
+        style={{ background: "rgba(32,10,55,0.97)", backdropFilter: "blur(20px)" }}>
         {/* Prism bottom line */}
         <div className="absolute bottom-0 left-0 right-0 h-px"
           style={{ background: "linear-gradient(90deg,transparent,rgba(224,51,126,.25),rgba(109,45,181,.25),transparent)" }} />

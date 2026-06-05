@@ -69,8 +69,8 @@ export function BottomNav() {
                       </span>
                     )}
                   </div>
-                  <span className="font-mono text-[8px] tracking-wider uppercase"
-                    style={{ color: active ? "#E0337E" : "rgba(243,234,219,0.28)" }}>
+                  <span className="font-mono text-[9px] tracking-wider uppercase"
+                    style={{ color: active ? "#E0337E" : "rgba(243,234,219,0.45)" }}>
                     {tab.label}
                   </span>
                 </Link>
@@ -82,7 +82,7 @@ export function BottomNav() {
                 className="flex flex-col items-center gap-0.5 px-3 active:scale-90 transition-transform">
                 <span className="text-[18px] leading-[28px] w-8 text-center transition-all"
                   style={{
-                    color: active ? "#E0337E" : "rgba(243,234,219,0.28)",
+                    color: active ? "#E0337E" : "rgba(243,234,219,0.45)",
                     textShadow: active ? "0 0 14px rgba(224,51,126,.7)" : "none",
                     transform: active ? "scale(1.2)" : "scale(1)",
                     display: "block",
@@ -90,8 +90,8 @@ export function BottomNav() {
                   }}>
                   {tab.symbol}
                 </span>
-                <span className="font-mono text-[8px] tracking-wider uppercase"
-                  style={{ color: active ? "#E0337E" : "rgba(243,234,219,0.28)" }}>
+                <span className="font-mono text-[9px] tracking-wider uppercase"
+                  style={{ color: active ? "#E0337E" : "rgba(243,234,219,0.45)" }}>
                   {tab.label}
                 </span>
               </Link>

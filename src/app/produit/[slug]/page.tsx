@@ -348,12 +348,12 @@ export default function ProduitPage() {
             </p>
             {ptype === "product" && !isOos && (
               <div className="flex items-center gap-1.5 mt-1">
-                <button onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="w-6 h-6 rounded-lg flex items-center justify-center text-[#F3EADB]/50 text-xl"
+                <button onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Diminuer la quantité"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#F3EADB]/60 text-xl active:scale-90 transition-transform"
                   style={{ background: "rgba(243,234,219,0.08)" }}>−</button>
-                <span className="font-mono text-[11px] text-[#F3EADB]/60 w-4 text-center">{qty}</span>
-                <button onClick={() => setQty(Math.min(product.quantity || 99, qty + 1))}
-                  className="w-6 h-6 rounded-lg flex items-center justify-center text-[#F3EADB]/50 text-xl"
+                <span className="font-mono text-[12px] text-[#F3EADB]/70 w-5 text-center">{qty}</span>
+                <button onClick={() => setQty(Math.min(product.quantity || 99, qty + 1))} aria-label="Augmenter la quantité"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#F3EADB]/60 text-xl active:scale-90 transition-transform"
                   style={{ background: "rgba(243,234,219,0.08)" }}>+</button>
               </div>
             )}
