@@ -14,6 +14,7 @@ import SiteBanner from "@/components/SiteBanner";
 import { CookieBanner } from "@/components/ui/CookieBanner";
 import { AccessibilityBar } from "@/components/AccessibilityBar";
 import { BottomNav } from "@/components/mobile/BottomNav";
+import { IntroSplash } from "@/components/IntroSplash";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -110,6 +111,8 @@ export default function RootLayout({
       className={`${fraunces.variable} ${bricolage.variable} ${hanken.variable} ${spaceMono.variable}`}
     >
       <body className="bg-[#3D1F5C] text-[#F3EADB] antialiased cursor-none">
+        {/* Intro cinématique — joue une fois par visiteur */}
+        <IntroSplash />
         {/* Skip to content — navigation clavier WCAG 2.4.1 */}
         <a href="#main-content" className="skip-to-content">
           Aller au contenu principal
