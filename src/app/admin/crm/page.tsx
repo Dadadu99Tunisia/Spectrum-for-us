@@ -42,15 +42,26 @@ const STAGE_CFG: Record<Stage, { label: string; color: string; bg: string; dot: 
 };
 
 const TYPE_LABELS: Record<string, string> = {
-  prospect_vendor: "Vendeur·se",
-  prospect_buyer:  "Acheteur·se",
-  partner:         "Partenaire",
-  investor:        "Investisseur·se",
-  grant:           "Subvention",
-  foundation:      "Fondation",
-  media:           "Média",
-  ambassador:      "Ambassadeur·rice",
+  prospect_association: "Association",
+  prospect_vendor:      "Vendeur·se",
+  prospect_creator:     "Créateur·ice",
+  partner:              "Partenaire",
+  investor:             "Investisseur·se",
+  grant:                "Subvention",
+  foundation:           "Fondation",
+  media:                "Média",
+  ambassador:           "Ambassadeur·rice",
+  prospect_buyer:       "Acheteur·se",
 };
+
+// Segment definitions — each tab filters by these contact_types
+const SEGMENTS = [
+  { id: "all",          label: "Tout le pipeline",  icon: "◈",  types: [] as string[], color: "#F3EADB", goal: 500, goalLabel: "contacts" },
+  { id: "associations", label: "Associations",       icon: "🏳️‍🌈", types: ["prospect_association","foundation","grant"], color: "#a78bfa", goal: 500, goalLabel: "organisations" },
+  { id: "createurs",    label: "Créateur·ices",      icon: "✦",  types: ["prospect_creator","prospect_vendor","ambassador"], color: "#E0337E", goal: 200, goalLabel: "créateurs" },
+  { id: "partenaires",  label: "Partenaires",        icon: "⬡",  types: ["partner","investor","media"], color: "#1C9C95", goal: 50, goalLabel: "partenaires" },
+] as const;
+type SegmentId = typeof SEGMENTS[number]["id"];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function parseNotes(notes: string | null) {
@@ -659,6 +670,93 @@ function KanbanCard({ c, onClick }: { c: Contact; onClick: () => void }) {
   );
 }
 
+// ─── Goal Progress Bar ────────────────────────────────────────────────────────
+function GoalBar({ count, goal, label, color }: { count: number; goal: number; label: string; color: string }) {
+  const pct = Math.min((count / goal) * 100, 100);
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex-1 h-1.5 bg-[#F3EADB]/8 rounded-full overflow-hidden">
+        <div className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${pct}%`, background: color }} />
+      </div>
+      <span className="font-mono text-[10px] shrink-0" style={{ color }}>
+        {count}<span className="text-[#F3EADB]/25">/{goal} {label}</span>
+      </span>
+    </div>
+  );
+}
+
+// ─── Follow-up Alert ──────────────────────────────────────────────────────────
+function FollowUpAlert({ contacts, onSelect }: { contacts: Contact[]; onSelect: (c: Contact) => void }) {
+  const now = new Date();
+  const overdue = contacts.filter(c => c.next_followup_at && new Date(c.next_followup_at) <= now);
+  if (overdue.length === 0) return null;
+  return (
+    <div className="bg-[#fbbf24]/5 border border-[#fbbf24]/20 rounded-2xl p-4">
+      <div className="flex items-center gap-2 mb-3">
+        <Calendar size={12} className="text-[#fbbf24]/70" />
+        <p className="font-mono text-[10px] uppercase tracking-widest text-[#fbbf24]/70">
+          {overdue.length} relance{overdue.length > 1 ? "s" : ""} urgente{overdue.length > 1 ? "s" : ""}
+        </p>
+      </div>
+      <div className="space-y-1.5">
+        {overdue.slice(0, 4).map(c => {
+          const days = Math.ceil((now.getTime() - new Date(c.next_followup_at!).getTime()) / 86400000);
+          return (
+            <button key={c.id} onClick={() => onSelect(c)}
+              className="w-full flex items-center justify-between gap-3 text-left px-3 py-2 rounded-xl hover:bg-[#fbbf24]/5 transition-colors group">
+              <span className="font-hanken text-sm text-[#F3EADB]/70 truncate">{c.name}</span>
+              <span className="font-mono text-[9px] text-[#fbbf24]/60 shrink-0">
+                il y a {days}j <ArrowRight size={8} className="inline opacity-0 group-hover:opacity-100 transition-opacity" />
+              </span>
+            </button>
+          );
+        })}
+        {overdue.length > 4 && (
+          <p className="font-mono text-[9px] text-[#fbbf24]/30 pl-3">+{overdue.length - 4} autres</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Segment Tabs ─────────────────────────────────────────────────────────────
+function SegmentTabs({
+  segment, setSegment, contacts,
+}: {
+  segment: SegmentId;
+  setSegment: (s: SegmentId) => void;
+  contacts: Contact[];
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {SEGMENTS.map(seg => {
+        const count = seg.types.length === 0
+          ? contacts.length
+          : contacts.filter(c => (seg.types as readonly string[]).includes(c.contact_type)).length;
+        const active = segment === seg.id;
+        return (
+          <button key={seg.id} onClick={() => setSegment(seg.id)}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-hanken text-sm transition-all border ${
+              active
+                ? "border-transparent text-white"
+                : "bg-[#F3EADB]/4 border-[#F3EADB]/8 text-[#F3EADB]/45 hover:text-[#F3EADB]/70 hover:border-[#F3EADB]/15"
+            }`}
+            style={active ? { background: seg.color, boxShadow: `0 4px 16px ${seg.color}30` } : {}}>
+            <span className="text-[13px] leading-none">{seg.icon}</span>
+            {seg.label}
+            <span className={`font-mono text-[10px] px-1.5 py-0.5 rounded-full ${
+              active ? "bg-white/20" : "bg-[#F3EADB]/8 text-[#F3EADB]/35"
+            }`}>
+              {count}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function CRMPage() {
   const [contacts, setContacts]     = useState<Contact[]>([]);
@@ -666,12 +764,13 @@ export default function CRMPage() {
   const [search, setSearch]         = useState("");
   const [stageFilter, setStageFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
+  const [segment, setSegment]       = useState<SegmentId>("all");
   const [showForm, setShowForm]     = useState(false);
   const [savingNew, setSavingNew]   = useState(false);
   const [selected, setSelected]     = useState<Contact | null>(null);
   const [view, setView]             = useState<"kanban" | "list">("kanban");
   const [newContact, setNewContact] = useState({
-    name: "", email: "", company: "", contact_type: "prospect_vendor",
+    name: "", email: "", company: "", contact_type: "prospect_association",
     stage: "identified", source: "", notes: "",
   });
 
@@ -735,7 +834,13 @@ export default function CRMPage() {
     return contacts.find(c => c.id === id) ?? null;
   };
 
-  const byStage = (stage: Stage) => contacts.filter(c => c.stage === stage);
+  // Apply segment filter on top of search/stage/type filters
+  const segCfg = SEGMENTS.find(s => s.id === segment)!;
+  const filteredBySegment = segment === "all"
+    ? contacts
+    : contacts.filter(c => (segCfg.types as readonly string[]).includes(c.contact_type));
+
+  const byStage = (stage: Stage) => filteredBySegment.filter(c => c.stage === stage);
 
   const KANBAN_STAGES: Stage[] = ["identified","qualified","nurturing","contacted","partner"];
   const SIDE_STAGES:   Stage[] = ["rejected","closed"];
@@ -749,7 +854,7 @@ export default function CRMPage() {
           <h1 className="font-fraunces text-2xl text-[#F3EADB]">CRM Pipeline</h1>
           <p className="font-hanken text-sm text-[#F3EADB]/35 mt-0.5">
             {contacts.length} contact{contacts.length !== 1 ? "s" : ""}
-            {stageFilter || search ? " · filtrés" : ""}
+            {segment !== "all" ? ` · ${filteredBySegment.length} ${segCfg.label.toLowerCase()}` : ""}
           </p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -770,8 +875,23 @@ export default function CRMPage() {
         </div>
       </div>
 
+      {/* ── Goal progress ── */}
+      <div className="bg-[#1c1235] border border-[#F3EADB]/8 rounded-2xl p-5 space-y-3">
+        <p className="font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1">Progression objectifs</p>
+        {SEGMENTS.filter(s => s.id !== "all").map(seg => {
+          const count = contacts.filter(c => (seg.types as readonly string[]).includes(c.contact_type) && c.stage !== "rejected" && c.stage !== "closed").length;
+          return <GoalBar key={seg.id} count={count} goal={seg.goal} label={seg.goalLabel} color={seg.color} />;
+        })}
+      </div>
+
+      {/* ── Relances urgentes ── */}
+      <FollowUpAlert contacts={contacts} onSelect={setSelected} />
+
+      {/* ── Segment tabs ── */}
+      <SegmentTabs segment={segment} setSegment={setSegment} contacts={contacts} />
+
       {/* ── Pipeline bar ── */}
-      <PipelineBar contacts={contacts} />
+      <PipelineBar contacts={filteredBySegment} />
 
       {/* ── Filters ── */}
       <div className="flex flex-wrap gap-2">
@@ -863,12 +983,12 @@ export default function CRMPage() {
 
         /* ══ List view ══ */
         <div className="space-y-1">
-          {contacts.length === 0 ? (
+          {filteredBySegment.length === 0 ? (
             <div className="text-center py-24">
               <TrendingUp size={36} className="mx-auto mb-3 text-[#F3EADB]/8" />
               <p className="font-hanken text-[#F3EADB]/25 text-sm">Aucun contact</p>
             </div>
-          ) : contacts.map(c => {
+          ) : filteredBySegment.map(c => {
             const cfg    = STAGE_CFG[c.stage as Stage] ?? STAGE_CFG.identified;
             const parsed = parseNotes(c.notes);
             const score  = getAiScore(c.tags);
