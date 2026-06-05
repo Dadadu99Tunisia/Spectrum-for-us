@@ -111,7 +111,19 @@ export default function RootLayout({
       className={`${fraunces.variable} ${bricolage.variable} ${hanken.variable} ${spaceMono.variable}`}
     >
       <body className="bg-[#3D1F5C] text-[#F3EADB] antialiased cursor-none">
-        {/* Intro cinématique — joue une fois par visiteur */}
+        {/* Gate pré-paint : pose le voile sombre AVANT le premier paint si l'intro
+            doit jouer cette session → zéro flash de la home avant l'animation. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var k='sfu_intro_seen';" +
+              "var seen=sessionStorage.getItem(k);" +
+              "var r=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;" +
+              "if(!seen&&!r){var e=document.documentElement;e.setAttribute('data-intro','1');" +
+              "setTimeout(function(){e.removeAttribute('data-intro')},6000);}}catch(e){}})();",
+          }}
+        />
+        {/* Intro cinématique — joue une fois par session */}
         <IntroSplash />
         {/* Skip to content — navigation clavier WCAG 2.4.1 */}
         <a href="#main-content" className="skip-to-content">

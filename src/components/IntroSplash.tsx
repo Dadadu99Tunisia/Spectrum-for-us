@@ -31,15 +31,21 @@ export function IntroSplash({ force = false }: { force?: boolean }) {
   useEffect(() => {
     const decide = () => {
       if (force) { setShow(true); return; }
+      if (reduce === null) return; // attendre la résolution de prefers-reduced-motion
       let seen = false;
       try { seen = !!sessionStorage.getItem(STORAGE_KEY); } catch {}
-      setShow(!seen && !reduce);
+      const play = !seen && !reduce;
+      // si on ne joue pas, s'assurer que le voile pré-paint éventuel est retiré
+      if (!play) document.documentElement.removeAttribute("data-intro");
+      setShow(play);
     };
     decide();
   }, [reduce, force]);
 
   const finish = useCallback(() => {
     try { sessionStorage.setItem(STORAGE_KEY, "1"); } catch {}
+    // retire le voile pré-paint pour révéler la page (l'overlay couvre pendant sa sortie)
+    document.documentElement.removeAttribute("data-intro");
     setShow(false);
   }, []);
 

@@ -287,3 +287,15 @@ html.mode-spacing span {
   top: 0;
   outline: 3px solid #F3EADB;
 }
+
+/* ── Intro splash : voile pré-paint (anti-flash) ──
+   Posé par un script inline avant le premier paint quand l'intro doit jouer.
+   Le composant React (z-9999) se superpose, puis retire l'attribut à la fin. */
+html[data-intro="1"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: radial-gradient(120% 120% at 50% 50%, #0E0816 0%, #000 70%);
+}
