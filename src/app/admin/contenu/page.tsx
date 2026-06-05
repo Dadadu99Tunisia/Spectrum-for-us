@@ -188,7 +188,7 @@ export default function ContenuPage() {
 
   return (
     <div className="space-y-5 max-w-5xl">
-      {toast && <div className="fixed top-16 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0e061a] border border-[#FF3D7F]/30 text-[#1A1612] font-hanken text-sm shadow-2xl"><Check size={13} className="text-[#FF3D7F]" />{toast}</div>}
+      {toast && <div className="fixed top-16 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#FBF9F5] border border-[#FF3D7F]/30 text-[#1A1612] font-hanken text-sm shadow-2xl"><Check size={13} className="text-[#FF3D7F]" />{toast}</div>}
 
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -349,7 +349,7 @@ export default function ContenuPage() {
 
       {/* Floating save bar */}
       {dirtyCount > 0 && !activeSection.startsWith("__") && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 px-5 py-3 rounded-2xl bg-[#0e061a] border border-[#FF3D7F]/30 shadow-2xl">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 px-5 py-3 rounded-2xl bg-[#FBF9F5] border border-[#FF3D7F]/30 shadow-2xl">
           <p className="font-hanken text-sm text-[#1A1612]/60">
             <span className="text-[#FF3D7F] font-medium">{dirtyCount}</span> modification{dirtyCount > 1 ? "s" : ""} non sauvegardée{dirtyCount > 1 ? "s" : ""}
           </p>

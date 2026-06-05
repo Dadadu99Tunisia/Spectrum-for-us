@@ -22,7 +22,7 @@ const EVENTS = [
       { name: "Solidaire", price: "15 €" },
       { name: "Soutien", price: "40 €" },
     ],
-    bg: "#0e1e1f",
+    bg: "#F1ECE3",
     accent: "#1C9C95",
   },
   {

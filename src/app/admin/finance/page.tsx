@@ -142,7 +142,7 @@ export default function FinancePage() {
                 <YAxis tick={{ fill: "#1A161240", fontSize: 10 }} tickLine={false} axisLine={false}
                   tickFormatter={v => v === 0 ? "0" : `${(v/1000).toFixed(1)}k€`} />
                 <Tooltip
-                  contentStyle={{ background: "#0e061a", border: "1px solid #1A161215", borderRadius: "12px" }}
+                  contentStyle={{ background: "#FBF9F5", border: "1px solid #1A161215", borderRadius: "12px" }}
                   labelStyle={{ color: "#1A161260", fontFamily: "monospace", fontSize: 10 }}
                   formatter={(v: unknown) => [`${Number(v).toFixed(2)} €`, "CA"]} />
                 <Area type="monotone" dataKey="revenue" stroke="#FF3D7F" strokeWidth={2} fill="url(#finRev)" dot={false} />
@@ -167,7 +167,7 @@ export default function FinancePage() {
                 <YAxis tick={{ fill: "#1A161240", fontSize: 9 }} tickLine={false} axisLine={false}
                   tickFormatter={v => v === 0 ? "0" : `${(v/1000).toFixed(0)}k`} />
                 <Tooltip
-                  contentStyle={{ background: "#0e061a", border: "1px solid #1A161215", borderRadius: "12px" }}
+                  contentStyle={{ background: "#FBF9F5", border: "1px solid #1A161215", borderRadius: "12px" }}
                   labelStyle={{ color: "#1A161260", fontFamily: "monospace", fontSize: 10 }}
                   formatter={(v: unknown) => [`${Number(v).toFixed(2)} €`, "Revenus"]} />
                 <Bar dataKey="revenue" radius={[4,4,0,0]}>

@@ -76,7 +76,7 @@ export default function ParametresBoutiquePage() {
     <div className="min-h-screen bg-[#FBF9F5]">
       <Header />
       {toast && (
-        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-[#0e061a] border border-[#FF3D7F]/30 text-[#1A1612] font-hanken text-sm shadow-2xl">
+        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-[#FBF9F5] border border-[#FF3D7F]/30 text-[#1A1612] font-hanken text-sm shadow-2xl">
           {toast}
         </div>
       )}

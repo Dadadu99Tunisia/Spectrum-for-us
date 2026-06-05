@@ -151,7 +151,7 @@ function EditDrawer({
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-[#0a0814] border-l border-[#1A1612]/10 flex flex-col overflow-hidden shadow-2xl">
+      <div className="relative w-full max-w-md bg-[#FBF9F5] border-l border-[#1A1612]/10 flex flex-col overflow-hidden shadow-2xl">
 
         {/* Header */}
         <div className="flex items-start gap-3 px-5 pt-5 pb-4 border-b border-[#1A1612]/8 shrink-0">
@@ -370,7 +370,7 @@ export default function AdminAnnuairePage() {
   const totalOverrides = Object.keys(overrides).length;
 
   return (
-    <div className="min-h-screen" style={{ background: "#080612" }}>
+    <div className="min-h-screen" style={{ background: "#FBF9F5" }}>
       <div className="max-w-6xl mx-auto px-6 py-8">
 
         {/* Header */}

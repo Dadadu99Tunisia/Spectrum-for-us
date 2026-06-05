@@ -20,7 +20,7 @@ export function ShopOwnerBar({ ownerId, shopSlug }: Props) {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-[#FF3D7F]/30 bg-[#0e061a]/90 backdrop-blur-md shadow-2xl shadow-black/40">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-[#FF3D7F]/30 bg-[#FBF9F5]/90 backdrop-blur-md shadow-2xl shadow-black/40">
       <span className="font-mono text-[10px] text-[#FF3D7F]/70 uppercase tracking-widest mr-1">
         Ta boutique
       </span>

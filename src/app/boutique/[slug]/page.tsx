@@ -98,7 +98,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(135deg, #F1ECE3 0%, #F1ECE3 40%, #0e1e1f 100%)",
+                  "linear-gradient(135deg, #F1ECE3 0%, #F1ECE3 40%, #F1ECE3 100%)",
               }}
             >
               {/* Glows */}

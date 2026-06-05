@@ -13,7 +13,7 @@ export default function AnnuairePage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen flex flex-col" style={{ background: "#0d0d16" }}>
+      <main className="min-h-screen flex flex-col" style={{ background: "#FBF9F5" }}>
         {/* ─── Hero header ─── */}
         <section className="relative px-6 pt-28 pb-10 overflow-hidden">
           {/* Ambient glows */}

@@ -27,7 +27,7 @@ const CREATORS = [
     quote: "Mes bijoux ont une histoire. Ils ont été portés à des mariages que la loi ne reconnaissait pas encore.",
     bio: "Bijoux forgés à la main, pièces uniques. Chaque métal porte la trace d'une célébration.",
     accentColor: "#1C9C95",
-    bgColor: "#0a1a1b",
+    bgColor: "#F1ECE3",
   },
   {
     id: 3,

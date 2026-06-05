@@ -18,7 +18,7 @@ export function Origines() {
   return (
     <section
       ref={ref}
-      className="relative py-32 px-6 overflow-hidden bg-[#0e0818]"
+      className="relative py-32 px-6 overflow-hidden bg-[#FBF9F5]"
     >
       {/* Prism top line */}
       <div
@@ -63,7 +63,7 @@ export function Origines() {
           {FACTS.map((fact, i) => (
             <div
               key={i}
-              className="bg-[#0e0818] p-8 hover:bg-[#F1ECE3] transition-colors duration-300"
+              className="bg-[#FBF9F5] p-8 hover:bg-[#F1ECE3] transition-colors duration-300"
             >
               <div
                 className="font-fraunces text-4xl md:text-5xl mb-4 leading-none"

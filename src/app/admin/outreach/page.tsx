@@ -188,7 +188,7 @@ export default function OutreachPage() {
                     </td>
                     <td className="px-4 py-3">
                       <select value={item.outreach_status} onChange={e => updateStatus(item.id, e.target.value)}
-                        className="bg-[#0e061a] border border-white/[0.14] rounded px-2 py-1 font-mono text-[9px] text-[#1A1612]/50 focus:outline-none focus:border-[#FF3D7F]/40 transition-colors">
+                        className="bg-[#FBF9F5] border border-white/[0.14] rounded px-2 py-1 font-mono text-[9px] text-[#1A1612]/50 focus:outline-none focus:border-[#FF3D7F]/40 transition-colors">
                         {STATUSES.map(s => <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>)}
                       </select>
                     </td>
@@ -206,7 +206,7 @@ export default function OutreachPage() {
       {/* Modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={e => e.target === e.currentTarget && setShowForm(false)}>
-          <div className="bg-[#0e061a] border border-white/[0.14] rounded-2xl p-6 w-full max-w-md space-y-4">
+          <div className="bg-[#FBF9F5] border border-white/[0.14] rounded-2xl p-6 w-full max-w-md space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="font-fraunces text-lg text-[#1A1612]">Nouveau contact outreach</h2>
               <button onClick={() => setShowForm(false)} className="text-[#1A1612]/30 hover:text-[#1A1612]"><X size={16} /></button>

@@ -91,7 +91,7 @@ function Card({ org, onClick }: { org: OrgEntry; onClick: () => void }) {
   return (
     <article onClick={onClick} tabIndex={0} role="button" aria-label={`Voir : ${org.name}`}
       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
-      className="group flex gap-4 rounded-2xl border border-[#1A1612]/8 bg-[#0d0a1a] hover:bg-[#110e20] hover:border-[#1A1612]/16 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 p-4"
+      className="group flex gap-4 rounded-2xl border border-[#1A1612]/8 bg-[#FBF9F5] hover:bg-[#110e20] hover:border-[#1A1612]/16 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 p-4"
       style={{ ["--tw-ring-color" as string]: org.accent }}
     >
       {/* Left: logo + accent bar */}
@@ -181,7 +181,7 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
       <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col max-h-[90vh]"
-        style={{ background: "#0d0a1a", border: `1px solid ${org.accent}35`, boxShadow: `0 40px 100px rgba(0,0,0,0.9), 0 0 80px ${org.accent}15` }}>
+        style={{ background: "#FBF9F5", border: `1px solid ${org.accent}35`, boxShadow: `0 40px 100px rgba(0,0,0,0.9), 0 0 80px ${org.accent}15` }}>
 
         {/* Gradient header */}
         <div className="relative shrink-0 px-6 pt-7 pb-6 overflow-hidden"
@@ -387,7 +387,7 @@ export function AnnuaireClient() {
           ${showFilters ? "flex" : "hidden"} md:flex
           flex-col w-full md:w-72 lg:w-80 shrink-0
           border-r border-[#1A1612]/8
-          bg-[#080612] overflow-y-auto
+          bg-[#FBF9F5] overflow-y-auto
           absolute md:relative inset-0 z-30 md:z-auto
         `}>
           <div className="p-5">
@@ -504,7 +504,7 @@ export function AnnuaireClient() {
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
           {/* Topbar */}
-          <div className="sticky top-0 z-10 bg-[#0d0d16]/95 backdrop-blur-md border-b border-[#1A1612]/8 px-5 py-3 flex items-center gap-3 shrink-0">
+          <div className="sticky top-0 z-10 bg-[#FBF9F5]/95 backdrop-blur-md border-b border-[#1A1612]/8 px-5 py-3 flex items-center gap-3 shrink-0">
             {/* Mobile filter toggle */}
             <button onClick={() => setShowFilters(v => !v)}
               className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#1A1612]/10 text-[#1A1612]/50 hover:text-[#FF3D7F] hover:border-[#FF3D7F]/40 transition-all text-xs font-mono shrink-0">
@@ -576,7 +576,7 @@ export function AnnuaireClient() {
               <div className="p-5 space-y-10">
                 {grouped.map(({ country, code, orgs }) => (
                   <div key={country}>
-                    <div className="flex items-center gap-3 mb-4 sticky top-0 py-2 bg-[#0d0d16]/95 backdrop-blur-sm -mx-5 px-5 z-[5]">
+                    <div className="flex items-center gap-3 mb-4 sticky top-0 py-2 bg-[#FBF9F5]/95 backdrop-blur-sm -mx-5 px-5 z-[5]">
                       <span className="text-xl leading-none">{codeToFlag(code)}</span>
                       <h2 className="font-bricolage font-bold text-[#1A1612] text-base">{country}</h2>
                       <span className="font-mono text-[10px] text-[#1A1612]/25 px-2 py-0.5 rounded-full bg-[#1A1612]/5 tabular-nums">

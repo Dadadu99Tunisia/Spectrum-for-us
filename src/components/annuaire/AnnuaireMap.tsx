@@ -189,7 +189,7 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
         {/* Loading */}
         {!mapLoaded && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3"
-            style={{ background: "#080612" }}>
+            style={{ background: "#FBF9F5" }}>
             <div className="w-6 h-6 rounded-full border-2 border-[#FF3D7F] border-t-transparent animate-spin" />
             <span className="font-mono text-xs text-[#1A1612]/30">Chargement de la carte…</span>
           </div>

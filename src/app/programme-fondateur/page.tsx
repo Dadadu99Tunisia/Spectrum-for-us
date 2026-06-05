@@ -276,7 +276,7 @@ export default function ProgrammeFondateurPage() {
   const totalInscrits  = founderCount + earlyCount;
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#0a0515 0%,#0f0820 40%,#09101a 100%)" }}>
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#FBF9F5 0%,#FBF9F5 40%,#F1ECE3 100%)" }}>
       <Header />
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -612,7 +612,7 @@ export default function ProgrammeFondateurPage() {
         <div className="max-w-2xl mx-auto">
           <div className="rounded-3xl p-12 text-center border relative overflow-hidden"
             style={{
-              background: "linear-gradient(135deg,#0f0820 0%,#1a0d35 50%,#0d1a2e 100%)",
+              background: "linear-gradient(135deg,#FBF9F5 0%,#1a0d35 50%,#FBF9F5 100%)",
               borderColor: "rgba(167,139,250,.2)",
               boxShadow: "0 0 80px rgba(109,45,181,.15)",
             }}>

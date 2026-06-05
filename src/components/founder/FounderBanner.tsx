@@ -86,7 +86,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
   return (
     <div className="relative overflow-hidden rounded-3xl border"
       style={{
-        background: "linear-gradient(135deg,#0f0820 0%,#1a0d35 50%,#0d1a2e 100%)",
+        background: "linear-gradient(135deg,#FBF9F5 0%,#1a0d35 50%,#FBF9F5 100%)",
         borderColor: "rgba(167,139,250,.2)",
         boxShadow: "0 0 60px rgba(109,45,181,.15), inset 0 1px 0 rgba(255,255,255,.05)",
       }}>
