@@ -20,7 +20,9 @@ export async function GET() {
     supabase.from("orders").select("total_amount").eq("status","paid").gte("created_at", yearStart),
     supabase.from("orders").select("status, total_amount"),
     supabase.from("orders").select("created_at,total_amount").eq("status","paid").gte("created_at", last30).order("created_at"),
-    supabase.from("orders").select("shop_id, total_amount").eq("status","paid").gte("created_at", yearStart),
+    supabase.from("order_items")
+      .select("vendor_id, quantity, price_at_purchase, orders!inner(status, created_at)")
+      .eq("orders.status","paid").gte("orders.created_at", yearStart),
   ]);
 
   if (thisMonth.error) return apiError(thisMonth.error.message);
@@ -57,22 +59,22 @@ export async function GET() {
     revenue: Math.round(revenue * 100) / 100,
   }));
 
-  // Top vendeurs — join shop names
+  // Top vendeurs — agrégé depuis order_items (le CA vendeur = somme des lignes vendues)
   const vendorMap: Record<string, number> = {};
-  for (const o of topVendors.data ?? []) {
-    if (!o.shop_id) continue;
-    vendorMap[o.shop_id] = (vendorMap[o.shop_id] ?? 0) + Number(o.total_amount || 0);
+  for (const oi of (topVendors.data ?? []) as Array<{ vendor_id: string | null; quantity: number | null; price_at_purchase: number | null }>) {
+    if (!oi.vendor_id) continue;
+    vendorMap[oi.vendor_id] = (vendorMap[oi.vendor_id] ?? 0) + Number(oi.price_at_purchase || 0) * Number(oi.quantity || 0);
   }
-  const topShopIds = Object.entries(vendorMap).sort(([,a],[,b]) => b - a).slice(0, 5).map(([id]) => id);
-  const { data: shopNames } = topShopIds.length > 0
-    ? await supabase.from("shops").select("id, name, slug").in("id", topShopIds)
+  const topVendorIds = Object.entries(vendorMap).sort(([,a],[,b]) => b - a).slice(0, 5).map(([id]) => id);
+  const { data: shopNames } = topVendorIds.length > 0
+    ? await supabase.from("shops").select("owner_id, name, slug").in("owner_id", topVendorIds)
     : { data: [] };
-  const shopMap = Object.fromEntries((shopNames ?? []).map(s => [s.id, s]));
-  const topVendorsList = topShopIds.map(shop_id => ({
-    shop_id,
-    shop_name: shopMap[shop_id]?.name ?? shop_id.slice(0, 12),
-    shop_slug: shopMap[shop_id]?.slug ?? null,
-    revenue:   Math.round((vendorMap[shop_id] ?? 0) * 100) / 100,
+  const shopMap = Object.fromEntries((shopNames ?? []).map(s => [s.owner_id, s]));
+  const topVendorsList = topVendorIds.map(vendor_id => ({
+    shop_id:   vendor_id,
+    shop_name: shopMap[vendor_id]?.name ?? vendor_id.slice(0, 12),
+    shop_slug: shopMap[vendor_id]?.slug ?? null,
+    revenue:   Math.round((vendorMap[vendor_id] ?? 0) * 100) / 100,
   }));
 
   return NextResponse.json({

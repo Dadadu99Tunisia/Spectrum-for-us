@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@/lib/supabase/server";
-import { sendOrderConfirmation, sendVendorNewOrder, trySend } from "@/lib/email";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { sendOrderConfirmation, trySend } from "@/lib/email";
+
+/** current_period_end a migré au niveau de l'item d'abonnement (Stripe API récente). */
+function subPeriodEndISO(sub: Stripe.Subscription): string | null {
+  const end = sub.items?.data?.[0]?.current_period_end;
+  return end ? new Date(end * 1000).toISOString() : null;
+}
 
 interface CartItem {
   id: string;
@@ -33,7 +39,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Webhook signature invalide" }, { status: 400 });
   }
 
-  const supabase = await createClient();
+  // Client service-role : indispensable car le webhook n'a aucune session
+  // utilisateur et les tables orders/order_items exigent le rôle service_role (RLS).
+  let supabase;
+  try {
+    supabase = createAdminClient();
+  } catch (e) {
+    console.error("[webhook] service-role indisponible", e);
+    // 503 → Stripe réessaiera une fois SUPABASE_SERVICE_ROLE_KEY configurée
+    return NextResponse.json({ error: "Service role non configuré" }, { status: 503 });
+  }
 
   // ── 1. Paiement produit réussi → créer commande, décrémenter stock, envoyer emails ──
   if (event.type === "payment_intent.succeeded") {
@@ -101,17 +116,6 @@ export async function POST(req: Request) {
       ? await supabase.from("shops").select("id, name, owner_id").in("id", shopIds)
       : { data: [] };
     const shopMap = Object.fromEntries((shops ?? []).map(s => [s.id, s]));
-
-    // Récupérer emails des owners
-    const ownerIds = [...new Set((shops ?? []).map(s => s.owner_id).filter(Boolean))];
-    const { data: ownerProfiles } = ownerIds.length > 0
-      ? await supabase.from("profiles").select("id, email: id").in("id", ownerIds)
-      : { data: [] };
-    // Note: email est dans auth.users, pas profiles — on utilise buyer_email pour l'acheteur
-    // Pour les vendors, on envoie via leur profil auth
-    const { data: ownerUsers } = ownerIds.length > 0
-      ? await supabase.auth.admin?.listUsers?.() ?? { data: null }
-      : { data: null };
 
     // Créer la commande
     const { data: order, error: orderErr } = await supabase
@@ -216,11 +220,10 @@ export async function POST(req: Request) {
     const shopId = session.metadata?.shop_id;
     if (shopId && session.subscription) {
       const sub = await stripe.subscriptions.retrieve(session.subscription as string);
-      const subAny = sub as unknown as { current_period_end: number };
       await supabase.from("shops").update({
         subscription_status: "active",
         subscription_id: sub.id,
-        subscription_current_period_end: new Date(subAny.current_period_end * 1000).toISOString(),
+        subscription_current_period_end: subPeriodEndISO(sub),
       }).eq("id", shopId);
     }
   }
@@ -230,11 +233,10 @@ export async function POST(req: Request) {
     event.type === "customer.subscription.updated" ||
     event.type === "customer.subscription.deleted"
   ) {
-    const sub    = event.data.object as Stripe.Subscription;
-    const subAny = sub as unknown as { current_period_end: number };
+    const sub = event.data.object as Stripe.Subscription;
     await supabase.from("shops").update({
       subscription_status: sub.status === "active" ? "active" : "inactive",
-      subscription_current_period_end: new Date(subAny.current_period_end * 1000).toISOString(),
+      subscription_current_period_end: subPeriodEndISO(sub),
     }).eq("subscription_id", sub.id);
   }
 
