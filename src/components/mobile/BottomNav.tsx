@@ -33,7 +33,7 @@ export function BottomNav() {
       <div className="h-[70px] md:hidden" aria-hidden />
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
-        style={{ background: "linear-gradient(to top,#FBF9F5 64%,rgba(251,249,245,0))", paddingTop: 8 }}>
+        style={{ background: "#FBF9F5", borderTop: "1px solid #ECE6DB", paddingTop: 8 }}>
         <div className="flex items-center justify-around px-2 pb-[max(22px,env(safe-area-inset-bottom))]">
           {TABS.map(tab => {
             const active = isActive(tab.href);
