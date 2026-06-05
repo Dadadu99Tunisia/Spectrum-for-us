@@ -45,10 +45,13 @@ export default function ProduitPage() {
   useEffect(() => {
     if (!slug) return;
     const supabase = createClient();
+    // Match par slug ; n'ajoute id.eq que si le param est un UUID valide
+    // (sinon Postgres rejette id.eq.<non-uuid> et toute la requête échoue).
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
     supabase
       .from("products")
       .select("*, shops(name, slug)")
-      .or(`slug.eq.${slug},id.eq.${slug}`)
+      .or(isUuid ? `slug.eq.${slug},id.eq.${slug}` : `slug.eq.${slug}`)
       .eq("is_active", true)
       .single()
       .then(({ data }) => {
