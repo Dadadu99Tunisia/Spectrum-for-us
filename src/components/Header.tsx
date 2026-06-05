@@ -191,7 +191,7 @@ export function Header() {
                 {activeMenu === item.href && (
                   <div className="absolute left-0 top-full pt-2 z-50" role="region" aria-label={t(item.labelKey)}>
                     <div className="absolute -top-2 left-0 right-0 h-2" aria-hidden="true" />
-                    <div className="bg-[#1e0f35] border border-[#1A1612]/10 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden flex flex-col"
+                    <div className="bg-[#F1ECE3] border border-[#1A1612]/10 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden flex flex-col"
                       style={{ minWidth: item.mega ? "560px" : "260px", maxHeight: "calc(100vh - 120px)" }}>
 
                       {/* Header */}
@@ -318,7 +318,7 @@ export function Header() {
                       className={cn("transition-transform duration-200", userMenuOpen && "rotate-180")} />
                   </button>
                   {userMenuOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-52 bg-[#1e0f35] border border-[#1A1612]/15 rounded-2xl overflow-hidden shadow-xl shadow-black/40">
+                    <div className="absolute right-0 top-full mt-2 w-52 bg-[#F1ECE3] border border-[#1A1612]/15 rounded-2xl overflow-hidden shadow-xl shadow-black/40">
                       <div className="px-4 py-3 border-b border-[#1A1612]/8">
                         <p className="font-hanken text-xs text-[#1A1612]/40">Connecté·e en tant que</p>
                         <p className="font-bricolage font-semibold text-[#1A1612] text-sm truncate">{pseudo}</p>

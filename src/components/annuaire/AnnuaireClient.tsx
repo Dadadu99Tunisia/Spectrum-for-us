@@ -91,7 +91,7 @@ function Card({ org, onClick }: { org: OrgEntry; onClick: () => void }) {
   return (
     <article onClick={onClick} tabIndex={0} role="button" aria-label={`Voir : ${org.name}`}
       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
-      className="group flex gap-4 rounded-2xl border border-[#1A1612]/8 bg-[#FBF9F5] hover:bg-[#110e20] hover:border-[#1A1612]/16 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 p-4"
+      className="group flex gap-4 rounded-2xl border border-[#1A1612]/8 bg-[#FBF9F5] hover:bg-[#F1ECE3] hover:border-[#1A1612]/16 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 p-4"
       style={{ ["--tw-ring-color" as string]: org.accent }}
     >
       {/* Left: logo + accent bar */}

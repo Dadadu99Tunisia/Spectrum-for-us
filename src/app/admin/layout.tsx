@@ -135,7 +135,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (loading || !isAdmin) {
     return (
-      <div className="min-h-screen bg-[#1e1730] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F1ECE3] flex items-center justify-center">
         <SpectrumLoader size="md" label="Chargement…" />
       </div>
     );
@@ -147,7 +147,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pageTitle = getPageTitle(pathname);
 
   return (
-    <div className="min-h-screen bg-[#1e1730] text-[#1A1612] flex">
+    <div className="min-h-screen bg-[#F1ECE3] text-[#1A1612] flex">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -158,7 +158,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* ════════════════ SIDEBAR ════════════════ */}
       <aside className={`
         fixed top-0 left-0 h-full w-[248px] z-50 flex flex-col
-        bg-[#160f26] border-r border-white/[0.12]
+        bg-[#F1ECE3] border-r border-white/[0.12]
         transition-transform duration-300
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:flex
       `}
@@ -263,7 +263,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
 
         {/* ── Topbar ── */}
-        <header className="sticky top-0 z-30 h-14 bg-[#1e1730]/95 backdrop-blur-md border-b border-white/[0.12] px-5 flex items-center gap-4 shrink-0">
+        <header className="sticky top-0 z-30 h-14 bg-[#F1ECE3]/95 backdrop-blur-md border-b border-white/[0.12] px-5 flex items-center gap-4 shrink-0">
           {/* Mobile menu button */}
           <button onClick={() => setSidebarOpen(true)}
             className="md:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-[#1A1612]/50 hover:text-[#1A1612] transition-colors">
