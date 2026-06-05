@@ -31,7 +31,14 @@ export async function GET(req: NextRequest) {
   const { data: members, error, count } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const rows = members ?? [];
+  type MemberRow = {
+    id: string; rank: number; status: string;
+    subscription_free_until: string | null; commission_free_until: string | null;
+    commission_rate_override: number | null; is_founder: boolean; is_early_adopter: boolean;
+    notes: string | null; created_at: string; updated_at: string;
+    user_id: string; shop_id: string;
+  };
+  const rows = (members ?? []) as unknown as MemberRow[];
 
   // ── Step 2: batch-fetch profiles + shops ───────────────────────────────────
   const userIds = [...new Set(rows.map(r => r.user_id))];
