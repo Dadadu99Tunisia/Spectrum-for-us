@@ -200,10 +200,17 @@ export function Header() {
                           className="flex items-center gap-2 font-fraunces text-sm text-[#F3EADB] hover:text-[#E0337E] transition-colors">
                           {t(item.labelKey)} <ArrowRight size={13} />
                         </Link>
-                        <Link href="/vendre" onClick={() => setActiveMenu(null)}
-                          className="font-mono text-[10px] text-[#E0337E]/60 hover:text-[#E0337E] uppercase tracking-widest transition-colors">
-                          {t("nav.sell_short")}
-                        </Link>
+                        <div className="flex items-center gap-3">
+                          <Link href="/vendre" onClick={() => setActiveMenu(null)}
+                            className="font-mono text-[10px] text-[#E0337E]/60 hover:text-[#E0337E] uppercase tracking-widest transition-colors">
+                            {t("nav.sell_short")}
+                          </Link>
+                          <Link href="/programme-fondateur" onClick={() => setActiveMenu(null)}
+                            className="inline-flex items-center gap-1 font-mono text-[10px] px-2.5 py-1 rounded-full border transition-colors"
+                            style={{ background: "rgba(255,215,0,.08)", borderColor: "rgba(255,215,0,.3)", color: "#FFD700" }}>
+                            🏆 Fondateur·ices
+                          </Link>
+                        </div>
                       </div>
 
                       {/* Méga menu — catégories + sous-catégories */}
