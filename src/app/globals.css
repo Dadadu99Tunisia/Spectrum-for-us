@@ -26,8 +26,8 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #3D1F5C;
-  color: #F3EADB;
+  background-color: #FBF9F5;
+  color: #1A1612;
   font-family: var(--font-hanken), sans-serif;
 }
 
@@ -162,8 +162,8 @@ body {
 }
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #3D1F5C; }
-::-webkit-scrollbar-thumb { background: #3a2050; border-radius: 3px; }
+::-webkit-scrollbar-track { background: #ECE6DB; }
+::-webkit-scrollbar-thumb { background: #C7BEB0; border-radius: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
