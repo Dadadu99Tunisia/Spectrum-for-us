@@ -55,6 +55,11 @@ const NAV_CONFIG: NavItem[] = [
     ],
   },
   {
+    labelKey: "nav.associations",
+    href: "/annuaire",
+    icon: Users,
+  },
+  {
     labelKey: "nav.media",
     href: "/media",
     icon: BookOpen,
@@ -70,7 +75,6 @@ const NAV_CONFIG: NavItem[] = [
     icon: Users,
     links: [
       { labelKey: "nav.community_space", href: "/communaute", descKey: "nav.community_desc" },
-      { labelKey: "nav.directory", href: "/annuaire", descKey: "nav.directory_desc" },
       { labelKey: "nav.ambassadors", href: "/ambassadeurs", descKey: "nav.ambassadors_desc" },
       { labelKey: "nav.events", href: "/evenements", descKey: "nav.events_desc" },
     ],
@@ -168,7 +172,12 @@ export function Header() {
 
           {/* Desktop nav */}
           <nav ref={navRef} className="hidden lg:flex items-center gap-0.5" aria-label="Navigation principale">
-            {NAV_CONFIG.map((item) => (
+            {NAV_CONFIG.map((item) => (!item.mega && !item.links) ? (
+              <Link key={item.href} href={item.href}
+                className="px-3 py-2 rounded-lg font-hanken text-sm text-[#F3EADB]/70 hover:text-[#F3EADB] transition-colors">
+                {t(item.labelKey)}
+              </Link>
+            ) : (
               <div key={item.href} className="relative"
                 onMouseEnter={() => openMenu(item.href)}
                 onMouseLeave={closeMenu}>
