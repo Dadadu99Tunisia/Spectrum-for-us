@@ -55,7 +55,7 @@ export function Footer() {
   ];
 
   return (
-    <footer style={{ background: "#FBF9F5", borderTop: `1px solid ${T.line}` }}>
+    <footer translate="no" style={{ background: "#FBF9F5", borderTop: `1px solid ${T.line}` }}>
       {/* Engagement accessibilité & inclusivité (en premier) */}
       <div className="max-w-6xl mx-auto px-6 md:px-8 pt-12">
         <div className="rounded-2xl px-6 py-5 flex flex-wrap items-center gap-x-6 gap-y-2"
