@@ -6,7 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tag } from "@/components/ui/Tag";
 import { useCart } from "@/store/cart";
-import { Search, ShoppingBag, SlidersHorizontal, X, Package, Layers } from "lucide-react";
+import { Search, ShoppingBag, SlidersHorizontal, X, Layers } from "lucide-react";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import { ExploreFeed } from "@/components/mobile/ExploreFeed";
@@ -272,12 +272,10 @@ function DecouvrirContent() {
                         {img ? (
                           <img src={img} alt={p.name || p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                         ) : (
-                          <>
-                            <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 40% 40%, #FF3D7F40, transparent 60%)" }} />
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Package size={32} className="text-[#1A1612]/10" />
-                            </div>
-                          </>
+                          <div className="w-full h-full flex items-center justify-center p-8">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src="/logo-dark.png" alt="Spectrum For Us" className="w-full h-full object-contain opacity-25" />
+                          </div>
                         )}
 
                         {ptype !== "product" && (

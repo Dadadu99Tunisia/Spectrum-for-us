@@ -141,7 +141,7 @@ export function LightHome() {
               <Link key={p.id} href={`/produit/${p.slug}`} className="group">
                 <div className="rounded-2xl overflow-hidden aspect-square" style={{ background: t.tint }}>
                   {img ? <img src={img} alt={p.name || p.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-                    : <div className="w-full h-full flex items-center justify-center font-bricolage font-bold text-4xl" style={{ color: t.ink, opacity: 0.4 }}>{(p.category || "✦")[0]}</div>}
+                    : <div className="w-full h-full flex items-center justify-center p-8"><img src="/logo-dark.png" alt="Spectrum For Us" className="w-full h-full object-contain opacity-25" /></div>}
                 </div>
                 <p className="font-bricolage font-semibold text-[15px] mt-2.5 leading-tight">{p.name || p.title}</p>
                 {shop && <p className="text-[12.5px]" style={{ color: T.faint }}>{shop}</p>}
