@@ -77,7 +77,7 @@ export function ProductReviews({ productId }: { productId: string }) {
           ) : (
             <>
               <div className="flex items-center gap-3 mb-3">
-                <span className="font-mono text-[11px] uppercase tracking-wider" style={{ color: T.soft }}>Ta note</span>
+                <span className="font-mono text-[11px] tracking-wide" style={{ color: T.soft }}>Ta note</span>
                 <Stars value={rating} size={20} onPick={setRating} />
               </div>
               <textarea value={comment} onChange={e => setComment(e.target.value)} rows={3}

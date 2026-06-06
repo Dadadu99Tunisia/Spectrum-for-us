@@ -90,7 +90,7 @@ export function ImageUploader({
   return (
     <div className={`space-y-2 ${className}`}>
       {label && (
-        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30">
+        <label className="block font-mono text-[9px] tracking-wide text-[#F3EADB]/30">
           {label}
         </label>
       )}
@@ -231,7 +231,7 @@ export function MultiImageUploader({
   return (
     <div className="space-y-2">
       {label && (
-        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30">
+        <label className="block font-mono text-[9px] tracking-wide text-[#F3EADB]/30">
           {label} <span className="text-[#F3EADB]/20 normal-case">({values.length}/{max})</span>
         </label>
       )}

@@ -162,7 +162,7 @@ export function Hero() {
           opacity: phase === "done" ? 0.5 : 0,
         }}
       >
-        <p className="font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40">
+        <p className="font-mono text-[10px] tracking-wide text-[#F3EADB]/40">
           Ce n&apos;est pas juste une marketplace
         </p>
         <div className="w-px h-8 bg-gradient-to-b from-[#F3EADB]/20 to-transparent animate-pulse" />

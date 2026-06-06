@@ -53,7 +53,7 @@ export function Voix() {
           className="text-center mb-16 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-4">
+          <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-4">
             ✦ Voix du spectre
           </span>
           <h2 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB]">

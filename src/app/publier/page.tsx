@@ -101,7 +101,7 @@ export default function PublierPage() {
         </p>
         <div className="flex gap-3">
           <button onClick={() => { setDone(false); setStep(0); setTitle(""); setPrice(""); setFile(null); setPreview(null); }}
-            className="px-5 py-3 rounded-2xl font-mono text-[11px] uppercase tracking-wider"
+            className="px-5 py-3 rounded-2xl font-mono text-[11px] tracking-wide"
             style={{ border: "1px solid rgba(26,22,18,0.12)", color: "rgba(26,22,18,0.40)" }}>
             + Nouveau
           </button>
@@ -133,7 +133,7 @@ export default function PublierPage() {
 
         <div className="flex-1">
           <p className="font-fraunces text-[17px]">Publier</p>
-          <p className="font-mono text-[8px] text-[#1A1612]/28 tracking-widest uppercase mt-0.5">
+          <p className="font-mono text-[8px] text-[#1A1612]/28 tracking-wide mt-0.5">
             {STEPS[step]}
           </p>
         </div>
@@ -249,7 +249,7 @@ export default function PublierPage() {
                   }}>
                   <Camera size={28} className="text-[#1A1612]/20" />
                   <span className="font-hanken text-[13px] text-[#1A1612]/35">Ajouter une photo</span>
-                  <span className="font-mono text-[8px] text-[#1A1612]/18 uppercase tracking-wider">JPG · PNG · WEBP</span>
+                  <span className="font-mono text-[8px] text-[#1A1612]/18 tracking-wide">JPG · PNG · WEBP</span>
                 </button>
               )}
             </div>
@@ -271,7 +271,7 @@ export default function PublierPage() {
                 <img src={preview} alt="" className="w-full aspect-video object-cover" />
               )}
               <div className="p-5">
-                <span className="font-mono text-[8px] uppercase tracking-widest px-2.5 py-1 rounded-full"
+                <span className="font-mono text-[8px] tracking-wide px-2.5 py-1 rounded-full"
                   style={{ background: "rgba(255,61,127,.10)", color: "#FF3D7F", border: "1px solid rgba(255,61,127,.20)" }}>
                   {type}
                 </span>

@@ -47,7 +47,7 @@ export function Manifeste() {
 
       <div className="max-w-3xl mx-auto">
         <span
-          className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-12 transition-all duration-700"
+          className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-12 transition-all duration-700"
           style={{
             opacity: inView ? 1 : 0,
             transform: inView ? "translateY(0)" : "translateY(16px)",

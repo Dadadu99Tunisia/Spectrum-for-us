@@ -39,7 +39,7 @@ export default function AnnuairePage() {
           />
 
           <div className="max-w-7xl mx-auto relative">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-4">
+            <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-4">
               ◈ Annuaire queer
             </span>
             <h1 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight mb-3">
@@ -83,7 +83,7 @@ export default function AnnuairePage() {
 
         {/* ─── CTA référencer ─── */}
         <section className="px-6 py-16 text-center max-w-2xl mx-auto">
-          <p className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] mb-4">
+          <p className="font-mono text-[11px] tracking-wide text-[#E0337E] mb-4">
             ✦ Vous manquez ?
           </p>
           <h2 className="font-fraunces text-2xl text-[#F3EADB] mb-3">

@@ -76,7 +76,7 @@ export function Experiences() {
           className="mb-14 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-3">
+          <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-3">
             À venir
           </span>
           <h2 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight">
@@ -138,7 +138,7 @@ export function Experiences() {
 
                   {/* Tickets */}
                   <div className="mt-auto border-t border-[#F3EADB]/8 pt-4">
-                    <p className="font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/30 mb-2">
+                    <p className="font-mono text-[10px] tracking-wide text-[#F3EADB]/30 mb-2">
                       Billetterie
                     </p>
                     <div className="flex gap-2 flex-wrap">

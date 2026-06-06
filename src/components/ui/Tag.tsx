@@ -17,7 +17,7 @@ export function Tag({ children, className, variant = "default" }: TagProps) {
   return (
     <span
       className={cn(
-        "inline-block font-mono text-[11px] tracking-widest uppercase px-2 py-1 border rounded-sm",
+        "inline-block font-mono text-[11px] tracking-wide px-2 py-1 border rounded-sm",
         variants[variant],
         className
       )}

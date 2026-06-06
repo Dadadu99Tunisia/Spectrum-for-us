@@ -105,7 +105,7 @@ export default function NouveauProduitPage() {
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           {/* Type */}
           <div>
-            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-3">Type d&apos;offre *</label>
+            <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-3">Type d&apos;offre *</label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {TYPES.map((t) => (
                 <button key={t.value} type="button" onClick={() => setForm((f) => ({ ...f, type: t.value }))}
@@ -118,7 +118,7 @@ export default function NouveauProduitPage() {
 
           {/* Name */}
           <div>
-            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Nom du produit *</label>
+            <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Nom du produit *</label>
             <input type="text" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="Bague Spectre" required
               className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
@@ -126,7 +126,7 @@ export default function NouveauProduitPage() {
 
           {/* Description */}
           <div>
-            <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Description *</label>
+            <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Description *</label>
             <textarea rows={5} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               placeholder="Décris ton produit avec précision…" required
               className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors resize-none" />
@@ -135,7 +135,7 @@ export default function NouveauProduitPage() {
           <div className="grid grid-cols-2 gap-4">
             {/* Price */}
             <div>
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Prix (€) *</label>
+              <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Prix (€) *</label>
               <input type="number" min="0.01" step="0.01" value={form.price}
                 onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
                 placeholder="29.90"
@@ -144,7 +144,7 @@ export default function NouveauProduitPage() {
             {/* Stock */}
             {form.type === "product" && (
               <div>
-                <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Stock</label>
+                <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Stock</label>
                 <input type="number" min="0" value={form.quantity}
                   onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))}
                   placeholder="10"
@@ -156,7 +156,7 @@ export default function NouveauProduitPage() {
           {/* Catégorie + Sous-catégorie */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Catégorie</label>
+              <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Catégorie</label>
               <select value={form.category}
                 onChange={(e) => setForm((f) => ({ ...f, category: e.target.value, subcategory: "" }))}
                 className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm focus:outline-none focus:border-[#FF3D7F]/60 transition-colors">
@@ -165,7 +165,7 @@ export default function NouveauProduitPage() {
               </select>
             </div>
             <div>
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">
+              <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">
                 Sous-catégorie
                 {!form.category && <span className="text-[#1A1612]/20 normal-case tracking-normal ml-1">(après catégorie)</span>}
               </label>
@@ -182,7 +182,7 @@ export default function NouveauProduitPage() {
           {/* Variants */}
           {form.type === "product" && (
             <div>
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Variantes (taille, couleur…)</label>
+              <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Variantes (taille, couleur…)</label>
               <div className="flex gap-2 mb-2">
                 <input type="text" value={variant} onChange={(e) => setVariant(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addVariant(); } }}

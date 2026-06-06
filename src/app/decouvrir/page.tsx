@@ -118,7 +118,7 @@ function DecouvrirContent() {
 
           {/* Header */}
           <div className="mb-8">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-2">Marketplace</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-2">Marketplace</span>
             <h1 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB]">Découvrir</h1>
           </div>
 
@@ -160,7 +160,7 @@ function DecouvrirContent() {
           {/* Filter panel */}
           {filtersOpen && (
             <div className="mb-4 p-5 rounded-2xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02]">
-              <label className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-3">
+              <label className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40 mb-3">
                 Prix max : {maxPrice} €
               </label>
               <input
@@ -253,7 +253,7 @@ function DecouvrirContent() {
               </p>
               <button
                 onClick={() => { setSearch(""); setCategory(""); setSubcategory(""); }}
-                className="font-mono text-xs tracking-widest uppercase text-[#E0337E]/70 hover:text-[#E0337E] transition-colors border border-[#E0337E]/20 hover:border-[#E0337E]/40 px-4 py-2 rounded-xl"
+                className="font-mono text-xs tracking-wide text-[#E0337E]/70 hover:text-[#E0337E] transition-colors border border-[#E0337E]/20 hover:border-[#E0337E]/40 px-4 py-2 rounded-xl"
               >
                 Effacer les filtres
               </button>
@@ -282,7 +282,7 @@ function DecouvrirContent() {
 
                         {ptype !== "product" && (
                           <div className="absolute top-2 left-2">
-                            <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#3D1F5C]/80 backdrop-blur-sm text-[#E0901E] border border-[#E0901E]/30">
+                            <span className="font-mono text-[9px] tracking-wide px-2 py-0.5 rounded-full bg-[#3D1F5C]/80 backdrop-blur-sm text-[#E0901E] border border-[#E0901E]/30">
                               {TYPE_LABELS[ptype]}
                             </span>
                           </div>

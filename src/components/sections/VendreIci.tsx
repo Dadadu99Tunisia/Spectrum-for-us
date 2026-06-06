@@ -52,7 +52,7 @@ export function VendreIci() {
           <div className="prism-line absolute top-0 left-0 right-0" />
 
           <div className="relative z-10">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-4">
+            <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-4">
               {t("vendre_ici.eyebrow")}
             </span>
             <h2 className="font-fraunces text-3xl md:text-5xl text-[#F3EADB] leading-tight mb-3">

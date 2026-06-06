@@ -124,25 +124,25 @@ export default function OnboardingPage() {
             <h2 className="font-fraunces text-2xl text-[#1A1612] mb-6">Présente ta boutique</h2>
             <div className="space-y-4">
               <div>
-                <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Nom de ta boutique *</label>
+                <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Nom de ta boutique *</label>
                 <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="Atelier Lumière"
                   className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
               </div>
               <div>
-                <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Accroche (1 ligne)</label>
+                <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Accroche (1 ligne)</label>
                 <input type="text" value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })}
                   placeholder="Bijoux forgés à la main, pièces uniques"
                   className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
               </div>
               <div>
-                <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Description *</label>
+                <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Description *</label>
                 <textarea rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
                   placeholder="Présente ton travail, ton univers, ta démarche…"
                   className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors resize-none" />
               </div>
               <div>
-                <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">
+                <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">
                   Email de contact <span className="normal-case tracking-normal text-[#1A1612]/25">(visible sur ta boutique)</span>
                 </label>
                 <input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
@@ -151,13 +151,13 @@ export default function OnboardingPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Ville</label>
+                  <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Ville</label>
                   <input type="text" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })}
                     placeholder="Paris"
                     className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
                 </div>
                 <div>
-                  <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Catégorie principale</label>
+                  <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Catégorie principale</label>
                   <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
                     className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm focus:outline-none focus:border-[#FF3D7F]/60 transition-colors">
                     <option value="" className="bg-[#FBF9F5]">Choisir…</option>

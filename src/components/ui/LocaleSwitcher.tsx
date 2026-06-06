@@ -79,7 +79,7 @@ export function LocaleSwitcher() {
             <div className="flex border-b border-[#F3EADB]/8">
               {([["lang", "🌐 Langue"], ["currency", "💱 Devise"]] as const).map(([t, l]) => (
                 <button key={t} onClick={() => setTab(t)}
-                  className={`flex-1 py-2.5 font-mono text-[10px] uppercase tracking-wider transition-colors ${
+                  className={`flex-1 py-2.5 font-mono text-[10px] tracking-wide transition-colors ${
                     tab === t ? "text-[#E0337E] border-b-2 border-[#E0337E]" : "text-[#F3EADB]/35 hover:text-[#F3EADB]/60"
                   }`}>
                   {l}
@@ -115,7 +115,7 @@ export function LocaleSwitcher() {
                 <div className="space-y-3">
                   {CURRENCY_GROUPS.map(group => (
                     <div key={group.label}>
-                      <p className="font-mono text-[8px] uppercase tracking-widest text-[#F3EADB]/22 px-2 mb-1">
+                      <p className="font-mono text-[8px] tracking-wide text-[#F3EADB]/22 px-2 mb-1">
                         {group.label}
                       </p>
                       <div className="space-y-0.5">

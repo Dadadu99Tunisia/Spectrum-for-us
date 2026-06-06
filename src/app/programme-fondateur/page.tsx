@@ -399,7 +399,7 @@ export default function ProgrammeFondateurPage() {
         <div className="max-w-5xl mx-auto">
 
           <div className="text-center mb-14">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/25 mb-3">Avantages exclusifs</p>
+            <p className="font-mono text-[10px] tracking-wide text-[#F3EADB]/25 mb-3">Avantages exclusifs</p>
             <h2 className="font-fraunces text-3xl sm:text-4xl text-[#F3EADB]">3 niveaux. 1 seule chance.</h2>
           </div>
 
@@ -490,7 +490,7 @@ export default function ProgrammeFondateurPage() {
             </div>
 
             <div className="relative z-10">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#a78bfa]/50 mb-4">Pourquoi maintenant ?</p>
+              <p className="font-mono text-[10px] tracking-wide text-[#a78bfa]/50 mb-4">Pourquoi maintenant ?</p>
               <h2 className="font-fraunces text-3xl sm:text-4xl text-[#F3EADB] mb-6 leading-tight">
                 Après les 100 premiers vendeurs,<br />
                 <span className="text-transparent bg-clip-text"
@@ -540,7 +540,7 @@ export default function ProgrammeFondateurPage() {
       <section className="py-24 px-5">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/25 mb-3">Ils et elles rejoignent déjà</p>
+            <p className="font-mono text-[10px] tracking-wide text-[#F3EADB]/25 mb-3">Ils et elles rejoignent déjà</p>
             <h2 className="font-fraunces text-3xl text-[#F3EADB]">Spectrum se construit avec vous</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -596,7 +596,7 @@ export default function ProgrammeFondateurPage() {
       <section className="py-24 px-5">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/25 mb-3">Questions fréquentes</p>
+            <p className="font-mono text-[10px] tracking-wide text-[#F3EADB]/25 mb-3">Questions fréquentes</p>
             <h2 className="font-fraunces text-3xl text-[#F3EADB]">Tout ce que tu veux savoir</h2>
           </div>
           <div className="rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02] divide-y divide-[#F3EADB]/8 px-6">

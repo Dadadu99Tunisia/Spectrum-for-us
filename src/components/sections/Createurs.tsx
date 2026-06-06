@@ -162,7 +162,7 @@ export function Createurs() {
           className="mb-14 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-3">
+          <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-3">
             Les visages
           </span>
           <h2 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight">
@@ -187,7 +187,7 @@ export function Createurs() {
         >
           <a
             href="/decouvrir"
-            className="font-mono text-xs tracking-widest uppercase text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors duration-200"
+            className="font-mono text-xs tracking-wide text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors duration-200"
           >
             ( Toutes les boutiques )
           </a>

@@ -66,7 +66,7 @@ export function Univers() {
           className="mb-14 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-3">
+          <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-3">
             L&apos;univers
           </span>
           <h2 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight">

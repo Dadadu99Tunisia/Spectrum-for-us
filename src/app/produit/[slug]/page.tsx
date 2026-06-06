@@ -219,7 +219,7 @@ export default function ProduitPage() {
               <div className="flex items-center gap-2 mb-4">
                 {product.category && <Tag variant="magenta">{product.category}</Tag>}
                 <span
-                  className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded-full border"
+                  className="inline-flex items-center gap-1 font-mono text-[10px] tracking-wide px-2 py-1 rounded-full border"
                   style={{ color: typeConf.color, borderColor: `${typeConf.color}40`, backgroundColor: `${typeConf.color}10` }}
                 >
                   <TypeIcon size={10} /> {typeConf.label}
@@ -251,7 +251,7 @@ export default function ProduitPage() {
               {product.tags && product.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-6">
                   {product.tags.map((tag) => (
-                    <span key={tag} className="px-3 py-1 rounded-full border border-[#1A1612]/10 text-[#1A1612]/40 font-mono text-[10px] tracking-widest uppercase">{tag}</span>
+                    <span key={tag} className="px-3 py-1 rounded-full border border-[#1A1612]/10 text-[#1A1612]/40 font-mono text-[10px] tracking-wide">{tag}</span>
                   ))}
                 </div>
               )}
@@ -259,7 +259,7 @@ export default function ProduitPage() {
               {/* Qty — only for physical products in stock */}
               {ptype === "product" && !isOos && (
                 <div className="flex items-center gap-4 mb-8">
-                  <p className="font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40">Qté</p>
+                  <p className="font-mono text-[10px] tracking-wide text-[#1A1612]/40">Qté</p>
                   <div className="flex items-center border border-[#1A1612]/15 rounded-xl overflow-hidden">
                     <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-11 h-11 text-[#1A1612]/60 hover:text-[#1A1612] text-xl transition-colors">−</button>
                     <span className="w-10 text-center font-mono text-sm text-[#1A1612]">{qty}</span>
@@ -309,7 +309,7 @@ export default function ProduitPage() {
             <div className="mt-20 border-t border-[#1A1612]/8 pt-12">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-fraunces text-2xl text-[#1A1612]">Autres créations de {shop.name}</h2>
-                <Link href={`/boutique/${shop.slug}`} className="font-mono text-xs text-[#FF3D7F] hover:text-[#FF3D7F]/70 transition-colors uppercase tracking-widest">
+                <Link href={`/boutique/${shop.slug}`} className="font-mono text-xs text-[#FF3D7F] hover:text-[#FF3D7F]/70 transition-colors tracking-wide">
                   Voir tout →
                 </Link>
               </div>

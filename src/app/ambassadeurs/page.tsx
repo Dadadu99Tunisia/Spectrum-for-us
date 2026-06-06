@@ -124,7 +124,7 @@ export default function AmbassadeursPage() {
 
             {/* Code */}
             <div className="p-5 rounded-2xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02]">
-              <p className="font-mono text-xs text-[#F3EADB]/40 uppercase tracking-widest mb-2">Ton lien ambassadeur·rice</p>
+              <p className="font-mono text-xs text-[#F3EADB]/40 tracking-wide mb-2">Ton lien ambassadeur·rice</p>
               <div className="flex items-center gap-3">
                 <code className="flex-1 font-mono text-sm text-[#E0337E] bg-[#E0337E]/5 px-3 py-2 rounded-lg truncate">
                   spectrumforus.com?ref={ambassador.referral_code}

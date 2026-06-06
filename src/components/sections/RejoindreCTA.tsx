@@ -27,7 +27,7 @@ export function RejoindreCTA() {
           className="text-center mb-14 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="inline-block font-mono text-[11px] tracking-widest uppercase text-[#E0337E] mb-4 px-4 py-1.5 rounded-full border border-[#E0337E]/20 bg-[#E0337E]/8">
+          <span className="inline-block font-mono text-[11px] tracking-wide text-[#E0337E] mb-4 px-4 py-1.5 rounded-full border border-[#E0337E]/20 bg-[#E0337E]/8">
             {t("rejoindre_cta.eyebrow")}
           </span>
           <h2 className="font-fraunces text-4xl md:text-5xl font-light mb-4">

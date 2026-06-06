@@ -21,7 +21,7 @@ export function ShopOwnerBar({ ownerId, shopSlug }: Props) {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-[#E0337E]/30 bg-[#0e061a]/90 backdrop-blur-md shadow-2xl shadow-black/40">
-      <span className="font-mono text-[10px] text-[#E0337E]/70 uppercase tracking-widest mr-1">
+      <span className="font-mono text-[10px] text-[#E0337E]/70 tracking-wide mr-1">
         Ta boutique
       </span>
       <div className="w-px h-4 bg-[#F3EADB]/10" />

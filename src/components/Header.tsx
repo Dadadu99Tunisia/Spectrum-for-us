@@ -202,7 +202,7 @@ export function Header() {
                         </Link>
                         <div className="flex items-center gap-3">
                           <Link href="/vendre" onClick={() => setActiveMenu(null)}
-                            className="font-mono text-[10px] text-[#E0337E]/60 hover:text-[#E0337E] uppercase tracking-widest transition-colors">
+                            className="font-mono text-[10px] text-[#E0337E]/60 hover:text-[#E0337E] tracking-wide transition-colors">
                             {t("nav.sell_short")}
                           </Link>
                           <Link href="/programme-fondateur" onClick={() => setActiveMenu(null)}
@@ -221,7 +221,7 @@ export function Header() {
                             <div key={section.heading}>
                               <div className="flex items-center gap-1.5 mb-3">
                                 <section.icon size={11} style={{ color: section.color }} aria-hidden="true" />
-                                <p className="font-mono text-[9px] tracking-widest uppercase"
+                                <p className="font-mono text-[9px] tracking-wide"
                                   style={{ color: section.color }}>{section.heading}</p>
                               </div>
                               <div className="space-y-4">
@@ -469,7 +469,7 @@ export function Header() {
                           <div key={section.heading} className="mt-1">
                             <div className="flex items-center gap-2 px-4 py-2">
                               <SectionIcon size={11} style={{ color: section.color }} aria-hidden="true" />
-                              <p className="font-mono text-[9px] tracking-widest uppercase"
+                              <p className="font-mono text-[9px] tracking-wide"
                                 style={{ color: section.color }}>{section.heading}</p>
                             </div>
 
@@ -588,7 +588,7 @@ export function Header() {
           )}
           <div className="flex items-center justify-between pt-1">
             <LocaleSwitcher />
-            <span className="font-mono text-[9px] text-[#F3EADB]/20 uppercase tracking-widest">
+            <span className="font-mono text-[9px] text-[#F3EADB]/20 tracking-wide">
               ✦ La marketplace queer
             </span>
           </div>

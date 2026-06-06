@@ -54,7 +54,7 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
         )}
 
         <div className="flex items-center gap-3 mb-4">
-          <span className="font-mono text-[10px] text-[#E0337E] uppercase tracking-widest border border-[#E0337E]/30 px-2 py-0.5 rounded-full">
+          <span className="font-mono text-[10px] text-[#E0337E] tracking-wide border border-[#E0337E]/30 px-2 py-0.5 rounded-full">
             {article.category}
           </span>
           <span className="font-mono text-[10px] text-[#F3EADB]/30">

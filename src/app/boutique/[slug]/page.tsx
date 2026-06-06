@@ -146,7 +146,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
               <div className="flex flex-wrap items-center gap-3 mb-1">
                 <h1 className="font-fraunces text-3xl md:text-4xl text-[#1A1612]">{shop.name as string}</h1>
                 {isVerified && (
-                  <span className="flex items-center gap-1 font-mono text-[10px] tracking-widest uppercase px-2.5 py-1 border border-[#1C9C95]/40 text-[#1C9C95] rounded-full bg-[#1C9C95]/8">
+                  <span className="flex items-center gap-1 font-mono text-[10px] tracking-wide px-2.5 py-1 border border-[#1C9C95]/40 text-[#1C9C95] rounded-full bg-[#1C9C95]/8">
                     <CheckCircle size={10} /> Vérifié·e
                   </span>
                 )}
@@ -154,7 +154,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
               {shop.tagline && (
                 <p className="font-hanken text-[#1A1612]/60 text-base mb-2">{shop.tagline as string}</p>
               )}
-              <div className="flex flex-wrap items-center gap-4 font-mono text-[11px] text-[#1A1612]/35 uppercase tracking-widest">
+              <div className="flex flex-wrap items-center gap-4 font-mono text-[11px] text-[#1A1612]/35 tracking-wide">
                 {shop.city && (
                   <span className="flex items-center gap-1"><MapPin size={10} />{shop.city as string}</span>
                 )}
@@ -199,7 +199,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
               </p>
               {contactEmail && (
                 <a href={`mailto:${contactEmail}`}
-                  className="mt-6 font-mono text-[10px] tracking-widest uppercase text-[#FF3D7F]/50 hover:text-[#FF3D7F] transition-colors">
+                  className="mt-6 font-mono text-[10px] tracking-wide text-[#FF3D7F]/50 hover:text-[#FF3D7F] transition-colors">
                   Contacter la boutique →
                 </a>
               )}
@@ -226,7 +226,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                       )}
                       {ptype !== "product" && (
                         <div className="absolute top-2 left-2">
-                          <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#FBF9F5]/80 text-[#E0901E] border border-[#E0901E]/30">
+                          <span className="font-mono text-[9px] tracking-wide px-2 py-0.5 rounded-full bg-[#FBF9F5]/80 text-[#E0901E] border border-[#E0901E]/30">
                             {TYPE_LABELS[ptype] ?? ptype}
                           </span>
                         </div>

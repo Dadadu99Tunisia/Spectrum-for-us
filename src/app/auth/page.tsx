@@ -118,7 +118,7 @@ function AuthForm() {
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           {mode === "reset" && (
             <div>
-              <label htmlFor="email-reset" className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">E-mail *</label>
+              <label htmlFor="email-reset" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40 mb-2">E-mail *</label>
               <input id="email-reset" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
                 placeholder="ton@email.com"
                 className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
@@ -127,13 +127,13 @@ function AuthForm() {
           {mode === "signup" && (
             <>
               <div>
-                <label htmlFor="pseudo" className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">Pseudo *</label>
+                <label htmlFor="pseudo" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40 mb-2">Pseudo *</label>
                 <input id="pseudo" type="text" value={pseudo} onChange={(e) => setPseudo(e.target.value)}
                   placeholder="ton_pseudo"
                   className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
               </div>
               <div>
-                <label htmlFor="pronouns" className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">
+                <label htmlFor="pronouns" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40 mb-2">
                   Pronoms <span className="normal-case tracking-normal text-[#F3EADB]/20">(facultatif)</span>
                 </label>
                 <input id="pronouns" type="text" value={pronouns} onChange={(e) => setPronouns(e.target.value)}
@@ -144,7 +144,7 @@ function AuthForm() {
           )}
 
           {mode !== "reset" && <div>
-            <label htmlFor="email" className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40 mb-2">E-mail *</label>
+            <label htmlFor="email" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40 mb-2">E-mail *</label>
             <input id="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)}
               placeholder="ton@email.com"
               className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
@@ -152,7 +152,7 @@ function AuthForm() {
 
           {mode !== "reset" && <div>
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="password" className="block font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/40">Mot de passe *</label>
+              <label htmlFor="password" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40">Mot de passe *</label>
               {mode === "login" && (
                 <button type="button" onClick={() => { setMode("reset"); setError(""); setSuccess(""); }}
                   className="font-hanken text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] transition-colors">
@@ -198,7 +198,7 @@ function AuthForm() {
         {mode !== "reset" && <div className="mt-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-[#F3EADB]/10" />
-            <span className="font-mono text-[10px] text-[#F3EADB]/30 uppercase tracking-widest">ou</span>
+            <span className="font-mono text-[10px] text-[#F3EADB]/30 tracking-wide">ou</span>
             <div className="flex-1 h-px bg-[#F3EADB]/10" />
           </div>
           <button

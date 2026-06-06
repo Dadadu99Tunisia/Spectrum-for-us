@@ -84,7 +84,7 @@ export default function MediaPage() {
                         <span className="font-fraunces text-4xl text-[#E0337E]/30">✦</span>
                       </div>
                     )}
-                    <span className="absolute top-3 left-3 bg-[#3D1F5C]/80 backdrop-blur px-2 py-1 rounded-full font-mono text-[10px] text-[#E0337E] uppercase tracking-wider">
+                    <span className="absolute top-3 left-3 bg-[#3D1F5C]/80 backdrop-blur px-2 py-1 rounded-full font-mono text-[10px] text-[#E0337E] tracking-wide">
                       {CAT_LABELS[article.category] ?? article.category}
                     </span>
                   </div>

@@ -37,7 +37,7 @@ export function PrideCountdown() {
       <div className="w-6 shrink-0" />
 
       <div className="flex items-center gap-3 flex-wrap justify-center text-center">
-        <span className="font-mono text-xs tracking-widest uppercase opacity-90">
+        <span className="font-mono text-xs tracking-wide opacity-90">
           🏳️‍🌈 Lancement Pride
         </span>
         <div className="flex items-center gap-1.5 font-mono text-xs font-bold">

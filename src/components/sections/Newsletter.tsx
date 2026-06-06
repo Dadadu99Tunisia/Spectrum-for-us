@@ -39,7 +39,7 @@ export function Newsletter() {
           className="transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-4">
+          <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-4">
             {t("newsletter.eyebrow")}
           </span>
           <h2 className="font-fraunces text-3xl md:text-4xl text-[#F3EADB] leading-tight mb-4">

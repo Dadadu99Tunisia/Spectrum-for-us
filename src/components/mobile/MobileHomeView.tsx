@@ -139,7 +139,7 @@ export function MobileHomeView() {
           <span className="font-bricolage font-extrabold text-[20px]" style={{ color: T.ink }}>spectrum</span>
           <div className="flex items-center gap-2">
             {!user && (
-              <Link href="/auth" className="font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-full" style={{ border: `1px solid ${T.line}`, color: T.soft }}>Connexion</Link>
+              <Link href="/auth" className="font-mono text-[10px] tracking-wide px-3 py-1.5 rounded-full" style={{ border: `1px solid ${T.line}`, color: T.soft }}>Connexion</Link>
             )}
             <Link href="/panier" className="relative w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
               <ShoppingBag size={20} style={{ color: T.ink }} />

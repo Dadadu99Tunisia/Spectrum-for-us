@@ -214,7 +214,7 @@ export default function CheckoutPage() {
       <main className="min-h-screen pt-24 pb-20 px-6 bg-[#FBF9F5] text-[#1A1612]">
         <div className="max-w-4xl mx-auto">
           <div className="mb-2">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#FF3D7F]">Checkout</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#FF3D7F]">Checkout</span>
           </div>
           <h1 className="font-fraunces text-4xl text-[#1A1612] mb-8">Commander</h1>
 
@@ -247,7 +247,7 @@ export default function CheckoutPage() {
                     { k: "address" as const, label: "Adresse", ph: "1 rue de la Lumière", type: "text" },
                   ].map(({ k, label, ph, type }) => (
                     <div key={k}>
-                      <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">{label} *</label>
+                      <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">{label} *</label>
                       <input type={type} required value={form[k] as string} onChange={(e) => set(k, e.target.value)} placeholder={ph}
                         className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
                     </div>
@@ -255,14 +255,14 @@ export default function CheckoutPage() {
                   <div className="grid grid-cols-2 gap-4">
                     {[{ k: "city" as const, label: "Ville", ph: "Paris" }, { k: "zip" as const, label: "Code postal", ph: "75001" }].map(({ k, label, ph }) => (
                       <div key={k}>
-                        <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">{label} *</label>
+                        <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">{label} *</label>
                         <input type="text" required value={form[k]} onChange={(e) => set(k, e.target.value)} placeholder={ph}
                           className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
                       </div>
                     ))}
                   </div>
                   <div>
-                    <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">Pays</label>
+                    <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Pays</label>
                     <select value={form.country} onChange={(e) => set("country", e.target.value)}
                       className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm focus:outline-none focus:border-[#FF3D7F]/60 transition-colors">
                       {["France", "Belgique", "Suisse", "Canada", "Luxembourg", "Autre"].map((c) => (
@@ -371,7 +371,7 @@ export default function CheckoutPage() {
                 )}
                 <div className="mt-3 flex items-center justify-center gap-1.5 text-[#1A1612]/20">
                   <Lock size={10} />
-                  <span className="font-mono text-[9px] tracking-widest uppercase">Paiement sécurisé · Stripe</span>
+                  <span className="font-mono text-[9px] tracking-wide">Paiement sécurisé · Stripe</span>
                 </div>
               </div>
             </div>

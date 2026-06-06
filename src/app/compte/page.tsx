@@ -113,17 +113,17 @@ export default function ComptePage() {
                     <span className="absolute -top-1.5 -right-2 min-w-[15px] h-[15px] px-0.5 rounded-full text-[8px] font-mono flex items-center justify-center text-white" style={{ background: "#FF3D7F" }}>{favCount}</span>
                   )}
                 </span>
-                <span className="font-mono text-[9px] uppercase tracking-wider text-[#1A1612]/55">Favoris</span>
+                <span className="font-mono text-[9px] tracking-wide text-[#1A1612]/55">Favoris</span>
               </Link>
               <button onClick={() => setTab("Commandes")} className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
                 style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
                 <Package size={20} className="text-[#6D2DB5]" />
-                <span className="font-mono text-[9px] uppercase tracking-wider text-[#1A1612]/55">Commandes</span>
+                <span className="font-mono text-[9px] tracking-wide text-[#1A1612]/55">Commandes</span>
               </button>
               <Link href="/decouvrir" className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
                 style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
                 <ArrowRight size={20} className="text-[#1C9C95]" />
-                <span className="font-mono text-[9px] uppercase tracking-wider text-[#1A1612]/55">Explorer</span>
+                <span className="font-mono text-[9px] tracking-wide text-[#1A1612]/55">Explorer</span>
               </Link>
             </div>
 
@@ -293,7 +293,7 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
         { key: "pronouns", label: "Pronoms (public)", placeholder: "iel, elle, il…", type: "text" },
       ].map(({ key, label, placeholder, type }) => (
         <div key={key}>
-          <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">{label}</label>
+          <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">{label}</label>
           <input type={type} value={form[key as keyof typeof form] as string}
             onChange={(e) => setForm({ ...form, [key]: e.target.value })}
             placeholder={placeholder}
@@ -302,7 +302,7 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
       ))}
 
       <div>
-        <label className="block font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/40 mb-2">E-mail (non modifiable)</label>
+        <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">E-mail (non modifiable)</label>
         <input type="email" value={user.email ?? ""} disabled
           className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-4 py-3 text-[#1A1612]/40 font-hanken text-sm cursor-not-allowed" />
       </div>
@@ -318,7 +318,7 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
 
       {/* ── RGPD ── */}
       <div className="pt-8 mt-8 border-t border-[#1A1612]/8 space-y-3">
-        <p className="font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/30 mb-4">Données personnelles (RGPD)</p>
+        <p className="font-mono text-[10px] tracking-wide text-[#1A1612]/30 mb-4">Données personnelles (RGPD)</p>
 
         <a
           href="/api/account/export"

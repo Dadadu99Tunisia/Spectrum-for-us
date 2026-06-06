@@ -104,7 +104,7 @@ export function CustomCursor() {
         {/* Label text inside halo */}
         {text && hovering && (
           <span
-            className="font-mono text-[9px] tracking-widest uppercase text-[#F3EADB]/70 text-center leading-tight pointer-events-none select-none"
+            className="font-mono text-[9px] tracking-wide text-[#F3EADB]/70 text-center leading-tight pointer-events-none select-none"
             style={{ whiteSpace: "nowrap" }}
           >
             {text}

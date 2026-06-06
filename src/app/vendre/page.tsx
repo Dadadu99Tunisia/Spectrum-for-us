@@ -192,7 +192,7 @@ export default function VendrePage() {
 
         <div className="relative max-w-5xl mx-auto text-center">
           <FadeIn>
-            <span className="inline-block font-mono text-[11px] tracking-widest uppercase text-[#E0337E] mb-6 px-4 py-1.5 rounded-full border border-[#E0337E]/25 bg-[#E0337E]/8">
+            <span className="inline-block font-mono text-[11px] tracking-wide text-[#E0337E] mb-6 px-4 py-1.5 rounded-full border border-[#E0337E]/25 bg-[#E0337E]/8">
               Deviens vendeur·euse
             </span>
           </FadeIn>
@@ -237,7 +237,7 @@ export default function VendrePage() {
           {STATS.map((s, i) => (
             <FadeIn key={s.label} delay={i * 60} className="text-center">
               <div className="font-fraunces text-4xl md:text-5xl text-[#E0337E] mb-1">{s.value}</div>
-              <div className="font-hanken text-xs text-[#F3EADB]/45 uppercase tracking-wider">{s.label}</div>
+              <div className="font-hanken text-xs text-[#F3EADB]/45 tracking-wide">{s.label}</div>
             </FadeIn>
           ))}
         </div>
@@ -247,7 +247,7 @@ export default function VendrePage() {
       <section className="py-24 px-6">
         <div className="max-w-5xl mx-auto">
           <FadeIn className="text-center mb-16">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#1C9C95] block mb-4">Pourquoi Spectrum ?</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#1C9C95] block mb-4">Pourquoi Spectrum ?</span>
             <h2 className="font-fraunces text-4xl md:text-5xl font-light">
               Pas juste une marketplace.{" "}
               <span className="italic text-[#F2B79E]">Un espace.</span>
@@ -280,7 +280,7 @@ export default function VendrePage() {
       <section id="comment-ca-marche" className="py-24 px-6 bg-[#2A1540]">
         <div className="max-w-4xl mx-auto">
           <FadeIn className="text-center mb-16">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0901E] block mb-4">Simple. Rapide. Efficace.</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#E0901E] block mb-4">Simple. Rapide. Efficace.</span>
             <h2 className="font-fraunces text-4xl md:text-5xl font-light">
               Lance-toi en{" "}
               <span className="italic text-[#F2B79E]">3 étapes</span>
@@ -324,7 +324,7 @@ export default function VendrePage() {
       <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <FadeIn className="text-center mb-16">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#6D2DB5] block mb-4">Tarification transparente</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#6D2DB5] block mb-4">Tarification transparente</span>
             <h2 className="font-fraunces text-4xl md:text-5xl font-light">
               Ce que ça coûte,{" "}
               <span className="italic text-[#F2B79E]">sans mauvaise surprise.</span>
@@ -401,7 +401,7 @@ export default function VendrePage() {
       <section className="py-24 px-6 bg-[#2A1540]">
         <div className="max-w-5xl mx-auto">
           <FadeIn className="text-center mb-16">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-4">Ils & Elles vendent déjà</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-4">Ils & Elles vendent déjà</span>
             <h2 className="font-fraunces text-4xl md:text-5xl font-light">
               La communauté{" "}
               <span className="italic text-[#F2B79E]">parle pour nous.</span>
@@ -435,7 +435,7 @@ export default function VendrePage() {
       <section className="py-24 px-6">
         <div className="max-w-3xl mx-auto">
           <FadeIn className="text-center mb-14">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#1C9C95] block mb-4">Questions fréquentes</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#1C9C95] block mb-4">Questions fréquentes</span>
             <h2 className="font-fraunces text-4xl md:text-5xl font-light">
               On répond à tout,{" "}
               <span className="italic text-[#F2B79E]">sans détour.</span>

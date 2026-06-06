@@ -66,7 +66,7 @@ export function SpectrumLoader({ size = "md", label, fullscreen = false }: Props
       </div>
 
       {label && (
-        <p className="font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/30">
+        <p className="font-mono text-[10px] tracking-wide text-[#F3EADB]/30">
           {label}
         </p>
       )}

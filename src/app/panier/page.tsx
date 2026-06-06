@@ -19,7 +19,7 @@ export default function PanierPage() {
         <div className="max-w-4xl mx-auto">
           {/* Title — desktop only */}
           <div className="hidden md:block mb-10">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#FF3D7F] block mb-2">Mon panier</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#FF3D7F] block mb-2">Mon panier</span>
             <h1 className="font-fraunces text-4xl text-[#1A1612]">
               {items.length === 0 ? "Ton panier est vide" : `${items.length} article${items.length > 1 ? "s" : ""}`}
             </h1>
@@ -90,10 +90,10 @@ export default function PanierPage() {
                 ))}
 
                 <div className="flex items-center justify-between pt-1">
-                  <button onClick={clear} className="font-mono text-[10px] text-[#1A1612]/20 tracking-widest uppercase active:text-red-400 transition-colors">
+                  <button onClick={clear} className="font-mono text-[10px] text-[#1A1612]/20 tracking-wide active:text-red-400 transition-colors">
                     Vider le panier
                   </button>
-                  <Link href="/decouvrir" className="font-mono text-[10px] text-[#1A1612]/30 tracking-widest uppercase hover:text-[#FF3D7F] transition-colors">
+                  <Link href="/decouvrir" className="font-mono text-[10px] text-[#1A1612]/30 tracking-wide hover:text-[#FF3D7F] transition-colors">
                     ← Continuer
                   </Link>
                 </div>
@@ -142,7 +142,7 @@ export default function PanierPage() {
           }}>
           <div className="flex items-center gap-3">
             <div className="shrink-0">
-              <p className="font-mono text-[9px] text-[#1A1612]/35 uppercase tracking-wider">Total</p>
+              <p className="font-mono text-[9px] text-[#1A1612]/35 tracking-wide">Total</p>
               <p className="font-fraunces text-[22px] leading-tight text-[#1A1612]">{total().toFixed(2)} €</p>
             </div>
             <Link href="/checkout" className="flex-1">

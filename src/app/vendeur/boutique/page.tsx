@@ -97,10 +97,10 @@ export default function ParametresBoutiquePage() {
         <form onSubmit={handleSave} className="space-y-6">
           {/* Visuels */}
           <div className="rounded-2xl border border-[#1A1612]/8 p-6 space-y-5">
-            <h2 className="font-bricolage font-semibold text-[#1A1612] text-sm uppercase tracking-wider">Visuels</h2>
+            <h2 className="font-bricolage font-semibold text-[#1A1612] text-sm tracking-wide">Visuels</h2>
 
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-3">Logo de la boutique</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-3">Logo de la boutique</label>
               <ImageUploader
                 bucket="shop-images"
                 folder={shopId}
@@ -111,7 +111,7 @@ export default function ParametresBoutiquePage() {
             </div>
 
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-3">Bannière de la boutique</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-3">Bannière de la boutique</label>
               <ImageUploader
                 bucket="shop-images"
                 folder={shopId}
@@ -124,28 +124,28 @@ export default function ParametresBoutiquePage() {
 
           {/* Infos */}
           <div className="rounded-2xl border border-[#1A1612]/8 p-6 space-y-4">
-            <h2 className="font-bricolage font-semibold text-[#1A1612] text-sm uppercase tracking-wider">Informations</h2>
+            <h2 className="font-bricolage font-semibold text-[#1A1612] text-sm tracking-wide">Informations</h2>
 
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Nom de la boutique *</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Nom de la boutique *</label>
               <input value={form.name} onChange={e => setForm(p => ({...p, name: e.target.value}))} placeholder="Ma Boutique" className={inputCls} />
             </div>
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Slogan</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Slogan</label>
               <input value={form.tagline} onChange={e => setForm(p => ({...p, tagline: e.target.value}))} placeholder="Ce qui te rend unique en une phrase" className={inputCls} />
             </div>
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Description</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Description</label>
               <textarea rows={4} value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))}
                 placeholder="Présente ta boutique, ton histoire, ta démarche…" className={`${inputCls} resize-y`} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Ville</label>
+                <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Ville</label>
                 <input value={form.city} onChange={e => setForm(p => ({...p, city: e.target.value}))} placeholder="Paris" className={inputCls} />
               </div>
               <div>
-                <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Email de contact</label>
+                <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Email de contact</label>
                 <input type="email" value={form.contact_email} onChange={e => setForm(p => ({...p, contact_email: e.target.value}))} placeholder="contact@maboutique.fr" className={inputCls} />
               </div>
             </div>

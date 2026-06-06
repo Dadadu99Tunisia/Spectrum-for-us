@@ -69,7 +69,7 @@ export default function RejoindrePage() {
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full blur-[100px] opacity-20 pointer-events-none"
           style={{ background: "radial-gradient(ellipse, #E0337E 0%, #6D2DB5 70%, transparent 100%)" }} />
         <div className="relative max-w-3xl mx-auto text-center">
-          <span className="inline-block font-mono text-[11px] tracking-widest uppercase text-[#E0337E] mb-6 px-4 py-1.5 rounded-full border border-[#E0337E]/25 bg-[#E0337E]/8">
+          <span className="inline-block font-mono text-[11px] tracking-wide text-[#E0337E] mb-6 px-4 py-1.5 rounded-full border border-[#E0337E]/25 bg-[#E0337E]/8">
             🏳️‍🌈 Pride 2025 · Lancement le 26 juin
           </span>
           <h1 className="font-fraunces text-5xl md:text-6xl font-light leading-[1.1] mb-6">
@@ -87,7 +87,7 @@ export default function RejoindrePage() {
       {/* Qui peut rejoindre */}
       <section className="py-10 px-6">
         <div className="max-w-3xl mx-auto">
-          <p className="font-mono text-[11px] tracking-widest uppercase text-[#F3EADB]/35 text-center mb-6">Qui peut rejoindre ?</p>
+          <p className="font-mono text-[11px] tracking-wide text-[#F3EADB]/35 text-center mb-6">Qui peut rejoindre ?</p>
           <div className="flex flex-wrap justify-center gap-3">
             {PROFILES.map(p => (
               <div key={p.label}
@@ -135,17 +135,17 @@ export default function RejoindrePage() {
               <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/35 mb-2">Prénom & Nom *</label>
+                    <label className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/35 mb-2">Prénom & Nom *</label>
                     <input value={form.name} onChange={f("name")} placeholder="Sasha Martin" className={inputCls} />
                   </div>
                   <div>
-                    <label className="block font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/35 mb-2">Email *</label>
+                    <label className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/35 mb-2">Email *</label>
                     <input type="email" value={form.email} onChange={f("email")} placeholder="sasha@email.com" className={inputCls} />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/35 mb-2">Ton activité *</label>
+                  <label className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/35 mb-2">Ton activité *</label>
                   <select value={form.activity_type} onChange={f("activity_type")} className={inputCls}>
                     <option value="" className="bg-[#3D1F5C]">Sélectionner…</option>
                     {ACTIVITY_TYPES.map(a => (
@@ -155,7 +155,7 @@ export default function RejoindrePage() {
                 </div>
 
                 <div>
-                  <label className="block font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/35 mb-2">Présente-toi en quelques mots</label>
+                  <label className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/35 mb-2">Présente-toi en quelques mots</label>
                   <textarea
                     rows={4}
                     value={form.description}
@@ -167,11 +167,11 @@ export default function RejoindrePage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/35 mb-2">Instagram</label>
+                    <label className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/35 mb-2">Instagram</label>
                     <input value={form.instagram} onChange={f("instagram")} placeholder="@ton_compte" className={inputCls} />
                   </div>
                   <div>
-                    <label className="block font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/35 mb-2">Site web</label>
+                    <label className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/35 mb-2">Site web</label>
                     <input value={form.website} onChange={f("website")} placeholder="monsite.fr" className={inputCls} />
                   </div>
                 </div>

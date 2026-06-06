@@ -88,7 +88,7 @@ export default function EvenementsPage() {
 
           {/* Header */}
           <div className="mb-10">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#1C9C95] block mb-2">Agenda</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#1C9C95] block mb-2">Agenda</span>
             <h1 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] mb-3">
               Événements <span className="italic text-[#F2B79E]">queer</span>
             </h1>
@@ -153,7 +153,7 @@ export default function EvenementsPage() {
             <div className="mb-10">
               <div className="flex items-center gap-2 mb-5">
                 <Sparkles size={14} className="text-[#E0337E]" />
-                <span className="font-mono text-[10px] tracking-widest uppercase text-[#E0337E]">À la une</span>
+                <span className="font-mono text-[10px] tracking-wide text-[#E0337E]">À la une</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {featured.map(e => <EventCard key={e.id} event={e} featured />)}
@@ -207,7 +207,7 @@ function EventCard({ event: e, featured }: { event: QueerEvent; featured?: boole
         )}
         {/* Source badge */}
         <div className="absolute top-3 left-3">
-          <span className="px-2 py-1 rounded-full text-[9px] font-mono tracking-widest uppercase"
+          <span className="px-2 py-1 rounded-full text-[9px] font-mono tracking-wide"
             style={{ background: `${accent}25`, color: accent, border: `1px solid ${accent}40` }}>
             {sourceLabel(e.source)}
           </span>
@@ -215,7 +215,7 @@ function EventCard({ event: e, featured }: { event: QueerEvent; featured?: boole
         {/* Price badge */}
         {e.price && (
           <div className="absolute top-3 right-3">
-            <span className="px-2 py-1 rounded-full text-[9px] font-mono tracking-widest uppercase bg-[#F3EADB]/10 text-[#F3EADB]/70 border border-[#F3EADB]/15">
+            <span className="px-2 py-1 rounded-full text-[9px] font-mono tracking-wide bg-[#F3EADB]/10 text-[#F3EADB]/70 border border-[#F3EADB]/15">
               {e.price}
             </span>
           </div>
@@ -248,7 +248,7 @@ function EventCard({ event: e, featured }: { event: QueerEvent; featured?: boole
 
         {e.url && (
           <a href={e.url} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-widest uppercase text-[#1C9C95] hover:text-[#F3EADB] transition-colors">
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-[#1C9C95] hover:text-[#F3EADB] transition-colors">
             Voir l&apos;événement <ExternalLink size={10} />
           </a>
         )}

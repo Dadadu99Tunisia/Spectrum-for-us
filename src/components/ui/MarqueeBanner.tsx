@@ -37,8 +37,8 @@ export function MarqueeBanner({
   };
 
   const textStyles = {
-    default: "font-mono text-[11px] tracking-widest uppercase text-[#F3EADB]/40",
-    minimal: "font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/25",
+    default: "font-mono text-[11px] tracking-wide text-[#F3EADB]/40",
+    minimal: "font-mono text-[10px] tracking-wide text-[#F3EADB]/25",
     bold: "font-hanken text-sm font-medium text-[#F3EADB]/60",
   };
 

@@ -128,7 +128,7 @@ export function AccessibilityBar() {
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-controls="a11y-panel"
-            className={`flex items-center gap-2 px-5 py-2 border border-b-0 rounded-t-xl text-xs font-mono tracking-widest uppercase transition-all duration-200 ${
+            className={`flex items-center gap-2 px-5 py-2 border border-b-0 rounded-t-xl text-xs font-mono tracking-wide transition-all duration-200 ${
               hasAnyActive
                 ? "bg-[#E0337E]/15 border-[#E0337E]/40 text-[#E0337E]"
                 : "bg-[#1a0d28] border-[#F3EADB]/15 text-[#F3EADB]/50 hover:text-[#F3EADB]"
@@ -153,7 +153,7 @@ export function AccessibilityBar() {
 
               {/* Taille du texte */}
               <div className="flex flex-col gap-1.5">
-                <p className="font-mono text-[9px] tracking-widest uppercase text-[#F3EADB]/30">
+                <p className="font-mono text-[9px] tracking-wide text-[#F3EADB]/30">
                   Taille du texte
                 </p>
                 <div className="flex items-center gap-1">
@@ -180,7 +180,7 @@ export function AccessibilityBar() {
 
               {/* Modes toggle */}
               <div className="flex flex-col gap-1.5 flex-1">
-                <p className="font-mono text-[9px] tracking-widest uppercase text-[#F3EADB]/30">
+                <p className="font-mono text-[9px] tracking-wide text-[#F3EADB]/30">
                   Modes visuels & navigation
                 </p>
                 <div className="flex flex-wrap gap-2">

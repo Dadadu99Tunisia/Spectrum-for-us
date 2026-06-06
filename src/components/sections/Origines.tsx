@@ -44,7 +44,7 @@ export function Origines() {
           className="mb-16 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-widest uppercase text-[#1C9C95] block mb-6">
+          <span className="font-mono text-[11px] tracking-wide text-[#1C9C95] block mb-6">
             {t("origines.eyebrow")}
           </span>
 
@@ -124,7 +124,7 @@ export function Origines() {
 
             <Link
               href="/rejoindre"
-              className="inline-flex items-center gap-2 mt-4 font-mono text-xs tracking-widest uppercase text-[#E0337E] hover:text-[#F2B79E] transition-colors"
+              className="inline-flex items-center gap-2 mt-4 font-mono text-xs tracking-wide text-[#E0337E] hover:text-[#F2B79E] transition-colors"
             >
               {t("origines.cta")}
             </Link>

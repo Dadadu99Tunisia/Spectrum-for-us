@@ -149,7 +149,7 @@ export default function EditProduitPage() {
 
           {/* Type */}
           <div>
-            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Type d&apos;offre</label>
+            <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Type d&apos;offre</label>
             <div className="grid grid-cols-3 gap-2">
               {[{v:"product",l:"Produit"},{v:"service",l:"Service"},{v:"event",l:"Événement"}].map(t => (
                 <button key={t.v} type="button" onClick={() => setForm(p => ({ ...p, type: t.v }))}
@@ -161,37 +161,37 @@ export default function EditProduitPage() {
           </div>
 
           <div>
-            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Nom *</label>
+            <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Nom *</label>
             <input value={form.name} onChange={f("name")} placeholder="Nom du produit" className={inputCls} />
           </div>
 
           <div>
-            <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Description</label>
+            <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Description</label>
             <textarea value={form.description} onChange={f("description")} rows={4} placeholder="Décris ton produit…"
               className={`${inputCls} resize-y`} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Prix (€) *</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Prix (€) *</label>
               <input type="number" step="0.01" min="0" value={form.price} onChange={f("price")} placeholder="0.00" className={inputCls} />
             </div>
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Stock</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Stock</label>
               <input type="number" min="0" value={form.quantity} onChange={f("quantity")} placeholder="0" className={inputCls} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">Catégorie</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Catégorie</label>
               <select value={form.category} onChange={e => { setForm(p => ({ ...p, category: e.target.value, subcategory: "" })); }} className={inputCls}>
                 <option value="">— Choisir —</option>
                 {CATEGORY_LIST.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-2">
+              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">
                 Sous-catégorie
                 {!form.category && <span className="text-[#1A1612]/20 normal-case ml-1">(choisir une catégorie d'abord)</span>}
               </label>

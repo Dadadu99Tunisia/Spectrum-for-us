@@ -231,7 +231,7 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
                   <Phone size={16} style={{ color: org.accent }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-mono text-[9px] text-[#F3EADB]/25 uppercase tracking-widest mb-0.5">Téléphone</p>
+                  <p className="font-mono text-[9px] text-[#F3EADB]/25 tracking-wide mb-0.5">Téléphone</p>
                   <p className="font-hanken text-sm text-[#F3EADB]/80 font-medium">{org.phone}</p>
                 </div>
                 <ExternalLink size={11} className="opacity-0 group-hover:opacity-50 transition-opacity shrink-0" style={{ color: org.accent }} />
@@ -245,7 +245,7 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
                   <Mail size={16} style={{ color: org.accent }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-mono text-[9px] text-[#F3EADB]/25 uppercase tracking-widest mb-0.5">E-mail</p>
+                  <p className="font-mono text-[9px] text-[#F3EADB]/25 tracking-wide mb-0.5">E-mail</p>
                   <p className="font-hanken text-sm text-[#F3EADB]/80 font-medium truncate">{org.email}</p>
                 </div>
                 <ExternalLink size={11} className="opacity-0 group-hover:opacity-50 transition-opacity shrink-0" style={{ color: org.accent }} />
@@ -259,7 +259,7 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
                   <Globe size={16} style={{ color: org.accent }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-mono text-[9px] text-[#F3EADB]/25 uppercase tracking-widest mb-0.5">Site web</p>
+                  <p className="font-mono text-[9px] text-[#F3EADB]/25 tracking-wide mb-0.5">Site web</p>
                   <p className="font-hanken text-sm text-[#F3EADB]/80 font-medium truncate">{domain(org.website)}</p>
                 </div>
                 <ExternalLink size={11} className="opacity-40 group-hover:opacity-100 transition-opacity shrink-0" style={{ color: org.accent }} />
@@ -287,7 +287,7 @@ function FilterSection({ title, children, defaultOpen = true }: { title: string;
     <div className="border-b border-[#F3EADB]/6 pb-4 mb-4">
       <button onClick={() => setOpen(v => !v)}
         className="flex items-center justify-between w-full mb-3 group">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/35 group-hover:text-[#F3EADB]/60 transition-colors">{title}</span>
+        <span className="font-mono text-[10px] tracking-wide text-[#F3EADB]/35 group-hover:text-[#F3EADB]/60 transition-colors">{title}</span>
         <ChevronDown size={12} className="text-[#F3EADB]/20 transition-transform duration-200"
           style={{ transform: open ? "rotate(180deg)" : "rotate(0)" }} />
       </button>

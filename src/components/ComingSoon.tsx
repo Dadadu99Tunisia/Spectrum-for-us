@@ -28,7 +28,7 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#E033
           </div>
 
           {/* Label */}
-          <span className="font-mono text-[11px] tracking-widest uppercase mb-3 block" style={{ color: accent }}>
+          <span className="font-mono text-[11px] tracking-wide mb-3 block" style={{ color: accent }}>
             {label}
           </span>
 
@@ -47,7 +47,7 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#E033
             <div className="flex flex-wrap gap-2 justify-center mb-10">
               {features.map((f) => (
                 <span key={f}
-                  className="px-4 py-1.5 rounded-full border border-[#F3EADB]/10 font-mono text-[11px] tracking-widest uppercase text-[#F3EADB]/40">
+                  className="px-4 py-1.5 rounded-full border border-[#F3EADB]/10 font-mono text-[11px] tracking-wide text-[#F3EADB]/40">
                   {f}
                 </span>
               ))}
@@ -61,7 +61,7 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#E033
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#F3EADB]/15 bg-[#F3EADB]/[0.03] mb-8">
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: accent }} />
-            <span className="font-mono text-xs text-[#F3EADB]/50 tracking-widest uppercase">En construction</span>
+            <span className="font-mono text-xs text-[#F3EADB]/50 tracking-wide">En construction</span>
           </div>
 
           {/* CTA */}
