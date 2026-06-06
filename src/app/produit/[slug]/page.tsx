@@ -9,6 +9,7 @@ import { Tag } from "@/components/ui/Tag";
 import { Heart, ArrowLeft, ShoppingBag, Check, Package, Zap, CalendarDays, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
+import { ProductReviews } from "@/components/ProductReviews";
 
 type Product = {
   id: string; name: string; title: string; description: string;
@@ -334,6 +335,11 @@ export default function ProduitPage() {
               </div>
             </div>
           )}
+
+          {/* ── Avis ── */}
+          <div className="mt-16 max-w-3xl">
+            <ProductReviews productId={product.id} />
+          </div>
         </div>
       </main>
 

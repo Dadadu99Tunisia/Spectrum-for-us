@@ -15,6 +15,7 @@ import { CookieBanner } from "@/components/ui/CookieBanner";
 import { AccessibilityBar } from "@/components/AccessibilityBar";
 import { BottomNav } from "@/components/mobile/BottomNav";
 import { IntroSplash } from "@/components/IntroSplash";
+import { FavoritesSync } from "@/components/FavoritesSync";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -142,6 +143,7 @@ export default function RootLayout({
               <Suspense fallback={null}>
                 <ReferralTracker />
               </Suspense>
+              <FavoritesSync />
               <PageTransition>{children}</PageTransition>
               {/* Mobile bottom navigation */}
               <BottomNav />
