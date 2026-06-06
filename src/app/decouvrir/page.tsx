@@ -11,7 +11,7 @@ import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import { ExploreFeed } from "@/components/mobile/ExploreFeed";
 
-const ALL_CATEGORIES = ["Toutes", ...Object.keys(CATEGORIES), "Services", "Expériences"];
+const ALL_CATEGORIES = ["Toutes", ...Object.keys(CATEGORIES)];
 
 const SORT_OPTIONS = [
   { value: "recent",     label: "Plus récents" },

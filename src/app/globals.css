@@ -299,3 +299,7 @@ html[data-intro="1"]::before {
   pointer-events: none;
   background: radial-gradient(120% 120% at 50% 50%, #0E0816 0%, #000 70%);
 }
+
+/* Masque la scrollbar horizontale (rangées de chips, carousels) */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
