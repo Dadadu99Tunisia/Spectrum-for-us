@@ -139,22 +139,6 @@ export function LightHome() {
         </div>
       </section>
 
-      {/* ── Footer minimal ── */}
-      <footer className="border-t" style={{ borderColor: T.line }}>
-        <div className="max-w-6xl mx-auto px-8 py-10 flex flex-wrap items-center justify-between gap-4 text-[13px]" style={{ color: T.faint }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-dark.png" alt="Spectrum For Us" className="h-7 w-auto" />
-          <nav className="flex flex-wrap gap-6">
-            <Link href="/decouvrir" className="hover:text-[#FF3D7F]">Marketplace</Link>
-            <Link href="/services" className="hover:text-[#FF3D7F]">Services</Link>
-            <Link href="/annuaire" className="hover:text-[#FF3D7F]">Associations</Link>
-            <Link href="/communaute" className="hover:text-[#FF3D7F]">Communauté</Link>
-            <Link href="/legal/cgu" className="hover:text-[#FF3D7F]">CGU</Link>
-            <Link href="/legal/mentions" className="hover:text-[#FF3D7F]">Mentions</Link>
-          </nav>
-          <span>© 2026 Spectrum For Us</span>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -163,12 +163,36 @@
     "cta": "Rejoindre Spectrum",
     "disclaimer": "Réponse garantie avant le 26 juin · Gratuit pour démarrer",
     "profiles": [
-      { "emoji": "🎨", "title": "Créateur·ices", "desc": "Mode, bijoux, art, zines, cosmétiques…" },
-      { "emoji": "🎭", "title": "Artistes", "desc": "Musique, danse, performance, photo…" },
-      { "emoji": "🌿", "title": "Thérapeutes", "desc": "Sophrologie, psy, bien-être, coaching…" },
-      { "emoji": "⚖️", "title": "Avocat·es", "desc": "Droit de la famille, identité, discrimination…" },
-      { "emoji": "💻", "title": "Freelances", "desc": "Graphisme, vidéo, dev, traduction…" },
-      { "emoji": "🩺", "title": "Soignant·es alliés", "desc": "Médecins, sages-femmes, dentistes…" }
+      {
+        "emoji": "🎨",
+        "title": "Créateur·ices",
+        "desc": "Mode, bijoux, art, zines, cosmétiques…"
+      },
+      {
+        "emoji": "🎭",
+        "title": "Artistes",
+        "desc": "Musique, danse, performance, photo…"
+      },
+      {
+        "emoji": "🌿",
+        "title": "Thérapeutes",
+        "desc": "Sophrologie, psy, bien-être, coaching…"
+      },
+      {
+        "emoji": "⚖️",
+        "title": "Avocat·es",
+        "desc": "Droit de la famille, identité, discrimination…"
+      },
+      {
+        "emoji": "💻",
+        "title": "Freelances",
+        "desc": "Graphisme, vidéo, dev, traduction…"
+      },
+      {
+        "emoji": "🩺",
+        "title": "Soignant·es alliés",
+        "desc": "Médecins, sages-femmes, dentistes…"
+      }
     ]
   },
   "vendre_ici": {
@@ -179,10 +203,22 @@
     "cta_open": "Ouvrir ma boutique",
     "cta_more": "En savoir plus",
     "args": [
-      { "title": "Communauté engagée", "desc": "Accède directement à une audience qui cherche ce que tu crées." },
-      { "title": "Safe space garanti", "desc": "Modération active, charte communautaire, zéro tolérance pour la haine." },
-      { "title": "Visibilité offerte", "desc": "Mise en avant éditoriale, newsletter, réseaux - ton travail mérite d'être vu." },
-      { "title": "Lancez-vous en 10 min", "desc": "Boutique en ligne, outils simples. Pas de tech, pas de fric, juste toi." }
+      {
+        "title": "Communauté engagée",
+        "desc": "Accède directement à une audience qui cherche ce que tu crées."
+      },
+      {
+        "title": "Safe space garanti",
+        "desc": "Modération active, charte communautaire, zéro tolérance pour la haine."
+      },
+      {
+        "title": "Visibilité offerte",
+        "desc": "Mise en avant éditoriale, newsletter, réseaux - ton travail mérite d'être vu."
+      },
+      {
+        "title": "Lancez-vous en 10 min",
+        "desc": "Boutique en ligne, outils simples. Pas de tech, pas de fric, juste toi."
+      }
     ]
   },
   "newsletter": {
@@ -208,7 +244,39 @@
     "terms": "CGV",
     "privacy": "Confidentialité",
     "cookies": "Cookies",
-    "rights": "Tous droits réservés"
+    "rights": "Tous droits réservés",
+    "a11y_title": "Accessibilité & inclusivité",
+    "a11y_first": "Accessibilité et inclusivité d'abord",
+    "a11y_desc": "Un espace pensé pour tout le spectre : navigation au clavier, contrastes, langues et devises adaptées.",
+    "engagement": "Notre engagement",
+    "col_marketplace": "Marketplace",
+    "col_community": "Communauté",
+    "col_platform": "Plateforme",
+    "col_legal": "Légal",
+    "newsletter_title": "Reste dans le spectre.",
+    "newsletter_desc": "Offres, nouveautés et actus queer en avant première. Une fois par mois, jamais de spam.",
+    "subscribe": "S'inscrire",
+    "email_placeholder": "ton@email.com",
+    "brand_desc": "La marketplace par et pour les communautés queer.",
+    "region_label": "Pays, langue et devise",
+    "made_with": "Fait avec",
+    "made_for": "pour la communauté",
+    "creations": "Créations",
+    "services": "Services",
+    "associations": "Associations",
+    "events": "Événements",
+    "media": "Média",
+    "ambassadors": "Ambassadeur·rices",
+    "community_space": "Espace communauté",
+    "newsletter": "Newsletter",
+    "open_shop": "Ouvrir ma boutique",
+    "founder_program": "Programme fondateur",
+    "how_it_works": "Comment ça marche",
+    "charter": "Charte d'inclusivité",
+    "help_a11y": "Aide & accessibilité",
+    "report": "Signaler un souci",
+    "legal_mentions": "Mentions légales",
+    "cgu": "CGU"
   },
   "subscription": {
     "title": "Abonnement Vendeur·euse",
@@ -264,9 +332,19 @@
     "continue_google": "Continuer avec Google"
   },
   "currency": {
-    "EUR": "Euro €", "USD": "Dollar $", "GBP": "Livre £", "MAD": "Dirham MAD",
-    "TND": "Dinar TND", "DZD": "Dinar DZD", "CAD": "Dollar CA$", "AUD": "Dollar A$",
-    "CHF": "Franc Fr", "SAR": "Riyal ﷼", "AED": "Dirham AED", "EGP": "Livre EGP", "XOF": "Franc CFA"
+    "EUR": "Euro €",
+    "USD": "Dollar $",
+    "GBP": "Livre £",
+    "MAD": "Dirham MAD",
+    "TND": "Dinar TND",
+    "DZD": "Dinar DZD",
+    "CAD": "Dollar CA$",
+    "AUD": "Dollar A$",
+    "CHF": "Franc Fr",
+    "SAR": "Riyal ﷼",
+    "AED": "Dirham AED",
+    "EGP": "Livre EGP",
+    "XOF": "Franc CFA"
   },
   "common": {
     "loading": "Chargement…",

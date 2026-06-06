@@ -249,7 +249,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
           )}
         </div>
       </main>
-      <div className="hidden md:block"><Footer /></div>
+      <Footer />
     </>
   );
 }

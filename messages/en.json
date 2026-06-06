@@ -163,12 +163,36 @@
     "cta": "Join Spectrum",
     "disclaimer": "Response guaranteed before June 26 · Free to start",
     "profiles": [
-      { "emoji": "🎨", "title": "Creators", "desc": "Fashion, jewellery, art, zines, cosmetics…" },
-      { "emoji": "🎭", "title": "Artists", "desc": "Music, dance, performance, photography…" },
-      { "emoji": "🌿", "title": "Therapists", "desc": "Mindfulness, counselling, wellness, coaching…" },
-      { "emoji": "⚖️", "title": "Lawyers", "desc": "Family law, identity, discrimination…" },
-      { "emoji": "💻", "title": "Freelancers", "desc": "Design, video, dev, translation…" },
-      { "emoji": "🩺", "title": "Allied healthcare", "desc": "Doctors, midwives, dentists…" }
+      {
+        "emoji": "🎨",
+        "title": "Creators",
+        "desc": "Fashion, jewellery, art, zines, cosmetics…"
+      },
+      {
+        "emoji": "🎭",
+        "title": "Artists",
+        "desc": "Music, dance, performance, photography…"
+      },
+      {
+        "emoji": "🌿",
+        "title": "Therapists",
+        "desc": "Mindfulness, counselling, wellness, coaching…"
+      },
+      {
+        "emoji": "⚖️",
+        "title": "Lawyers",
+        "desc": "Family law, identity, discrimination…"
+      },
+      {
+        "emoji": "💻",
+        "title": "Freelancers",
+        "desc": "Design, video, dev, translation…"
+      },
+      {
+        "emoji": "🩺",
+        "title": "Allied healthcare",
+        "desc": "Doctors, midwives, dentists…"
+      }
     ]
   },
   "vendre_ici": {
@@ -179,10 +203,22 @@
     "cta_open": "Open my shop",
     "cta_more": "Learn more",
     "args": [
-      { "title": "Engaged community", "desc": "Reach an audience that is actively looking for what you create." },
-      { "title": "Safe space guaranteed", "desc": "Active moderation, community charter, zero tolerance for hate." },
-      { "title": "Visibility offered", "desc": "Editorial features, newsletter, social - your work deserves to be seen." },
-      { "title": "Get started in 10 min", "desc": "Online shop, simple tools. No tech, no money needed - just you." }
+      {
+        "title": "Engaged community",
+        "desc": "Reach an audience that is actively looking for what you create."
+      },
+      {
+        "title": "Safe space guaranteed",
+        "desc": "Active moderation, community charter, zero tolerance for hate."
+      },
+      {
+        "title": "Visibility offered",
+        "desc": "Editorial features, newsletter, social - your work deserves to be seen."
+      },
+      {
+        "title": "Get started in 10 min",
+        "desc": "Online shop, simple tools. No tech, no money needed - just you."
+      }
     ]
   },
   "newsletter": {
@@ -208,7 +244,39 @@
     "terms": "Terms",
     "privacy": "Privacy",
     "cookies": "Cookies",
-    "rights": "All rights reserved"
+    "rights": "All rights reserved",
+    "a11y_title": "Accessibility & inclusion",
+    "a11y_first": "Accessibility and inclusion first",
+    "a11y_desc": "A space designed for the whole spectrum: keyboard navigation, contrast, adapted languages and currencies.",
+    "engagement": "Our commitment",
+    "col_marketplace": "Marketplace",
+    "col_community": "Community",
+    "col_platform": "Platform",
+    "col_legal": "Legal",
+    "newsletter_title": "Stay in the spectrum.",
+    "newsletter_desc": "Deals, news and queer updates first. Once a month, never spam.",
+    "subscribe": "Subscribe",
+    "email_placeholder": "you@email.com",
+    "brand_desc": "The marketplace by and for queer communities.",
+    "region_label": "Country, language and currency",
+    "made_with": "Made with",
+    "made_for": "for the community",
+    "creations": "Creations",
+    "services": "Services",
+    "associations": "Associations",
+    "events": "Events",
+    "media": "Media",
+    "ambassadors": "Ambassadors",
+    "community_space": "Community space",
+    "newsletter": "Newsletter",
+    "open_shop": "Open my shop",
+    "founder_program": "Founder program",
+    "how_it_works": "How it works",
+    "charter": "Inclusivity charter",
+    "help_a11y": "Help & accessibility",
+    "report": "Report an issue",
+    "legal_mentions": "Legal notice",
+    "cgu": "Terms"
   },
   "subscription": {
     "title": "Seller Subscription",
@@ -264,9 +332,19 @@
     "continue_google": "Continue with Google"
   },
   "currency": {
-    "EUR": "Euro €", "USD": "Dollar $", "GBP": "Pound £", "MAD": "Dirham MAD",
-    "TND": "Dinar TND", "DZD": "Dinar DZD", "CAD": "Dollar CA$", "AUD": "Dollar A$",
-    "CHF": "Franc Fr", "SAR": "Riyal ﷼", "AED": "Dirham AED", "EGP": "Pound EGP", "XOF": "Franc CFA"
+    "EUR": "Euro €",
+    "USD": "Dollar $",
+    "GBP": "Pound £",
+    "MAD": "Dirham MAD",
+    "TND": "Dinar TND",
+    "DZD": "Dinar DZD",
+    "CAD": "Dollar CA$",
+    "AUD": "Dollar A$",
+    "CHF": "Franc Fr",
+    "SAR": "Riyal ﷼",
+    "AED": "Dirham AED",
+    "EGP": "Pound EGP",
+    "XOF": "Franc CFA"
   },
   "common": {
     "loading": "Loading…",
