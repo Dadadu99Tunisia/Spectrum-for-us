@@ -13,6 +13,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, BarChart, Bar,
 } from "recharts";
+import { CommandCenter } from "@/components/admin/CommandCenter";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type Growth = {
@@ -213,6 +214,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-7 max-w-[1440px]">
+
+      {/* ── Command Center (live) ── */}
+      <CommandCenter />
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between">
