@@ -11,6 +11,7 @@ import { BannerProvider } from "@/contexts/BannerContext";
 import { Suspense } from "react";
 import { ReferralTracker } from "@/components/ReferralTracker";
 import SiteBanner from "@/components/SiteBanner";
+import { LaunchBanner } from "@/components/LaunchBanner";
 import { CookieBanner } from "@/components/ui/CookieBanner";
 import { AccessibilityBar } from "@/components/AccessibilityBar";
 import { BottomNav } from "@/components/mobile/BottomNav";
@@ -138,6 +139,7 @@ export default function RootLayout({
         </div>
         <SiteBanner />
         <BannerProvider>
+          <LaunchBanner />
           <AuthProvider>
             <I18nProvider>
               <Suspense fallback={null}>
