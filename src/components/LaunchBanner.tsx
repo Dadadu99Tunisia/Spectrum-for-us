@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { X, Rocket } from "lucide-react";
 import { useBanner } from "@/contexts/BannerContext";
 
@@ -28,6 +29,7 @@ function diff() {
 
 export function LaunchBanner() {
   const { visible, hide } = useBanner();
+  const pathname = usePathname();
   const [t, setT] = useState<ReturnType<typeof diff>>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -38,7 +40,9 @@ export function LaunchBanner() {
     return () => clearInterval(id);
   }, []);
 
-  if (!visible || !mounted) return null;
+  // Pas de bannière marketing dans l'admin / l'espace vendeur
+  const hidden = pathname?.startsWith("/admin") || pathname?.startsWith("/vendeur");
+  if (hidden || !visible || !mounted) return null;
 
   const pad = (n: number) => String(n).padStart(2, "0");
   const launched = t === null;
