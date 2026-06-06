@@ -82,6 +82,7 @@ export default function VendeurDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<VendorOrder[]>([]);
   const [founderRank, setFounderRank] = useState<number | null>(null);
+  const [commissions, setCommissions] = useState<{ gross_amount: number; commission_amount: number; status: string }[]>([]);
   const [loadingData, setLoading] = useState(true);
   const [view, setView] = useState<View>("overview");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -97,14 +98,16 @@ export default function VendeurDashboard() {
         setShop(shopData as Shop);
         supabase.from("founder_program_members").select("rank").eq("user_id", user.id).single()
           .then(({ data }) => { if (data) setFounderRank(data.rank as number); });
-        const [prodRes, orderRes] = await Promise.all([
+        const [prodRes, orderRes, commRes] = await Promise.all([
           supabase.from("products").select("*").eq("shop_id", shopData.id).order("created_at", { ascending: false }),
           supabase.from("order_items")
             .select("id, order_id, quantity, price_at_purchase, created_at, products(name,title), orders(status, created_at, shipping_name)")
             .eq("vendor_id", user.id).order("created_at", { ascending: false }),
+          supabase.from("commissions").select("gross_amount, commission_amount, status").eq("shop_id", shopData.id),
         ]);
         setProducts((prodRes.data ?? []) as Product[]);
         setOrders(((orderRes.data ?? []) as unknown) as VendorOrder[]);
+        setCommissions((commRes.data ?? []) as { gross_amount: number; commission_amount: number; status: string }[]);
       } finally {
         setLoading(false);
       }
@@ -229,7 +232,7 @@ export default function VendeurDashboard() {
           {view === "overview" && <Overview m={m} shop={shop} products={products} activeCount={activeCount} founderRank={founderRank} checklist={checklist} go={setView} />}
           {view === "products" && <Products products={products} />}
           {view === "orders" && <Orders orders={orders} toPrepare={m.toPrepare} />}
-          {view === "revenue" && <Revenue total={m.totalRevenue} />}
+          {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} />}
           {view === "subscription" && <Subscription shop={shop} founderRank={founderRank} />}
           {(view === "shop" || view === "stats" || view === "settings") && (
             <Placeholder view={view} shopSlug={shop.slug} />
@@ -442,20 +445,38 @@ function Orders({ orders, toPrepare }: { orders: VendorOrder[]; toPrepare: Set<s
   );
 }
 
-function Revenue({ total }: { total: number }) {
+function Revenue({ total, commissions }: { total: number; commissions: { gross_amount: number; commission_amount: number; status: string }[] }) {
+  const gross = commissions.reduce((s, c) => s + Number(c.gross_amount || 0), 0) || total;
+  const commission = commissions.reduce((s, c) => s + Number(c.commission_amount || 0), 0);
+  const net = gross - commission;
+  const pending = commissions.filter(c => c.status === "pending").reduce((s, c) => s + (Number(c.gross_amount || 0) - Number(c.commission_amount || 0)), 0);
+  const rate = gross > 0 ? Math.round((commission / gross) * 1000) / 10 : 0;
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <Kpi tint="#DCF0E5" label="Total encaissé" value={eur(total)} delta="commandes payées" deltaColor={C.grn} />
-        <Kpi tint="#FCEAD2" label="Commission plateforme" value="0 €" delta="avantage fondateur·ice" deltaColor={C.grn} />
-        <Kpi tint="#EAE0FB" label="Net pour toi" value={eur(total)} delta="100 % reversé" deltaColor={C.faint} />
+        <Kpi tint="#DCF0E5" label="Brut encaissé" value={eur(gross)} delta="commandes payées" deltaColor={C.grn} />
+        <Kpi tint="#FCEAD2" label="Commission plateforme" value={eur(commission)} delta={commission === 0 ? "0 % — fondateur·ice ✦" : `${rate} % effectif`} deltaColor={commission === 0 ? C.grn : C.amb} />
+        <Kpi tint="#EAE0FB" label="Net pour toi" value={eur(net)} delta={`${eur(pending)} à verser`} deltaColor={C.faint} />
       </div>
       <Panel>
         <PanelHead title="Versements" />
-        <div className="rounded-xl p-5 text-sm" style={{ background: "#F7F3EC", color: C.soft }}>
-          Les virements automatiques arrivent bientôt. En attendant, tes encaissements Stripe te sont reversés manuellement —
-          contacte le support pour tout versement. Aucune commission n&apos;est prélevée pendant ton avantage fondateur·ice.
-        </div>
+        {commissions.length === 0 ? (
+          <p className="text-sm py-4" style={{ color: C.faint }}>Aucune vente pour l&apos;instant — tes versements apparaîtront ici.</p>
+        ) : (
+          <table className="w-full border-collapse">
+            <thead><tr>{["Commandes", "Brut", "Commission", "Net", "Statut"].map(h => <th key={h} className={TH} style={{ color: C.faint }}>{h}</th>)}</tr></thead>
+            <tbody>
+              <tr>
+                <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{commissions.length}</td>
+                <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}>{eur(gross)}</td>
+                <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{eur(commission)}</td>
+                <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><b>{eur(net)}</b></td>
+                <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><span className="font-mono text-[10.5px] font-bold uppercase px-2.5 py-1 rounded-full" style={{ background: "#FCEAD2", color: "#9A6516" }}>{eur(pending)} en attente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        )}
+        <p className="text-[11px] mt-4" style={{ color: C.faint }}>Versements manuels pour l&apos;instant — contacte le support. Commission 0 % pendant l&apos;avantage fondateur·ice.</p>
       </Panel>
     </>
   );
