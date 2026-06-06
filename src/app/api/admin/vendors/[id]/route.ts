@@ -1,6 +1,25 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin, apiResponse, apiError, logActivity } from "@/lib/admin/rbac";
+
+export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await requireAdmin(["super_admin", "ceo"]);
+  if ("error" in auth) return auth.error;
+
+  const { id } = await params;
+  const admin = createAdminClient();
+
+  // Remove dependent rows first to satisfy FK constraints
+  await admin.from("products").delete().eq("shop_id", id);
+  await admin.from("vendor_kyc").delete().eq("shop_id", id);
+
+  const { error } = await admin.from("shops").delete().eq("id", id);
+  if (error) return apiError(`Suppression impossible : ${error.message}. Désactivez la boutique si elle a des commandes liées.`);
+
+  await logActivity(auth.user.id, "shop_delete", "shop", id, {});
+  return apiResponse({ deleted: true });
+}
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireAdmin(["super_admin","ceo","cfo","moderation","commercial"]);
@@ -62,12 +81,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { id } = await params;
   const body = await req.json();
-  const allowed = ["is_active","is_verified","name","tagline","description"];
+  const allowed = ["is_active","is_verified","name","tagline","description","city","country","contact_email"];
   const update: Record<string, unknown> = {};
   for (const k of allowed) if (k in body) update[k] = body[k];
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("shops").update(update).eq("id", id).select().single();
+  const admin = createAdminClient();
+  const { data, error } = await admin.from("shops").update(update).eq("id", id).select().single();
   if (error) return apiError(error.message);
+  await logActivity(auth.user.id, "shop_edit", "shop", id, update);
   return apiResponse(data);
 }

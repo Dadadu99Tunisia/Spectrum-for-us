@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   ArrowLeft, Store, CheckCircle, XCircle, AlertCircle, Clock,
-  ExternalLink, Package, Globe, Link2
+  ExternalLink, Package, Globe, Link2, Trash2, Save, Power, BadgeCheck
 } from "lucide-react";
 
 type VendorDetail = {
@@ -29,12 +29,36 @@ export default function VendorDetailPage() {
   const [notes, setNotes]     = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [toast, setToast]     = useState<string | null>(null);
+  const [form, setForm]       = useState<{ name: string; tagline: string; description: string; city: string; country: string; contact_email: string } | null>(null);
 
   useEffect(() => {
     fetch(`/api/admin/vendors/${id}`)
       .then(r => r.json())
-      .then(j => { setData(j.data); setLoading(false); });
+      .then(j => {
+        setData(j.data); setLoading(false);
+        const s = j.data?.shop ?? {};
+        setForm({ name: s.name ?? "", tagline: s.tagline ?? "", description: s.description ?? "", city: s.city ?? "", country: s.country ?? "", contact_email: s.contact_email ?? "" });
+      });
   }, [id]);
+
+  const flash = (m: string) => { setToast(m); setTimeout(() => setToast(null), 3000); };
+
+  const patchShop = async (payload: Record<string, unknown>, label: string) => {
+    setActionLoading(label);
+    const res = await fetch(`/api/admin/vendors/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    const json = await res.json(); setActionLoading(null);
+    if (!json.error) { flash("Boutique mise à jour ✓"); setData(prev => prev ? { ...prev, shop: { ...prev.shop, ...json.data } } : prev); }
+    else flash(`Erreur : ${json.error}`);
+  };
+
+  const deleteShop = async () => {
+    if (!confirm("Supprimer définitivement cette boutique et tous ses produits ? Irréversible.")) return;
+    setActionLoading("delete");
+    const res = await fetch(`/api/admin/vendors/${id}`, { method: "DELETE" });
+    const json = await res.json(); setActionLoading(null);
+    if (!json.error) router.push("/admin/vendors");
+    else flash(`Erreur : ${json.error}`);
+  };
 
   const handleKyc = async (action: "approve" | "reject") => {
     setActionLoading(action);
@@ -111,6 +135,49 @@ export default function VendorDetailPage() {
           className="p-2 rounded-lg border border-[#F3EADB]/10 text-[#F3EADB]/30 hover:text-[#F3EADB] transition-colors">
           <ExternalLink size={13} />
         </a>
+      </div>
+
+      {/* Gestion boutique */}
+      <div className="rounded-2xl border border-[#F3EADB]/8 p-5 space-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <h2 className="font-fraunces text-base text-[#F3EADB]">Gestion de la boutique</h2>
+          <div className="flex items-center gap-2 flex-wrap">
+            <button onClick={() => patchShop({ is_active: !shop.is_active }, "active")} disabled={!!actionLoading}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border font-mono text-[10px] transition-colors disabled:opacity-40 ${shop.is_active ? "bg-green-500/10 border-green-500/20 text-green-400" : "bg-white/[0.07] border-white/[0.14] text-[#F3EADB]/50"}`}>
+              <Power size={11} /> {shop.is_active ? "Active" : "Inactive"}
+            </button>
+            <button onClick={() => patchShop({ is_verified: !shop.is_verified }, "verified")} disabled={!!actionLoading}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border font-mono text-[10px] transition-colors disabled:opacity-40 ${shop.is_verified ? "bg-[#1C9C95]/10 border-[#1C9C95]/20 text-[#1C9C95]" : "bg-white/[0.07] border-white/[0.14] text-[#F3EADB]/50"}`}>
+              <BadgeCheck size={11} /> {shop.is_verified ? "Vérifiée" : "Non vérifiée"}
+            </button>
+            <button onClick={deleteShop} disabled={!!actionLoading}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 font-mono text-[10px] hover:bg-red-500/20 disabled:opacity-40">
+              <Trash2 size={11} /> Supprimer
+            </button>
+          </div>
+        </div>
+        {form && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {([["name","Nom"],["tagline","Slogan"],["city","Ville"],["country","Pays"],["contact_email","Email contact"]] as const).map(([k, label]) => (
+              <div key={k} className={k === "tagline" ? "md:col-span-2" : ""}>
+                <label className="block font-mono text-[10px] uppercase tracking-wide text-[#F3EADB]/35 mb-1.5">{label}</label>
+                <input value={form[k]} onChange={e => setForm({ ...form, [k]: e.target.value })}
+                  className="w-full px-3 py-2 bg-white/[0.07] border border-white/[0.14] rounded-lg font-hanken text-sm text-[#F3EADB] focus:outline-none focus:border-[#a78bfa]/50" />
+              </div>
+            ))}
+            <div className="md:col-span-2">
+              <label className="block font-mono text-[10px] uppercase tracking-wide text-[#F3EADB]/35 mb-1.5">Description</label>
+              <textarea rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
+                className="w-full px-3 py-2 bg-white/[0.07] border border-white/[0.14] rounded-lg font-hanken text-sm text-[#F3EADB] focus:outline-none focus:border-[#a78bfa]/50" />
+            </div>
+            <div className="md:col-span-2">
+              <button onClick={() => patchShop(form, "save")} disabled={!!actionLoading}
+                className="flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-[#E0337E] text-white font-hanken font-semibold text-sm hover:brightness-110 disabled:opacity-50">
+                <Save size={14} /> Enregistrer les modifications
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
