@@ -8,10 +8,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
-import { useCart } from "@/store/cart";
-import { ShoppingBag, ArrowRight, ShoppingCart, Briefcase, Heart, CalendarDays, Truck, RefreshCw, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShoppingCart, Briefcase, Heart, CalendarDays, Truck, RefreshCw, ShieldCheck } from "lucide-react";
+import { Header } from "@/components/Header";
 
 const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
 const CAT: Record<string, { tint: string; ink: string }> = {
@@ -37,9 +36,6 @@ const COLLECTIONS = [
 ];
 
 export function LightHome() {
-  const { user } = useAuth();
-  const { items } = useCart();
-  const cartCount = items.reduce((s, i) => s + i.quantity, 0);
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -51,32 +47,10 @@ export function LightHome() {
 
   return (
     <div className="min-h-screen" style={{ background: T.bg, color: T.ink, fontFamily: "var(--font-hanken),sans-serif" }}>
-      {/* ── Barre claire minimaliste ── */}
-      <header className="sticky top-0 z-40" style={{ background: "rgba(251,249,245,0.9)", backdropFilter: "blur(10px)", borderBottom: `1px solid ${T.line}` }}>
-        <div className="max-w-6xl mx-auto px-8 h-16 flex items-center justify-between">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <Link href="/" aria-label="Spectrum For Us — accueil"><img src="/logo-dark.png" alt="Spectrum For Us" className="h-9 w-auto" /></Link>
-          <nav className="flex items-center gap-7 text-[14.5px]">
-            <Link href="/decouvrir" className="hover:text-[#FF3D7F] transition-colors" style={{ color: T.soft }}>Marketplace</Link>
-            <Link href="/services" className="hover:text-[#FF3D7F] transition-colors" style={{ color: T.soft }}>Services</Link>
-            <Link href="/annuaire" className="hover:text-[#FF3D7F] transition-colors" style={{ color: T.soft }}>Associations</Link>
-            <Link href="/evenements" className="hover:text-[#FF3D7F] transition-colors" style={{ color: T.soft }}>Événements</Link>
-          </nav>
-          <div className="flex items-center gap-3">
-            <Link href="/panier" className="relative w-10 h-10 rounded-full flex items-center justify-center" style={{ boxShadow: `inset 0 0 0 1px ${T.line}` }}>
-              <ShoppingBag size={18} />
-              {cartCount > 0 && <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full text-[10px] font-mono flex items-center justify-center text-white" style={{ background: T.mag }}>{cartCount}</span>}
-            </Link>
-            {user
-              ? <Link href="/compte" className="text-[14px]" style={{ color: T.soft }}>Mon compte</Link>
-              : <Link href="/auth" className="text-[14px]" style={{ color: T.soft }}>Connexion</Link>}
-            <Link href="/vendeur/onboarding" className="rounded-full font-semibold text-[14px] text-white px-4 py-2" style={{ background: T.ink }}>Ouvrir ma boutique</Link>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* ── Hero éditorial ── */}
-      <section className="max-w-6xl mx-auto px-8 pt-20 pb-14 text-center">
+      <section className="max-w-6xl mx-auto px-8 pt-36 pb-14 text-center">
         <p className="text-[13px] mb-5" style={{ color: T.faint }}>La marketplace par et pour les communautés queer</p>
         <h1 className="font-fraunces leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(48px,7vw,92px)" }}>
           B<span style={{ color: T.mag }}>(u)</span>y us,<br />for us.
