@@ -111,7 +111,8 @@ export default function VendorsPage() {
                   const cfg = KYC_CONFIG[kycStatus] ?? KYC_CONFIG.pending;
                   const Icon = cfg.icon;
                   return (
-                    <tr key={v.id} className="border-b border-white/[0.05] hover:bg-white/[0.07] transition-colors">
+                    <tr key={v.id} onClick={() => { window.location.href = `/admin/vendors/${v.id}`; }}
+                      className="border-b border-white/[0.05] hover:bg-white/[0.07] transition-colors cursor-pointer">
                       <td className="px-4 py-3">
                         <div>
                           <p className="font-hanken text-sm text-[#F3EADB]">{v.name}</p>

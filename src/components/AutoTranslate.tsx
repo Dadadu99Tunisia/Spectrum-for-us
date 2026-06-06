@@ -10,7 +10,11 @@
  */
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { useI18n } from "@/contexts/I18nContext";
+
+// Sections interactives (React lourd) où la réécriture DOM casserait l'app
+const EXCLUDED = ["/admin", "/vendeur", "/panier", "/checkout", "/compte", "/auth"];
 
 const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "CODE", "PRE", "TEXTAREA", "INPUT", "SELECT", "OPTION", "SVG", "PATH"]);
 const hasLetters = (s: string) => /\p{L}/u.test(s);
@@ -18,6 +22,7 @@ const CACHE_KEY = "sfu-translations-v1";
 
 export function AutoTranslate() {
   const { locale } = useI18n();
+  const pathname = usePathname();
   const originals = useRef<WeakMap<Text, string>>(new WeakMap());
   const touched = useRef<Set<Text>>(new Set());
   const cache = useRef<Map<string, string>>(new Map());
@@ -33,9 +38,10 @@ export function AutoTranslate() {
   }
 
   useEffect(() => {
-    const target = locale; // "fr" | "en" | "ar"
-    document.documentElement.lang = target;
-    document.documentElement.dir = target === "ar" ? "rtl" : "ltr";
+    const excluded = EXCLUDED.some((p) => pathname?.startsWith(p));
+    const target = excluded ? "fr" : locale; // ne pas traduire les sections interactives
+    document.documentElement.lang = excluded ? "fr" : locale;
+    document.documentElement.dir = (!excluded && locale === "ar") ? "rtl" : "ltr";
 
     let cancelled = false;
     let observer: MutationObserver | null = null;
@@ -162,7 +168,7 @@ export function AutoTranslate() {
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => { cancelled = true; observer?.disconnect(); if (timer) clearTimeout(timer); };
-  }, [locale]);
+  }, [locale, pathname]);
 
   return null;
 }
