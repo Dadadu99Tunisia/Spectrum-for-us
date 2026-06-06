@@ -52,25 +52,25 @@ function StatCard({
 }) {
   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
   return (
-    <div className="bg-[#F1ECE3] border border-[#1A1612]/8 rounded-2xl p-5">
+    <div className="bg-[#1c1235] border border-[#F3EADB]/8 rounded-2xl p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-xl flex items-center justify-center"
             style={{ background: `${color}15` }}>
             <Icon size={16} style={{ color }} />
           </div>
-          <p className="font-hanken text-sm text-[#1A1612]/60">{label}</p>
+          <p className="font-hanken text-sm text-[#F3EADB]/60">{label}</p>
         </div>
         <span className="font-mono text-[10px]" style={{ color }}>
-          {value}<span className="text-[#1A1612]/25">/{total}</span>
+          {value}<span className="text-[#F3EADB]/25">/{total}</span>
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-[#1A1612]/8 overflow-hidden mb-2">
+      <div className="h-1.5 rounded-full bg-[#F3EADB]/8 overflow-hidden mb-2">
         <div className="h-full rounded-full transition-all duration-700"
           style={{ width: `${pct}%`, background: color }} />
       </div>
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[9px] text-[#1A1612]/25">{pct}% rempli</p>
+        <p className="font-mono text-[9px] text-[#F3EADB]/25">{pct}% rempli</p>
         {sub && <p className="font-mono text-[9px]" style={{ color }}>{sub}</p>}
       </div>
     </div>
@@ -111,8 +111,8 @@ function CommissionEditor({
     return (
       <button onClick={() => setEditing(true)}
         className="flex items-center gap-1.5 group text-left">
-        <span className="font-mono text-sm text-[#1A1612]/60">{display}</span>
-        <Edit3 size={10} className="text-[#1A1612]/15 group-hover:text-[#a78bfa] transition-colors" />
+        <span className="font-mono text-sm text-[#F3EADB]/60">{display}</span>
+        <Edit3 size={10} className="text-[#F3EADB]/15 group-hover:text-[#a78bfa] transition-colors" />
       </button>
     );
   }
@@ -125,14 +125,14 @@ function CommissionEditor({
         value={rate}
         onChange={e => setRate(e.target.value)}
         placeholder="0"
-        className="w-16 bg-[#1A1612]/6 border border-[#a78bfa]/40 rounded-lg px-2 py-1 font-mono text-xs text-[#1A1612] focus:outline-none"
+        className="w-16 bg-[#F3EADB]/6 border border-[#a78bfa]/40 rounded-lg px-2 py-1 font-mono text-xs text-[#F3EADB] focus:outline-none"
       />
-      <span className="font-mono text-xs text-[#1A1612]/30">%</span>
+      <span className="font-mono text-xs text-[#F3EADB]/30">%</span>
       <button onClick={save} disabled={saving}
         className="text-[#34d399] hover:text-[#34d399]/70 transition-colors">
         {saving ? <RefreshCw size={11} className="animate-spin" /> : <Check size={11} />}
       </button>
-      <button onClick={() => setEditing(false)} className="text-[#1A1612]/25 hover:text-[#1A1612]">
+      <button onClick={() => setEditing(false)} className="text-[#F3EADB]/25 hover:text-[#F3EADB]">
         <X size={10} />
       </button>
     </div>
@@ -151,7 +151,7 @@ function SortButton({
   const active = current === sortKey;
   return (
     <button onClick={() => onClick(sortKey)}
-      className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider text-[#1A1612]/30 hover:text-[#1A1612]/60 transition-colors group">
+      className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider text-[#F3EADB]/30 hover:text-[#F3EADB]/60 transition-colors group">
       {label}
       {active ? (
         dir === "asc" ? <ChevronUp size={10} className="text-[#a78bfa]" /> : <ChevronDown size={10} className="text-[#a78bfa]" />
@@ -235,16 +235,16 @@ export default function FounderProgramPage() {
       {/* ── Header ── */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#1A1612] flex items-center gap-3">
+          <h1 className="font-fraunces text-2xl text-[#F3EADB] flex items-center gap-3">
             <Trophy size={22} className="text-[#FFD700]" />
             Programme Fondateur
           </h1>
-          <p className="font-hanken text-sm text-[#1A1612]/35 mt-0.5">
+          <p className="font-hanken text-sm text-[#F3EADB]/35 mt-0.5">
             Gestion des early adopters · Avantages exclusifs à vie
           </p>
         </div>
         <button onClick={exportCSV} disabled={exporting}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1A1612]/10 bg-[#1A1612]/4 text-[#1A1612]/50 hover:text-[#1A1612] hover:border-[#1A1612]/20 font-hanken text-sm transition-all disabled:opacity-40">
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#F3EADB]/10 bg-[#F3EADB]/4 text-[#F3EADB]/50 hover:text-[#F3EADB] hover:border-[#F3EADB]/20 font-hanken text-sm transition-all disabled:opacity-40">
           {exporting ? <RefreshCw size={13} className="animate-spin" /> : <Download size={13} />}
           Exporter CSV
         </button>
@@ -269,17 +269,17 @@ export default function FounderProgramPage() {
             icon={Rocket}
             sub={counts.early_remaining > 0 ? `${counts.early_remaining} places restantes` : "Complet 🎉"}
           />
-          <div className="bg-[#F1ECE3] border border-[#1A1612]/8 rounded-2xl p-5 flex flex-col justify-between">
+          <div className="bg-[#1c1235] border border-[#F3EADB]/8 rounded-2xl p-5 flex flex-col justify-between">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-[#1C9C95]/15">
                 <Users size={16} className="text-[#1C9C95]" />
               </div>
-              <p className="font-hanken text-sm text-[#1A1612]/60">Total inscrits</p>
+              <p className="font-hanken text-sm text-[#F3EADB]/60">Total inscrits</p>
             </div>
-            <p className="font-fraunces text-3xl text-[#1A1612]">
+            <p className="font-fraunces text-3xl text-[#F3EADB]">
               {counts.founder_count + counts.early_adopter_count}
             </p>
-            <p className="font-mono text-[9px] text-[#1A1612]/25 mt-1">
+            <p className="font-mono text-[9px] text-[#F3EADB]/25 mt-1">
               sur les {counts.founder_slots + counts.early_adopter_slots} places Early Adopter
             </p>
           </div>
@@ -289,12 +289,12 @@ export default function FounderProgramPage() {
       {/* ── Filters ── */}
       <div className="flex flex-wrap gap-2">
         <div className="relative flex-1 min-w-48 max-w-xs">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1A1612]/22" />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/22" />
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher un nom, boutique…"
-            className="w-full pl-9 pr-9 py-2 bg-[#1A1612]/4 border border-[#1A1612]/8 rounded-xl font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/22 focus:outline-none focus:border-[#a78bfa]/40 transition-colors" />
+            className="w-full pl-9 pr-9 py-2 bg-[#F3EADB]/4 border border-[#F3EADB]/8 rounded-xl font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/22 focus:outline-none focus:border-[#a78bfa]/40 transition-colors" />
           {search && (
-            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1A1612]/25 hover:text-[#1A1612]">
+            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25 hover:text-[#F3EADB]">
               <X size={12} />
             </button>
           )}
@@ -304,7 +304,7 @@ export default function FounderProgramPage() {
             className={`px-3.5 py-2 rounded-xl font-mono text-[10px] border transition-all ${
               statusFilter === s
                 ? "bg-[#6D2DB5]/25 border-[#6D2DB5]/40 text-[#a78bfa]"
-                : "bg-[#1A1612]/4 border-[#1A1612]/8 text-[#1A1612]/40 hover:text-[#1A1612]/60"
+                : "bg-[#F3EADB]/4 border-[#F3EADB]/8 text-[#F3EADB]/40 hover:text-[#F3EADB]/60"
             }`}>
             {s === "" ? "Tous" : STATUS_CFG[s as FounderStatus].label}
           </button>
@@ -318,27 +318,27 @@ export default function FounderProgramPage() {
         </div>
       ) : sorted.length === 0 ? (
         <div className="text-center py-24">
-          <Trophy size={36} className="mx-auto mb-3 text-[#1A1612]/8" />
-          <p className="font-hanken text-[#1A1612]/25">Aucun membre trouvé</p>
-          <p className="font-mono text-[10px] text-[#1A1612]/15 mt-1">
+          <Trophy size={36} className="mx-auto mb-3 text-[#F3EADB]/8" />
+          <p className="font-hanken text-[#F3EADB]/25">Aucun membre trouvé</p>
+          <p className="font-mono text-[10px] text-[#F3EADB]/15 mt-1">
             Les membres s&apos;ajoutent automatiquement à l&apos;inscription vendeur
           </p>
         </div>
       ) : (
-        <div className="bg-[#F1ECE3] border border-[#1A1612]/8 rounded-2xl overflow-hidden">
+        <div className="bg-[#1c1235] border border-[#F3EADB]/8 rounded-2xl overflow-hidden">
           {/* Table header */}
-          <div className="grid grid-cols-[56px_1fr_160px_140px_120px_120px_110px] gap-4 px-5 py-3 border-b border-[#1A1612]/6">
+          <div className="grid grid-cols-[56px_1fr_160px_140px_120px_120px_110px] gap-4 px-5 py-3 border-b border-[#F3EADB]/6">
             <SortButton label="Rang" sortKey="rank" current={sortKey} dir={sortDir} onClick={toggleSort} />
-            <span className="font-mono text-[9px] uppercase tracking-wider text-[#1A1612]/30">Vendeur·se</span>
+            <span className="font-mono text-[9px] uppercase tracking-wider text-[#F3EADB]/30">Vendeur·se</span>
             <SortButton label="Statut" sortKey="status" current={sortKey} dir={sortDir} onClick={toggleSort} />
-            <span className="font-mono text-[9px] uppercase tracking-wider text-[#1A1612]/30">Abonnement gratuit</span>
+            <span className="font-mono text-[9px] uppercase tracking-wider text-[#F3EADB]/30">Abonnement gratuit</span>
             <SortButton label="Commission" sortKey="commission_rate_override" current={sortKey} dir={sortDir} onClick={toggleSort} />
-            <span className="font-mono text-[9px] uppercase tracking-wider text-[#1A1612]/30">Comm. 0% jusqu'au</span>
+            <span className="font-mono text-[9px] uppercase tracking-wider text-[#F3EADB]/30">Comm. 0% jusqu'au</span>
             <SortButton label="Inscrit le" sortKey="created_at" current={sortKey} dir={sortDir} onClick={toggleSort} />
           </div>
 
           {/* Rows */}
-          <div className="divide-y divide-[#1A1612]/[0.04]">
+          <div className="divide-y divide-[#F3EADB]/[0.04]">
             {sorted.map((m) => {
               const cfg  = STATUS_CFG[m.status];
               const Icon = cfg.icon;
@@ -347,7 +347,7 @@ export default function FounderProgramPage() {
 
               return (
                 <div key={m.id}
-                  className="grid grid-cols-[56px_1fr_160px_140px_120px_120px_110px] gap-4 px-5 py-3.5 items-center hover:bg-[#1A1612]/[0.015] transition-colors">
+                  className="grid grid-cols-[56px_1fr_160px_140px_120px_120px_110px] gap-4 px-5 py-3.5 items-center hover:bg-[#F3EADB]/[0.015] transition-colors">
 
                   {/* Rank */}
                   <div className="flex items-center justify-center">
@@ -359,8 +359,8 @@ export default function FounderProgramPage() {
 
                   {/* Vendor */}
                   <div className="min-w-0">
-                    <p className="font-hanken text-sm text-[#1A1612] truncate">{name}</p>
-                    <p className="font-mono text-[9px] text-[#1A1612]/30 truncate mt-0.5">{shop}</p>
+                    <p className="font-hanken text-sm text-[#F3EADB] truncate">{name}</p>
+                    <p className="font-mono text-[9px] text-[#F3EADB]/30 truncate mt-0.5">{shop}</p>
                   </div>
 
                   {/* Status */}
@@ -375,11 +375,11 @@ export default function FounderProgramPage() {
                   {/* Sub free until */}
                   <div>
                     {m.subscription_free_until ? (
-                      <span className="font-mono text-xs text-[#1A1612]/50">
+                      <span className="font-mono text-xs text-[#F3EADB]/50">
                         {new Date(m.subscription_free_until).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                     ) : (
-                      <span className="font-mono text-xs text-[#1A1612]/20">—</span>
+                      <span className="font-mono text-xs text-[#F3EADB]/20">—</span>
                     )}
                   </div>
 
@@ -389,17 +389,17 @@ export default function FounderProgramPage() {
                   {/* Commission free until */}
                   <div>
                     {m.commission_free_until ? (
-                      <span className="font-mono text-xs text-[#1A1612]/50">
+                      <span className="font-mono text-xs text-[#F3EADB]/50">
                         {new Date(m.commission_free_until).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                     ) : (
-                      <span className="font-mono text-xs text-[#1A1612]/20">—</span>
+                      <span className="font-mono text-xs text-[#F3EADB]/20">—</span>
                     )}
                   </div>
 
                   {/* Created at */}
                   <div>
-                    <span className="font-mono text-[10px] text-[#1A1612]/30">
+                    <span className="font-mono text-[10px] text-[#F3EADB]/30">
                       {new Date(m.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                     </span>
                   </div>
@@ -409,11 +409,11 @@ export default function FounderProgramPage() {
           </div>
 
           {/* Footer */}
-          <div className="px-5 py-3 border-t border-[#1A1612]/6 flex items-center justify-between">
-            <p className="font-mono text-[9px] text-[#1A1612]/20">
+          <div className="px-5 py-3 border-t border-[#F3EADB]/6 flex items-center justify-between">
+            <p className="font-mono text-[9px] text-[#F3EADB]/20">
               {sorted.length} résultat{sorted.length !== 1 ? "s" : ""}
             </p>
-            <p className="font-mono text-[9px] text-[#1A1612]/15">
+            <p className="font-mono text-[9px] text-[#F3EADB]/15">
               Le rang est immutable · Le statut est attribué à vie
             </p>
           </div>
@@ -441,7 +441,7 @@ export default function FounderProgramPage() {
               </div>
               <ul className="space-y-1">
                 {benefits[s].map(b => (
-                  <li key={b} className="font-hanken text-xs text-[#1A1612]/45 flex items-center gap-1.5">
+                  <li key={b} className="font-hanken text-xs text-[#F3EADB]/45 flex items-center gap-1.5">
                     <span style={{ color: cfg.color }}>·</span>{b}
                   </li>
                 ))}

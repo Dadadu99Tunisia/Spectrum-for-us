@@ -74,12 +74,12 @@ export default function AdminRejoindrePage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#1A1612]">Demandes « Rejoindre »</h1>
-          <p className="font-hanken text-sm text-[#1A1612]/40 mt-1">{counts.pending} en attente · {counts.all} total</p>
+          <h1 className="font-fraunces text-2xl text-[#F3EADB]">Demandes « Rejoindre »</h1>
+          <p className="font-hanken text-sm text-[#F3EADB]/40 mt-1">{counts.pending} en attente · {counts.all} total</p>
         </div>
-        <div className="flex items-center gap-2 p-1 rounded-xl bg-[#1A1612]/5 border border-[#1A1612]/10">
-          <Users size={14} className="text-[#1A1612]/30 ml-2" />
-          <span className="font-mono text-xs text-[#1A1612]/40 mr-2">{counts.all}</span>
+        <div className="flex items-center gap-2 p-1 rounded-xl bg-[#F3EADB]/5 border border-[#F3EADB]/10">
+          <Users size={14} className="text-[#F3EADB]/30 ml-2" />
+          <span className="font-mono text-xs text-[#F3EADB]/40 mr-2">{counts.all}</span>
         </div>
       </div>
 
@@ -91,8 +91,8 @@ export default function AdminRejoindrePage() {
             onClick={() => setFilter(s)}
             className={`px-3 py-1.5 rounded-lg font-mono text-[11px] uppercase tracking-wider transition-colors border ${
               filter === s
-                ? "bg-[#FF3D7F]/15 text-[#FF3D7F] border-[#FF3D7F]/30"
-                : "text-[#1A1612]/40 border-[#1A1612]/10 hover:text-[#1A1612]/70"
+                ? "bg-[#E0337E]/15 text-[#E0337E] border-[#E0337E]/30"
+                : "text-[#F3EADB]/40 border-[#F3EADB]/10 hover:text-[#F3EADB]/70"
             }`}
           >
             {s === "all" ? "Tout" : s} ({counts[s]})
@@ -105,20 +105,20 @@ export default function AdminRejoindrePage() {
           <SpectrumLoader size="sm" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 text-[#1A1612]/30 font-hanken text-sm">Aucune demande.</div>
+        <div className="text-center py-16 text-[#F3EADB]/30 font-hanken text-sm">Aucune demande.</div>
       ) : (
         <div className="space-y-3">
           {filtered.map(r => (
-            <div key={r.id} className="rounded-2xl border border-[#1A1612]/8 bg-[#1A1612]/[0.02] p-5">
+            <div key={r.id} className="rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02] p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-1 flex-wrap">
-                    <span className="font-bricolage font-semibold text-[#1A1612]">{r.name}</span>
+                    <span className="font-bricolage font-semibold text-[#F3EADB]">{r.name}</span>
                     <span className="font-mono text-[10px] px-2 py-0.5 rounded border bg-[#6D2DB5]/15 text-[#9B6DD5] border-[#6D2DB5]/25">
                       {ACTIVITY_LABELS[r.activity_type] ?? r.activity_type}
                     </span>
                     {r.is_queer && (
-                      <span className="font-mono text-[10px] px-2 py-0.5 rounded border bg-[#FF3D7F]/10 text-[#FF3D7F] border-[#FF3D7F]/20">
+                      <span className="font-mono text-[10px] px-2 py-0.5 rounded border bg-[#E0337E]/10 text-[#E0337E] border-[#E0337E]/20">
                         🏳️‍🌈 queer/allié·e
                       </span>
                     )}
@@ -127,8 +127,8 @@ export default function AdminRejoindrePage() {
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap gap-3 mb-3 text-xs font-hanken text-[#1A1612]/45">
-                    <a href={`mailto:${r.email}`} className="flex items-center gap-1 hover:text-[#FF3D7F] transition-colors">
+                  <div className="flex flex-wrap gap-3 mb-3 text-xs font-hanken text-[#F3EADB]/45">
+                    <a href={`mailto:${r.email}`} className="flex items-center gap-1 hover:text-[#E0337E] transition-colors">
                       <Mail size={11} /> {r.email}
                     </a>
                     {r.instagram && (
@@ -138,17 +138,17 @@ export default function AdminRejoindrePage() {
                     )}
                     {r.website && (
                       <a href={r.website.startsWith("http") ? r.website : `https://${r.website}`} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1 hover:text-[#FF3D7F] transition-colors">
+                        className="flex items-center gap-1 hover:text-[#E0337E] transition-colors">
                         <Globe size={11} /> {r.website}
                       </a>
                     )}
-                    <span className="flex items-center gap-1 text-[#1A1612]/25">
+                    <span className="flex items-center gap-1 text-[#F3EADB]/25">
                       <Clock size={11} /> {new Date(r.created_at).toLocaleDateString("fr-FR")}
                     </span>
                   </div>
 
                   {r.description && (
-                    <p className="font-hanken text-sm text-[#1A1612]/60 leading-relaxed border-l-2 border-[#1A1612]/10 pl-3">
+                    <p className="font-hanken text-sm text-[#F3EADB]/60 leading-relaxed border-l-2 border-[#F3EADB]/10 pl-3">
                       {r.description}
                     </p>
                   )}

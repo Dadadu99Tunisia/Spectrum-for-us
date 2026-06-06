@@ -54,7 +54,7 @@ export function FounderProgramSection() {
 
         <div className="relative overflow-hidden rounded-3xl border"
           style={{
-            background: "linear-gradient(135deg,#FBF9F5 0%,#1a0d35 50%,#FBF9F5 100%)",
+            background: "linear-gradient(135deg,#0f0820 0%,#1a0d35 50%,#0d1a2e 100%)",
             borderColor: "rgba(167,139,250,.2)",
             boxShadow: "0 0 60px rgba(109,45,181,.15), inset 0 1px 0 rgba(255,255,255,.05)",
           }}>
@@ -64,7 +64,7 @@ export function FounderProgramSection() {
             <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full blur-3xl opacity-20"
               style={{ background: "radial-gradient(circle,#6D2DB5,transparent)" }} />
             <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full blur-3xl opacity-15"
-              style={{ background: "radial-gradient(circle,#FF3D7F,transparent)" }} />
+              style={{ background: "radial-gradient(circle,#E0337E,transparent)" }} />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-20 blur-3xl opacity-10"
               style={{ background: "radial-gradient(ellipse,#FFD700,transparent)" }} />
           </div>
@@ -74,10 +74,10 @@ export function FounderProgramSection() {
             <div className="flex items-start gap-5 mb-10">
               <div className="text-5xl leading-none">🌈</div>
               <div>
-                <h2 className="font-fraunces text-3xl md:text-4xl text-[#1A1612] leading-tight">
+                <h2 className="font-fraunces text-3xl md:text-4xl text-[#F3EADB] leading-tight">
                   Programme Fondateur Spectrum
                 </h2>
-                <p className="font-hanken text-sm text-[#1A1612]/45 mt-2">
+                <p className="font-hanken text-sm text-[#F3EADB]/45 mt-2">
                   Rejoins les premiers à bâtir cette communauté — des avantages exclusifs à vie.
                 </p>
               </div>
@@ -99,18 +99,18 @@ export function FounderProgramSection() {
                     <span className="text-xl">🏆</span>
                     <div>
                       <p className="font-fraunces text-base text-[#FFD700]">Fondateur·ice</p>
-                      <p className="font-mono text-[9px] text-[#1A1612]/30">Rang 1–20</p>
+                      <p className="font-mono text-[9px] text-[#F3EADB]/30">Rang 1–20</p>
                     </div>
                   </div>
                   {founderFull ? (
-                    <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#1A1612]/5 text-[#1A1612]/30 border border-[#1A1612]/8">Complet</span>
+                    <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#F3EADB]/5 text-[#F3EADB]/30 border border-[#F3EADB]/8">Complet</span>
                   ) : (
                     <span className="font-mono text-[10px] font-bold" style={{ color: "#FFD700" }}>
                       {loaded ? `${counts.founder_remaining} restante${counts.founder_remaining > 1 ? "s" : ""}` : "…"}
                     </span>
                   )}
                 </div>
-                <div className="h-1.5 rounded-full bg-[#1A1612]/8 overflow-hidden mb-3">
+                <div className="h-1.5 rounded-full bg-[#F3EADB]/8 overflow-hidden mb-3">
                   <div className="h-full rounded-full transition-all duration-700"
                     style={{
                       width: `${founderPct}%`,
@@ -119,7 +119,7 @@ export function FounderProgramSection() {
                 </div>
                 {["Abonnement gratuit 3 ans", "0 % de commission 12 mois", "Mise en avant prioritaire", "Badge exclusif sur profil"].map(a => (
                   <p key={a} className="font-hanken text-xs flex items-center gap-1.5"
-                    style={{ color: founderFull ? "rgba(26,22,18,.25)" : "rgba(26,22,18,.6)" }}>
+                    style={{ color: founderFull ? "rgba(243,234,219,.25)" : "rgba(243,234,219,.6)" }}>
                     <span style={{ color: founderFull ? "rgba(107,114,128,.4)" : "#FFD700" }}>✓</span> {a}
                   </p>
                 ))}
@@ -130,7 +130,7 @@ export function FounderProgramSection() {
                 style={{
                   background: earlyFull
                     ? "rgba(107,114,128,.06)"
-                    : "linear-gradient(135deg,rgba(167,139,250,.06),rgba(255,61,127,.04))",
+                    : "linear-gradient(135deg,rgba(167,139,250,.06),rgba(224,51,126,.04))",
                   borderColor: earlyFull ? "rgba(107,114,128,.15)" : "rgba(167,139,250,.2)",
                 }}>
                 <div className="flex items-center justify-between mb-3">
@@ -138,27 +138,27 @@ export function FounderProgramSection() {
                     <span className="text-xl">🚀</span>
                     <div>
                       <p className="font-fraunces text-base text-[#a78bfa]">Pionnier·e</p>
-                      <p className="font-mono text-[9px] text-[#1A1612]/30">Rang 21–100</p>
+                      <p className="font-mono text-[9px] text-[#F3EADB]/30">Rang 21–100</p>
                     </div>
                   </div>
                   {earlyFull ? (
-                    <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#1A1612]/5 text-[#1A1612]/30 border border-[#1A1612]/8">Complet</span>
+                    <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#F3EADB]/5 text-[#F3EADB]/30 border border-[#F3EADB]/8">Complet</span>
                   ) : (
                     <span className="font-mono text-[10px] font-bold text-[#a78bfa]">
                       {loaded ? `${counts.early_remaining} restante${counts.early_remaining > 1 ? "s" : ""}` : "…"}
                     </span>
                   )}
                 </div>
-                <div className="h-1.5 rounded-full bg-[#1A1612]/8 overflow-hidden mb-3">
+                <div className="h-1.5 rounded-full bg-[#F3EADB]/8 overflow-hidden mb-3">
                   <div className="h-full rounded-full transition-all duration-700"
                     style={{
                       width: `${earlyPct}%`,
-                      background: earlyFull ? "rgba(107,114,128,.4)" : "linear-gradient(90deg,#a78bfa,#FF3D7F)",
+                      background: earlyFull ? "rgba(107,114,128,.4)" : "linear-gradient(90deg,#a78bfa,#E0337E)",
                     }} />
                 </div>
                 {["Abonnement gratuit 6 mois", "0 % de commission 6 mois", "Badge Pionnier·e sur profil", "Accès anticipé aux features"].map(a => (
                   <p key={a} className="font-hanken text-xs flex items-center gap-1.5"
-                    style={{ color: earlyFull ? "rgba(26,22,18,.25)" : "rgba(26,22,18,.6)" }}>
+                    style={{ color: earlyFull ? "rgba(243,234,219,.25)" : "rgba(243,234,219,.6)" }}>
                     <span style={{ color: earlyFull ? "rgba(107,114,128,.4)" : "#a78bfa" }}>✓</span> {a}
                   </p>
                 ))}
@@ -169,15 +169,15 @@ export function FounderProgramSection() {
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Link href="/vendeur/onboarding"
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-hanken font-semibold text-sm text-white transition-all hover:scale-105 active:scale-95"
-                style={{ background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)", boxShadow: "0 8px 30px rgba(109,45,181,.4)" }}>
+                style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)", boxShadow: "0 8px 30px rgba(109,45,181,.4)" }}>
                 Rejoindre le programme
                 <ArrowRight size={15} />
               </Link>
               <Link href="/programme-fondateur"
-                className="font-mono text-[11px] text-[#1A1612]/35 hover:text-[#1A1612]/70 transition-colors flex items-center gap-1">
+                className="font-mono text-[11px] text-[#F3EADB]/35 hover:text-[#F3EADB]/70 transition-colors flex items-center gap-1">
                 En savoir plus <ArrowRight size={10} />
               </Link>
-              <p className="font-mono text-[10px] text-[#1A1612]/25 sm:ml-auto">
+              <p className="font-mono text-[10px] text-[#F3EADB]/25 sm:ml-auto">
                 {loaded ? `${counts.founder_count + counts.early_adopter_count} vendeur·ses inscrits` : "…"}
               </p>
             </div>

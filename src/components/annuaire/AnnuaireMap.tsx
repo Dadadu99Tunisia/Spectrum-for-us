@@ -176,11 +176,11 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
     <>
       <style>{`
         .mapboxgl-ctrl-bottom-right { bottom: 8px !important; right: 8px !important; }
-        .mapboxgl-ctrl-group { background: rgba(10,8,20,0.85) !important; border: 1px solid rgba(26,22,18,0.10) !important; border-radius: 12px !important; }
-        .mapboxgl-ctrl-group button { background: transparent !important; color: rgba(26,22,18,0.5) !important; }
-        .mapboxgl-ctrl-group button:hover { background: rgba(26,22,18,0.07) !important; color: rgba(26,22,18,0.9) !important; }
-        .mapboxgl-ctrl-attrib { background: rgba(10,8,20,0.7) !important; border-radius: 8px !important; color: rgba(26,22,18,0.25) !important; font-size: 9px !important; }
-        .mapboxgl-ctrl-attrib a { color: rgba(26,22,18,0.35) !important; }
+        .mapboxgl-ctrl-group { background: rgba(10,8,20,0.85) !important; border: 1px solid rgba(243,234,219,0.10) !important; border-radius: 12px !important; }
+        .mapboxgl-ctrl-group button { background: transparent !important; color: rgba(243,234,219,0.5) !important; }
+        .mapboxgl-ctrl-group button:hover { background: rgba(243,234,219,0.07) !important; color: rgba(243,234,219,0.9) !important; }
+        .mapboxgl-ctrl-attrib { background: rgba(10,8,20,0.7) !important; border-radius: 8px !important; color: rgba(243,234,219,0.25) !important; font-size: 9px !important; }
+        .mapboxgl-ctrl-attrib a { color: rgba(243,234,219,0.35) !important; }
       `}</style>
 
       <div className="relative w-full h-full rounded-xl overflow-hidden" style={{ minHeight: 300 }}>
@@ -189,9 +189,9 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
         {/* Loading */}
         {!mapLoaded && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3"
-            style={{ background: "#FBF9F5" }}>
-            <div className="w-6 h-6 rounded-full border-2 border-[#FF3D7F] border-t-transparent animate-spin" />
-            <span className="font-mono text-xs text-[#1A1612]/30">Chargement de la carte…</span>
+            style={{ background: "#080612" }}>
+            <div className="w-6 h-6 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
+            <span className="font-mono text-xs text-[#F3EADB]/30">Chargement de la carte…</span>
           </div>
         )}
 
@@ -221,10 +221,10 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
                   {selectedOrg.logo ?? selectedOrg.flag}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bricolage font-bold text-[#1A1612] text-sm leading-tight">
+                  <p className="font-bricolage font-bold text-[#F3EADB] text-sm leading-tight">
                     {selectedOrg.name}
                   </p>
-                  <p className="font-mono text-[10px] text-[#1A1612]/40 mt-0.5">
+                  <p className="font-mono text-[10px] text-[#F3EADB]/40 mt-0.5">
                     {selectedOrg.flag} {selectedOrg.city}, {selectedOrg.country}
                     {selectedOrg.founded && ` · ${selectedOrg.founded}`}
                   </p>
@@ -232,7 +232,7 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
                 <button
                   onClick={() => onSelect(selected!)}
                   aria-label="Fermer"
-                  className="text-[#1A1612]/25 hover:text-[#1A1612]/70 transition-colors text-xl leading-none shrink-0"
+                  className="text-[#F3EADB]/25 hover:text-[#F3EADB]/70 transition-colors text-xl leading-none shrink-0"
                 >×</button>
               </div>
 
@@ -246,7 +246,7 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
                 ))}
               </div>
 
-              <p className="font-hanken text-[11px] text-[#1A1612]/55 leading-relaxed mb-3 line-clamp-3">
+              <p className="font-hanken text-[11px] text-[#F3EADB]/55 leading-relaxed mb-3 line-clamp-3">
                 {selectedOrg.description}
               </p>
 

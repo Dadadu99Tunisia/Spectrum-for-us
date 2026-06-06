@@ -40,7 +40,7 @@ const NAV_CONFIG: NavItem[] = [
     href: "/decouvrir",
     icon: ShoppingBag,
     mega: [
-      { heading: "Mode & Bijoux", color: "#FF3D7F", icon: Package, cats: ["Mode non-genrée", "Bijoux"] },
+      { heading: "Mode & Bijoux", color: "#E0337E", icon: Package, cats: ["Mode non-genrée", "Bijoux"] },
       { heading: "Art & Édition", color: "#6D2DB5", icon: Palette, cats: ["Art & Culture", "Zines & Édition"] },
       { heading: "Corps & Maison", color: "#1C9C95", icon: Sparkles, cats: ["Corps & Soin", "Intimité", "Maison"] },
     ],
@@ -149,7 +149,7 @@ export function Header() {
         "fixed left-0 right-0 z-50 transition-all duration-500",
         bannerVisible ? "top-10" : "top-0",
         scrolled
-          ? "bg-[#FBF9F5]/95 backdrop-blur-md border-b border-[#1A1612]/8"
+          ? "bg-[#3D1F5C]/95 backdrop-blur-md border-b border-[#F3EADB]/8"
           : "bg-transparent"
       )}>
         {/* Prism line */}
@@ -161,8 +161,8 @@ export function Header() {
           <Link href="/" className="flex items-center gap-3 group shrink-0" aria-label="Spectrum For Us — Accueil">
             <Image src="/logo.png" alt="" width={36} height={36} aria-hidden="true"
               className="object-contain transition-opacity duration-300 group-hover:opacity-80" />
-            <span className="font-fraunces text-lg font-semibold text-[#1A1612] hidden sm:block leading-none tracking-tight">
-              Spectrum <span className="text-[#FF3D7F] font-light">For Us</span>
+            <span className="font-fraunces text-lg font-semibold text-[#F3EADB] hidden sm:block leading-none tracking-tight">
+              Spectrum <span className="text-[#E0337E] font-light">For Us</span>
             </span>
           </Link>
 
@@ -179,8 +179,8 @@ export function Header() {
                   className={cn(
                     "flex items-center gap-1 px-3 py-2 rounded-lg font-hanken text-sm transition-colors duration-200",
                     activeMenu === item.href
-                      ? "text-[#1A1612] bg-[#1A1612]/8"
-                      : "text-[#1A1612]/70 hover:text-[#1A1612]"
+                      ? "text-[#F3EADB] bg-[#F3EADB]/8"
+                      : "text-[#F3EADB]/70 hover:text-[#F3EADB]"
                   )}>
                   {t(item.labelKey)}
                   <ChevronDown size={11}
@@ -191,18 +191,18 @@ export function Header() {
                 {activeMenu === item.href && (
                   <div className="absolute left-0 top-full pt-2 z-50" role="region" aria-label={t(item.labelKey)}>
                     <div className="absolute -top-2 left-0 right-0 h-2" aria-hidden="true" />
-                    <div className="bg-[#F1ECE3] border border-[#1A1612]/10 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden flex flex-col"
+                    <div className="bg-[#1e0f35] border border-[#F3EADB]/10 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden flex flex-col"
                       style={{ minWidth: item.mega ? "560px" : "260px", maxHeight: "calc(100vh - 120px)" }}>
 
                       {/* Header */}
-                      <div className="px-5 pt-4 pb-3 border-b border-[#1A1612]/8 flex items-center justify-between shrink-0">
+                      <div className="px-5 pt-4 pb-3 border-b border-[#F3EADB]/8 flex items-center justify-between shrink-0">
                         <Link href={item.href} onClick={() => setActiveMenu(null)}
-                          className="flex items-center gap-2 font-fraunces text-sm text-[#1A1612] hover:text-[#FF3D7F] transition-colors">
+                          className="flex items-center gap-2 font-fraunces text-sm text-[#F3EADB] hover:text-[#E0337E] transition-colors">
                           {t(item.labelKey)} <ArrowRight size={13} />
                         </Link>
                         <div className="flex items-center gap-3">
                           <Link href="/vendre" onClick={() => setActiveMenu(null)}
-                            className="font-mono text-[10px] text-[#FF3D7F]/60 hover:text-[#FF3D7F] uppercase tracking-widest transition-colors">
+                            className="font-mono text-[10px] text-[#E0337E]/60 hover:text-[#E0337E] uppercase tracking-widest transition-colors">
                             {t("nav.sell_short")}
                           </Link>
                           <Link href="/programme-fondateur" onClick={() => setActiveMenu(null)}
@@ -232,7 +232,7 @@ export function Header() {
                                       <Link
                                         href={`/decouvrir?category=${encodeURIComponent(catName)}`}
                                         onClick={() => setActiveMenu(null)}
-                                        className="flex items-center gap-1.5 font-hanken text-sm text-[#1A1612]/85 hover:text-[#1A1612] font-medium mb-1.5 transition-colors group"
+                                        className="flex items-center gap-1.5 font-hanken text-sm text-[#F3EADB]/85 hover:text-[#F3EADB] font-medium mb-1.5 transition-colors group"
                                       >
                                         <span className="w-1.5 h-1.5 rounded-full shrink-0"
                                           style={{ background: section.color }} aria-hidden="true" />
@@ -246,7 +246,7 @@ export function Header() {
                                             <Link
                                               href={`/decouvrir?category=${encodeURIComponent(catName)}&subcategory=${encodeURIComponent(sub)}`}
                                               onClick={() => setActiveMenu(null)}
-                                              className="font-hanken text-xs text-[#1A1612]/40 hover:text-[#1A1612]/75 transition-colors block py-0.5"
+                                              className="font-hanken text-xs text-[#F3EADB]/40 hover:text-[#F3EADB]/75 transition-colors block py-0.5"
                                             >
                                               {sub}
                                             </Link>
@@ -267,12 +267,12 @@ export function Header() {
                         <div className="p-3 overflow-y-auto">
                           {item.links.map((link) => (
                             <Link key={link.href} href={link.href} onClick={() => setActiveMenu(null)}
-                              className="flex flex-col px-4 py-3 rounded-xl hover:bg-[#1A1612]/5 transition-colors group">
-                              <span className="font-hanken text-sm text-[#1A1612]/80 group-hover:text-[#1A1612] transition-colors">
+                              className="flex flex-col px-4 py-3 rounded-xl hover:bg-[#F3EADB]/5 transition-colors group">
+                              <span className="font-hanken text-sm text-[#F3EADB]/80 group-hover:text-[#F3EADB] transition-colors">
                                 {t(link.labelKey)}
                               </span>
                               {link.descKey && (
-                                <span className="font-hanken text-xs text-[#1A1612]/35 mt-0.5">{t(link.descKey)}</span>
+                                <span className="font-hanken text-xs text-[#F3EADB]/35 mt-0.5">{t(link.descKey)}</span>
                               )}
                             </Link>
                           ))}
@@ -288,7 +288,7 @@ export function Header() {
           {/* Right actions */}
           <div className="flex items-center gap-1 shrink-0">
             <Link href="/decouvrir" aria-label="Rechercher"
-              className="p-2 text-[#1A1612]/60 hover:text-[#1A1612] transition-colors hidden lg:flex">
+              className="p-2 text-[#F3EADB]/60 hover:text-[#F3EADB] transition-colors hidden lg:flex">
               <Search size={18} />
             </Link>
             <div className="hidden lg:flex">
@@ -296,11 +296,11 @@ export function Header() {
             </div>
             <Link href="/panier"
               aria-label={`Panier — ${cartCount} article${cartCount > 1 ? "s" : ""}`}
-              className="p-2 text-[#1A1612]/60 hover:text-[#1A1612] transition-colors relative hidden lg:flex">
+              className="p-2 text-[#F3EADB]/60 hover:text-[#F3EADB] transition-colors relative hidden lg:flex">
               <ShoppingBag size={18} />
               {cartCount > 0 && (
                 <span aria-hidden="true"
-                  className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FF3D7F] text-white text-[9px] font-mono flex items-center justify-center leading-none">
+                  className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#E0337E] text-[#F3EADB] text-[9px] font-mono flex items-center justify-center leading-none">
                   {cartCount > 9 ? "9+" : cartCount}
                 </span>
               )}
@@ -311,34 +311,34 @@ export function Header() {
                 <div className="relative hidden lg:block" ref={userMenuRef}>
                   <button onClick={() => setUserMenuOpen(!userMenuOpen)}
                     aria-haspopup="true" aria-expanded={userMenuOpen}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#1A1612]/15 text-[#1A1612]/70 hover:text-[#1A1612] hover:border-[#1A1612]/30 transition-all text-sm font-hanken">
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#F3EADB]/15 text-[#F3EADB]/70 hover:text-[#F3EADB] hover:border-[#F3EADB]/30 transition-all text-sm font-hanken">
                     <User size={14} aria-hidden="true" />
                     <span className="max-w-[80px] truncate">{pseudo}</span>
                     <ChevronDown size={12} aria-hidden="true"
                       className={cn("transition-transform duration-200", userMenuOpen && "rotate-180")} />
                   </button>
                   {userMenuOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-52 bg-[#F1ECE3] border border-[#1A1612]/15 rounded-2xl overflow-hidden shadow-xl shadow-black/40">
-                      <div className="px-4 py-3 border-b border-[#1A1612]/8">
-                        <p className="font-hanken text-xs text-[#1A1612]/40">Connecté·e en tant que</p>
-                        <p className="font-bricolage font-semibold text-[#1A1612] text-sm truncate">{pseudo}</p>
+                    <div className="absolute right-0 top-full mt-2 w-52 bg-[#1e0f35] border border-[#F3EADB]/15 rounded-2xl overflow-hidden shadow-xl shadow-black/40">
+                      <div className="px-4 py-3 border-b border-[#F3EADB]/8">
+                        <p className="font-hanken text-xs text-[#F3EADB]/40">Connecté·e en tant que</p>
+                        <p className="font-bricolage font-semibold text-[#F3EADB] text-sm truncate">{pseudo}</p>
                       </div>
                       {isAdmin && (
                         <Link href="/admin" onClick={() => setUserMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#FF3D7F] hover:bg-[#FF3D7F]/5 transition-colors border-b border-[#1A1612]/8">
+                          className="flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#E0337E] hover:bg-[#E0337E]/5 transition-colors border-b border-[#F3EADB]/8">
                           <LayoutDashboard size={14} aria-hidden="true" /> {t("nav.admin")}
                         </Link>
                       )}
                       <Link href="/compte" onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#1A1612]/70 hover:text-[#1A1612] hover:bg-[#1A1612]/5 transition-colors">
+                        className="flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#F3EADB]/70 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 transition-colors">
                         <User size={14} aria-hidden="true" /> {t("nav.account")}
                       </Link>
                       <Link href="/vendeur" onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#1A1612]/70 hover:text-[#1A1612] hover:bg-[#1A1612]/5 transition-colors">
+                        className="flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#F3EADB]/70 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 transition-colors">
                         <Store size={14} aria-hidden="true" /> {t("nav.vendor_space")}
                       </Link>
                       <button onClick={() => { setUserMenuOpen(false); signOut(); }}
-                        className="w-full flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#1A1612]/50 hover:text-red-400 hover:bg-[#1A1612]/5 transition-colors border-t border-[#1A1612]/8">
+                        className="w-full flex items-center gap-3 px-4 py-3 font-hanken text-sm text-[#F3EADB]/50 hover:text-red-400 hover:bg-[#F3EADB]/5 transition-colors border-t border-[#F3EADB]/8">
                         <LogOut size={14} aria-hidden="true" /> {t("nav.logout")}
                       </button>
                     </div>
@@ -354,11 +354,11 @@ export function Header() {
 
             {/* Panier mobile */}
             <Link href="/panier" aria-label={`Panier — ${cartCount} article${cartCount > 1 ? "s" : ""}`}
-              className="lg:hidden p-2 text-[#1A1612]/60 hover:text-[#1A1612] relative">
+              className="lg:hidden p-2 text-[#F3EADB]/60 hover:text-[#F3EADB] relative">
               <ShoppingBag size={20} />
               {cartCount > 0 && (
                 <span aria-hidden="true"
-                  className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FF3D7F] text-white text-[9px] font-mono flex items-center justify-center">
+                  className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#E0337E] text-[#F3EADB] text-[9px] font-mono flex items-center justify-center">
                   {cartCount > 9 ? "9+" : cartCount}
                 </span>
               )}
@@ -366,7 +366,7 @@ export function Header() {
 
             {/* Burger mobile */}
             <button
-              className="lg:hidden p-2 text-[#1A1612]/80 hover:text-[#1A1612] transition-colors"
+              className="lg:hidden p-2 text-[#F3EADB]/80 hover:text-[#F3EADB] transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={mobileOpen}
@@ -398,7 +398,7 @@ export function Header() {
         aria-label="Menu de navigation"
         aria-modal="true"
         className={cn(
-          "fixed top-0 right-0 bottom-0 z-50 w-[85vw] max-w-sm bg-[#F1ECE3] flex flex-col lg:hidden",
+          "fixed top-0 right-0 bottom-0 z-50 w-[85vw] max-w-sm bg-[#1a0d28] flex flex-col lg:hidden",
           "transition-transform duration-300 ease-out",
           mobileOpen ? "translate-x-0" : "translate-x-full"
         )}
@@ -408,15 +408,15 @@ export function Header() {
           style={{ background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)" }} />
 
         {/* Header du drawer */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#1A1612]/8 shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#F3EADB]/8 shrink-0">
           <Link href="/" onClick={closeMobile} className="flex items-center gap-2.5">
             <Image src="/logo.png" alt="Spectrum For Us" width={28} height={28} className="object-contain" />
-            <span className="font-fraunces text-base text-[#1A1612]">
-              Spectrum <span className="text-[#FF3D7F] font-light">For Us</span>
+            <span className="font-fraunces text-base text-[#F3EADB]">
+              Spectrum <span className="text-[#E0337E] font-light">For Us</span>
             </span>
           </Link>
           <button onClick={closeMobile} aria-label="Fermer le menu"
-            className="p-2 text-[#1A1612]/40 hover:text-[#1A1612] transition-colors">
+            className="p-2 text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -437,16 +437,16 @@ export function Header() {
                     className={cn(
                       "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all",
                       isExpanded
-                        ? "bg-[#FF3D7F]/10 text-[#1A1612]"
-                        : "text-[#1A1612]/70 hover:bg-[#1A1612]/5 hover:text-[#1A1612]"
+                        ? "bg-[#E0337E]/10 text-[#F3EADB]"
+                        : "text-[#F3EADB]/70 hover:bg-[#F3EADB]/5 hover:text-[#F3EADB]"
                     )}
                   >
                     <Icon size={16} aria-hidden="true"
-                      className={isExpanded ? "text-[#FF3D7F]" : "text-[#FF3D7F]/60"} />
+                      className={isExpanded ? "text-[#E0337E]" : "text-[#E0337E]/60"} />
                     <span className="font-hanken text-base flex-1 text-left">{t(item.labelKey)}</span>
                     <ChevronDown size={15} aria-hidden="true"
-                      className={cn("transition-transform duration-200 text-[#1A1612]/30",
-                        isExpanded && "rotate-180 text-[#FF3D7F]")} />
+                      className={cn("transition-transform duration-200 text-[#F3EADB]/30",
+                        isExpanded && "rotate-180 text-[#E0337E]")} />
                   </button>
 
                   {/* Contenu accordéon */}
@@ -457,7 +457,7 @@ export function Header() {
                     <div className="pb-2">
                       {/* Lien vers la page principale */}
                       <Link href={item.href} onClick={closeMobile}
-                        className="flex items-center gap-2 px-4 py-2.5 mx-2 rounded-lg font-hanken text-sm text-[#FF3D7F]/80 hover:text-[#FF3D7F] hover:bg-[#FF3D7F]/5 transition-colors">
+                        className="flex items-center gap-2 px-4 py-2.5 mx-2 rounded-lg font-hanken text-sm text-[#E0337E]/80 hover:text-[#E0337E] hover:bg-[#E0337E]/5 transition-colors">
                         <ArrowRight size={12} aria-hidden="true" />
                         {t("nav.see_all")} — {t(item.labelKey)}
                       </Link>
@@ -485,7 +485,7 @@ export function Header() {
                                     <Link
                                       href={`/decouvrir?category=${encodeURIComponent(catName)}`}
                                       onClick={closeMobile}
-                                      className="flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-l-lg font-hanken text-sm text-[#1A1612]/75 hover:text-[#1A1612] hover:bg-[#1A1612]/5 transition-colors"
+                                      className="flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-l-lg font-hanken text-sm text-[#F3EADB]/75 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 transition-colors"
                                     >
                                       <span className="w-1.5 h-1.5 rounded-full shrink-0"
                                         style={{ background: section.color }} aria-hidden="true" />
@@ -497,10 +497,10 @@ export function Header() {
                                         aria-expanded={catExpanded}
                                         aria-label={`Sous-catégories de ${catName}`}
                                         className={cn(
-                                          "px-2.5 py-2.5 rounded-r-lg border-l border-[#1A1612]/8 transition-all",
+                                          "px-2.5 py-2.5 rounded-r-lg border-l border-[#F3EADB]/8 transition-all",
                                           catExpanded
-                                            ? "text-[#FF3D7F] bg-[#FF3D7F]/8"
-                                            : "text-[#1A1612]/25 hover:text-[#1A1612]/60 hover:bg-[#1A1612]/5"
+                                            ? "text-[#E0337E] bg-[#E0337E]/8"
+                                            : "text-[#F3EADB]/25 hover:text-[#F3EADB]/60 hover:bg-[#F3EADB]/5"
                                         )}
                                       >
                                         <ChevronRight size={13} aria-hidden="true"
@@ -520,7 +520,7 @@ export function Header() {
                                           <Link
                                             href={`/decouvrir?category=${encodeURIComponent(catName)}&subcategory=${encodeURIComponent(sub)}`}
                                             onClick={closeMobile}
-                                            className="block py-2 px-3 font-hanken text-sm text-[#1A1612]/45 hover:text-[#1A1612]/80 transition-colors rounded-lg hover:bg-[#1A1612]/4"
+                                            className="block py-2 px-3 font-hanken text-sm text-[#F3EADB]/45 hover:text-[#F3EADB]/80 transition-colors rounded-lg hover:bg-[#F3EADB]/4"
                                           >
                                             {sub}
                                           </Link>
@@ -539,12 +539,12 @@ export function Header() {
                       {item.links?.map((link) => (
                         <div key={link.href} className="px-2">
                           <Link href={link.href} onClick={closeMobile}
-                            className="flex flex-col px-3 py-2.5 rounded-xl hover:bg-[#1A1612]/5 transition-colors">
-                            <span className="font-hanken text-sm text-[#1A1612]/75 hover:text-[#1A1612]">
+                            className="flex flex-col px-3 py-2.5 rounded-xl hover:bg-[#F3EADB]/5 transition-colors">
+                            <span className="font-hanken text-sm text-[#F3EADB]/75 hover:text-[#F3EADB]">
                               {t(link.labelKey)}
                             </span>
                             {link.descKey && (
-                              <span className="font-hanken text-xs text-[#1A1612]/30 mt-0.5">{t(link.descKey)}</span>
+                              <span className="font-hanken text-xs text-[#F3EADB]/30 mt-0.5">{t(link.descKey)}</span>
                             )}
                           </Link>
                         </div>
@@ -558,17 +558,17 @@ export function Header() {
         </div>
 
         {/* Footer du drawer */}
-        <div className="shrink-0 border-t border-[#1A1612]/8 p-4 space-y-3">
+        <div className="shrink-0 border-t border-[#F3EADB]/8 p-4 space-y-3">
           {isAdmin && (
             <Link href="/admin" onClick={closeMobile}
-              className="flex items-center justify-center gap-2 py-2.5 rounded-full bg-[#FF3D7F]/15 border border-[#FF3D7F]/30 text-sm font-hanken text-[#FF3D7F] w-full">
+              className="flex items-center justify-center gap-2 py-2.5 rounded-full bg-[#E0337E]/15 border border-[#E0337E]/30 text-sm font-hanken text-[#E0337E] w-full">
               <LayoutDashboard size={14} aria-hidden="true" /> Back-office
             </Link>
           )}
           {user ? (
             <div className="grid grid-cols-2 gap-2">
               <Link href="/compte" onClick={closeMobile}
-                className="flex items-center justify-center gap-2 py-2.5 rounded-full border border-[#1A1612]/20 text-sm font-hanken text-[#1A1612]/70 hover:text-[#1A1612] transition-colors">
+                className="flex items-center justify-center gap-2 py-2.5 rounded-full border border-[#F3EADB]/20 text-sm font-hanken text-[#F3EADB]/70 hover:text-[#F3EADB] transition-colors">
                 <User size={14} aria-hidden="true" /> {t("nav.account")}
               </Link>
               <button onClick={() => { closeMobile(); signOut(); }}
@@ -588,7 +588,7 @@ export function Header() {
           )}
           <div className="flex items-center justify-between pt-1">
             <LocaleSwitcher />
-            <span className="font-mono text-[9px] text-[#1A1612]/20 uppercase tracking-widest">
+            <span className="font-mono text-[9px] text-[#F3EADB]/20 uppercase tracking-widest">
               ✦ La marketplace queer
             </span>
           </div>

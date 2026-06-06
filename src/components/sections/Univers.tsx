@@ -9,7 +9,7 @@ const categories = [
     label: "Mode non-genrée",
     emoji: "✦",
     desc: "Vêtements, accessoires et pièces pensés sans genre.",
-    color: "#FF3D7F",
+    color: "#E0337E",
   },
   {
     slug: "art",
@@ -37,7 +37,7 @@ const categories = [
     label: "Corps & Soin",
     emoji: "○",
     desc: "Cosmétiques, soins, wellness et produits de beauté inclusifs.",
-    color: "#1A1612",
+    color: "#F2B79E",
   },
   {
     slug: "intimite",
@@ -66,10 +66,10 @@ export function Univers() {
           className="mb-14 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-widest uppercase text-[#FF3D7F] block mb-3">
+          <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-3">
             L&apos;univers
           </span>
-          <h2 className="font-fraunces text-4xl md:text-5xl text-[#1A1612] leading-tight">
+          <h2 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight">
             Tout le spectre,{" "}
             <span
               className="prism-text"
@@ -100,15 +100,15 @@ export function Univers() {
                 </div>
 
                 <h3
-                  className="font-bricolage text-lg font-semibold text-[#1A1612] mb-2 leading-tight"
+                  className="font-bricolage text-lg font-semibold text-[#F3EADB] mb-2 leading-tight"
                 >
                   {cat.label}
                 </h3>
-                <p className="font-hanken text-sm text-[#1A1612]/50 leading-relaxed">
+                <p className="font-hanken text-sm text-[#F3EADB]/50 leading-relaxed">
                   {cat.desc}
                 </p>
 
-                <div className="mt-4 flex items-center gap-1 text-xs font-mono text-[#1A1612]/30 group-hover:text-[#FF3D7F] transition-colors duration-200">
+                <div className="mt-4 flex items-center gap-1 text-xs font-mono text-[#F3EADB]/30 group-hover:text-[#E0337E] transition-colors duration-200">
                   <span>(</span>
                   <span>Explorer</span>
                   <span>)</span>

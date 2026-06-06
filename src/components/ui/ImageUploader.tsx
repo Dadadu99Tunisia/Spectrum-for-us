@@ -90,14 +90,14 @@ export function ImageUploader({
   return (
     <div className={`space-y-2 ${className}`}>
       {label && (
-        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30">
+        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30">
           {label}
         </label>
       )}
 
       <div
         className={`relative ${aspectClass} w-full rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden
-          ${dragOver ? "border-[#FF3D7F] bg-[#FF3D7F]/5" : "border-[#1A1612]/15 hover:border-[#1A1612]/30"}
+          ${dragOver ? "border-[#E0337E] bg-[#E0337E]/5" : "border-[#F3EADB]/15 hover:border-[#F3EADB]/30"}
           ${loading ? "pointer-events-none" : ""}`}
         onClick={() => inputRef.current?.click()}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
@@ -130,17 +130,17 @@ export function ImageUploader({
           /* Placeholder */
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center">
             {loading ? (
-              <Loader2 size={24} className="text-[#FF3D7F] animate-spin" />
+              <Loader2 size={24} className="text-[#E0337E] animate-spin" />
             ) : (
               <>
-                <div className="w-12 h-12 rounded-2xl bg-[#1A1612]/5 flex items-center justify-center">
-                  <ImageIcon size={20} className="text-[#1A1612]/20" />
+                <div className="w-12 h-12 rounded-2xl bg-[#F3EADB]/5 flex items-center justify-center">
+                  <ImageIcon size={20} className="text-[#F3EADB]/20" />
                 </div>
                 <div>
-                  <p className="font-hanken text-sm text-[#1A1612]/40">
-                    <span className="text-[#FF3D7F]">Choisir</span> ou glisser-déposer
+                  <p className="font-hanken text-sm text-[#F3EADB]/40">
+                    <span className="text-[#E0337E]">Choisir</span> ou glisser-déposer
                   </p>
-                  {hint && <p className="font-mono text-[9px] text-[#1A1612]/20 mt-1">{hint}</p>}
+                  {hint && <p className="font-mono text-[9px] text-[#F3EADB]/20 mt-1">{hint}</p>}
                 </div>
               </>
             )}
@@ -151,7 +151,7 @@ export function ImageUploader({
         {loading && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-sm">
             <div className="flex flex-col items-center gap-2">
-              <Loader2 size={24} className="text-[#FF3D7F] animate-spin" />
+              <Loader2 size={24} className="text-[#E0337E] animate-spin" />
               <p className="font-mono text-[10px] text-white/60">Upload en cours…</p>
             </div>
           </div>
@@ -231,14 +231,14 @@ export function MultiImageUploader({
   return (
     <div className="space-y-2">
       {label && (
-        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30">
-          {label} <span className="text-[#1A1612]/20 normal-case">({values.length}/{max})</span>
+        <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30">
+          {label} <span className="text-[#F3EADB]/20 normal-case">({values.length}/{max})</span>
         </label>
       )}
 
       <div className="grid grid-cols-3 gap-2">
         {values.map((url, i) => (
-          <div key={url} className="relative aspect-square rounded-xl overflow-hidden border border-[#1A1612]/10 group">
+          <div key={url} className="relative aspect-square rounded-xl overflow-hidden border border-[#F3EADB]/10 group">
             <img src={url} alt="" className="w-full h-full object-cover" />
             <button onClick={() => remove(i)}
               className="absolute top-1 right-1 p-1 rounded-lg bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/70">
@@ -256,11 +256,11 @@ export function MultiImageUploader({
           <button
             onClick={() => inputRef.current?.click()}
             disabled={loading}
-            className="aspect-square rounded-xl border-2 border-dashed border-[#1A1612]/15 hover:border-[#FF3D7F]/40 flex flex-col items-center justify-center gap-1 transition-colors disabled:opacity-40"
+            className="aspect-square rounded-xl border-2 border-dashed border-[#F3EADB]/15 hover:border-[#E0337E]/40 flex flex-col items-center justify-center gap-1 transition-colors disabled:opacity-40"
           >
             {loading
-              ? <Loader2 size={18} className="text-[#FF3D7F] animate-spin" />
-              : <><Upload size={18} className="text-[#1A1612]/25" /><span className="font-mono text-[9px] text-[#1A1612]/25">Ajouter</span></>
+              ? <Loader2 size={18} className="text-[#E0337E] animate-spin" />
+              : <><Upload size={18} className="text-[#F3EADB]/25" /><span className="font-mono text-[9px] text-[#F3EADB]/25">Ajouter</span></>
             }
           </button>
         )}

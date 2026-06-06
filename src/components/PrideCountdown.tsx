@@ -32,7 +32,7 @@ export function PrideCountdown() {
   return (
     <div
       className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 py-2.5 text-white text-sm"
-      style={{ background: "linear-gradient(90deg, #6D2DB5 0%, #FF3D7F 50%, #E0901E 100%)" }}
+      style={{ background: "linear-gradient(90deg, #6D2DB5 0%, #E0337E 50%, #E0901E 100%)" }}
     >
       <div className="w-6 shrink-0" />
 

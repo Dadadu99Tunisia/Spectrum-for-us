@@ -17,9 +17,9 @@ type Product = {
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   active:   { label: "Actif",        color: "text-green-400 bg-green-400/10 border-green-400/20" },
   pending:  { label: "En attente",   color: "text-[#E0901E] bg-[#E0901E]/10 border-[#E0901E]/20" },
-  draft:    { label: "Brouillon",    color: "text-[#1A1612]/40 bg-white/[0.09] border-white/[0.14]" },
+  draft:    { label: "Brouillon",    color: "text-[#F3EADB]/40 bg-white/[0.09] border-white/[0.14]" },
   rejected: { label: "Rejeté",       color: "text-red-400 bg-red-400/10 border-red-400/20" },
-  inactive: { label: "Inactif",      color: "text-[#1A1612]/30 bg-[#1A1612]/3 border-white/[0.13]" },
+  inactive: { label: "Inactif",      color: "text-[#F3EADB]/30 bg-[#F3EADB]/3 border-white/[0.13]" },
 };
 
 const STATUS_TABS = ["","pending","active","draft","rejected","inactive"];
@@ -90,12 +90,12 @@ export default function ProductsPage() {
   return (
     <div className="space-y-6">
       {toast && (
-        <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#FF3D7F] text-white font-hanken text-sm shadow-xl">{toast}</div>
+        <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#E0337E] text-white font-hanken text-sm shadow-xl">{toast}</div>
       )}
 
       <div>
-        <h1 className="font-fraunces text-2xl text-[#1A1612]">Produits</h1>
-        <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">{total} produit{total !== 1 ? "s" : ""}</p>
+        <h1 className="font-fraunces text-2xl text-[#F3EADB]">Produits</h1>
+        <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">{total} produit{total !== 1 ? "s" : ""}</p>
       </div>
 
       {/* Status tabs */}
@@ -103,7 +103,7 @@ export default function ProductsPage() {
         {STATUS_TABS.map(s => (
           <button key={s} onClick={() => setStatus(s)}
             className={`px-3 py-1.5 rounded-lg font-mono text-[10px] transition-all ${
-              status === s ? "bg-[#FF3D7F] text-white" : "text-[#1A1612]/40 hover:text-[#1A1612]"
+              status === s ? "bg-[#E0337E] text-white" : "text-[#F3EADB]/40 hover:text-[#F3EADB]"
             }`}>
             {s === "" ? "Tous" : STATUS_CONFIG[s]?.label ?? s}
           </button>
@@ -113,14 +113,14 @@ export default function ProductsPage() {
       {/* Search + bulk actions */}
       <div className="flex gap-3 flex-wrap items-center">
         <div className="relative flex-1 min-w-48">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1A1612]/25" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25" />
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher un produit…"
-            className="w-full pl-9 pr-4 py-2 bg-white/[0.09] border border-white/[0.14] rounded-lg font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
+            className="w-full pl-9 pr-4 py-2 bg-white/[0.09] border border-white/[0.14] rounded-lg font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
         </div>
         {selected.size > 0 && (
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] text-[#1A1612]/40">{selected.size} sélectionné(s)</span>
+            <span className="font-mono text-[10px] text-[#F3EADB]/40">{selected.size} sélectionné(s)</span>
             <button onClick={() => bulkAction("active")} disabled={bulkLoading}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 font-mono text-[10px] hover:bg-green-500/20 transition-colors disabled:opacity-40">
               <CheckCircle size={11} /> Approuver
@@ -139,8 +139,8 @@ export default function ProductsPage() {
         </div>
       ) : products.length === 0 ? (
         <div className="text-center py-20">
-          <Package size={40} className="mx-auto mb-3 text-[#1A1612]/10" />
-          <p className="font-hanken text-[#1A1612]/30">Aucun produit</p>
+          <Package size={40} className="mx-auto mb-3 text-[#F3EADB]/10" />
+          <p className="font-hanken text-[#F3EADB]/30">Aucun produit</p>
         </div>
       ) : (
         <>
@@ -151,10 +151,10 @@ export default function ProductsPage() {
                   <th className="px-4 py-3 w-8">
                     <input type="checkbox" checked={selected.size === products.length && products.length > 0}
                       onChange={toggleAll}
-                      className="w-3.5 h-3.5 rounded accent-[#FF3D7F] cursor-pointer" />
+                      className="w-3.5 h-3.5 rounded accent-[#E0337E] cursor-pointer" />
                   </th>
                   {["Produit","Boutique","Prix","Statut","Date",""].map(h => (
-                    <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/25">{h}</th>
+                    <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/25">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -162,10 +162,10 @@ export default function ProductsPage() {
                 {products.map(p => {
                   const statusUi = STATUS_CONFIG[p.status] ?? STATUS_CONFIG.draft;
                   return (
-                    <tr key={p.id} className={`border-b border-white/[0.05] transition-colors ${selected.has(p.id) ? "bg-[#FF3D7F]/4" : "hover:bg-white/[0.07]"}`}>
+                    <tr key={p.id} className={`border-b border-white/[0.05] transition-colors ${selected.has(p.id) ? "bg-[#E0337E]/4" : "hover:bg-white/[0.07]"}`}>
                       <td className="px-4 py-3">
                         <input type="checkbox" checked={selected.has(p.id)} onChange={() => toggleSelect(p.id)}
-                          className="w-3.5 h-3.5 rounded accent-[#FF3D7F] cursor-pointer" />
+                          className="w-3.5 h-3.5 rounded accent-[#E0337E] cursor-pointer" />
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
@@ -173,19 +173,19 @@ export default function ProductsPage() {
                             <img src={p.image_url} alt="" className="w-9 h-9 rounded-lg object-cover border border-white/[0.14] flex-shrink-0" />
                           ) : (
                             <div className="w-9 h-9 rounded-lg bg-white/[0.09] border border-white/[0.14] flex items-center justify-center flex-shrink-0">
-                              <Package size={14} className="text-[#1A1612]/20" />
+                              <Package size={14} className="text-[#F3EADB]/20" />
                             </div>
                           )}
-                          <p className="font-hanken text-sm text-[#1A1612] truncate max-w-[200px]">{p.title}</p>
+                          <p className="font-hanken text-sm text-[#F3EADB] truncate max-w-[200px]">{p.title}</p>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-hanken text-sm text-[#1A1612]/60">
+                        <span className="font-hanken text-sm text-[#F3EADB]/60">
                           {p.shops?.name ?? "—"}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-fraunces text-sm text-[#1A1612]">{Number(p.price).toFixed(2)} €</span>
+                        <span className="font-fraunces text-sm text-[#F3EADB]">{Number(p.price).toFixed(2)} €</span>
                       </td>
                       <td className="px-4 py-3">
                         <span className={`font-mono text-[9px] px-2 py-1 rounded-full border ${statusUi.color}`}>
@@ -193,7 +193,7 @@ export default function ProductsPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-mono text-[10px] text-[#1A1612]/25">
+                        <span className="font-mono text-[10px] text-[#F3EADB]/25">
                           {new Date(p.created_at).toLocaleDateString("fr-FR")}
                         </span>
                       </td>
@@ -217,7 +217,7 @@ export default function ProductsPage() {
                           )}
                           {p.shops?.slug && (
                             <a href={`/boutique/${p.shops.slug}`} target="_blank" rel="noreferrer"
-                              className="p-1.5 rounded-lg text-[#1A1612]/25 hover:text-[#1A1612] border border-transparent hover:border-white/[0.14] transition-colors">
+                              className="p-1.5 rounded-lg text-[#F3EADB]/25 hover:text-[#F3EADB] border border-transparent hover:border-white/[0.14] transition-colors">
                               <Eye size={12} />
                             </a>
                           )}
@@ -232,14 +232,14 @@ export default function ProductsPage() {
 
           {total > LIMIT && (
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] text-[#1A1612]/25">
+              <span className="font-mono text-[10px] text-[#F3EADB]/25">
                 {(page - 1) * LIMIT + 1}–{Math.min(page * LIMIT, total)} sur {total}
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#1A1612]/40 hover:text-[#1A1612] disabled:opacity-30 transition-colors">← Préc.</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">← Préc.</button>
                 <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total}
-                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#1A1612]/40 hover:text-[#1A1612] disabled:opacity-30 transition-colors">Suiv. →</button>
+                  className="px-3 py-1.5 rounded-lg border border-white/[0.14] font-mono text-[10px] text-[#F3EADB]/40 hover:text-[#F3EADB] disabled:opacity-30 transition-colors">Suiv. →</button>
               </div>
             </div>
           )}

@@ -14,7 +14,7 @@ const sizes = {
   xl: "text-8xl md:text-[10rem]",
 };
 
-export function Paren({ children, className, size = "lg", color = "#FF3D7F" }: ParenProps) {
+export function Paren({ children, className, size = "lg", color = "#E0337E" }: ParenProps) {
   return (
     <span className={cn("inline-flex items-center gap-1", className)}>
       <span

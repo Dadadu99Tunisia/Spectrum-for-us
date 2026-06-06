@@ -64,7 +64,7 @@ function ProgressRing({
   return (
     <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
       <circle cx={size / 2} cy={size / 2} r={r} fill="none"
-        stroke="rgba(26,22,18,.08)" strokeWidth={stroke} />
+        stroke="rgba(243,234,219,.08)" strokeWidth={stroke} />
       <circle cx={size / 2} cy={size / 2} r={r} fill="none"
         stroke={color} strokeWidth={stroke}
         strokeDasharray={c}
@@ -111,8 +111,8 @@ function SpotCard({
             <Icon size={22} style={{ color }} />
           </div>
           <div>
-            <p className="font-fraunces text-xl text-[#1A1612]">{tier}</p>
-            <p className="font-mono text-[10px] text-[#1A1612]/35 mt-0.5">{rang}</p>
+            <p className="font-fraunces text-xl text-[#F3EADB]">{tier}</p>
+            <p className="font-mono text-[10px] text-[#F3EADB]/35 mt-0.5">{rang}</p>
           </div>
         </div>
 
@@ -123,7 +123,7 @@ function SpotCard({
             <span className="font-fraunces text-sm leading-none" style={{ color: full ? "#6b7280" : color }}>
               {count}
             </span>
-            <span className="font-mono text-[8px] text-[#1A1612]/30 leading-none mt-0.5">/{total}</span>
+            <span className="font-mono text-[8px] text-[#F3EADB]/30 leading-none mt-0.5">/{total}</span>
           </div>
         </div>
       </div>
@@ -131,7 +131,7 @@ function SpotCard({
       {/* Status pill */}
       <div className="mb-5">
         {full ? (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[10px] bg-[#1A1612]/5 border border-[#1A1612]/10 text-[#1A1612]/30">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[10px] bg-[#F3EADB]/5 border border-[#F3EADB]/10 text-[#F3EADB]/30">
             <span className="w-1.5 h-1.5 rounded-full bg-[#6b7280]" /> Complet
           </span>
         ) : (
@@ -148,7 +148,7 @@ function SpotCard({
         {benefits.map((b, i) => (
           <li key={i} className="flex items-start gap-2.5">
             <Check size={13} className="mt-0.5 shrink-0" style={{ color: full ? "#4b5563" : color }} />
-            <span className={`font-hanken text-sm leading-snug ${full ? "text-[#1A1612]/25" : "text-[#1A1612]/70"} ${b.bold ? "font-semibold" : ""}`}>
+            <span className={`font-hanken text-sm leading-snug ${full ? "text-[#F3EADB]/25" : "text-[#F3EADB]/70"} ${b.bold ? "font-semibold" : ""}`}>
               {b.label}
             </span>
           </li>
@@ -157,11 +157,11 @@ function SpotCard({
 
       {/* Progress bar */}
       <div>
-        <div className="flex justify-between font-mono text-[9px] text-[#1A1612]/25 mb-1.5">
+        <div className="flex justify-between font-mono text-[9px] text-[#F3EADB]/25 mb-1.5">
           <span>{count} inscrits</span>
           <span>{total} places</span>
         </div>
-        <div className="h-1.5 rounded-full bg-[#1A1612]/8 overflow-hidden">
+        <div className="h-1.5 rounded-full bg-[#F3EADB]/8 overflow-hidden">
           <div className="h-full rounded-full transition-all duration-1000"
             style={{
               width: `${Math.min((count / total) * 100, 100)}%`,
@@ -183,7 +183,7 @@ function TestimonyCard({
   const { ref, visible } = useInView();
   return (
     <div ref={ref}
-      className="rounded-2xl p-6 border border-[#1A1612]/8 bg-[#1A1612]/[0.025] transition-all duration-700"
+      className="rounded-2xl p-6 border border-[#F3EADB]/8 bg-[#F3EADB]/[0.025] transition-all duration-700"
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(20px)",
@@ -191,15 +191,15 @@ function TestimonyCard({
       }}>
       <div className="flex gap-0.5 mb-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <Star key={i} size={12} fill="#FF3D7F" className="text-[#FF3D7F]" />
+          <Star key={i} size={12} fill="#E0337E" className="text-[#E0337E]" />
         ))}
       </div>
-      <p className="font-hanken text-sm text-[#1A1612]/70 leading-relaxed mb-4 italic">
+      <p className="font-hanken text-sm text-[#F3EADB]/70 leading-relaxed mb-4 italic">
         &ldquo;{quote}&rdquo;
       </p>
       <div>
-        <p className="font-hanken text-sm font-semibold text-[#1A1612]">{author}</p>
-        <p className="font-mono text-[9px] text-[#1A1612]/35 mt-0.5">{role}</p>
+        <p className="font-hanken text-sm font-semibold text-[#F3EADB]">{author}</p>
+        <p className="font-mono text-[9px] text-[#F3EADB]/35 mt-0.5">{role}</p>
       </div>
     </div>
   );
@@ -209,18 +209,18 @@ function TestimonyCard({
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-[#1A1612]/8 last:border-0">
+    <div className="border-b border-[#F3EADB]/8 last:border-0">
       <button onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between gap-4 py-5 text-left group">
-        <p className="font-hanken text-base text-[#1A1612]/80 group-hover:text-[#1A1612] transition-colors pr-4">
+        <p className="font-hanken text-base text-[#F3EADB]/80 group-hover:text-[#F3EADB] transition-colors pr-4">
           {q}
         </p>
-        <ChevronDown size={16} className="text-[#1A1612]/30 shrink-0 transition-transform duration-300"
+        <ChevronDown size={16} className="text-[#F3EADB]/30 shrink-0 transition-transform duration-300"
           style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }} />
       </button>
       <div className="overflow-hidden transition-all duration-300"
         style={{ maxHeight: open ? "300px" : "0", opacity: open ? 1 : 0 }}>
-        <p className="font-hanken text-sm text-[#1A1612]/50 leading-relaxed pb-5">{a}</p>
+        <p className="font-hanken text-sm text-[#F3EADB]/50 leading-relaxed pb-5">{a}</p>
       </div>
     </div>
   );
@@ -276,7 +276,7 @@ export default function ProgrammeFondateurPage() {
   const totalInscrits  = founderCount + earlyCount;
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#FBF9F5 0%,#FBF9F5 40%,#F1ECE3 100%)" }}>
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#0a0515 0%,#0f0820 40%,#09101a 100%)" }}>
       <Header />
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -289,7 +289,7 @@ export default function ProgrammeFondateurPage() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] blur-[120px] opacity-20"
             style={{ background: "radial-gradient(ellipse,#6D2DB5 0%,transparent 70%)" }} />
           <div className="absolute top-20 left-1/4 w-60 h-60 blur-3xl opacity-10"
-            style={{ background: "radial-gradient(circle,#FF3D7F,transparent)" }} />
+            style={{ background: "radial-gradient(circle,#E0337E,transparent)" }} />
           <div className="absolute top-10 right-1/4 w-40 h-40 blur-3xl opacity-10"
             style={{ background: "radial-gradient(circle,#FFD700,transparent)" }} />
         </div>
@@ -308,53 +308,53 @@ export default function ProgrammeFondateurPage() {
           </div>
 
           {/* Headline */}
-          <h1 className="font-fraunces text-5xl sm:text-6xl md:text-7xl text-[#1A1612] leading-[1.05] mb-6">
+          <h1 className="font-fraunces text-5xl sm:text-6xl md:text-7xl text-[#F3EADB] leading-[1.05] mb-6">
             Programme Fondateur
             <span className="block mt-2 text-transparent bg-clip-text"
-              style={{ backgroundImage: "linear-gradient(135deg,#FFD700,#FF3D7F,#a78bfa)" }}>
+              style={{ backgroundImage: "linear-gradient(135deg,#FFD700,#E0337E,#a78bfa)" }}>
               Spectrum 🌈
             </span>
           </h1>
 
           {/* Subhead */}
-          <p className="font-hanken text-xl text-[#1A1612]/55 max-w-2xl mx-auto leading-relaxed mb-10">
+          <p className="font-hanken text-xl text-[#F3EADB]/55 max-w-2xl mx-auto leading-relaxed mb-10">
             Rejoins les premiers créateur·ices de Spectrum et prends une place
             que personne ne pourra racheter plus tard.
           </p>
 
           {/* Live counter */}
           <div ref={statsRef} className="inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-8 mb-10 px-8 py-5 rounded-2xl border"
-            style={{ background: "rgba(26,22,18,.03)", borderColor: "rgba(26,22,18,.1)" }}>
+            style={{ background: "rgba(243,234,219,.03)", borderColor: "rgba(243,234,219,.1)" }}>
 
             <div className="text-center">
               <div className="font-fraunces text-4xl text-[#FFD700] leading-none">
                 {statsVisible ? <AnimatedNumber to={founderCount} /> : 0}
-                <span className="text-[#1A1612]/25 text-2xl"> / 20</span>
+                <span className="text-[#F3EADB]/25 text-2xl"> / 20</span>
               </div>
-              <p className="font-mono text-[10px] text-[#1A1612]/30 mt-1.5 flex items-center gap-1 justify-center">
+              <p className="font-mono text-[10px] text-[#F3EADB]/30 mt-1.5 flex items-center gap-1 justify-center">
                 <Trophy size={9} /> Fondateur·ices inscrits
               </p>
             </div>
 
-            <div className="hidden sm:block w-px h-10 bg-[#1A1612]/10" />
+            <div className="hidden sm:block w-px h-10 bg-[#F3EADB]/10" />
 
             <div className="text-center">
               <div className="font-fraunces text-4xl text-[#a78bfa] leading-none">
                 {statsVisible ? <AnimatedNumber to={earlyCount} /> : 0}
-                <span className="text-[#1A1612]/25 text-2xl"> / 100</span>
+                <span className="text-[#F3EADB]/25 text-2xl"> / 100</span>
               </div>
-              <p className="font-mono text-[10px] text-[#1A1612]/30 mt-1.5 flex items-center gap-1 justify-center">
+              <p className="font-mono text-[10px] text-[#F3EADB]/30 mt-1.5 flex items-center gap-1 justify-center">
                 <Rocket size={9} /> Pionnier·es inscrits
               </p>
             </div>
 
-            <div className="hidden sm:block w-px h-10 bg-[#1A1612]/10" />
+            <div className="hidden sm:block w-px h-10 bg-[#F3EADB]/10" />
 
             <div className="text-center">
               <div className="font-fraunces text-4xl text-[#1C9C95] leading-none">
                 {statsVisible ? <AnimatedNumber to={founderLeft + earlyLeft} /> : 0}
               </div>
-              <p className="font-mono text-[10px] text-[#1A1612]/30 mt-1.5 flex items-center gap-1 justify-center">
+              <p className="font-mono text-[10px] text-[#F3EADB]/30 mt-1.5 flex items-center gap-1 justify-center">
                 <Clock size={9} /> Places encore disponibles
               </p>
             </div>
@@ -374,19 +374,19 @@ export default function ProgrammeFondateurPage() {
             <Link href="/vendre/onboarding"
               className="flex items-center gap-3 px-8 py-4 rounded-2xl font-hanken text-base font-semibold text-white transition-all hover:scale-105 active:scale-95"
               style={{
-                background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)",
+                background: "linear-gradient(135deg,#6D2DB5,#E0337E)",
                 boxShadow: "0 12px 40px rgba(109,45,181,.45)",
               }}>
               Rejoindre le Programme Fondateur
               <ArrowRight size={17} />
             </Link>
             <a href="#avantages"
-              className="flex items-center gap-2 px-6 py-4 rounded-2xl font-hanken text-sm text-[#1A1612]/50 hover:text-[#1A1612] border border-[#1A1612]/10 hover:border-[#1A1612]/20 transition-all">
+              className="flex items-center gap-2 px-6 py-4 rounded-2xl font-hanken text-sm text-[#F3EADB]/50 hover:text-[#F3EADB] border border-[#F3EADB]/10 hover:border-[#F3EADB]/20 transition-all">
               Voir les avantages <ChevronDown size={14} />
             </a>
           </div>
 
-          <p className="font-mono text-[10px] text-[#1A1612]/20 mt-5">
+          <p className="font-mono text-[10px] text-[#F3EADB]/20 mt-5">
             🌈 Statut attribué à vie · Non transférable · Le compteur est réel
           </p>
         </div>
@@ -399,8 +399,8 @@ export default function ProgrammeFondateurPage() {
         <div className="max-w-5xl mx-auto">
 
           <div className="text-center mb-14">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#1A1612]/25 mb-3">Avantages exclusifs</p>
-            <h2 className="font-fraunces text-3xl sm:text-4xl text-[#1A1612]">3 niveaux. 1 seule chance.</h2>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/25 mb-3">Avantages exclusifs</p>
+            <h2 className="font-fraunces text-3xl sm:text-4xl text-[#F3EADB]">3 niveaux. 1 seule chance.</h2>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-5">
@@ -431,7 +431,7 @@ export default function ProgrammeFondateurPage() {
               tier="Pionnier·e"
               rang="Rangs 21 — 100"
               color="#a78bfa"
-              gradient="linear-gradient(145deg,rgba(167,139,250,.06) 0%,rgba(255,61,127,.03) 100%)"
+              gradient="linear-gradient(145deg,rgba(167,139,250,.06) 0%,rgba(224,51,126,.03) 100%)"
               borderColor="rgba(167,139,250,.2)"
               glowColor="rgba(167,139,250,.06)"
               count={earlyCount}
@@ -479,26 +479,26 @@ export default function ProgrammeFondateurPage() {
         <div className="max-w-3xl mx-auto">
           <div className="rounded-3xl p-10 border text-center relative overflow-hidden"
             style={{
-              background: "linear-gradient(135deg,rgba(109,45,181,.12) 0%,rgba(255,61,127,.08) 100%)",
+              background: "linear-gradient(135deg,rgba(109,45,181,.12) 0%,rgba(224,51,126,.08) 100%)",
               borderColor: "rgba(167,139,250,.2)",
             }}>
 
             {/* Glow */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
               <div className="absolute -top-8 -right-8 w-48 h-48 rounded-full blur-3xl opacity-15"
-                style={{ background: "radial-gradient(circle,#FF3D7F,transparent)" }} />
+                style={{ background: "radial-gradient(circle,#E0337E,transparent)" }} />
             </div>
 
             <div className="relative z-10">
               <p className="font-mono text-[10px] uppercase tracking-widest text-[#a78bfa]/50 mb-4">Pourquoi maintenant ?</p>
-              <h2 className="font-fraunces text-3xl sm:text-4xl text-[#1A1612] mb-6 leading-tight">
+              <h2 className="font-fraunces text-3xl sm:text-4xl text-[#F3EADB] mb-6 leading-tight">
                 Après les 100 premiers vendeurs,<br />
                 <span className="text-transparent bg-clip-text"
-                  style={{ backgroundImage: "linear-gradient(135deg,#FF3D7F,#a78bfa)" }}>
+                  style={{ backgroundImage: "linear-gradient(135deg,#E0337E,#a78bfa)" }}>
                   ce statut n&apos;existera plus jamais.
                 </span>
               </h2>
-              <p className="font-hanken text-base text-[#1A1612]/50 max-w-xl mx-auto leading-relaxed mb-8">
+              <p className="font-hanken text-base text-[#F3EADB]/50 max-w-xl mx-auto leading-relaxed mb-8">
                 Les Fondateur·ices et Pionnier·es seront les seul·es à bénéficier de ces avantages à vie.
                 Chaque jour, des places disparaissent. Le compteur est réel — il est directement connecté à notre base de données.
               </p>
@@ -513,9 +513,9 @@ export default function ProgrammeFondateurPage() {
                   <div key={label} className="text-center">
                     <div className="flex items-center justify-center gap-1.5 mb-1">
                       <Icon size={13} className="text-[#a78bfa]" />
-                      <span className="font-fraunces text-2xl text-[#1A1612]">{val}</span>
+                      <span className="font-fraunces text-2xl text-[#F3EADB]">{val}</span>
                     </div>
-                    <p className="font-mono text-[9px] text-[#1A1612]/30">{label}</p>
+                    <p className="font-mono text-[9px] text-[#F3EADB]/30">{label}</p>
                   </div>
                 ))}
               </div>
@@ -523,7 +523,7 @@ export default function ProgrammeFondateurPage() {
               <Link href="/vendre/onboarding"
                 className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-hanken font-semibold text-white transition-all hover:scale-105 active:scale-95"
                 style={{
-                  background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)",
+                  background: "linear-gradient(135deg,#6D2DB5,#E0337E)",
                   boxShadow: "0 12px 40px rgba(109,45,181,.4)",
                 }}>
                 Je veux ma place maintenant
@@ -540,8 +540,8 @@ export default function ProgrammeFondateurPage() {
       <section className="py-24 px-5">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#1A1612]/25 mb-3">Ils et elles rejoignent déjà</p>
-            <h2 className="font-fraunces text-3xl text-[#1A1612]">Spectrum se construit avec vous</h2>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/25 mb-3">Ils et elles rejoignent déjà</p>
+            <h2 className="font-fraunces text-3xl text-[#F3EADB]">Spectrum se construit avec vous</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {TESTIMONIES.map((t, i) => (
@@ -572,18 +572,18 @@ export default function ProgrammeFondateurPage() {
               },
               {
                 icon: Sparkles,
-                color: "#FF3D7F",
+                color: "#E0337E",
                 title: "Accès à tout l'écosystème",
                 desc: "Marketplace, annuaire LGBTQ+, événements, communauté. Un seul programme, tous les accès.",
               },
             ].map(({ icon: Icon, color, title, desc }) => (
-              <div key={title} className="rounded-2xl p-6 border border-[#1A1612]/8 bg-[#1A1612]/[0.02]">
+              <div key={title} className="rounded-2xl p-6 border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02]">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
                   style={{ background: `${color}15` }}>
                   <Icon size={18} style={{ color }} />
                 </div>
-                <p className="font-hanken text-base font-semibold text-[#1A1612] mb-2">{title}</p>
-                <p className="font-hanken text-sm text-[#1A1612]/45 leading-relaxed">{desc}</p>
+                <p className="font-hanken text-base font-semibold text-[#F3EADB] mb-2">{title}</p>
+                <p className="font-hanken text-sm text-[#F3EADB]/45 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -596,10 +596,10 @@ export default function ProgrammeFondateurPage() {
       <section className="py-24 px-5">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#1A1612]/25 mb-3">Questions fréquentes</p>
-            <h2 className="font-fraunces text-3xl text-[#1A1612]">Tout ce que tu veux savoir</h2>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-[#F3EADB]/25 mb-3">Questions fréquentes</p>
+            <h2 className="font-fraunces text-3xl text-[#F3EADB]">Tout ce que tu veux savoir</h2>
           </div>
-          <div className="rounded-2xl border border-[#1A1612]/8 bg-[#1A1612]/[0.02] divide-y divide-[#1A1612]/8 px-6">
+          <div className="rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02] divide-y divide-[#F3EADB]/8 px-6">
             {FAQS.map((f) => <FaqItem key={f.q} {...f} />)}
           </div>
         </div>
@@ -612,7 +612,7 @@ export default function ProgrammeFondateurPage() {
         <div className="max-w-2xl mx-auto">
           <div className="rounded-3xl p-12 text-center border relative overflow-hidden"
             style={{
-              background: "linear-gradient(135deg,#FBF9F5 0%,#1a0d35 50%,#FBF9F5 100%)",
+              background: "linear-gradient(135deg,#0f0820 0%,#1a0d35 50%,#0d1a2e 100%)",
               borderColor: "rgba(167,139,250,.2)",
               boxShadow: "0 0 80px rgba(109,45,181,.15)",
             }}>
@@ -627,10 +627,10 @@ export default function ProgrammeFondateurPage() {
 
             <div className="relative z-10">
               <div className="text-4xl mb-5">🌈</div>
-              <h2 className="font-fraunces text-3xl sm:text-4xl text-[#1A1612] mb-4 leading-tight">
+              <h2 className="font-fraunces text-3xl sm:text-4xl text-[#F3EADB] mb-4 leading-tight">
                 Rejoindre les Fondateur·ices Spectrum
               </h2>
-              <p className="font-hanken text-base text-[#1A1612]/45 mb-8 max-w-md mx-auto leading-relaxed">
+              <p className="font-hanken text-base text-[#F3EADB]/45 mb-8 max-w-md mx-auto leading-relaxed">
                 Une seule chance. Une seule fois.
                 Ensuite, ce sera trop tard.
               </p>
@@ -656,14 +656,14 @@ export default function ProgrammeFondateurPage() {
               <Link href="/vendre/onboarding"
                 className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-hanken text-lg font-semibold text-white transition-all hover:scale-105 active:scale-95"
                 style={{
-                  background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)",
+                  background: "linear-gradient(135deg,#6D2DB5,#E0337E)",
                   boxShadow: "0 16px 50px rgba(109,45,181,.5)",
                 }}>
                 Je veux ma place
                 <ArrowRight size={19} />
               </Link>
 
-              <p className="font-mono text-[10px] text-[#1A1612]/20 mt-5">
+              <p className="font-mono text-[10px] text-[#F3EADB]/20 mt-5">
                 🌈 Programme limité à 20 Fondateur·ices + 100 Early Adopters · Statut à vie
               </p>
             </div>

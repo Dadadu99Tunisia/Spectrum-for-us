@@ -15,7 +15,7 @@ type VendorDetail = {
 };
 
 const KYC_STATUS_UI: Record<string, { label: string; color: string; bg: string; icon: React.ElementType }> = {
-  pending:   { label: "En attente",   color: "text-[#1A1612]/50", bg: "bg-[#1A1612]/5 border-[#1A1612]/10",   icon: Clock },
+  pending:   { label: "En attente",   color: "text-[#F3EADB]/50", bg: "bg-[#F3EADB]/5 border-[#F3EADB]/10",   icon: Clock },
   submitted: { label: "Soumis",       color: "text-[#E0901E]",    bg: "bg-[#E0901E]/10 border-[#E0901E]/20",   icon: AlertCircle },
   verified:  { label: "Vérifié ✓",   color: "text-green-400",    bg: "bg-green-500/10 border-green-500/20",   icon: CheckCircle },
   rejected:  { label: "Rejeté",       color: "text-red-400",      bg: "bg-red-500/10 border-red-500/20",       icon: XCircle },
@@ -54,13 +54,13 @@ export default function VendorDetailPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center py-20">
-      <div className="w-6 h-6 rounded-full border-2 border-[#FF3D7F] border-t-transparent animate-spin" />
+      <div className="w-6 h-6 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
     </div>
   );
 
   if (!data) return (
     <div className="text-center py-20">
-      <p className="font-hanken text-[#1A1612]/40">Boutique introuvable</p>
+      <p className="font-hanken text-[#F3EADB]/40">Boutique introuvable</p>
     </div>
   );
 
@@ -73,50 +73,50 @@ export default function VendorDetailPage() {
     <div className="space-y-6 max-w-4xl">
       {/* Toast */}
       {toast && (
-        <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#FF3D7F] text-white font-hanken text-sm shadow-xl">
+        <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#E0337E] text-white font-hanken text-sm shadow-xl">
           {toast}
         </div>
       )}
 
       {/* Back */}
       <button onClick={() => router.back()}
-        className="flex items-center gap-2 text-[#1A1612]/40 hover:text-[#1A1612] transition-colors font-hanken text-sm">
+        className="flex items-center gap-2 text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors font-hanken text-sm">
         <ArrowLeft size={14} /> Retour
       </button>
 
       {/* Shop header */}
-      <div className="flex items-start gap-5 p-6 rounded-2xl bg-[#1A1612]/3 border border-[#1A1612]/8">
+      <div className="flex items-start gap-5 p-6 rounded-2xl bg-[#F3EADB]/3 border border-[#F3EADB]/8">
         <div className="w-14 h-14 rounded-xl bg-[#6D2DB5]/20 border border-[#6D2DB5]/30 flex items-center justify-center flex-shrink-0">
           <Store size={22} className="text-[#6D2DB5]" />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="font-fraunces text-2xl text-[#1A1612]">{shop.name as string}</h1>
+            <h1 className="font-fraunces text-2xl text-[#F3EADB]">{shop.name as string}</h1>
             <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[9px] border ${kycUi.bg} ${kycUi.color}`}>
               <KycIcon size={9} /> {kycUi.label}
             </span>
-            <span className={`w-2 h-2 rounded-full ${shop.is_active ? "bg-green-400" : "bg-[#1A1612]/15"}`} title={shop.is_active ? "Active" : "Inactive"} />
+            <span className={`w-2 h-2 rounded-full ${shop.is_active ? "bg-green-400" : "bg-[#F3EADB]/15"}`} title={shop.is_active ? "Active" : "Inactive"} />
           </div>
-          <p className="font-mono text-xs text-[#1A1612]/30 mt-1">/{shop.slug as string}</p>
+          <p className="font-mono text-xs text-[#F3EADB]/30 mt-1">/{shop.slug as string}</p>
           <div className="flex items-center gap-4 mt-3">
-            <span className="font-mono text-[10px] text-[#1A1612]/25">
+            <span className="font-mono text-[10px] text-[#F3EADB]/25">
               Créée le {new Date(shop.created_at as string).toLocaleDateString("fr-FR")}
             </span>
-            <span className="flex items-center gap-1 font-mono text-[10px] text-[#1A1612]/25">
+            <span className="flex items-center gap-1 font-mono text-[10px] text-[#F3EADB]/25">
               <Package size={9} /> {product_count} produits
             </span>
           </div>
         </div>
         <a href={`/boutique/${shop.slug}`} target="_blank" rel="noreferrer"
-          className="p-2 rounded-lg border border-[#1A1612]/10 text-[#1A1612]/30 hover:text-[#1A1612] transition-colors">
+          className="p-2 rounded-lg border border-[#F3EADB]/10 text-[#F3EADB]/30 hover:text-[#F3EADB] transition-colors">
           <ExternalLink size={13} />
         </a>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* KYC Panel */}
-        <div className="rounded-2xl border border-[#1A1612]/8 p-5 space-y-4">
-          <h2 className="font-fraunces text-base text-[#1A1612]">Informations KYC</h2>
+        <div className="rounded-2xl border border-[#F3EADB]/8 p-5 space-y-4">
+          <h2 className="font-fraunces text-base text-[#F3EADB]">Informations KYC</h2>
           {kyc ? (
             <div className="space-y-3">
               {[
@@ -129,13 +129,13 @@ export default function VendorDetailPage() {
                 ["Adresse",         kyc.address_line1 ? `${String(kyc.address_line1)}, ${String(kyc.address_zip ?? "")} ${String(kyc.address_city ?? "")}` : null],
               ].map(([label, value]) => value ? (
                 <div key={String(label)} className="flex justify-between gap-4">
-                  <span className="font-mono text-[10px] text-[#1A1612]/30 uppercase tracking-wide flex-shrink-0">{String(label)}</span>
-                  <span className="font-hanken text-xs text-[#1A1612]/70 text-right">{String(value)}</span>
+                  <span className="font-mono text-[10px] text-[#F3EADB]/30 uppercase tracking-wide flex-shrink-0">{String(label)}</span>
+                  <span className="font-hanken text-xs text-[#F3EADB]/70 text-right">{String(value)}</span>
                 </div>
               ) : null)}
               {Boolean(kyc.instagram_url) && (
                 <a href={kyc.instagram_url as string} target="_blank" rel="noreferrer"
-                  className="flex items-center gap-2 text-[#FF3D7F] font-hanken text-xs hover:underline">
+                  className="flex items-center gap-2 text-[#E0337E] font-hanken text-xs hover:underline">
                   <Link2 size={12} /> Instagram
                 </a>
               )}
@@ -147,18 +147,18 @@ export default function VendorDetailPage() {
               )}
             </div>
           ) : (
-            <p className="font-hanken text-sm text-[#1A1612]/30">KYC non soumis</p>
+            <p className="font-hanken text-sm text-[#F3EADB]/30">KYC non soumis</p>
           )}
 
           {/* KYC Actions */}
           {kycStatus === "submitted" && (
-            <div className="pt-3 border-t border-[#1A1612]/6 space-y-3">
+            <div className="pt-3 border-t border-[#F3EADB]/6 space-y-3">
               <textarea
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 placeholder="Notes (visible par le·la vendeur·se si rejeté·e)…"
                 rows={2}
-                className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-2 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/50 resize-none" />
+                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-2 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/50 resize-none" />
               <div className="flex gap-2">
                 <button onClick={() => handleKyc("reject")} disabled={!!actionLoading}
                   className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 font-hanken text-sm hover:bg-red-500/20 transition-colors disabled:opacity-40">
@@ -179,37 +179,37 @@ export default function VendorDetailPage() {
         </div>
 
         {/* Recent orders */}
-        <div className="rounded-2xl border border-[#1A1612]/8 p-5 space-y-4">
-          <h2 className="font-fraunces text-base text-[#1A1612]">Dernières commandes</h2>
+        <div className="rounded-2xl border border-[#F3EADB]/8 p-5 space-y-4">
+          <h2 className="font-fraunces text-base text-[#F3EADB]">Dernières commandes</h2>
           {recent_orders.length === 0 ? (
-            <p className="font-hanken text-sm text-[#1A1612]/30">Aucune commande</p>
+            <p className="font-hanken text-sm text-[#F3EADB]/30">Aucune commande</p>
           ) : (
             <div className="space-y-2">
               {recent_orders.map((o: Record<string, unknown>) => (
-                <div key={o.id as string} className="flex items-center justify-between py-2 border-b border-[#1A1612]/4">
+                <div key={o.id as string} className="flex items-center justify-between py-2 border-b border-[#F3EADB]/4">
                   <div>
-                    <span className="font-mono text-[10px] text-[#1A1612]/30">#{(o.id as string).slice(0,8).toUpperCase()}</span>
-                    <p className="font-mono text-[9px] text-[#1A1612]/20 mt-0.5">
+                    <span className="font-mono text-[10px] text-[#F3EADB]/30">#{(o.id as string).slice(0,8).toUpperCase()}</span>
+                    <p className="font-mono text-[9px] text-[#F3EADB]/20 mt-0.5">
                       {new Date(o.created_at as string).toLocaleDateString("fr-FR")}
                     </p>
                   </div>
-                  <span className="font-fraunces text-sm text-[#1A1612]">{Number(o.total).toFixed(2)} €</span>
+                  <span className="font-fraunces text-sm text-[#F3EADB]">{Number(o.total).toFixed(2)} €</span>
                 </div>
               ))}
             </div>
           )}
           <div className="pt-2">
-            <h3 className="font-fraunces text-sm text-[#1A1612] mb-3 flex items-center gap-2">
+            <h3 className="font-fraunces text-sm text-[#F3EADB] mb-3 flex items-center gap-2">
               <Package size={12} /> Derniers produits
             </h3>
             {recent_products.length === 0 ? (
-              <p className="font-hanken text-sm text-[#1A1612]/30">Aucun produit</p>
+              <p className="font-hanken text-sm text-[#F3EADB]/30">Aucun produit</p>
             ) : (
               <div className="space-y-2">
                 {recent_products.map((p: Record<string, unknown>) => (
-                  <div key={p.id as string} className="flex items-center justify-between py-1.5 border-b border-[#1A1612]/4">
-                    <span className="font-hanken text-xs text-[#1A1612]/70 truncate flex-1">{p.title as string}</span>
-                    <span className="font-fraunces text-xs text-[#1A1612]/50 ml-2">{Number(p.price).toFixed(2)} €</span>
+                  <div key={p.id as string} className="flex items-center justify-between py-1.5 border-b border-[#F3EADB]/4">
+                    <span className="font-hanken text-xs text-[#F3EADB]/70 truncate flex-1">{p.title as string}</span>
+                    <span className="font-fraunces text-xs text-[#F3EADB]/50 ml-2">{Number(p.price).toFixed(2)} €</span>
                   </div>
                 ))}
               </div>

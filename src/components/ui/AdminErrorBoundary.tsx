@@ -20,11 +20,11 @@ export class AdminErrorBoundary extends React.Component<{ children: React.ReactN
             <AlertTriangle size={24} className="text-[#E0901E]" />
           </div>
           <div className="text-center">
-            <p className="font-fraunces text-lg text-[#1A1612] mb-1">Cette page a rencontré une erreur</p>
-            <p className="font-mono text-xs text-[#1A1612]/30 max-w-sm">{this.state.message}</p>
+            <p className="font-fraunces text-lg text-[#F3EADB] mb-1">Cette page a rencontré une erreur</p>
+            <p className="font-mono text-xs text-[#F3EADB]/30 max-w-sm">{this.state.message}</p>
           </div>
           <button onClick={() => { this.setState({ hasError: false, message: "" }); window.location.reload(); }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#FF3D7F]/90 transition-colors">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#E0337E]/90 transition-colors">
             <RefreshCw size={13} /> Recharger la page
           </button>
         </div>

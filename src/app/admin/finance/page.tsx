@@ -53,7 +53,7 @@ export default function FinancePage() {
       value: fmt(data.revenueThisMonth),
       sub: `vs ${fmt(data.revenuePrevMonth)} le mois dernier`,
       icon: Coins,
-      color: "#FF3D7F",
+      color: "#E0337E",
       trend: growth,
     },
     {
@@ -86,14 +86,14 @@ export default function FinancePage() {
     name: STATUS_LABELS[status] ?? status,
     revenue: Math.round(d.revenue * 100) / 100,
     count: d.count,
-    color: STATUS_COLORS[status] ?? "#1A1612",
+    color: STATUS_COLORS[status] ?? "#F3EADB",
   }));
 
   return (
     <div className="space-y-6 max-w-[1200px]">
       <div>
-        <h1 className="font-fraunces text-2xl text-[#1A1612]">Comptabilité</h1>
-        <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">Vue CFO — données en temps réel</p>
+        <h1 className="font-fraunces text-2xl text-[#F3EADB]">Comptabilité</h1>
+        <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">Vue CFO — données en temps réel</p>
       </div>
 
       {/* KPI Cards */}
@@ -114,9 +114,9 @@ export default function FinancePage() {
                   </span>
                 )}
               </div>
-              <p className="font-fraunces text-xl text-[#1A1612] leading-none mb-1">{k.value}</p>
-              <p className="font-mono text-[9px] text-[#1A1612]/30 uppercase tracking-widest">{k.label}</p>
-              <p className="font-hanken text-[11px] text-[#1A1612]/25 mt-1">{k.sub}</p>
+              <p className="font-fraunces text-xl text-[#F3EADB] leading-none mb-1">{k.value}</p>
+              <p className="font-mono text-[9px] text-[#F3EADB]/30 uppercase tracking-widest">{k.label}</p>
+              <p className="font-hanken text-[11px] text-[#F3EADB]/25 mt-1">{k.sub}</p>
             </div>
           );
         })}
@@ -126,30 +126,30 @@ export default function FinancePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Revenue trend */}
         <div className="lg:col-span-2 p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
-          <p className="font-fraunces text-base text-[#1A1612] mb-1">Revenus — 30 derniers jours</p>
-          <p className="font-mono text-[10px] text-[#1A1612]/30 uppercase mb-5">CA journalier payé</p>
+          <p className="font-fraunces text-base text-[#F3EADB] mb-1">Revenus — 30 derniers jours</p>
+          <p className="font-mono text-[10px] text-[#F3EADB]/30 uppercase mb-5">CA journalier payé</p>
           {data.chartRevenue.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={data.chartRevenue} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="finRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#FF3D7F" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#FF3D7F" stopOpacity={0} />
+                    <stop offset="5%"  stopColor="#E0337E" stopOpacity={0.35} />
+                    <stop offset="95%" stopColor="#E0337E" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1A161208" />
-                <XAxis dataKey="date" tick={{ fill: "#1A161240", fontSize: 10 }} tickLine={false} axisLine={false} interval={4} />
-                <YAxis tick={{ fill: "#1A161240", fontSize: 10 }} tickLine={false} axisLine={false}
+                <CartesianGrid strokeDasharray="3 3" stroke="#F3EADB08" />
+                <XAxis dataKey="date" tick={{ fill: "#F3EADB40", fontSize: 10 }} tickLine={false} axisLine={false} interval={4} />
+                <YAxis tick={{ fill: "#F3EADB40", fontSize: 10 }} tickLine={false} axisLine={false}
                   tickFormatter={v => v === 0 ? "0" : `${(v/1000).toFixed(1)}k€`} />
                 <Tooltip
-                  contentStyle={{ background: "#FBF9F5", border: "1px solid #1A161215", borderRadius: "12px" }}
-                  labelStyle={{ color: "#1A161260", fontFamily: "monospace", fontSize: 10 }}
+                  contentStyle={{ background: "#0e061a", border: "1px solid #F3EADB15", borderRadius: "12px" }}
+                  labelStyle={{ color: "#F3EADB60", fontFamily: "monospace", fontSize: 10 }}
                   formatter={(v: unknown) => [`${Number(v).toFixed(2)} €`, "CA"]} />
-                <Area type="monotone" dataKey="revenue" stroke="#FF3D7F" strokeWidth={2} fill="url(#finRev)" dot={false} />
+                <Area type="monotone" dataKey="revenue" stroke="#E0337E" strokeWidth={2} fill="url(#finRev)" dot={false} />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[220px] flex items-center justify-center text-[#1A1612]/20 font-hanken text-sm">
+            <div className="h-[220px] flex items-center justify-center text-[#F3EADB]/20 font-hanken text-sm">
               Aucune donnée de vente
             </div>
           )}
@@ -157,18 +157,18 @@ export default function FinancePage() {
 
         {/* Répartition par statut */}
         <div className="p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
-          <p className="font-fraunces text-base text-[#1A1612] mb-1">Par statut</p>
-          <p className="font-mono text-[10px] text-[#1A1612]/30 uppercase mb-5">CA toutes périodes</p>
+          <p className="font-fraunces text-base text-[#F3EADB] mb-1">Par statut</p>
+          <p className="font-mono text-[10px] text-[#F3EADB]/30 uppercase mb-5">CA toutes périodes</p>
           {barData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={barData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1A161208" />
-                <XAxis dataKey="name" tick={{ fill: "#1A161240", fontSize: 9 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fill: "#1A161240", fontSize: 9 }} tickLine={false} axisLine={false}
+                <CartesianGrid strokeDasharray="3 3" stroke="#F3EADB08" />
+                <XAxis dataKey="name" tick={{ fill: "#F3EADB40", fontSize: 9 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fill: "#F3EADB40", fontSize: 9 }} tickLine={false} axisLine={false}
                   tickFormatter={v => v === 0 ? "0" : `${(v/1000).toFixed(0)}k`} />
                 <Tooltip
-                  contentStyle={{ background: "#FBF9F5", border: "1px solid #1A161215", borderRadius: "12px" }}
-                  labelStyle={{ color: "#1A161260", fontFamily: "monospace", fontSize: 10 }}
+                  contentStyle={{ background: "#0e061a", border: "1px solid #F3EADB15", borderRadius: "12px" }}
+                  labelStyle={{ color: "#F3EADB60", fontFamily: "monospace", fontSize: 10 }}
                   formatter={(v: unknown) => [`${Number(v).toFixed(2)} €`, "Revenus"]} />
                 <Bar dataKey="revenue" radius={[4,4,0,0]}>
                   {barData.map((entry, i) => <Cell key={i} fill={entry.color} fillOpacity={0.8} />)}
@@ -176,21 +176,21 @@ export default function FinancePage() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[220px] flex items-center justify-center text-[#1A1612]/20 font-hanken text-sm">Aucune donnée</div>
+            <div className="h-[220px] flex items-center justify-center text-[#F3EADB]/20 font-hanken text-sm">Aucune donnée</div>
           )}
         </div>
       </div>
 
       {/* Détail statuts */}
       <div className="p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
-        <p className="font-fraunces text-base text-[#1A1612] mb-4">Détail par statut de commande</p>
+        <p className="font-fraunces text-base text-[#F3EADB] mb-4">Détail par statut de commande</p>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {Object.entries(data.statusBreakdown).map(([status, d]) => (
             <div key={status} className="p-3 rounded-xl border border-white/[0.12]">
-              <div className="w-2 h-2 rounded-full mb-2" style={{ background: STATUS_COLORS[status] ?? "#1A1612" }} />
-              <p className="font-mono text-[9px] text-[#1A1612]/30 uppercase mb-1">{STATUS_LABELS[status] ?? status}</p>
-              <p className="font-fraunces text-lg text-[#1A1612]">{fmt(d.revenue)}</p>
-              <p className="font-hanken text-[11px] text-[#1A1612]/30">{d.count} commande{d.count !== 1 ? "s" : ""}</p>
+              <div className="w-2 h-2 rounded-full mb-2" style={{ background: STATUS_COLORS[status] ?? "#F3EADB" }} />
+              <p className="font-mono text-[9px] text-[#F3EADB]/30 uppercase mb-1">{STATUS_LABELS[status] ?? status}</p>
+              <p className="font-fraunces text-lg text-[#F3EADB]">{fmt(d.revenue)}</p>
+              <p className="font-hanken text-[11px] text-[#F3EADB]/30">{d.count} commande{d.count !== 1 ? "s" : ""}</p>
             </div>
           ))}
         </div>
@@ -199,24 +199,24 @@ export default function FinancePage() {
       {/* Top vendeurs */}
       {data.topVendors.length > 0 && (
         <div className="p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
-          <p className="font-fraunces text-base text-[#1A1612] mb-4">Top vendeurs (CA annuel)</p>
+          <p className="font-fraunces text-base text-[#F3EADB] mb-4">Top vendeurs (CA annuel)</p>
           <div className="space-y-3">
             {data.topVendors.map((v, i) => {
               const pct = data.revenueYear > 0 ? (v.revenue / data.revenueYear) * 100 : 0;
               return (
                 <div key={v.shop_id} className="flex items-center gap-4">
-                  <span className="font-mono text-[10px] text-[#1A1612]/20 w-4">{i + 1}</span>
+                  <span className="font-mono text-[10px] text-[#F3EADB]/20 w-4">{i + 1}</span>
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-[10px] text-[#1A1612]/40">{v.shop_id.slice(0,12)}…</span>
-                      <span className="font-fraunces text-sm text-[#1A1612]">{fmt(v.revenue)}</span>
+                      <span className="font-mono text-[10px] text-[#F3EADB]/40">{v.shop_id.slice(0,12)}…</span>
+                      <span className="font-fraunces text-sm text-[#F3EADB]">{fmt(v.revenue)}</span>
                     </div>
                     <div className="h-1.5 bg-white/[0.09] rounded-full overflow-hidden">
                       <div className="h-full rounded-full"
-                        style={{ width: `${pct}%`, background: "linear-gradient(90deg, #FF3D7F, #6D2DB5)" }} />
+                        style={{ width: `${pct}%`, background: "linear-gradient(90deg, #E0337E, #6D2DB5)" }} />
                     </div>
                   </div>
-                  <span className="font-mono text-[9px] text-[#1A1612]/25 w-10 text-right">{pct.toFixed(1)}%</span>
+                  <span className="font-mono text-[9px] text-[#F3EADB]/25 w-10 text-right">{pct.toFixed(1)}%</span>
                 </div>
               );
             })}

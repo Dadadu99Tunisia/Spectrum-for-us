@@ -15,7 +15,7 @@ const CREATORS = [
     quote: "J'ai été shadowbanné trois fois pour avoir dessiné deux hommes qui s'embrassaient. Ici, c'est mon œuvre principale.",
     bio: "Créations numériques et prints autour de l'identité queer, du corps et de la joie radicale.",
     accentColor: "#6D2DB5",
-    bgColor: "#F1ECE3",
+    bgColor: "#1a0d28",
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ const CREATORS = [
     quote: "Mes bijoux ont une histoire. Ils ont été portés à des mariages que la loi ne reconnaissait pas encore.",
     bio: "Bijoux forgés à la main, pièces uniques. Chaque métal porte la trace d'une célébration.",
     accentColor: "#1C9C95",
-    bgColor: "#F1ECE3",
+    bgColor: "#0a1a1b",
   },
   {
     id: 3,
@@ -38,7 +38,7 @@ const CREATORS = [
     categoryVariant: "peach" as const,
     quote: "J'ai commencé à formuler pour moi. Parce que je ne me reconnaissais pas dans les soins qu'on me vendait.",
     bio: "Formulations naturelles pour des rituels de soin inclusifs, faits pour tous les corps, sans exception.",
-    accentColor: "#1A1612",
+    accentColor: "#F2B79E",
     bgColor: "#1f1408",
   },
   {
@@ -50,8 +50,8 @@ const CREATORS = [
     categoryVariant: "magenta" as const,
     quote: "On publie des histoires que les maisons d'édition trouvent \"trop spécifiques\". Trop spécifiques pour qui ?",
     bio: "Fanzines, publications indépendantes et ateliers d'écriture queer. La marge est un endroit.",
-    accentColor: "#FF3D7F",
-    bgColor: "#F1ECE3",
+    accentColor: "#E0337E",
+    bgColor: "#1a0d28",
   },
 ];
 
@@ -86,7 +86,7 @@ function CreatorCard({
         >
           {/* Front */}
           <div
-            className="rounded-2xl overflow-hidden border border-[#1A1612]/8 hover:border-[#1A1612]/15 transition-colors"
+            className="rounded-2xl overflow-hidden border border-[#F3EADB]/8 hover:border-[#F3EADB]/15 transition-colors"
             style={{ backfaceVisibility: "hidden", background: creator.bgColor }}
           >
             {/* Quote strip */}
@@ -98,7 +98,7 @@ function CreatorCard({
                 "
               </div>
               <p
-                className="font-fraunces text-base text-[#1A1612] leading-snug pl-4 italic relative z-10"
+                className="font-fraunces text-base text-[#F3EADB] leading-snug pl-4 italic relative z-10"
               >
                 {creator.quote}
               </p>
@@ -121,10 +121,10 @@ function CreatorCard({
                     {creator.name[0]}
                   </div>
                   <div>
-                    <h3 className="font-bricolage font-bold text-[#1A1612] text-sm leading-tight">
+                    <h3 className="font-bricolage font-bold text-[#F3EADB] text-sm leading-tight">
                       {creator.name}
                     </h3>
-                    <span className="font-mono text-[10px] text-[#1A1612]/30">
+                    <span className="font-mono text-[10px] text-[#F3EADB]/30">
                       {creator.pronouns}
                     </span>
                   </div>
@@ -133,7 +133,7 @@ function CreatorCard({
               <Tag variant={creator.categoryVariant} className="mb-3 text-[10px]">
                 {creator.category}
               </Tag>
-              <p className="font-hanken text-xs text-[#1A1612]/45 leading-relaxed">
+              <p className="font-hanken text-xs text-[#F3EADB]/45 leading-relaxed">
                 {creator.bio}
               </p>
               <div
@@ -162,14 +162,14 @@ export function Createurs() {
           className="mb-14 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-widest uppercase text-[#FF3D7F] block mb-3">
+          <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-3">
             Les visages
           </span>
-          <h2 className="font-fraunces text-4xl md:text-5xl text-[#1A1612] leading-tight">
+          <h2 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight">
             Iels créent.{" "}
-            <span className="italic text-[#1A1612]">Iels racontent.</span>
+            <span className="italic text-[#F2B79E]">Iels racontent.</span>
           </h2>
-          <p className="font-hanken text-[#1A1612]/50 mt-3 max-w-xl text-lg leading-relaxed">
+          <p className="font-hanken text-[#F3EADB]/50 mt-3 max-w-xl text-lg leading-relaxed">
             Derrière chaque boutique, une personne qui a décidé que son art
             méritait un espace à lui.
           </p>
@@ -187,7 +187,7 @@ export function Createurs() {
         >
           <a
             href="/decouvrir"
-            className="font-mono text-xs tracking-widest uppercase text-[#1A1612]/40 hover:text-[#FF3D7F] transition-colors duration-200"
+            className="font-mono text-xs tracking-widest uppercase text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors duration-200"
           >
             ( Toutes les boutiques )
           </a>

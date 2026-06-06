@@ -56,9 +56,9 @@ const TYPE_LABELS: Record<string, string> = {
 
 // Segment definitions — each tab filters by these contact_types
 const SEGMENTS = [
-  { id: "all",          label: "Tout le pipeline",  icon: "◈",  types: [] as string[], color: "#1A1612", goal: 500, goalLabel: "contacts" },
+  { id: "all",          label: "Tout le pipeline",  icon: "◈",  types: [] as string[], color: "#F3EADB", goal: 500, goalLabel: "contacts" },
   { id: "associations", label: "Associations",       icon: "🏳️‍🌈", types: ["prospect_association","foundation","grant"], color: "#a78bfa", goal: 500, goalLabel: "organisations" },
-  { id: "createurs",    label: "Créateur·ices",      icon: "✦",  types: ["prospect_creator","prospect_vendor","ambassador"], color: "#FF3D7F", goal: 200, goalLabel: "créateurs" },
+  { id: "createurs",    label: "Créateur·ices",      icon: "✦",  types: ["prospect_creator","prospect_vendor","ambassador"], color: "#E0337E", goal: 200, goalLabel: "créateurs" },
   { id: "partenaires",  label: "Partenaires",        icon: "⬡",  types: ["partner","investor","media"], color: "#1C9C95", goal: 50, goalLabel: "partenaires" },
 ] as const;
 type SegmentId = typeof SEGMENTS[number]["id"];
@@ -86,10 +86,10 @@ function getAiScore(tags: string[] | null): number | null {
 function ScoreDot({ score }: { score: number }) {
   const colors = ["","#f87171","#fb923c","#fbbf24","#34d399","#a78bfa"];
   return (
-    <span className="inline-flex items-center gap-1 font-mono text-[10px]" style={{ color: colors[score] ?? "#1A1612" }}>
+    <span className="inline-flex items-center gap-1 font-mono text-[10px]" style={{ color: colors[score] ?? "#F3EADB" }}>
       {Array.from({ length: 5 }).map((_, i) => (
         <span key={i} className="w-1.5 h-1.5 rounded-full inline-block transition-all"
-          style={{ background: i < score ? (colors[score] ?? "#1A1612") : "rgba(26,22,18,.12)" }} />
+          style={{ background: i < score ? (colors[score] ?? "#F3EADB") : "rgba(243,234,219,.12)" }} />
       ))}
       <span className="ml-0.5">{score}/5</span>
     </span>
@@ -109,7 +109,7 @@ function PipelineBar({ contacts }: { contacts: Contact[] }) {
   const active = ["identified","qualified","nurturing","contacted","partner"] as Stage[];
 
   return (
-    <div className="bg-[#F1ECE3] border border-[#1A1612]/8 rounded-2xl p-5">
+    <div className="bg-[#1c1235] border border-[#F3EADB]/8 rounded-2xl p-5">
       {/* Bar */}
       <div className="flex h-2 rounded-full overflow-hidden gap-px mb-5">
         {active.map(s => {
@@ -126,7 +126,7 @@ function PipelineBar({ contacts }: { contacts: Contact[] }) {
         {STAGES.map(s => (
           <div key={s} className="text-center">
             <p className="font-fraunces text-xl" style={{ color: STAGE_CFG[s].color }}>{counts[s]}</p>
-            <p className="font-mono text-[9px] text-[#1A1612]/30 mt-0.5 leading-tight">{STAGE_CFG[s].label}</p>
+            <p className="font-mono text-[9px] text-[#F3EADB]/30 mt-0.5 leading-tight">{STAGE_CFG[s].label}</p>
           </div>
         ))}
       </div>
@@ -149,7 +149,7 @@ function AgentButton({
 }) {
   const base = "flex items-center gap-2 px-3 py-2 rounded-xl font-hanken text-xs transition-all disabled:opacity-40";
   const styles = {
-    default: "bg-[#1A1612]/5 border border-[#1A1612]/10 text-[#1A1612]/60 hover:bg-[#1A1612]/8 hover:text-[#1A1612]",
+    default: "bg-[#F3EADB]/5 border border-[#F3EADB]/10 text-[#F3EADB]/60 hover:bg-[#F3EADB]/8 hover:text-[#F3EADB]",
     primary: "bg-[#6D2DB5]/20 border border-[#6D2DB5]/30 text-[#a78bfa] hover:bg-[#6D2DB5]/30",
   };
   return (
@@ -263,7 +263,7 @@ function ContactPanel({
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       <div ref={panelRef}
-        className="relative z-10 w-full max-w-[420px] bg-[#F1ECE3] border-l border-[#1A1612]/8 flex flex-col h-full shadow-2xl"
+        className="relative z-10 w-full max-w-[420px] bg-[#1a1030] border-l border-[#F3EADB]/8 flex flex-col h-full shadow-2xl"
         style={{ boxShadow: "-20px 0 60px rgba(0,0,0,.6)" }}>
 
         {/* Prism accent bar */}
@@ -271,7 +271,7 @@ function ContactPanel({
           style={{ background: `linear-gradient(90deg,${cfg.color},${cfg.dot}88,${cfg.color})` }} />
 
         {/* ── Header ── */}
-        <div className="px-5 pt-4 pb-4 border-b border-[#1A1612]/6 shrink-0">
+        <div className="px-5 pt-4 pb-4 border-b border-[#F3EADB]/6 shrink-0">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               {editing === "name" ? (
@@ -279,24 +279,24 @@ function ContactPanel({
                   <input autoFocus value={editVal}
                     onChange={e => setEditVal(e.target.value)}
                     onKeyDown={e => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") setEditing(null); }}
-                    className="flex-1 bg-[#1A1612]/8 border border-[#6D2DB5]/50 rounded-lg px-2 py-1 font-fraunces text-lg text-[#1A1612] focus:outline-none focus:border-[#a78bfa]" />
+                    className="flex-1 bg-[#F3EADB]/8 border border-[#6D2DB5]/50 rounded-lg px-2 py-1 font-fraunces text-lg text-[#F3EADB] focus:outline-none focus:border-[#a78bfa]" />
                   <button onClick={saveEdit} disabled={saving} className="text-[#34d399]"><Check size={16} /></button>
                 </div>
               ) : (
                 <button onClick={() => startEdit("name", local.name)}
                   className="group flex items-center gap-2 text-left">
-                  <h2 className="font-fraunces text-xl text-[#1A1612] leading-tight">{local.name}</h2>
-                  <Edit3 size={11} className="text-[#1A1612]/15 group-hover:text-[#1A1612]/50 transition-colors shrink-0 mt-0.5" />
+                  <h2 className="font-fraunces text-xl text-[#F3EADB] leading-tight">{local.name}</h2>
+                  <Edit3 size={11} className="text-[#F3EADB]/15 group-hover:text-[#F3EADB]/50 transition-colors shrink-0 mt-0.5" />
                 </button>
               )}
               {local.company && (
-                <p className="font-mono text-[10px] text-[#1A1612]/30 mt-1 flex items-center gap-1">
+                <p className="font-mono text-[10px] text-[#F3EADB]/30 mt-1 flex items-center gap-1">
                   <Building2 size={9} /> {local.company}
                 </p>
               )}
             </div>
             <button onClick={onClose}
-              className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#1A1612]/5 hover:bg-[#1A1612]/10 text-[#1A1612]/40 hover:text-[#1A1612] transition-all shrink-0">
+              className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#F3EADB]/5 hover:bg-[#F3EADB]/10 text-[#F3EADB]/40 hover:text-[#F3EADB] transition-all shrink-0">
               <X size={14} />
             </button>
           </div>
@@ -308,7 +308,7 @@ function ContactPanel({
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.dot }} />
               {cfg.label}
             </span>
-            <span className="font-mono text-[10px] px-2 py-1 rounded-full bg-[#1A1612]/5 border border-[#1A1612]/8 text-[#1A1612]/40">
+            <span className="font-mono text-[10px] px-2 py-1 rounded-full bg-[#F3EADB]/5 border border-[#F3EADB]/8 text-[#F3EADB]/40">
               {TYPE_LABELS[local.contact_type] ?? local.contact_type}
             </span>
             {score !== null && <ScoreDot score={score} />}
@@ -321,7 +321,7 @@ function ContactPanel({
         </div>
 
         {/* ── AI Actions ── */}
-        <div className="px-5 py-3 border-b border-[#1A1612]/6 bg-[#6D2DB5]/5 shrink-0">
+        <div className="px-5 py-3 border-b border-[#F3EADB]/6 bg-[#6D2DB5]/5 shrink-0">
           <p className="font-mono text-[9px] uppercase tracking-widest text-[#a78bfa]/50 mb-2.5">Actions IA</p>
           <div className="flex gap-2 flex-wrap">
             <AgentButton
@@ -370,12 +370,12 @@ function ContactPanel({
                 editing={editing} editVal={editVal}
                 onEdit={startEdit} onSave={saveEdit} onCancel={() => setEditing(null)}
                 onChange={setEditVal} saving={saving}
-                renderValue={v => <a href={`tel:${v}`} className="text-[#1A1612]/70 hover:text-[#1A1612]">{v}</a>}
+                renderValue={v => <a href={`tel:${v}`} className="text-[#F3EADB]/70 hover:text-[#F3EADB]">{v}</a>}
               />
 
               {updatedParsed.website && (
                 <div className="flex items-center gap-3 py-1.5">
-                  <span className="text-[#1A1612]/20 shrink-0"><Globe size={12} /></span>
+                  <span className="text-[#F3EADB]/20 shrink-0"><Globe size={12} /></span>
                   <a href={updatedParsed.website.startsWith("http") ? updatedParsed.website : `https://${updatedParsed.website}`}
                     target="_blank" rel="noopener noreferrer"
                     className="font-hanken text-sm text-[#1C9C95] hover:underline flex items-center gap-1 truncate">
@@ -386,7 +386,7 @@ function ContactPanel({
 
               {updatedParsed.instagram && (
                 <div className="flex items-center gap-3 py-1.5">
-                  <span className="text-[#1A1612]/20 shrink-0"><AtSign size={12} /></span>
+                  <span className="text-[#F3EADB]/20 shrink-0"><AtSign size={12} /></span>
                   <a href={`https://instagram.com/${updatedParsed.instagram}`} target="_blank" rel="noopener noreferrer"
                     className="font-hanken text-sm text-[#CF3F7C] hover:underline flex items-center gap-1">
                     @{updatedParsed.instagram}<ExternalLink size={9} className="shrink-0" />
@@ -396,15 +396,15 @@ function ContactPanel({
 
               {updatedParsed.city && (
                 <div className="flex items-center gap-3 py-1.5">
-                  <span className="text-[#1A1612]/20 shrink-0"><MapPin size={12} /></span>
-                  <span className="font-hanken text-sm text-[#1A1612]/55">{updatedParsed.city}</span>
+                  <span className="text-[#F3EADB]/20 shrink-0"><MapPin size={12} /></span>
+                  <span className="font-hanken text-sm text-[#F3EADB]/55">{updatedParsed.city}</span>
                 </div>
               )}
 
               {updatedParsed.category && (
                 <div className="flex items-center gap-3 py-1.5">
-                  <span className="text-[#1A1612]/20 shrink-0"><Tag size={12} /></span>
-                  <span className="font-hanken text-sm text-[#1A1612]/55">{updatedParsed.category}</span>
+                  <span className="text-[#F3EADB]/20 shrink-0"><Tag size={12} /></span>
+                  <span className="font-hanken text-sm text-[#F3EADB]/55">{updatedParsed.category}</span>
                 </div>
               )}
             </div>
@@ -423,7 +423,7 @@ function ContactPanel({
                     {copiedMsg ? <><CheckCheck size={9} /> Copié!</> : <><Copy size={9} /> Copier</>}
                   </button>
                 </div>
-                <p className="font-hanken text-xs text-[#1A1612]/65 leading-relaxed whitespace-pre-wrap">
+                <p className="font-hanken text-xs text-[#F3EADB]/65 leading-relaxed whitespace-pre-wrap">
                   {updatedParsed.outreachMessage}
                 </p>
               </div>
@@ -479,14 +479,14 @@ function ContactPanel({
               <div className="mb-3 space-y-2">
                 <textarea value={note} onChange={e => setNote(e.target.value)} rows={3}
                   placeholder="Ajouter une note…"
-                  className="w-full bg-[#1A1612]/4 border border-[#1A1612]/10 rounded-xl px-3 py-2.5 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#a78bfa]/40 resize-none transition-colors" />
+                  className="w-full bg-[#F3EADB]/4 border border-[#F3EADB]/10 rounded-xl px-3 py-2.5 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#a78bfa]/40 resize-none transition-colors" />
                 <div className="flex gap-2">
                   <button onClick={addNote}
                     className="flex-1 py-2 rounded-xl bg-[#6D2DB5] text-white font-hanken text-xs hover:bg-[#6D2DB5]/90 transition-colors">
                     Enregistrer
                   </button>
                   <button onClick={() => { setNote(""); setAddingNote(false); }}
-                    className="px-4 py-2 rounded-xl border border-[#1A1612]/10 text-[#1A1612]/40 font-hanken text-xs hover:text-[#1A1612] transition-colors">
+                    className="px-4 py-2 rounded-xl border border-[#F3EADB]/10 text-[#F3EADB]/40 font-hanken text-xs hover:text-[#F3EADB] transition-colors">
                     ✕
                   </button>
                 </div>
@@ -494,13 +494,13 @@ function ContactPanel({
             )}
 
             {local.notes ? (
-              <div className="bg-[#1A1612]/[0.025] border border-[#1A1612]/6 rounded-xl p-3.5 max-h-48 overflow-y-auto">
-                <p className="font-hanken text-xs text-[#1A1612]/50 leading-relaxed whitespace-pre-wrap">
+              <div className="bg-[#F3EADB]/[0.025] border border-[#F3EADB]/6 rounded-xl p-3.5 max-h-48 overflow-y-auto">
+                <p className="font-hanken text-xs text-[#F3EADB]/50 leading-relaxed whitespace-pre-wrap">
                   {local.notes}
                 </p>
               </div>
             ) : (
-              <p className="font-hanken text-xs text-[#1A1612]/20 italic">Aucune note</p>
+              <p className="font-hanken text-xs text-[#F3EADB]/20 italic">Aucune note</p>
             )}
           </div>
 
@@ -519,18 +519,18 @@ function ContactPanel({
           )}
 
           {/* Dates */}
-          <div className="px-5 pb-5 border-t border-[#1A1612]/5 mt-1 pt-3 space-y-1">
-            <p className="flex items-center gap-2 font-mono text-[9px] text-[#1A1612]/18">
+          <div className="px-5 pb-5 border-t border-[#F3EADB]/5 mt-1 pt-3 space-y-1">
+            <p className="flex items-center gap-2 font-mono text-[9px] text-[#F3EADB]/18">
               <Clock size={8} /> Créé le {new Date(local.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
             </p>
-            <p className="flex items-center gap-2 font-mono text-[9px] text-[#1A1612]/18">
+            <p className="flex items-center gap-2 font-mono text-[9px] text-[#F3EADB]/18">
               <Clock size={8} /> Mis à jour le {new Date(local.updated_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
             </p>
           </div>
         </div>
 
         {/* ── Footer — delete ── */}
-        <div className="shrink-0 border-t border-[#1A1612]/6 px-5 py-3">
+        <div className="shrink-0 border-t border-[#F3EADB]/6 px-5 py-3">
           {confirmDelete ? (
             <div className="flex items-center gap-2">
               <p className="font-hanken text-xs text-[#f87171] flex-1">Supprimer définitivement ?</p>
@@ -539,13 +539,13 @@ function ContactPanel({
                 Confirmer
               </button>
               <button onClick={() => setConfirmDelete(false)}
-                className="px-3 py-1.5 rounded-lg border border-[#1A1612]/8 text-[#1A1612]/35 font-hanken text-xs hover:text-[#1A1612] transition-colors">
+                className="px-3 py-1.5 rounded-lg border border-[#F3EADB]/8 text-[#F3EADB]/35 font-hanken text-xs hover:text-[#F3EADB] transition-colors">
                 Annuler
               </button>
             </div>
           ) : (
             <button onClick={() => setConfirmDelete(true)}
-              className="flex items-center gap-2 text-[#1A1612]/18 hover:text-[#f87171] transition-colors font-hanken text-xs">
+              className="flex items-center gap-2 text-[#F3EADB]/18 hover:text-[#f87171] transition-colors font-hanken text-xs">
               <Trash2 size={11} /> Supprimer ce contact
             </button>
           )}
@@ -558,8 +558,8 @@ function ContactPanel({
 // ─── Sub-components ────────────────────────────────────────────────────────────
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/22 flex items-center gap-1.5">
-      <span className="w-3 h-px bg-[#1A1612]/15 inline-block" />
+    <p className="font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/22 flex items-center gap-1.5">
+      <span className="w-3 h-px bg-[#F3EADB]/15 inline-block" />
       {children}
     </p>
   );
@@ -582,28 +582,28 @@ function InfoRow({
   const isEditing = editing === field;
   return (
     <div className="flex items-center gap-3 py-1.5 group min-h-[36px]">
-      <span className="text-[#1A1612]/18 shrink-0 w-4 flex justify-center">{icon}</span>
+      <span className="text-[#F3EADB]/18 shrink-0 w-4 flex justify-center">{icon}</span>
       {isEditing ? (
         <div className="flex-1 flex items-center gap-2">
           <input autoFocus type={inputType} value={editVal}
             onChange={e => onChange(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter") onSave(); if (e.key === "Escape") onCancel(); }}
-            className="flex-1 bg-[#1A1612]/6 border border-[#a78bfa]/40 rounded-lg px-2 py-1 font-hanken text-sm text-[#1A1612] focus:outline-none focus:border-[#a78bfa]" />
+            className="flex-1 bg-[#F3EADB]/6 border border-[#a78bfa]/40 rounded-lg px-2 py-1 font-hanken text-sm text-[#F3EADB] focus:outline-none focus:border-[#a78bfa]" />
           <button onClick={onSave} disabled={saving} className="text-[#34d399] shrink-0"><Check size={13} /></button>
-          <button onClick={onCancel} className="text-[#1A1612]/25 shrink-0"><X size={11} /></button>
+          <button onClick={onCancel} className="text-[#F3EADB]/25 shrink-0"><X size={11} /></button>
         </div>
       ) : (
         <div className="flex-1 flex items-center justify-between gap-2 min-w-0">
           {value ? (
-            <span className="font-hanken text-sm text-[#1A1612]/65 truncate min-w-0">
+            <span className="font-hanken text-sm text-[#F3EADB]/65 truncate min-w-0">
               {renderValue ? renderValue(value) : value}
             </span>
           ) : (
-            <span className="font-hanken text-xs text-[#1A1612]/18 italic">{label}…</span>
+            <span className="font-hanken text-xs text-[#F3EADB]/18 italic">{label}…</span>
           )}
           <button onClick={() => onEdit(field, value ?? "")}
-            className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 p-0.5 rounded hover:bg-[#1A1612]/8">
-            <Edit3 size={10} className="text-[#1A1612]/35" />
+            className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 p-0.5 rounded hover:bg-[#F3EADB]/8">
+            <Edit3 size={10} className="text-[#F3EADB]/35" />
           </button>
         </div>
       )}
@@ -620,7 +620,7 @@ function KanbanCard({ c, onClick }: { c: Contact; onClick: () => void }) {
 
   return (
     <button onClick={onClick}
-      className="w-full text-left p-3.5 rounded-xl border border-[#1A1612]/8 bg-[#1A1612]/[0.015] hover:border-[#1A1612]/18 hover:bg-[#1A1612]/[0.035] transition-all group cursor-pointer">
+      className="w-full text-left p-3.5 rounded-xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.015] hover:border-[#F3EADB]/18 hover:bg-[#F3EADB]/[0.035] transition-all group cursor-pointer">
       <div className="flex items-start gap-2.5 mb-2">
         {/* Avatar */}
         <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-mono text-[10px] font-bold"
@@ -628,10 +628,10 @@ function KanbanCard({ c, onClick }: { c: Contact; onClick: () => void }) {
           {initials}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-hanken text-sm text-[#1A1612] truncate leading-tight">{c.name}</p>
-          {c.company && <p className="font-mono text-[9px] text-[#1A1612]/28 truncate mt-0.5">{c.company}</p>}
+          <p className="font-hanken text-sm text-[#F3EADB] truncate leading-tight">{c.name}</p>
+          {c.company && <p className="font-mono text-[9px] text-[#F3EADB]/28 truncate mt-0.5">{c.company}</p>}
         </div>
-        <ChevronRight size={11} className="text-[#1A1612]/15 group-hover:text-[#1A1612]/40 shrink-0 mt-1 transition-colors" />
+        <ChevronRight size={11} className="text-[#F3EADB]/15 group-hover:text-[#F3EADB]/40 shrink-0 mt-1 transition-colors" />
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">
@@ -652,7 +652,7 @@ function KanbanCard({ c, onClick }: { c: Contact; onClick: () => void }) {
       </div>
 
       {c.email && (
-        <p className="font-mono text-[9px] text-[#1A1612]/22 truncate mt-2 flex items-center gap-1">
+        <p className="font-mono text-[9px] text-[#F3EADB]/22 truncate mt-2 flex items-center gap-1">
           <Mail size={7} /> {c.email}
         </p>
       )}
@@ -675,12 +675,12 @@ function GoalBar({ count, goal, label, color }: { count: number; goal: number; l
   const pct = Math.min((count / goal) * 100, 100);
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 h-1.5 bg-[#1A1612]/8 rounded-full overflow-hidden">
+      <div className="flex-1 h-1.5 bg-[#F3EADB]/8 rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all duration-700"
           style={{ width: `${pct}%`, background: color }} />
       </div>
       <span className="font-mono text-[10px] shrink-0" style={{ color }}>
-        {count}<span className="text-[#1A1612]/25">/{goal} {label}</span>
+        {count}<span className="text-[#F3EADB]/25">/{goal} {label}</span>
       </span>
     </div>
   );
@@ -705,7 +705,7 @@ function FollowUpAlert({ contacts, onSelect }: { contacts: Contact[]; onSelect: 
           return (
             <button key={c.id} onClick={() => onSelect(c)}
               className="w-full flex items-center justify-between gap-3 text-left px-3 py-2 rounded-xl hover:bg-[#fbbf24]/5 transition-colors group">
-              <span className="font-hanken text-sm text-[#1A1612]/70 truncate">{c.name}</span>
+              <span className="font-hanken text-sm text-[#F3EADB]/70 truncate">{c.name}</span>
               <span className="font-mono text-[9px] text-[#fbbf24]/60 shrink-0">
                 il y a {days}j <ArrowRight size={8} className="inline opacity-0 group-hover:opacity-100 transition-opacity" />
               </span>
@@ -740,13 +740,13 @@ function SegmentTabs({
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-hanken text-sm transition-all border ${
               active
                 ? "border-transparent text-white"
-                : "bg-[#1A1612]/4 border-[#1A1612]/8 text-[#1A1612]/45 hover:text-[#1A1612]/70 hover:border-[#1A1612]/15"
+                : "bg-[#F3EADB]/4 border-[#F3EADB]/8 text-[#F3EADB]/45 hover:text-[#F3EADB]/70 hover:border-[#F3EADB]/15"
             }`}
             style={active ? { background: seg.color, boxShadow: `0 4px 16px ${seg.color}30` } : {}}>
             <span className="text-[13px] leading-none">{seg.icon}</span>
             {seg.label}
             <span className={`font-mono text-[10px] px-1.5 py-0.5 rounded-full ${
-              active ? "bg-white/20" : "bg-[#1A1612]/8 text-[#1A1612]/35"
+              active ? "bg-white/20" : "bg-[#F3EADB]/8 text-[#F3EADB]/35"
             }`}>
               {count}
             </span>
@@ -851,33 +851,33 @@ export default function CRMPage() {
       {/* ── Header ── */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#1A1612]">CRM Pipeline</h1>
-          <p className="font-hanken text-sm text-[#1A1612]/35 mt-0.5">
+          <h1 className="font-fraunces text-2xl text-[#F3EADB]">CRM Pipeline</h1>
+          <p className="font-hanken text-sm text-[#F3EADB]/35 mt-0.5">
             {contacts.length} contact{contacts.length !== 1 ? "s" : ""}
             {segment !== "all" ? ` · ${filteredBySegment.length} ${segCfg.label.toLowerCase()}` : ""}
           </p>
         </div>
         <div className="flex items-center gap-2.5">
           {/* View toggle */}
-          <div className="flex gap-0.5 p-1 bg-[#1A1612]/4 rounded-lg">
+          <div className="flex gap-0.5 p-1 bg-[#F3EADB]/4 rounded-lg">
             {([["kanban", <LayoutGrid size={13} key="k" />], ["list", <List size={13} key="l" />]] as const).map(([v, ic]) => (
               <button key={v} onClick={() => setView(v as "kanban" | "list")}
                 className={`w-8 h-7 flex items-center justify-center rounded-md transition-all ${
-                  view === v ? "bg-[#FF3D7F] text-white" : "text-[#1A1612]/35 hover:text-[#1A1612]"
+                  view === v ? "bg-[#E0337E] text-white" : "text-[#F3EADB]/35 hover:text-[#F3EADB]"
                 }`}>{ic}</button>
             ))}
           </div>
           {/* New contact */}
           <button onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#cf2d6e] transition-colors shadow-lg shadow-[#FF3D7F]/20">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#cf2d6e] transition-colors shadow-lg shadow-[#E0337E]/20">
             <Plus size={14} /> Nouveau
           </button>
         </div>
       </div>
 
       {/* ── Goal progress ── */}
-      <div className="bg-[#F1ECE3] border border-[#1A1612]/8 rounded-2xl p-5 space-y-3">
-        <p className="font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-1">Progression objectifs</p>
+      <div className="bg-[#1c1235] border border-[#F3EADB]/8 rounded-2xl p-5 space-y-3">
+        <p className="font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-1">Progression objectifs</p>
         {SEGMENTS.filter(s => s.id !== "all").map(seg => {
           const count = contacts.filter(c => (seg.types as readonly string[]).includes(c.contact_type) && c.stage !== "rejected" && c.stage !== "closed").length;
           return <GoalBar key={seg.id} count={count} goal={seg.goal} label={seg.goalLabel} color={seg.color} />;
@@ -896,23 +896,23 @@ export default function CRMPage() {
       {/* ── Filters ── */}
       <div className="flex flex-wrap gap-2">
         <div className="relative flex-1 min-w-48 max-w-xs">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1A1612]/22" />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/22" />
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher un contact…"
-            className="w-full pl-9 pr-9 py-2 bg-[#1A1612]/4 border border-[#1A1612]/8 rounded-xl font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/22 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
+            className="w-full pl-9 pr-9 py-2 bg-[#F3EADB]/4 border border-[#F3EADB]/8 rounded-xl font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/22 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
           {search && (
-            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1A1612]/25 hover:text-[#1A1612]">
+            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25 hover:text-[#F3EADB]">
               <X size={12} />
             </button>
           )}
         </div>
         <select value={stageFilter} onChange={e => setStageFilter(e.target.value)}
-          className="bg-[#1A1612]/4 border border-[#1A1612]/8 rounded-xl px-3 py-2 font-mono text-xs text-[#1A1612]/50 focus:outline-none focus:border-[#a78bfa]/40 appearance-none cursor-pointer">
+          className="bg-[#F3EADB]/4 border border-[#F3EADB]/8 rounded-xl px-3 py-2 font-mono text-xs text-[#F3EADB]/50 focus:outline-none focus:border-[#a78bfa]/40 appearance-none cursor-pointer">
           <option value="">Tous les statuts</option>
           {STAGES.map(s => <option key={s} value={s}>{STAGE_CFG[s].label}</option>)}
         </select>
         <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
-          className="bg-[#1A1612]/4 border border-[#1A1612]/8 rounded-xl px-3 py-2 font-mono text-xs text-[#1A1612]/50 focus:outline-none focus:border-[#a78bfa]/40 appearance-none cursor-pointer">
+          className="bg-[#F3EADB]/4 border border-[#F3EADB]/8 rounded-xl px-3 py-2 font-mono text-xs text-[#F3EADB]/50 focus:outline-none focus:border-[#a78bfa]/40 appearance-none cursor-pointer">
           <option value="">Tous les types</option>
           {Object.entries(TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
         </select>
@@ -934,9 +934,9 @@ export default function CRMPage() {
                 <div className="flex items-center justify-between mb-2.5 px-0.5">
                   <div className="flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full" style={{ background: cfg.dot }} />
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-[#1A1612]/50">{cfg.label}</span>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-[#F3EADB]/50">{cfg.label}</span>
                   </div>
-                  <span className="font-mono text-[9px] w-5 h-5 flex items-center justify-center rounded-full bg-[#1A1612]/6 text-[#1A1612]/35">
+                  <span className="font-mono text-[9px] w-5 h-5 flex items-center justify-center rounded-full bg-[#F3EADB]/6 text-[#F3EADB]/35">
                     {cols.length}
                   </span>
                 </div>
@@ -944,8 +944,8 @@ export default function CRMPage() {
                 <div className="space-y-2 min-h-[60px]">
                   {cols.map(c => <KanbanCard key={c.id} c={c} onClick={() => setSelected(c)} />)}
                   {cols.length === 0 && (
-                    <div className="border border-dashed border-[#1A1612]/6 rounded-xl h-16 flex items-center justify-center">
-                      <p className="font-mono text-[9px] text-[#1A1612]/15">vide</p>
+                    <div className="border border-dashed border-[#F3EADB]/6 rounded-xl h-16 flex items-center justify-center">
+                      <p className="font-mono text-[9px] text-[#F3EADB]/15">vide</p>
                     </div>
                   )}
                 </div>
@@ -961,17 +961,17 @@ export default function CRMPage() {
               return (
                 <div key={stage} className="mb-4">
                   <div className="flex items-center justify-between mb-2 px-0.5">
-                    <span className="font-mono text-[10px] text-[#1A1612]/40">{cfg.label}</span>
-                    <span className="font-mono text-[9px] text-[#1A1612]/25">{cols.length}</span>
+                    <span className="font-mono text-[10px] text-[#F3EADB]/40">{cfg.label}</span>
+                    <span className="font-mono text-[9px] text-[#F3EADB]/25">{cols.length}</span>
                   </div>
                   {cols.slice(0, 3).map(c => (
                     <button key={c.id} onClick={() => setSelected(c)}
-                      className="w-full text-left px-3 py-2 mb-1.5 rounded-xl border border-[#1A1612]/5 hover:border-[#1A1612]/10 transition-colors">
-                      <p className="font-hanken text-xs text-[#1A1612]/35 truncate">{c.name}</p>
+                      className="w-full text-left px-3 py-2 mb-1.5 rounded-xl border border-[#F3EADB]/5 hover:border-[#F3EADB]/10 transition-colors">
+                      <p className="font-hanken text-xs text-[#F3EADB]/35 truncate">{c.name}</p>
                     </button>
                   ))}
                   {cols.length > 3 && (
-                    <p className="font-mono text-[9px] text-[#1A1612]/18 pl-3">+{cols.length - 3} autres</p>
+                    <p className="font-mono text-[9px] text-[#F3EADB]/18 pl-3">+{cols.length - 3} autres</p>
                   )}
                 </div>
               );
@@ -985,8 +985,8 @@ export default function CRMPage() {
         <div className="space-y-1">
           {filteredBySegment.length === 0 ? (
             <div className="text-center py-24">
-              <TrendingUp size={36} className="mx-auto mb-3 text-[#1A1612]/8" />
-              <p className="font-hanken text-[#1A1612]/25 text-sm">Aucun contact</p>
+              <TrendingUp size={36} className="mx-auto mb-3 text-[#F3EADB]/8" />
+              <p className="font-hanken text-[#F3EADB]/25 text-sm">Aucun contact</p>
             </div>
           ) : filteredBySegment.map(c => {
             const cfg    = STAGE_CFG[c.stage as Stage] ?? STAGE_CFG.identified;
@@ -994,7 +994,7 @@ export default function CRMPage() {
             const score  = getAiScore(c.tags);
             return (
               <button key={c.id} onClick={() => setSelected(c)}
-                className="w-full text-left flex items-center gap-3 px-4 py-3.5 rounded-xl border border-[#1A1612]/6 hover:border-[#1A1612]/15 hover:bg-[#1A1612]/[0.02] transition-all group">
+                className="w-full text-left flex items-center gap-3 px-4 py-3.5 rounded-xl border border-[#F3EADB]/6 hover:border-[#F3EADB]/15 hover:bg-[#F3EADB]/[0.02] transition-all group">
                 {/* Avatar */}
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 font-mono text-[10px] font-bold"
                   style={{ background: cfg.bg, color: cfg.color }}>
@@ -1003,11 +1003,11 @@ export default function CRMPage() {
                 {/* Main info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-hanken text-sm text-[#1A1612]">{c.name}</p>
-                    {c.company && <span className="font-mono text-[9px] text-[#1A1612]/28 truncate">{c.company}</span>}
+                    <p className="font-hanken text-sm text-[#F3EADB]">{c.name}</p>
+                    {c.company && <span className="font-mono text-[9px] text-[#F3EADB]/28 truncate">{c.company}</span>}
                   </div>
                   <div className="flex items-center gap-3 mt-0.5">
-                    {c.email && <span className="font-mono text-[9px] text-[#1A1612]/22 flex items-center gap-1"><Mail size={7} />{c.email}</span>}
+                    {c.email && <span className="font-mono text-[9px] text-[#F3EADB]/22 flex items-center gap-1"><Mail size={7} />{c.email}</span>}
                     {!c.email && parsed.website && <span className="font-mono text-[9px] text-[#1C9C95]/40 flex items-center gap-1"><Globe size={7} />{parsed.website}</span>}
                     {parsed.instagram && <span className="font-mono text-[9px] text-[#CF3F7C]/40 flex items-center gap-1"><AtSign size={7} />{parsed.instagram}</span>}
                   </div>
@@ -1021,10 +1021,10 @@ export default function CRMPage() {
                   style={{ background: cfg.bg, color: cfg.color, borderColor: `${cfg.color}25` }}>
                   {cfg.label}
                 </span>
-                <span className="font-mono text-[9px] text-[#1A1612]/22 shrink-0 hidden md:block">
+                <span className="font-mono text-[9px] text-[#F3EADB]/22 shrink-0 hidden md:block">
                   {TYPE_LABELS[c.contact_type] ?? c.contact_type}
                 </span>
-                <ChevronRight size={12} className="text-[#1A1612]/12 group-hover:text-[#1A1612]/35 shrink-0 transition-colors" />
+                <ChevronRight size={12} className="text-[#F3EADB]/12 group-hover:text-[#F3EADB]/35 shrink-0 transition-colors" />
               </button>
             );
           })}
@@ -1046,11 +1046,11 @@ export default function CRMPage() {
       {showForm && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={e => e.target === e.currentTarget && setShowForm(false)}>
-          <div className="bg-[#F1ECE3] border border-[#1A1612]/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+          <div className="bg-[#1c1235] border border-[#F3EADB]/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-fraunces text-lg text-[#1A1612]">Nouveau contact</h2>
+              <h2 className="font-fraunces text-lg text-[#F3EADB]">Nouveau contact</h2>
               <button onClick={() => setShowForm(false)}
-                className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#1A1612]/5 hover:bg-[#1A1612]/10 text-[#1A1612]/40 hover:text-[#1A1612] transition-all">
+                className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#F3EADB]/5 hover:bg-[#F3EADB]/10 text-[#F3EADB]/40 hover:text-[#F3EADB] transition-all">
                 <X size={13} />
               </button>
             </div>
@@ -1062,34 +1062,34 @@ export default function CRMPage() {
                 { key: "source",  label: "Source",       placeholder: "etsy, google, événement…" },
               ].map(f => (
                 <div key={f.key}>
-                  <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/28 mb-1.5">{f.label}</label>
+                  <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/28 mb-1.5">{f.label}</label>
                   <input value={(newContact as Record<string, string>)[f.key]}
                     onChange={e => setNewContact(p => ({ ...p, [f.key]: e.target.value }))}
                     placeholder={f.placeholder}
-                    className="w-full bg-[#1A1612]/4 border border-[#1A1612]/8 rounded-xl px-3 py-2 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/18 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
+                    className="w-full bg-[#F3EADB]/4 border border-[#F3EADB]/8 rounded-xl px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/18 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
                 </div>
               ))}
               <div>
-                <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/28 mb-1.5">Notes</label>
+                <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/28 mb-1.5">Notes</label>
                 <textarea value={newContact.notes}
                   onChange={e => setNewContact(p => ({ ...p, notes: e.target.value }))}
                   rows={2} placeholder="Site: https://…  Instagram: @…  Ville: Paris  Catégorie: Mode"
-                  className="w-full bg-[#1A1612]/4 border border-[#1A1612]/8 rounded-xl px-3 py-2 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/18 focus:outline-none focus:border-[#a78bfa]/50 resize-none transition-colors" />
+                  className="w-full bg-[#F3EADB]/4 border border-[#F3EADB]/8 rounded-xl px-3 py-2 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/18 focus:outline-none focus:border-[#a78bfa]/50 resize-none transition-colors" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/28 mb-1.5">Type</label>
+                  <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/28 mb-1.5">Type</label>
                   <select value={newContact.contact_type}
                     onChange={e => setNewContact(p => ({ ...p, contact_type: e.target.value }))}
-                    className="w-full bg-[#1A1612]/4 border border-[#1A1612]/8 rounded-xl px-3 py-2 font-mono text-xs text-[#1A1612]/50 focus:outline-none appearance-none">
+                    className="w-full bg-[#F3EADB]/4 border border-[#F3EADB]/8 rounded-xl px-3 py-2 font-mono text-xs text-[#F3EADB]/50 focus:outline-none appearance-none">
                     {Object.entries(TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/28 mb-1.5">Étape</label>
+                  <label className="block font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/28 mb-1.5">Étape</label>
                   <select value={newContact.stage}
                     onChange={e => setNewContact(p => ({ ...p, stage: e.target.value }))}
-                    className="w-full bg-[#1A1612]/4 border border-[#1A1612]/8 rounded-xl px-3 py-2 font-mono text-xs text-[#1A1612]/50 focus:outline-none appearance-none">
+                    className="w-full bg-[#F3EADB]/4 border border-[#F3EADB]/8 rounded-xl px-3 py-2 font-mono text-xs text-[#F3EADB]/50 focus:outline-none appearance-none">
                     {STAGES.map(s => <option key={s} value={s}>{STAGE_CFG[s].label}</option>)}
                   </select>
                 </div>
@@ -1097,11 +1097,11 @@ export default function CRMPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowForm(false)}
-                className="flex-1 py-2.5 rounded-xl border border-[#1A1612]/8 text-[#1A1612]/40 font-hanken text-sm hover:text-[#1A1612] transition-colors">
+                className="flex-1 py-2.5 rounded-xl border border-[#F3EADB]/8 text-[#F3EADB]/40 font-hanken text-sm hover:text-[#F3EADB] transition-colors">
                 Annuler
               </button>
               <button onClick={createContact} disabled={!newContact.name || savingNew}
-                className="flex-1 py-2.5 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#cf2d6e] transition-colors disabled:opacity-40 shadow-lg shadow-[#FF3D7F]/20">
+                className="flex-1 py-2.5 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#cf2d6e] transition-colors disabled:opacity-40 shadow-lg shadow-[#E0337E]/20">
                 {savingNew ? "Création…" : "Créer"}
               </button>
             </div>

@@ -25,7 +25,7 @@ export function SpectrumLoader({ size = "md", label, fullscreen = false }: Props
           <circle
             cx={outer / 2} cy={outer / 2} r={r}
             fill="none"
-            stroke="rgba(26,22,18,0.08)"
+            stroke="rgba(243,234,219,0.08)"
             strokeWidth={stroke}
           />
         </svg>
@@ -58,7 +58,7 @@ export function SpectrumLoader({ size = "md", label, fullscreen = false }: Props
 
         {/* Center ✦ */}
         <div
-          className="absolute inset-0 flex items-center justify-center text-[#FF3D7F]"
+          className="absolute inset-0 flex items-center justify-center text-[#E0337E]"
           style={{ fontSize: inner * 0.5 }}
         >
           ✦
@@ -66,7 +66,7 @@ export function SpectrumLoader({ size = "md", label, fullscreen = false }: Props
       </div>
 
       {label && (
-        <p className="font-mono text-[10px] tracking-widest uppercase text-[#1A1612]/30">
+        <p className="font-mono text-[10px] tracking-widest uppercase text-[#F3EADB]/30">
           {label}
         </p>
       )}
@@ -75,7 +75,7 @@ export function SpectrumLoader({ size = "md", label, fullscreen = false }: Props
 
   if (fullscreen) {
     return (
-      <div className="fixed inset-0 bg-[#FBF9F5] flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-[#3D1F5C] flex items-center justify-center z-50">
         {loader}
       </div>
     );

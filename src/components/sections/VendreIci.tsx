@@ -10,7 +10,7 @@ const ARGS = [
     icon: Users,
     title: "Communauté engagée",
     desc: "Accède directement à une audience qui cherche ce que tu crées.",
-    color: "#FF3D7F",
+    color: "#E0337E",
   },
   {
     icon: Shield,
@@ -41,25 +41,25 @@ export function VendreIci() {
     <section ref={ref} id="vendre" className="py-24 px-6">
       <div className="max-w-5xl mx-auto">
         <div
-          className="relative rounded-3xl border border-[#1A1612]/10 bg-[#1A1612]/[0.025] p-8 md:p-14 overflow-hidden transition-all duration-700"
+          className="relative rounded-3xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.025] p-8 md:p-14 overflow-hidden transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(24px)" }}
         >
           {/* Background glow */}
           <div
             className="absolute -top-20 -right-20 w-80 h-80 rounded-full blur-3xl opacity-10 pointer-events-none"
-            style={{ background: "#FF3D7F" }}
+            style={{ background: "#E0337E" }}
           />
           <div className="prism-line absolute top-0 left-0 right-0" />
 
           <div className="relative z-10">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-[#FF3D7F] block mb-4">
+            <span className="font-mono text-[11px] tracking-widest uppercase text-[#E0337E] block mb-4">
               {t("vendre_ici.eyebrow")}
             </span>
-            <h2 className="font-fraunces text-3xl md:text-5xl text-[#1A1612] leading-tight mb-3">
+            <h2 className="font-fraunces text-3xl md:text-5xl text-[#F3EADB] leading-tight mb-3">
               {t("vendre_ici.title")}{" "}
-              <span className="italic text-[#1A1612]">{t("vendre_ici.title_em")}</span>
+              <span className="italic text-[#F2B79E]">{t("vendre_ici.title_em")}</span>
             </h2>
-            <p className="font-hanken text-[#1A1612]/60 text-lg mb-12 max-w-xl">
+            <p className="font-hanken text-[#F3EADB]/60 text-lg mb-12 max-w-xl">
               {t("vendre_ici.subtitle")}
             </p>
 
@@ -83,10 +83,10 @@ export function VendreIci() {
                       <Icon size={18} style={{ color: arg.color }} />
                     </div>
                     <div>
-                      <h3 className="font-bricolage font-semibold text-[#1A1612] text-base mb-1">
+                      <h3 className="font-bricolage font-semibold text-[#F3EADB] text-base mb-1">
                         {arg.title}
                       </h3>
-                      <p className="font-hanken text-sm text-[#1A1612]/55 leading-relaxed">
+                      <p className="font-hanken text-sm text-[#F3EADB]/55 leading-relaxed">
                         {arg.desc}
                       </p>
                     </div>

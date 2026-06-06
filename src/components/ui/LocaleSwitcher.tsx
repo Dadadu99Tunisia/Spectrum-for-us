@@ -58,12 +58,12 @@ export function LocaleSwitcher() {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[#1A1612]/60 hover:text-[#1A1612] hover:bg-[#1A1612]/5 transition-all"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[#F3EADB]/60 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 transition-all"
         aria-haspopup="true" aria-expanded={open}
       >
         <span className="text-base leading-none">{currentLocale.flag}</span>
         <span className="font-mono text-[11px] hidden sm:block">{locale.toUpperCase()}</span>
-        <span className="font-mono text-[10px] text-[#1A1612]/30 hidden md:block">
+        <span className="font-mono text-[10px] text-[#F3EADB]/30 hidden md:block">
           {currentCurrency?.symbol}
         </span>
         <ChevronDown size={11} className={`transition-transform ${open ? "rotate-180" : ""}`} />
@@ -72,15 +72,15 @@ export function LocaleSwitcher() {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 z-50 bg-[#2d1a47] border border-[#1A1612]/12 rounded-2xl shadow-2xl overflow-hidden"
+          <div className="absolute right-0 top-full mt-2 z-50 bg-[#2d1a47] border border-[#F3EADB]/12 rounded-2xl shadow-2xl overflow-hidden"
             style={{ width: "260px", boxShadow: "0 20px 60px rgba(0,0,0,.5)" }}>
 
             {/* Tabs */}
-            <div className="flex border-b border-[#1A1612]/8">
+            <div className="flex border-b border-[#F3EADB]/8">
               {([["lang", "🌐 Langue"], ["currency", "💱 Devise"]] as const).map(([t, l]) => (
                 <button key={t} onClick={() => setTab(t)}
                   className={`flex-1 py-2.5 font-mono text-[10px] uppercase tracking-wider transition-colors ${
-                    tab === t ? "text-[#FF3D7F] border-b-2 border-[#FF3D7F]" : "text-[#1A1612]/35 hover:text-[#1A1612]/60"
+                    tab === t ? "text-[#E0337E] border-b-2 border-[#E0337E]" : "text-[#F3EADB]/35 hover:text-[#F3EADB]/60"
                   }`}>
                   {l}
                 </button>
@@ -96,17 +96,17 @@ export function LocaleSwitcher() {
                       onClick={() => { setLocale(l.code); setOpen(false); }}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
                         locale === l.code
-                          ? "bg-[#FF3D7F]/15 border border-[#FF3D7F]/25"
-                          : "hover:bg-[#1A1612]/5 border border-transparent"
+                          ? "bg-[#E0337E]/15 border border-[#E0337E]/25"
+                          : "hover:bg-[#F3EADB]/5 border border-transparent"
                       }`}>
                       <span className="text-xl leading-none">{l.flag}</span>
                       <div className="flex-1 text-left">
-                        <p className={`font-hanken text-sm ${locale === l.code ? "text-[#FF3D7F]" : "text-[#1A1612]/80"}`}>
+                        <p className={`font-hanken text-sm ${locale === l.code ? "text-[#E0337E]" : "text-[#F3EADB]/80"}`}>
                           {l.label}
                         </p>
-                        <p className="font-mono text-[9px] text-[#1A1612]/28">{l.sub}</p>
+                        <p className="font-mono text-[9px] text-[#F3EADB]/28">{l.sub}</p>
                       </div>
-                      {locale === l.code && <Check size={12} className="text-[#FF3D7F] shrink-0" />}
+                      {locale === l.code && <Check size={12} className="text-[#E0337E] shrink-0" />}
                     </button>
                   ))}
                 </div>
@@ -115,7 +115,7 @@ export function LocaleSwitcher() {
                 <div className="space-y-3">
                   {CURRENCY_GROUPS.map(group => (
                     <div key={group.label}>
-                      <p className="font-mono text-[8px] uppercase tracking-widest text-[#1A1612]/22 px-2 mb-1">
+                      <p className="font-mono text-[8px] uppercase tracking-widest text-[#F3EADB]/22 px-2 mb-1">
                         {group.label}
                       </p>
                       <div className="space-y-0.5">
@@ -125,13 +125,13 @@ export function LocaleSwitcher() {
                             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all ${
                               currency === c.code
                                 ? "bg-[#1C9C95]/15 border border-[#1C9C95]/25"
-                                : "hover:bg-[#1A1612]/5 border border-transparent"
+                                : "hover:bg-[#F3EADB]/5 border border-transparent"
                             }`}>
                             <span className="text-base leading-none">{c.flag}</span>
-                            <span className={`font-mono text-xs font-bold w-8 ${currency === c.code ? "text-[#1C9C95]" : "text-[#1A1612]/50"}`}>
+                            <span className={`font-mono text-xs font-bold w-8 ${currency === c.code ? "text-[#1C9C95]" : "text-[#F3EADB]/50"}`}>
                               {c.symbol}
                             </span>
-                            <span className={`font-hanken text-xs flex-1 text-left ${currency === c.code ? "text-[#1A1612]/90" : "text-[#1A1612]/50"}`}>
+                            <span className={`font-hanken text-xs flex-1 text-left ${currency === c.code ? "text-[#F3EADB]/90" : "text-[#F3EADB]/50"}`}>
                               {c.name}
                             </span>
                             {currency === c.code && <Check size={11} className="text-[#1C9C95] shrink-0" />}
@@ -145,8 +145,8 @@ export function LocaleSwitcher() {
             </div>
 
             {/* Footer note */}
-            <div className="px-4 py-2.5 border-t border-[#1A1612]/6 bg-[#1A1612]/[0.02]">
-              <p className="font-mono text-[8.5px] text-[#1A1612]/20 text-center">
+            <div className="px-4 py-2.5 border-t border-[#F3EADB]/6 bg-[#F3EADB]/[0.02]">
+              <p className="font-mono text-[8.5px] text-[#F3EADB]/20 text-center">
                 Détection automatique basée sur ta localisation
               </p>
             </div>
