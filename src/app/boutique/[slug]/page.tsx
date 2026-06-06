@@ -205,7 +205,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
               {productList.map((p) => {
                 const img   = (p.images as string[] | null)?.[0] ?? (p.image_url as string | null);
                 const href  = p.slug ? `/produit/${p.slug}` : "#";
@@ -213,33 +213,33 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                 const ptype = (p.type as string | null) ?? "product";
 
                 return (
-                  <Link key={p.id as string} href={href}
-                    className="group rounded-2xl border border-[#1A1612]/8 overflow-hidden hover:border-[#FF3D7F]/30 transition-all">
-                    <div className="aspect-square bg-[#F1ECE3] relative overflow-hidden">
+                  <Link key={p.id as string} href={href} className="group">
+                    <div className="aspect-square rounded-2xl bg-[#F1ECE3] relative overflow-hidden">
                       {img ? (
                         <img src={img} alt={name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Package size={28} className="text-[#1A1612]/15" />
+                        <div className="w-full h-full flex items-center justify-center p-8">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="/logo-dark.png" alt="Spectrum For Us" className="w-full h-full object-contain opacity-25" />
                         </div>
                       )}
                       {ptype !== "product" && (
                         <div className="absolute top-2 left-2">
-                          <span className="font-mono text-[9px] tracking-wide px-2 py-0.5 rounded-full bg-[#FBF9F5]/80 text-[#E0901E] border border-[#E0901E]/30">
+                          <span className="font-mono text-[9px] tracking-wide px-2 py-0.5 rounded-full bg-[#FBF9F5]/80 backdrop-blur-sm text-[#E0901E] border border-[#E0901E]/30">
                             {TYPE_LABELS[ptype] ?? ptype}
                           </span>
                         </div>
                       )}
                     </div>
-                    <div className="p-3">
-                      <p className="font-hanken text-sm text-[#1A1612] truncate">{name}</p>
+                    <div className="pt-3">
                       {p.category && (
-                        <p className="font-mono text-[9px] text-[#1A1612]/30 uppercase tracking-wide mt-0.5">
+                        <span className="inline-block font-mono text-[10px] tracking-wide text-[#FF3D7F] mb-1.5">
                           {p.category as string}
-                        </p>
+                        </span>
                       )}
-                      <p className="font-fraunces text-base text-[#FF3D7F] mt-1">
+                      <p className="font-bricolage font-semibold text-[#1A1612] text-sm leading-tight line-clamp-2">{name}</p>
+                      <p className="font-mono text-sm font-bold text-[#1A1612] mt-1.5">
                         {Number(p.price).toFixed(2)} €
                       </p>
                     </div>
