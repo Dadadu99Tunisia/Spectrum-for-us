@@ -93,7 +93,7 @@ export default function FinancePage() {
     <div className="space-y-6 max-w-[1200px]">
       <div>
         <h1 className="font-fraunces text-2xl text-[#F3EADB]">Comptabilité</h1>
-        <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">Vue CFO — données en temps réel</p>
+        <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">Vue CFO · données en temps réel</p>
       </div>
 
       {/* KPI Cards */}
@@ -126,7 +126,7 @@ export default function FinancePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Revenue trend */}
         <div className="lg:col-span-2 p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07]">
-          <p className="font-fraunces text-base text-[#F3EADB] mb-1">Revenus — 30 derniers jours</p>
+          <p className="font-fraunces text-base text-[#F3EADB] mb-1">Revenus · 30 derniers jours</p>
           <p className="font-mono text-[10px] text-[#F3EADB]/30 uppercase mb-5">CA journalier payé</p>
           {data.chartRevenue.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>

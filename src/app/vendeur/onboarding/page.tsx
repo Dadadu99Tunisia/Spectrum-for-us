@@ -89,7 +89,7 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 0 — Bienvenue */}
+        {/* Step 0 · Bienvenue */}
         {step === 0 && (
           <div className="text-center">
             <div className="w-16 h-16 rounded-2xl bg-[#FF3D7F]/10 border border-[#FF3D7F]/30 flex items-center justify-center mx-auto mb-6">
@@ -101,8 +101,8 @@ export default function OnboardingPage() {
             </p>
             <div className="grid grid-cols-2 gap-4 mb-10 text-left">
               {[
-                { icon: Shield, text: "Safe space garanti — charte communautaire" },
-                { icon: Eye, text: "Visibilité offerte — mise en avant éditoriale" },
+                { icon: Shield, text: "Safe space garanti · charte communautaire" },
+                { icon: Eye, text: "Visibilité offerte · mise en avant éditoriale" },
                 { icon: Zap, text: "10 min pour être en ligne" },
                 { icon: Store, text: "9,90 €/mois, sans commission cachée" },
               ].map(({ icon: Icon, text }) => (
@@ -118,7 +118,7 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 1 — Ta boutique */}
+        {/* Step 1 · Ta boutique */}
         {step === 1 && (
           <div>
             <h2 className="font-fraunces text-2xl text-[#1A1612] mb-6">Présente ta boutique</h2>
@@ -177,13 +177,13 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 2 — Programme Fondateur */}
+        {/* Step 2 · Programme Fondateur */}
         {step === 2 && (
           <div>
             <div className="mb-6">
               <h2 className="font-fraunces text-2xl text-[#1A1612] mb-1">Programme Fondateur·ice</h2>
               <p className="font-hanken text-sm text-[#1A1612]/45">
-                En ouvrant ta boutique aujourd&apos;hui, tu rejoins automatiquement le programme — découvre tes avantages.
+                En ouvrant ta boutique aujourd&apos;hui, tu rejoins automatiquement le programme · découvre tes avantages.
               </p>
             </div>
             <FounderBanner hideCta />
@@ -196,7 +196,7 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 3 — Charte */}
+        {/* Step 3 · Charte */}
         {step === 3 && (
           <div>
             <h2 className="font-fraunces text-2xl text-[#1A1612] mb-2">Charte communautaire</h2>
@@ -232,7 +232,7 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 4 — Confirmation */}
+        {/* Step 4 · Confirmation */}
         {step === 4 && (
           <div className="text-center">
             <div className="w-20 h-20 rounded-full bg-[#1C9C95]/10 border border-[#1C9C95]/30 flex items-center justify-center mx-auto mb-6">

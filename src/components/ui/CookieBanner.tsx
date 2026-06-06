@@ -74,7 +74,7 @@ export function CookieBanner() {
 
           {showDetails && (
             <div className="mb-5 space-y-3 p-4 rounded-xl bg-[#F3EADB]/4 border border-[#F3EADB]/8">
-              {/* Essentiels — toujours on */}
+              {/* Essentiels · toujours on */}
               <label className="flex items-center justify-between gap-3">
                 <div>
                   <p className="font-hanken text-sm text-[#F3EADB]/80 font-medium">Essentiels</p>

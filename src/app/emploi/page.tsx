@@ -1,6 +1,6 @@
 import { ComingSoon } from "@/components/ComingSoon";
 import { Sparkles } from "lucide-react";
-export const metadata = { title: "Emploi & Opportunités — Spectrum For Us" };
+export const metadata = { title: "Emploi & Opportunités · Spectrum For Us" };
 export default function EmploiPage() {
   return (
     <ComingSoon

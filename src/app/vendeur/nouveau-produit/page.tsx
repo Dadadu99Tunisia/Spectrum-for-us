@@ -173,7 +173,7 @@ export default function NouveauProduitPage() {
                 onChange={(e) => setForm((f) => ({ ...f, subcategory: e.target.value }))}
                 disabled={!form.category}
                 className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm focus:outline-none focus:border-[#FF3D7F]/60 transition-colors disabled:opacity-40">
-                <option value="" className="bg-[#FBF9F5]">— Choisir —</option>
+                <option value="" className="bg-[#FBF9F5]">- Choisir -</option>
                 {getSubcategories(form.category).map((s) => <option key={s} value={s} className="bg-[#FBF9F5]">{s}</option>)}
               </select>
             </div>

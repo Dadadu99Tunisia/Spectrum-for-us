@@ -45,7 +45,7 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://spectrumforus.com"),
   title: {
-    default: "Spectrum For Us — B(u)y us, for us.",
+    default: "Spectrum For Us · B(u)y us, for us.",
     template: "%s | Spectrum For Us",
   },
   description:
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   creator: "Spectrum For Us",
   publisher: "Spectrum For Us",
   openGraph: {
-    title: "Spectrum For Us — B(u)y us, for us.",
+    title: "Spectrum For Us · B(u)y us, for us.",
     description: "La première marketplace queer. Des créations faites avec amour, pour tout le spectre.",
     url: "https://spectrumforus.com",
     siteName: "Spectrum For Us",
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Spectrum For Us — B(u)y us, for us.",
+        alt: "Spectrum For Us · B(u)y us, for us.",
       },
     ],
     locale: "fr_FR",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Spectrum For Us — B(u)y us, for us.",
+    title: "Spectrum For Us · B(u)y us, for us.",
     description: "La première marketplace queer.",
     images: ["/opengraph-image"],
     creator: "@spectrumforus",
@@ -125,9 +125,9 @@ export default function RootLayout({
               "setTimeout(function(){e.removeAttribute('data-intro')},6000);}}catch(e){}})();",
           }}
         />
-        {/* Intro cinématique — joue une fois par session */}
+        {/* Intro cinématique · joue une fois par session */}
         <IntroSplash />
-        {/* Skip to content — navigation clavier WCAG 2.4.1 */}
+        {/* Skip to content · navigation clavier WCAG 2.4.1 */}
         <a href="#main-content" className="skip-to-content">
           Aller au contenu principal
         </a>

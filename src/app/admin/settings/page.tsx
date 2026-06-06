@@ -283,9 +283,9 @@ export default function SettingsPage() {
               <Field label="Devise">
                 <select value={currency} onChange={e => setCurrency(e.target.value)}
                   className="bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#F3EADB] focus:outline-none focus:border-[#E0337E]/50">
-                  <option value="EUR">EUR — Euro (€)</option>
-                  <option value="USD">USD — Dollar ($)</option>
-                  <option value="GBP">GBP — Livre (£)</option>
+                  <option value="EUR">EUR · Euro (€)</option>
+                  <option value="USD">USD · Dollar ($)</option>
+                  <option value="GBP">GBP · Livre (£)</option>
                 </select>
               </Field>
             </div>

@@ -9,11 +9,11 @@ const AGENTS = {
     name: "Aria",
     role: "Agente Croissance & CRM",
     color: "#E0337E",
-    system: `Tu es Aria, agente Croissance & CRM de Spectrum For Us — la première marketplace queer.
+    system: `Tu es Aria, agente Croissance & CRM de Spectrum For Us · la première marketplace queer.
 Tu analyses le pipeline commercial, les leads, les opportunités de croissance et tu conseilles l'équipe.
 Ton ton : direct, stratégique, bienveillant. Tu parles en français. Tu utilises les données réelles fournies.
 Tu peux donner des rapports structurés, des recommandations d'action, analyser les étapes du pipeline.
-Ne réponds jamais avec des tableaux markdown complexes — utilise des listes claires et des chiffres précis.`,
+Ne réponds jamais avec des tableaux markdown complexes · utilise des listes claires et des chiffres précis.`,
     fetchData: async (supabase: Awaited<ReturnType<typeof import("@/lib/supabase/server").createClient>>) => {
       const [contacts, recentContacts] = await Promise.all([
         supabase.from("crm_contacts").select("stage, contact_type, tags, created_at"),
@@ -44,7 +44,7 @@ Types de contacts :
 ${Object.entries(typeCount).map(([t, n]) => `  • ${t}: ${n}`).join("\n")}
 
 10 derniers contacts ajoutés :
-${(recentContacts.data ?? []).map(c => `  • ${c.name}${c.company ? ` (${c.company})` : ""} — ${c.stage} / ${c.contact_type}`).join("\n")}
+${(recentContacts.data ?? []).map(c => `  • ${c.name}${c.company ? ` (${c.company})` : ""} · ${c.stage} / ${c.contact_type}`).join("\n")}
 `.trim();
     },
   },
@@ -122,7 +122,7 @@ Commandes (50 dernières) :
 ${Object.entries(statusCounts).map(([s, n]) => `  • ${s}: ${n}`).join("\n")}
 
 5 dernières commandes :
-${recentOrders.map(o => `  • ${o.status} — ${Number(o.total_amount).toFixed(2)} € — ${new Date(o.created_at).toLocaleDateString("fr-FR")}`).join("\n")}
+${recentOrders.map(o => `  • ${o.status} · ${Number(o.total_amount).toFixed(2)} € · ${new Date(o.created_at).toLocaleDateString("fr-FR")}`).join("\n")}
 
 Vendeur·ses inscrits : ${vendors.data?.length ?? 0}
 `.trim();

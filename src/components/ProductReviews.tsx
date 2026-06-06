@@ -101,7 +101,7 @@ export function ProductReviews({ productId }: { productId: string }) {
       {loading ? (
         <p className="font-hanken text-sm" style={{ color: T.soft }}>Chargement…</p>
       ) : reviews.length === 0 ? (
-        <p className="font-hanken text-sm" style={{ color: T.soft }}>Aucun avis pour l&apos;instant — sois le·a premier·e ✦</p>
+        <p className="font-hanken text-sm" style={{ color: T.soft }}>Aucun avis pour l&apos;instant · sois le·a premier·e ✦</p>
       ) : (
         <div className="space-y-4">
           {reviews.map(r => (

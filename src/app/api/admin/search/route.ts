@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin/rbac";
 
-/** Recherche globale admin — cross-entités (users, boutiques, produits, commandes). */
+/** Recherche globale admin · cross-entités (users, boutiques, produits, commandes). */
 export async function GET(req: NextRequest) {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
       subtitle: `Produit · ${Number(p.price).toFixed(2)} €`, href: `/produit/${p.slug || p.id}`,
     })),
     ...(orders.data ?? []).map(o => ({
-      type: "order", id: o.id, title: `#${o.id.slice(0, 8).toUpperCase()} — ${o.shipping_name ?? ""}`,
+      type: "order", id: o.id, title: `#${o.id.slice(0, 8).toUpperCase()} · ${o.shipping_name ?? ""}`,
       subtitle: `Commande · ${o.status} · ${Number(o.total_amount).toFixed(2)} €`, href: `/admin/orders/${o.id}`,
     })),
   ];

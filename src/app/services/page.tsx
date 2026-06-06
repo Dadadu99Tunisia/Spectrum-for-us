@@ -1,6 +1,6 @@
 import { ComingSoon } from "@/components/ComingSoon";
 import { Briefcase } from "lucide-react";
-export const metadata = { title: "Services — Spectrum For Us" };
+export const metadata = { title: "Services · Spectrum For Us" };
 export default function ServicesPage() {
   return (
     <ComingSoon

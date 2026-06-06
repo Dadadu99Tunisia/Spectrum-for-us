@@ -22,10 +22,10 @@ export async function generateMetadata(
     ? (product.description as string).slice(0, 155)
     : `Découvrez "${name}" par ${shopName} sur Spectrum For Us.`;
   const url      = `https://spectrumforus.com/produit/${slug}`;
-  const ogTitle  = `${name}${price ? ` — ${price}` : ""} | ${shopName}`;
+  const ogTitle  = `${name}${price ? ` · ${price}` : ""} | ${shopName}`;
 
   // L'image OG dynamique est générée par opengraph-image.tsx dans ce même dossier.
-  // Next.js l'injecte automatiquement — pas besoin de la passer manuellement.
+  // Next.js l'injecte automatiquement · pas besoin de la passer manuellement.
 
   return {
     title: ogTitle,

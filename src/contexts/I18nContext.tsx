@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from "rea
 export type Locale   = "fr" | "en" | "ar";
 export type Currency = "EUR" | "USD" | "GBP" | "TND" | "MAD" | "DZD" | "CAD" | "AUD" | "CHF" | "SAR" | "AED" | "EGP" | "XOF";
 
-// Live-ish rates vs EUR (updated periodically in code — use exchange API in prod for real-time)
+// Live-ish rates vs EUR (updated periodically in code · use exchange API in prod for real-time)
 export const RATES: Record<Currency, number> = {
   EUR: 1,
   USD: 1.08,
@@ -99,7 +99,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     const hasPrefs       = savedLocale && VALID_LOCALES.includes(savedLocale);
 
     if (hasPrefs) {
-      // User has explicit preferences — honour them
+      // User has explicit preferences · honour them
       const loc = savedLocale as Locale;
       const cur = (savedCurrency && VALID_CURRENCIES.includes(savedCurrency)) ? savedCurrency as Currency : "EUR";
       setLocaleState(loc);
@@ -109,7 +109,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       loadMessages(loc).then(() => forceRender(n => n + 1));
       setGeoDetected(true);
     } else {
-      // First visit — geo-detect
+      // First visit · geo-detect
       (async () => {
         try {
           // Try browser language first as fast path

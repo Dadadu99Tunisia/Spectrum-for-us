@@ -1,5 +1,5 @@
 /**
- * Fetch server-side uniquement — à utiliser dans Server Components ou API routes.
+ * Fetch server-side uniquement · à utiliser dans Server Components ou API routes.
  * Ne jamais importer depuis un Client Component.
  */
 import { createClient } from "@/lib/supabase/server";

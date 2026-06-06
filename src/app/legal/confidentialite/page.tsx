@@ -1,6 +1,6 @@
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Politique de confidentialité — Spectrum For Us" };
+export const metadata = { title: "Politique de confidentialité · Spectrum For Us" };
 
 export default function Confidentialite() {
   return (
@@ -9,7 +9,7 @@ export default function Confidentialite() {
       <h2>1. Qui sommes-nous ?</h2>
       <p>
         Spectrum For Us (spectrumforus.com) est le responsable du traitement de vos données personnelles,
-        au sens du Règlement Général sur la Protection des Données (RGPD — UE 2016/679).
+        au sens du Règlement Général sur la Protection des Données (RGPD · UE 2016/679).
         Contact DPO : <a href="mailto:privacy@spectrumforus.com">privacy@spectrumforus.com</a>
       </p>
 

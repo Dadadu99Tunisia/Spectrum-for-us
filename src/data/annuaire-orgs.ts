@@ -33,7 +33,7 @@ export const ORGS: OrgEntry[] = [
   // ─── FRANCE ───────────────────────────────────────────────────────────────
   {
     id: "mawjoudin",
-    name: "Mawjoudin – Nous Existons",
+    name: "Mawjoudin · Nous Existons",
     shortName: "Mawjoudin",
     country: "France",
     countryCode: "FR",
@@ -198,7 +198,7 @@ export const ORGS: OrgEntry[] = [
   },
   {
     id: "hes-france",
-    name: "HES – Hommes & Sexualités",
+    name: "HES · Hommes & Sexualités",
     shortName: "HES",
     country: "France",
     countryCode: "FR",
@@ -749,7 +749,7 @@ export const ORGS: OrgEntry[] = [
   // ─── SUISSE ───────────────────────────────────────────────────────────────
   {
     id: "360-zurich",
-    name: "360° – das Zürcher Lösungszentrum",
+    name: "360° · das Zürcher Lösungszentrum",
     shortName: "360° Zürich",
     country: "Suisse",
     countryCode: "CH",
@@ -789,7 +789,7 @@ export const ORGS: OrgEntry[] = [
   },
   {
     id: "les-suisse",
-    name: "LOS – Lesbenorganisation Schweiz",
+    name: "LOS · Lesbenorganisation Schweiz",
     shortName: "LOS",
     country: "Suisse",
     countryCode: "CH",
@@ -899,7 +899,7 @@ export const ORGS: OrgEntry[] = [
   // ─── NORVÈGE ──────────────────────────────────────────────────────────────
   {
     id: "fhi-norge",
-    name: "FRI – Foreningen",
+    name: "FRI · Foreningen",
     country: "Norvège",
     countryCode: "NO",
     city: "Oslo",
@@ -1019,7 +1019,7 @@ export const ORGS: OrgEntry[] = [
   // ─── ROUMANIE ─────────────────────────────────────────────────────────────
   {
     id: "accept-romania",
-    name: "ACCEPT România",
+    name: "ACCEPT Rom-nia",
     country: "Roumanie",
     countryCode: "RO",
     city: "Bucarest",
@@ -1170,7 +1170,7 @@ export const ORGS: OrgEntry[] = [
   // ─── LITUANIE ─────────────────────────────────────────────────────────────
   {
     id: "lgl-lithuania",
-    name: "LGL – Lithuanian Gay League",
+    name: "LGL · Lithuanian Gay League",
     shortName: "LGL",
     country: "Lituanie",
     countryCode: "LT",
@@ -1351,7 +1351,7 @@ export const ORGS: OrgEntry[] = [
   },
   {
     id: "transgender-europe",
-    name: "TGEU – Transgender Europe",
+    name: "TGEU · Transgender Europe",
     shortName: "TGEU",
     country: "Allemagne",
     countryCode: "DE",

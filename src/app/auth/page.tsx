@@ -34,7 +34,7 @@ function AuthForm() {
         redirectTo: `${window.location.origin}/auth/callback?next=/compte`,
       });
       if (error) setError(error.message);
-      else setSuccess("Vérifie ton e-mail — un lien de réinitialisation t'a été envoyé ✦");
+      else setSuccess("Vérifie ton e-mail · un lien de réinitialisation t'a été envoyé ✦");
       setLoading(false);
       return;
     }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin/rbac";
 
-/** Command Center — état temps réel de la plateforme (admin). */
+/** Command Center · état temps réel de la plateforme (admin). */
 export async function GET() {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;

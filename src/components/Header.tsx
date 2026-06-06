@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Header — barre unique claire minimaliste, identique sur toutes les pages.
+ * Header · barre unique claire minimaliste, identique sur toutes les pages.
  * Nav plate (Marketplace · Services · Associations · Événements · Média ·
  * Communauté) + recherche, langue, panier, compte, "Ouvrir ma boutique".
  */
@@ -75,7 +75,7 @@ export function Header() {
         }}>
         <div className="max-w-6xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="shrink-0" aria-label="Spectrum For Us — accueil">
+          <Link href="/" className="shrink-0" aria-label="Spectrum For Us · accueil">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-dark.png" alt="Spectrum For Us" className="h-9 w-auto" />
           </Link>
@@ -100,7 +100,7 @@ export function Header() {
             <div className="hidden lg:flex"><LocaleSwitcher /></div>
 
             {/* Panier */}
-            <Link href="/panier" aria-label={`Panier — ${cartCount} article${cartCount > 1 ? "s" : ""}`}
+            <Link href="/panier" aria-label={`Panier · ${cartCount} article${cartCount > 1 ? "s" : ""}`}
               className="relative w-10 h-10 rounded-full flex items-center justify-center"
               style={{ boxShadow: `inset 0 0 0 1px ${T.line}`, color: T.ink }}>
               <ShoppingBag size={18} />
@@ -186,7 +186,11 @@ export function Header() {
               style={{ color: T.ink }}>{n.label}</Link>
           ))}
         </nav>
-        <div className="px-5 py-4 space-y-2 shrink-0" style={{ borderTop: `1px solid ${T.line}` }}>
+        <div className="px-5 py-4 space-y-3 shrink-0" style={{ borderTop: `1px solid ${T.line}` }}>
+          <div className="flex items-center justify-between">
+            <span className="font-hanken text-[14px]" style={{ color: T.soft }}>Langue & devise</span>
+            <LocaleSwitcher />
+          </div>
           {user ? (
             <>
               <Link href="/compte" onClick={() => setMobileOpen(false)} className="block text-[15px]" style={{ color: T.soft }}>Mon compte</Link>

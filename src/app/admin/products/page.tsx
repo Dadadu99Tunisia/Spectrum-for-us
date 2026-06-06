@@ -48,7 +48,7 @@ export default function ProductsPage() {
       setTotal(json.meta?.total ?? 0);
       setSelected(new Set());
     } catch {
-      // silently fail — show empty state
+      // silently fail · show empty state
     } finally {
       setLoading(false);
     }
@@ -181,7 +181,7 @@ export default function ProductsPage() {
                       </td>
                       <td className="px-4 py-3">
                         <span className="font-hanken text-sm text-[#F3EADB]/60">
-                          {p.shops?.name ?? "—"}
+                          {p.shops?.name ?? "-"}
                         </span>
                       </td>
                       <td className="px-4 py-3">
@@ -233,7 +233,7 @@ export default function ProductsPage() {
           {total > LIMIT && (
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] text-[#F3EADB]/25">
-                {(page - 1) * LIMIT + 1}–{Math.min(page * LIMIT, total)} sur {total}
+                {(page - 1) * LIMIT + 1}-{Math.min(page * LIMIT, total)} sur {total}
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}

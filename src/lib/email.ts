@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-// Lazy init — évite le crash au build si RESEND_API_KEY est absent
+// Lazy init · évite le crash au build si RESEND_API_KEY est absent
 let _resend: Resend | null = null;
 function getResend(): Resend {
   if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY ?? "placeholder");
@@ -93,7 +93,7 @@ export async function sendOrderConfirmation(params: {
     from: FROM,
     to: params.to,
     subject: `Commande confirmée #${params.orderRef.slice(0,8).toUpperCase()} ✦`,
-    html: baseLayout("Commande confirmée — Spectrum For Us", body),
+    html: baseLayout("Commande confirmée · Spectrum For Us", body),
   });
 }
 
@@ -121,7 +121,7 @@ export async function sendVendorNewOrder(params: {
     from: FROM,
     to: params.to,
     subject: `🛍 Nouvelle commande #${params.orderRef.slice(0,8).toUpperCase()} sur ${params.shopName}`,
-    html: baseLayout("Nouvelle commande — Spectrum For Us", body),
+    html: baseLayout("Nouvelle commande · Spectrum For Us", body),
   });
 }
 
@@ -139,7 +139,7 @@ export async function sendShippingNotification(params: {
 
   const body = `
     ${h2("Ta commande est en route ! 📦")}
-    ${text(`Bonne nouvelle — ta commande #${params.orderRef.slice(0,8).toUpperCase()} a été expédiée.`)}
+    ${text(`Bonne nouvelle · ta commande #${params.orderRef.slice(0,8).toUpperCase()} a été expédiée.`)}
     ${trackingInfo}
     <br/>
     ${text("Elle devrait arriver dans les prochains jours selon le mode de livraison choisi.")}
@@ -150,7 +150,7 @@ export async function sendShippingNotification(params: {
     from: FROM,
     to: params.to,
     subject: `Ta commande #${params.orderRef.slice(0,8).toUpperCase()} est en route 📦`,
-    html: baseLayout("Expédition — Spectrum For Us", body),
+    html: baseLayout("Expédition · Spectrum For Us", body),
   });
 }
 
@@ -168,7 +168,7 @@ export async function sendWelcomeEmail(params: { to: string; pseudo: string }) {
     from: FROM,
     to: params.to,
     subject: "Bienvenue sur Spectrum For Us ✦",
-    html: baseLayout("Bienvenue — Spectrum For Us", body),
+    html: baseLayout("Bienvenue · Spectrum For Us", body),
   });
 }
 
@@ -183,12 +183,12 @@ export async function sendPasswordReset(params: { to: string; resetUrl: string }
   return getResend().emails.send({
     from: FROM,
     to: params.to,
-    subject: "Réinitialisation de ton mot de passe — Spectrum For Us",
-    html: baseLayout("Mot de passe — Spectrum For Us", body),
+    subject: "Réinitialisation de ton mot de passe · Spectrum For Us",
+    html: baseLayout("Mot de passe · Spectrum For Us", body),
   });
 }
 
-/** Silently ignore email errors — never block the main flow */
+/** Silently ignore email errors · never block the main flow */
 export async function trySend(fn: () => Promise<unknown>) {
   try { await fn(); } catch (e) { console.error("[email]", e); }
 }

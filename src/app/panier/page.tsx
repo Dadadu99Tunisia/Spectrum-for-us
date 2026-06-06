@@ -17,7 +17,7 @@ export default function PanierPage() {
 
       <main className="min-h-screen md:pt-24 pb-32 md:pb-20 px-4 md:px-6 bg-[#FBF9F5] text-[#1A1612]">
         <div className="max-w-4xl mx-auto">
-          {/* Title — desktop only */}
+          {/* Title · desktop only */}
           <div className="hidden md:block mb-10">
             <span className="font-mono text-[11px] tracking-wide text-[#FF3D7F] block mb-2">Mon panier</span>
             <h1 className="font-fraunces text-4xl text-[#1A1612]">
@@ -72,7 +72,7 @@ export default function PanierPage() {
                         <div className="flex items-center rounded-lg overflow-hidden"
                           style={{ border: "1px solid rgba(26,22,18,0.12)" }}>
                           <button onClick={() => update(item.id, item.quantity - 1)}
-                            className="w-7 h-7 text-[#1A1612]/55 text-base active:bg-white/5 transition-colors">−</button>
+                            className="w-7 h-7 text-[#1A1612]/55 text-base active:bg-white/5 transition-colors">-</button>
                           <span className="w-6 text-center font-mono text-[11px] text-[#1A1612]">{item.quantity}</span>
                           <button onClick={() => update(item.id, item.quantity + 1)}
                             className="w-7 h-7 text-[#1A1612]/55 text-base active:bg-white/5 transition-colors">+</button>
@@ -99,7 +99,7 @@ export default function PanierPage() {
                 </div>
               </div>
 
-              {/* Summary — desktop sticky sidebar */}
+              {/* Summary · desktop sticky sidebar */}
               <div className="lg:col-span-1 hidden md:block">
                 <div className="sticky top-24 rounded-2xl border border-[#1A1612]/10 bg-[#1A1612]/[0.03] p-6">
                   <div className="prism-line mb-6" />

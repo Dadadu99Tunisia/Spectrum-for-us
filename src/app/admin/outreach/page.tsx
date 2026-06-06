@@ -52,7 +52,7 @@ export default function OutreachPage() {
       setItems(data ?? []);
       setTotal(count ?? 0);
     } catch {
-      // silently fail — show empty state
+      // silently fail · show empty state
     } finally {
       setLoading(false);
     }
@@ -158,7 +158,7 @@ export default function OutreachPage() {
                       {item.notes && <p className="font-mono text-[9px] text-[#F3EADB]/25 truncate max-w-[140px]">{item.notes}</p>}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="font-mono text-[10px] text-[#F3EADB]/40 capitalize">{item.platform ?? "—"}</span>
+                      <span className="font-mono text-[10px] text-[#F3EADB]/40 capitalize">{item.platform ?? "-"}</span>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
@@ -175,10 +175,10 @@ export default function OutreachPage() {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3"><span className="font-mono text-[10px] text-[#F3EADB]/35">{item.category ?? "—"}</span></td>
+                    <td className="px-4 py-3"><span className="font-mono text-[10px] text-[#F3EADB]/35">{item.category ?? "-"}</span></td>
                     <td className="px-4 py-3">
                       <span className="font-mono text-[10px] text-[#F3EADB]/40">
-                        {item.followers_count ? `${(item.followers_count / 1000).toFixed(1)}k` : "—"}
+                        {item.followers_count ? `${(item.followers_count / 1000).toFixed(1)}k` : "-"}
                       </span>
                     </td>
                     <td className="px-4 py-3">

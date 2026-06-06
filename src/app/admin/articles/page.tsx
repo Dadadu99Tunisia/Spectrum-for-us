@@ -41,7 +41,7 @@ export default function ArticlesPage() {
       setArticles(data ?? []);
       setTotal(count ?? 0);
     } catch {
-      // silently fail — show empty state
+      // silently fail · show empty state
     } finally {
       setLoading(false);
     }

@@ -11,7 +11,7 @@ export default function Home() {
       {/* ══ MOBILE EXPERIENCE (< 768px) ══ */}
       <MobileHomeView />
 
-      {/* ══ DESKTOP EXPERIENCE (≥ 768px) — accueil clair minimaliste ══ */}
+      {/* ══ DESKTOP EXPERIENCE (≥ 768px) · accueil clair minimaliste ══ */}
       <div className="hidden md:block" id="main-content">
         <LightHome />
       </div>

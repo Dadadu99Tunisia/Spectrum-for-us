@@ -1,6 +1,6 @@
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Conditions Générales d'Utilisation — Spectrum For Us" };
+export const metadata = { title: "Conditions Générales d'Utilisation · Spectrum For Us" };
 
 export default function CGU() {
   return (

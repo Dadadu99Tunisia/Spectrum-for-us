@@ -28,7 +28,7 @@ export async function requireAdmin(
     return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
   }
 
-  // Email hardcodé = super_admin — toujours autorisé peu importe allowedRoles
+  // Email hardcodé = super_admin · toujours autorisé peu importe allowedRoles
   if (ADMIN_EMAILS.includes(user.email ?? "")) {
     return { user: { id: user.id, email: user.email!, role: "super_admin" as AdminRole } };
   }

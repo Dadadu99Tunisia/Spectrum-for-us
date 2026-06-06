@@ -64,7 +64,7 @@ export default function AbonnementPage() {
           </h1>
           <p className="font-hanken text-[#1A1612]/60">
             {isActive
-              ? `Boutique "${shop?.name}" — abonnement actif`
+              ? `Boutique "${shop?.name}" · abonnement actif`
               : "Un abonnement mensuel pour vendre sur Spectrum For Us."}
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function AbonnementPage() {
                 disabled={subscribing}
                 className="w-full py-4 rounded-xl bg-[#FF3D7F] text-white font-hanken font-semibold hover:bg-[#FF3D7F]/80 transition-all disabled:opacity-50"
               >
-                {subscribing ? "Redirection vers Stripe…" : "S'abonner maintenant — 9,90€/mois"}
+                {subscribing ? "Redirection vers Stripe…" : "S'abonner maintenant · 9,90€/mois"}
               </button>
             </>
           )}

@@ -4,7 +4,7 @@ import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 const SETTINGS_TABLE = "admin_settings";
 
-// Defaults — returned if DB row doesn't exist yet
+// Defaults · returned if DB row doesn't exist yet
 const DEFAULTS: Record<string, unknown> = {
   site_name:          "Spectrum For Us",
   site_url:           "https://spectrumforus.com",
@@ -37,7 +37,7 @@ export async function GET() {
     .order("key");
 
   if (error) {
-    // Table might not exist yet — return defaults
+    // Table might not exist yet · return defaults
     return apiResponse(DEFAULTS);
   }
 
@@ -71,7 +71,7 @@ export async function PATCH(req: NextRequest) {
   if (error) {
     // If table doesn't exist, just return success (settings will be in-memory)
     if (error.code === "42P01") {
-      return apiResponse({ saved: upserts.length, note: "Settings table not created yet — run migration" });
+      return apiResponse({ saved: upserts.length, note: "Settings table not created yet · run migration" });
     }
     return apiError(error.message);
   }

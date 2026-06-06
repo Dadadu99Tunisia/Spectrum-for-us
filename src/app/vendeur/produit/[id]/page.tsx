@@ -33,7 +33,7 @@ export default function EditProduitPage() {
     supabase.from("shops").select("id").eq("owner_id", user.id).single().then(({ data: shop }) => {
       if (!shop) { router.push("/vendeur/onboarding"); return; }
       setShopId(shop.id);
-      // Charger le produit — vérifier qu'il appartient bien à cette boutique
+      // Charger le produit · vérifier qu'il appartient bien à cette boutique
       supabase.from("products").select("*").eq("id", id).eq("shop_id", shop.id).single()
         .then(({ data: p, error: err }) => {
           if (err || !p) { router.push("/vendeur"); return; }
@@ -186,7 +186,7 @@ export default function EditProduitPage() {
             <div>
               <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Catégorie</label>
               <select value={form.category} onChange={e => { setForm(p => ({ ...p, category: e.target.value, subcategory: "" })); }} className={inputCls}>
-                <option value="">— Choisir —</option>
+                <option value="">- Choisir -</option>
                 {CATEGORY_LIST.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
@@ -196,7 +196,7 @@ export default function EditProduitPage() {
                 {!form.category && <span className="text-[#1A1612]/20 normal-case ml-1">(choisir une catégorie d'abord)</span>}
               </label>
               <select value={form.subcategory} onChange={f("subcategory")} disabled={!form.category} className={`${inputCls} disabled:opacity-40`}>
-                <option value="">— Choisir —</option>
+                <option value="">- Choisir -</option>
                 {getSubcategories(form.category).map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>

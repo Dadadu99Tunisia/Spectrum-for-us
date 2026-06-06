@@ -111,7 +111,7 @@ export default function CheckoutPage() {
     getStripe().then(() => setStripeReady(true));
   }, []);
 
-  // Payment intent créé AVEC le panier et les infos de livraison — total recalculé côté serveur
+  // Payment intent créé AVEC le panier et les infos de livraison · total recalculé côté serveur
   const createPaymentIntent = useCallback(async () => {
     if (total() <= 0) return;
     if (!user) { setIntentError("Connecte-toi pour payer."); return; }
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
     setStep("Paiement");
   };
 
-  // La commande est créée par le webhook Stripe — on attend juste la confirmation Stripe
+  // La commande est créée par le webhook Stripe · on attend juste la confirmation Stripe
   const handlePaymentSuccess = async (piId?: string) => {
     // Polling léger pour attendre que le webhook crée la commande (max 10s)
     if (piId) {
@@ -273,7 +273,7 @@ export default function CheckoutPage() {
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" checked={form.discrete} onChange={(e) => set("discrete", e.target.checked)} className="w-4 h-4 rounded accent-[#FF3D7F]" />
                     <span className="font-hanken text-sm text-[#1A1612]/60 group-hover:text-[#1A1612]/80 leading-relaxed">
-                      Colis discret — aucune mention Spectrum à l&apos;extérieur
+                      Colis discret · aucune mention Spectrum à l&apos;extérieur
                     </span>
                   </label>
 

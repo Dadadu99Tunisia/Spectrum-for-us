@@ -1,5 +1,5 @@
 /**
- * Rate limiter en mémoire — pas de dépendance Redis.
+ * Rate limiter en mémoire · pas de dépendance Redis.
  * Fonctionne par cold-start (Edge/Node). Pour un trafic > 10k req/h, migrer vers Upstash.
  */
 

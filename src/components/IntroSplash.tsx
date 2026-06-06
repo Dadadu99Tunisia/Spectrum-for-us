@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * IntroSplash — intro cinématique plein écran "Spectrum For Us".
+ * IntroSplash · intro cinématique plein écran "Spectrum For Us".
  *
  * Issu du handoff Claude Design (Intro Animation). Porté en composant overlay
  * autonome pour Next.js App Router : ne réorganise pas le layout, se superpose

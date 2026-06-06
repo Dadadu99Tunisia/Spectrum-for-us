@@ -161,7 +161,7 @@ export default function ComptePage() {
             )}
           </div>
 
-          {/* Profile header — desktop */}
+          {/* Profile header · desktop */}
           <div className="hidden md:flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-10">
             <div className="w-16 h-16 rounded-2xl bg-[#FF3D7F]/10 border border-[#FF3D7F]/30 flex items-center justify-center">
               <span className="font-fraunces text-2xl text-[#FF3D7F]">{(pseudo?.[0] ?? "?").toUpperCase()}</span>

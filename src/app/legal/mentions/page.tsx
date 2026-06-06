@@ -1,6 +1,6 @@
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Mentions légales — Spectrum For Us" };
+export const metadata = { title: "Mentions légales · Spectrum For Us" };
 
 export default function MentionsLegales() {
   return (

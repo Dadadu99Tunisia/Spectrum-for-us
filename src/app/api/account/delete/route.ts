@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
- * RGPD Art. 17 — Droit à l'effacement
+ * RGPD Art. 17 · Droit à l'effacement
  * DELETE /api/account/delete
  * Supprime le compte, le profil, les commandes et toutes données personnelles.
  */
@@ -40,7 +40,7 @@ export async function DELETE() {
   // 2. Supprimer le profil
   await admin.from("profiles").delete().eq("id", userId);
 
-  // 3. Supprimer le compte auth (service_role) — empêche toute reconnexion
+  // 3. Supprimer le compte auth (service_role) · empêche toute reconnexion
   const { error: delErr } = await admin.auth.admin.deleteUser(userId);
   if (delErr) {
     console.error("[account/delete] échec suppression auth", delErr);

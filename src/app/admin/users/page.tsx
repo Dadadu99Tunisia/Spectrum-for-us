@@ -136,7 +136,7 @@ export default function UsersPage() {
                           </span>
                         </div>
                         <div>
-                          <p className="font-hanken text-sm text-[#F3EADB]">{u.full_name || u.pseudo || "—"}</p>
+                          <p className="font-hanken text-sm text-[#F3EADB]">{u.full_name || u.pseudo || "-"}</p>
                           <p className="font-mono text-[9px] text-[#F3EADB]/25">{u.id.slice(0,12)}…</p>
                         </div>
                       </div>
@@ -170,7 +170,7 @@ export default function UsersPage() {
                     </td>
                     <td className="px-4 py-3">
                       <span className="font-mono text-[10px] text-[#F3EADB]/25">
-                        {u.last_seen_at ? new Date(u.last_seen_at).toLocaleDateString("fr-FR") : "—"}
+                        {u.last_seen_at ? new Date(u.last_seen_at).toLocaleDateString("fr-FR") : "-"}
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -200,7 +200,7 @@ export default function UsersPage() {
           {total > LIMIT && (
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] text-[#F3EADB]/25">
-                {(page - 1) * LIMIT + 1}–{Math.min(page * LIMIT, total)} sur {total}
+                {(page - 1) * LIMIT + 1}-{Math.min(page * LIMIT, total)} sur {total}
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}

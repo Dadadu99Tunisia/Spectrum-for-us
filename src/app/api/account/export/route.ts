@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * RGPD Art. 20 — Droit à la portabilité des données
+ * RGPD Art. 20 · Droit à la portabilité des données
  * GET /api/account/export
  * Retourne toutes les données personnelles de l'utilisateur en JSON.
  */
@@ -26,7 +26,7 @@ export async function GET() {
 
   const export_data = {
     exported_at: new Date().toISOString(),
-    rgpd_basis: "RGPD Art. 20 — Droit à la portabilité",
+    rgpd_basis: "RGPD Art. 20 · Droit à la portabilité",
     account: {
       id: user.id,
       email: user.email,

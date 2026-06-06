@@ -99,7 +99,7 @@ export function Manifeste() {
           </p>
         </div>
 
-        {/* Stats — reframed as facts, not features */}
+        {/* Stats · reframed as facts, not features */}
         <div
           className="mt-14 pt-8 border-t border-[#F3EADB]/8 grid grid-cols-2 md:grid-cols-4 gap-8 transition-all duration-700 delay-700"
           style={{

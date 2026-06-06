@@ -169,7 +169,7 @@ function AgentPanel({ agent }: { agent: AgentConfig }) {
       {/* Tasks */}
       <div className="mb-4">
         <p className="font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/22 mb-2.5 flex items-center gap-1.5">
-          <Zap size={8} /> Tâches assignées
+          <Zap size={8} /> T-ches assignées
         </p>
         <div className="space-y-1.5">
           {agent.tasks(pushAssistant).map(task => (
@@ -196,7 +196,7 @@ function AgentPanel({ agent }: { agent: AgentConfig }) {
             <div className="text-center py-6">
               <p className="font-hanken text-xs text-[#F3EADB]/20 leading-relaxed">
                 Donne une instruction à {agent.name}<br />
-                <span className="text-[#F3EADB]/12">ou lance une tâche ci-dessus</span>
+                <span className="text-[#F3EADB]/12">ou lance une t-che ci-dessus</span>
               </p>
               <div className="flex flex-wrap gap-1.5 justify-center mt-3">
                 {agent.starters.map((s, i) => (
@@ -338,7 +338,7 @@ const buildAgents = (): AgentConfig[] => [
           const json = await res.json();
           const d    = json.data;
           if (!d) return "Impossible de récupérer les données financières.";
-          return `📊 **RAPPORT FINANCIER — ${new Date().toLocaleDateString("fr-FR", { month: "long", year: "numeric" }).toUpperCase()}**
+          return `📊 **RAPPORT FINANCIER · ${new Date().toLocaleDateString("fr-FR", { month: "long", year: "numeric" }).toUpperCase()}**
 
 **Revenus ce mois :** ${d.revenueThisMonth.toLocaleString("fr-FR")} €
 **Revenus mois précédent :** ${d.revenuePrevMonth.toLocaleString("fr-FR")} €
@@ -347,7 +347,7 @@ const buildAgents = (): AgentConfig[] => [
 **Commissions Spectrum (15%) :** ${d.estimatedCommissions.toLocaleString("fr-FR")} €
 
 **Top vendeurs·ses ce mois :**
-${(d.topVendors ?? []).slice(0, 5).map((v: { shop_name: string; revenue: number }, i: number) => `${i + 1}. ${v.shop_name} — ${v.revenue.toLocaleString("fr-FR")} €`).join("\n")}`;
+${(d.topVendors ?? []).slice(0, 5).map((v: { shop_name: string; revenue: number }, i: number) => `${i + 1}. ${v.shop_name} · ${v.revenue.toLocaleString("fr-FR")} €`).join("\n")}`;
         },
       },
       {
@@ -391,7 +391,7 @@ ${(d.topVendors ?? []).slice(0, 5).map((v: { shop_name: string; revenue: number 
           const orders = json.data ?? [];
           if (!orders.length) return "✅ Aucune commande bloquée en ce moment.";
           const lines = orders.slice(0, 10).map((o: { id: string; total_amount: number; created_at: string }) =>
-            `• #${o.id.slice(0, 8)} — ${Number(o.total_amount).toFixed(2)} € — créée le ${new Date(o.created_at).toLocaleDateString("fr-FR")}`
+            `• #${o.id.slice(0, 8)} · ${Number(o.total_amount).toFixed(2)} € · créée le ${new Date(o.created_at).toLocaleDateString("fr-FR")}`
           );
           return `⚠️ **${orders.length} commande(s) en attente**\n\n${lines.join("\n")}\n\nVa dans Commandes pour les traiter.`;
         },
@@ -422,7 +422,7 @@ ${(d.topVendors ?? []).slice(0, 5).map((v: { shop_name: string; revenue: number 
           const res  = await fetch("/api/admin/moderation?status=pending&limit=5");
           const json = await res.json();
           const items = json.data ?? [];
-          if (!items.length) return "✅ File de modération vide — tout est à jour.";
+          if (!items.length) return "✅ File de modération vide · tout est à jour.";
           return `🔍 **${items.length} élément(s) en attente de modération**\n\nVa dans la section Modération pour les traiter.`;
         },
       },
@@ -456,7 +456,7 @@ ${(d.topVendors ?? []).slice(0, 5).map((v: { shop_name: string; revenue: number 
       },
       {
         id: "launch-all-agents",
-        label: "Lancer toutes les tâches automatiques",
+        label: "Lancer toutes les t-ches automatiques",
         description: "Qualification leads + rapport financier en parallèle",
         icon: <Zap size={14} />,
         action: async () => {
@@ -477,7 +477,7 @@ ${(d.topVendors ?? []).slice(0, 5).map((v: { shop_name: string; revenue: number 
             report += `**Finance :** ${d?.revenueThisMonth?.toFixed(2) ?? 0} € ce mois · ${d?.monthGrowthPct > 0 ? "+" : ""}${d?.monthGrowthPct?.toFixed(1) ?? 0}% vs mois dernier\n`;
           }
 
-          report += "\n➡ Lance chaque agent individuellement pour exécuter leurs tâches.";
+          report += "\n➡ Lance chaque agent individuellement pour exécuter leurs t-ches.";
           return report;
         },
       },
@@ -531,7 +531,7 @@ export default function AgentsPage() {
         {/* Team note */}
         <div className="mt-auto p-3 rounded-xl bg-[#F3EADB]/[0.025] border border-[#F3EADB]/6">
           <p className="font-mono text-[9px] text-[#F3EADB]/22 leading-relaxed">
-            Chaque agent a accès aux données en temps réel et peut exécuter des tâches réelles.
+            Chaque agent a accès aux données en temps réel et peut exécuter des t-ches réelles.
           </p>
         </div>
       </div>

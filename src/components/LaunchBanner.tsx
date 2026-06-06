@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * LaunchBanner — bandeau fixe en haut avec compte à rebours jusqu'au
+ * LaunchBanner · bandeau fixe en haut avec compte à rebours jusqu'au
  * lancement officiel. Branché sur BannerContext pour que le Header se décale
  * (top-10) tant qu'il est visible. Dismissible.
  */

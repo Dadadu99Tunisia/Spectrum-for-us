@@ -24,11 +24,11 @@ export function CommandCenter() {
   const eur = (n: number) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(n) + " €";
 
   const tiles = [
-    { label: "Ventes aujourd'hui", value: d ? eur(d.todayRevenue) : "—", sub: d ? `${d.todayOrders} commande${d.todayOrders > 1 ? "s" : ""}` : "", icon: Activity, accent: "#1C9C95", href: "/admin/finance", alert: false },
-    { label: "À traiter", value: d ? String(d.toProcess) : "—", sub: "commandes payées", icon: ShoppingCart, accent: "#E0901E", href: "/admin/orders", alert: !!d && d.toProcess > 0 },
-    { label: "Modération", value: d ? String(d.moderationPending) : "—", sub: "en attente", icon: ShieldAlert, accent: "#6D2DB5", href: "/admin/moderation", alert: !!d && d.moderationPending > 0 },
-    { label: "Abos à risque", value: d ? String(d.atRiskSubs) : "—", sub: "période expirée", icon: CreditCard, accent: "#E0337E", href: "/admin/vendors", alert: !!d && d.atRiskSubs > 0 },
-    { label: "Paiements échoués", value: d ? String(d.failed7d) : "—", sub: "7 derniers jours", icon: AlertTriangle, accent: "#E0533A", href: "/admin/orders", alert: !!d && d.failed7d > 0 },
+    { label: "Ventes aujourd'hui", value: d ? eur(d.todayRevenue) : "-", sub: d ? `${d.todayOrders} commande${d.todayOrders > 1 ? "s" : ""}` : "", icon: Activity, accent: "#1C9C95", href: "/admin/finance", alert: false },
+    { label: "À traiter", value: d ? String(d.toProcess) : "-", sub: "commandes payées", icon: ShoppingCart, accent: "#E0901E", href: "/admin/orders", alert: !!d && d.toProcess > 0 },
+    { label: "Modération", value: d ? String(d.moderationPending) : "-", sub: "en attente", icon: ShieldAlert, accent: "#6D2DB5", href: "/admin/moderation", alert: !!d && d.moderationPending > 0 },
+    { label: "Abos à risque", value: d ? String(d.atRiskSubs) : "-", sub: "période expirée", icon: CreditCard, accent: "#E0337E", href: "/admin/vendors", alert: !!d && d.atRiskSubs > 0 },
+    { label: "Paiements échoués", value: d ? String(d.failed7d) : "-", sub: "7 derniers jours", icon: AlertTriangle, accent: "#E0533A", href: "/admin/orders", alert: !!d && d.failed7d > 0 },
   ];
 
   return (

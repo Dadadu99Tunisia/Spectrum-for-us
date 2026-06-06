@@ -32,7 +32,7 @@ export function EcoBanner() {
 
       <p className="font-hanken text-xs text-[#F3EADB]/60 text-center">
         <span className="text-[#1C9C95] font-medium">Spectrum For Us est 100&nbsp;% en ligne</span>
-        {" "}—{" "}
+        {" "}-{" "}
         <span>aucun stock physique, aucune boutique : une empreinte carbone réduite au minimum.</span>
       </p>
 

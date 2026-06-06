@@ -96,7 +96,7 @@ async function searchEtsy(): Promise<FoundVendor[]> {
           platform: "etsy",
           profile_url: `https://www.etsy.com/fr/shop/${shop}`,
           category: inferCategory(q),
-          description: `Boutique Etsy — trouvée via "${q}"`,
+          description: `Boutique Etsy · trouvée via "${q}"`,
         });
       }
     } catch { /* network */ }
@@ -109,7 +109,7 @@ async function searchEtsy(): Promise<FoundVendor[]> {
 async function searchDirectories(): Promise<FoundVendor[]> {
   const vendors: FoundVendor[] = [];
 
-  // Annuaire-asso.fr — associations LGBTQ+ en France
+  // Annuaire-asso.fr · associations LGBTQ+ en France
   try {
     const res = await fetch(
       "https://www.annuaire-asso.fr/associations/?q=lgbt&type=association",
@@ -152,11 +152,11 @@ function inferCategory(hint: string): string {
 
 export function generateOutreachEmail(vendor: FoundVendor): string {
   const firstName = vendor.name.split(/[\s_]/)[0];
-  return `Objet : Rejoins Spectrum For Us — la 1ère marketplace queer 🌈
+  return `Objet : Rejoins Spectrum For Us · la 1ère marketplace queer 🌈
 
 Bonjour ${firstName},
 
-Je m'appelle Dada, fondateur·ice de Spectrum For Us (spectrumforus.com) — la première marketplace queer.
+Je m'appelle Dada, fondateur·ice de Spectrum For Us (spectrumforus.com) · la première marketplace queer.
 
 J'ai découvert ta création sur ${vendor.platform === "instagram" ? `Instagram (@${vendor.instagram_handle || vendor.name})` : `Etsy (${vendor.name})`} et ton univers correspond exactement à ce qu'on construit ensemble : un espace où les créateur·ices LGBTQIA+ peuvent vendre à une communauté qui les comprend et les soutient.
 
@@ -172,7 +172,7 @@ Pour rejoindre l'aventure : spectrumforus.com/vendeur/onboarding
 
 À très bientôt,
 Dada Azouz
-Spectrum For Us — B(u)y us, for us. 🌈
+Spectrum For Us · B(u)y us, for us. 🌈
 hello@spectrumforus.com`;
 }
 

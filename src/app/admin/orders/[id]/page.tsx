@@ -248,7 +248,7 @@ export default function OrderDetailPage() {
                   <Truck size={16} className="text-[#F3EADB]/30" />
                   {order.tracking_number ? (
                     <div>
-                      <p className="font-hanken text-sm text-[#F3EADB]">{order.carrier ?? "—"} — <code className="text-[#60a5fa]">{order.tracking_number}</code></p>
+                      <p className="font-hanken text-sm text-[#F3EADB]">{order.carrier ?? "-"} · <code className="text-[#60a5fa]">{order.tracking_number}</code></p>
                     </div>
                   ) : (
                     <p className="font-hanken text-sm text-[#F3EADB]/35 italic">Aucun numéro de suivi</p>
@@ -280,7 +280,7 @@ export default function OrderDetailPage() {
                   <div>
                     <p className="font-hanken text-sm text-[#F3EADB]">
                       Remboursement : <span className="text-[#60a5fa]">{order.refund_status}</span>
-                      {order.refund_amount ? ` — ${fmt(order.refund_amount)}` : ""}
+                      {order.refund_amount ? ` · ${fmt(order.refund_amount)}` : ""}
                     </p>
                     {order.refund_reason && <p className="font-hanken text-xs text-[#F3EADB]/40 mt-1">{order.refund_reason}</p>}
                     {order.refunded_at && <p className="font-mono text-[10px] text-[#F3EADB]/25 mt-1">{new Date(order.refunded_at).toLocaleDateString("fr-FR")}</p>}
@@ -330,7 +330,7 @@ export default function OrderDetailPage() {
                     </span>
                   </div>
                   <div>
-                    <p className="font-hanken text-sm text-[#F3EADB]">{order.buyer.full_name ?? order.buyer.pseudo ?? "—"}</p>
+                    <p className="font-hanken text-sm text-[#F3EADB]">{order.buyer.full_name ?? order.buyer.pseudo ?? "-"}</p>
                     <p className="font-mono text-[10px] text-[#F3EADB]/35">{order.buyer.email}</p>
                   </div>
                 </div>

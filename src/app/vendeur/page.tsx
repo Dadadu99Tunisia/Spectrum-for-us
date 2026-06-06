@@ -1,9 +1,9 @@
 "use client";
 
 /**
- * Dashboard vendeur·euse — Spectrum For Us
+ * Dashboard vendeur·euse · Spectrum For Us
  * Design : "Dashboard Vendeur Spectrum" (Claude Design handoff).
- * Thème clair back-office (Bricolage / Hanken / Space Mono), câblé aux données réelles
+ * Thème clair back-office (Bricolage / Hanken / Space Mono), c-blé aux données réelles
  * (boutique, produits, commandes via order_items.vendor_id, revenus, rang Fondateur·ice).
  */
 
@@ -281,7 +281,7 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go }
       <div className="grid lg:grid-cols-[1.7fr_1fr] gap-4">
         {/* Chart */}
         <Panel>
-          <PanelHead title="Revenus — 12 dernières semaines" action={<button onClick={() => go("revenue")} className="text-[13px] font-bold" style={{ color: C.mag }}>Voir le détail</button>} />
+          <PanelHead title="Revenus · 12 dernières semaines" action={<button onClick={() => go("revenue")} className="text-[13px] font-bold" style={{ color: C.mag }}>Voir le détail</button>} />
           <div className="flex items-end gap-2.5 h-[150px] pt-2">
             {m.weeks.map((v, i) => (
               <div key={i} className="flex-1 rounded-t-md min-h-[6px]" title={eur(v)}
@@ -309,7 +309,7 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go }
                 <div className="h-[7px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,.2)" }}>
                   <i className="block h-full rounded-full" style={{ width: "64%", background: "#fff" }} />
                 </div>
-                <small className="block mt-2 font-mono text-[11px]" style={{ color: "rgba(255,255,255,.7)" }}>Commission gratuite — bénéfice fondateur·ice actif</small>
+                <small className="block mt-2 font-mono text-[11px]" style={{ color: "rgba(255,255,255,.7)" }}>Commission gratuite · bénéfice fondateur·ice actif</small>
               </>
             ) : (
               <Link href="/programme-fondateur" className="inline-flex items-center gap-1.5 font-bold text-[13px] rounded-lg px-3.5 py-2" style={{ background: "#fff", color: "#241038" }}>
@@ -381,8 +381,8 @@ function ordersTable(rows: VendorOrder[], full: boolean) {
                 <b>{o.products?.name || o.products?.title || "Produit"}</b>
               </div>
             </td>
-            <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{o.orders?.shipping_name || "—"}</td>
-            {full && <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{o.orders ? new Date(o.orders.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "—"}</td>}
+            <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{o.orders?.shipping_name || "-"}</td>
+            {full && <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{o.orders ? new Date(o.orders.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "-"}</td>}
             <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><b>{eur(Number(o.price_at_purchase) * o.quantity)}</b></td>
             <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><Pill status={o.orders?.status ?? "pending"} /></td>
           </tr>
@@ -409,7 +409,7 @@ function Products({ products }: { products: Product[] }) {
               {products.map(p => (
                 <tr key={p.id}>
                   <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><div className="flex items-center gap-2.5"><span className="w-[42px] h-[42px] rounded-[9px] shrink-0" style={{ background: "#FBEAD3" }} /><b>{p.name || p.title}</b></div></td>
-                  <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{p.category || "—"}</td>
+                  <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{p.category || "-"}</td>
                   <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><b>{eur(p.price)}</b></td>
                   <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: (p.quantity ?? 0) <= 0 ? C.red : C.soft }}>{(p.quantity ?? 0) <= 0 ? "Rupture" : p.quantity}</td>
                   <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}>
@@ -455,13 +455,13 @@ function Revenue({ total, commissions }: { total: number; commissions: { gross_a
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <Kpi tint="#DCF0E5" label="Brut encaissé" value={eur(gross)} delta="commandes payées" deltaColor={C.grn} />
-        <Kpi tint="#FCEAD2" label="Commission plateforme" value={eur(commission)} delta={commission === 0 ? "0 % — fondateur·ice ✦" : `${rate} % effectif`} deltaColor={commission === 0 ? C.grn : C.amb} />
+        <Kpi tint="#FCEAD2" label="Commission plateforme" value={eur(commission)} delta={commission === 0 ? "0 % · fondateur·ice ✦" : `${rate} % effectif`} deltaColor={commission === 0 ? C.grn : C.amb} />
         <Kpi tint="#EAE0FB" label="Net pour toi" value={eur(net)} delta={`${eur(pending)} à verser`} deltaColor={C.faint} />
       </div>
       <Panel>
         <PanelHead title="Versements" />
         {commissions.length === 0 ? (
-          <p className="text-sm py-4" style={{ color: C.faint }}>Aucune vente pour l&apos;instant — tes versements apparaîtront ici.</p>
+          <p className="text-sm py-4" style={{ color: C.faint }}>Aucune vente pour l&apos;instant · tes versements apparaîtront ici.</p>
         ) : (
           <table className="w-full border-collapse">
             <thead><tr>{["Commandes", "Brut", "Commission", "Net", "Statut"].map(h => <th key={h} className={TH} style={{ color: C.faint }}>{h}</th>)}</tr></thead>
@@ -476,7 +476,7 @@ function Revenue({ total, commissions }: { total: number; commissions: { gross_a
             </tbody>
           </table>
         )}
-        <p className="text-[11px] mt-4" style={{ color: C.faint }}>Versements manuels pour l&apos;instant — contacte le support. Commission 0 % pendant l&apos;avantage fondateur·ice.</p>
+        <p className="text-[11px] mt-4" style={{ color: C.faint }}>Versements manuels pour l&apos;instant · contacte le support. Commission 0 % pendant l&apos;avantage fondateur·ice.</p>
       </Panel>
     </>
   );
@@ -492,7 +492,7 @@ function Subscription({ shop, founderRank }: { shop: Shop; founderRank: number |
         <p className="text-sm leading-relaxed mt-2" style={{ color: C.soft }}>
           {active
             ? <>Abonnement <b style={{ color: C.ink }}>actif</b>. Boutique, outils et mise en avant éditoriale inclus.</>
-            : <>Déclenché à ta <b style={{ color: C.ink }}>première vente</b> — tu n&apos;as encore rien payé. Boutique, outils, mise en avant éditoriale inclus.</>}
+            : <>Déclenché à ta <b style={{ color: C.ink }}>première vente</b> · tu n&apos;as encore rien payé. Boutique, outils, mise en avant éditoriale inclus.</>}
         </p>
         <div className="flex gap-2.5 mt-3 flex-wrap">
           <Link href="/vendeur/abonnement" className="rounded-[11px] font-bold text-sm px-4 py-2.5" style={{ background: "#fff", border: `1px solid ${C.line}` }}>Gérer l&apos;abonnement</Link>
@@ -503,7 +503,7 @@ function Subscription({ shop, founderRank }: { shop: Shop; founderRank: number |
         <div className="relative">
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold rounded-full px-2.5 py-1 mb-3" style={{ background: "rgba(255,255,255,.16)" }}>✦ Programme Fondateur·ice</span>
           <h3 className="font-bricolage font-extrabold text-[21px] mb-2">{founderRank ? `Place #${String(founderRank).padStart(3, "0")} / 100` : "100 places"}</h3>
-          <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,.82)" }}>0 % commission 12 mois · 3 ans d&apos;abonnement offerts (rang 1–20) ou 6 mois (rang 21–100) · mise en avant prioritaire.</p>
+          <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,.82)" }}>0 % commission 12 mois · 3 ans d&apos;abonnement offerts (rang 1-20) ou 6 mois (rang 21-100) · mise en avant prioritaire.</p>
         </div>
       </div>
     </div>

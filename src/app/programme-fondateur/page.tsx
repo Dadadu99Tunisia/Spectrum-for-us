@@ -103,7 +103,7 @@ function SpotCard({
         transitionDelay: `${delay}ms`,
       }}>
 
-      {/* Top — icon + tier */}
+      {/* Top · icon + tier */}
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
@@ -245,7 +245,7 @@ const FAQS = [
   },
   {
     q: "Puis-je rejoindre le programme si j'ai déjà une boutique Spectrum ?",
-    a: "Le programme est attribué automatiquement à l'inscription. Si tu as créé ta boutique avant le lancement officiel du programme, contacte-nous — on régularise manuellement.",
+    a: "Le programme est attribué automatiquement à l'inscription. Si tu as créé ta boutique avant le lancement officiel du programme, contacte-nous · on régularise manuellement.",
   },
   {
     q: "Le programme concerne quels types de vendeurs ?",
@@ -393,7 +393,7 @@ export default function ProgrammeFondateurPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          TIERS — 3 colonnes
+          TIERS · 3 colonnes
       ══════════════════════════════════════════════════════════════════════ */}
       <section id="avantages" className="py-24 px-5">
         <div className="max-w-5xl mx-auto">
@@ -407,7 +407,7 @@ export default function ProgrammeFondateurPage() {
             <SpotCard
               icon={Trophy}
               tier="Fondateur·ice"
-              rang="Rangs 1 — 20"
+              rang="Rangs 1 · 20"
               color="#FFD700"
               gradient="linear-gradient(145deg,rgba(255,215,0,.06) 0%,rgba(255,107,53,.03) 100%)"
               borderColor="rgba(255,215,0,.2)"
@@ -422,14 +422,14 @@ export default function ProgrammeFondateurPage() {
                 { label: "Badge exclusif 🏆 à vie sur ton profil" },
                 { label: "Mise en avant prioritaire dans les résultats" },
                 { label: "Accès anticipé à toutes les nouvelles fonctionnalités" },
-                { label: "Statut permanent — jamais révocable" },
+                { label: "Statut permanent · jamais révocable" },
               ]}
             />
 
             <SpotCard
               icon={Rocket}
               tier="Pionnier·e"
-              rang="Rangs 21 — 100"
+              rang="Rangs 21 · 100"
               color="#a78bfa"
               gradient="linear-gradient(145deg,rgba(167,139,250,.06) 0%,rgba(224,51,126,.03) 100%)"
               borderColor="rgba(167,139,250,.2)"
@@ -444,7 +444,7 @@ export default function ProgrammeFondateurPage() {
                 { label: "Badge Pionnier·e 🚀 sur ton profil" },
                 { label: "Visibilité boostée au lancement" },
                 { label: "Accès anticipé aux nouvelles fonctionnalités" },
-                { label: "Statut permanent — jamais révocable" },
+                { label: "Statut permanent · jamais révocable" },
               ]}
             />
 
@@ -464,7 +464,7 @@ export default function ProgrammeFondateurPage() {
                 { label: "9,90 €/mois pour les créateurs & artistes" },
                 { label: "19,90 €/mois pour les entreprises" },
                 { label: "Commission 5 % sur les produits" },
-                { label: "Commission 8–12 % sur les services" },
+                { label: "Commission 8-12 % sur les services" },
                 { label: "Accès à toutes les fonctionnalités standard" },
               ]}
             />
@@ -500,7 +500,7 @@ export default function ProgrammeFondateurPage() {
               </h2>
               <p className="font-hanken text-base text-[#F3EADB]/50 max-w-xl mx-auto leading-relaxed mb-8">
                 Les Fondateur·ices et Pionnier·es seront les seul·es à bénéficier de ces avantages à vie.
-                Chaque jour, des places disparaissent. Le compteur est réel — il est directement connecté à notre base de données.
+                Chaque jour, des places disparaissent. Le compteur est réel · il est directement connecté à notre base de données.
               </p>
 
               {/* Mini stats */}

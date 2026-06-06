@@ -48,7 +48,7 @@ export default function OrdersPage() {
       setOrders(json.data ?? []);
       setTotal(json.meta?.total ?? 0);
     } catch {
-      // silently fail — show empty state
+      // silently fail · show empty state
     } finally {
       setLoading(false);
     }
@@ -150,7 +150,7 @@ export default function OrdersPage() {
                       </td>
                       <td className="px-4 py-3">
                         <span className="font-hanken text-sm text-[#F3EADB]/70">
-                          {order.profiles?.full_name ?? order.profiles?.pseudo ?? "—"}
+                          {order.profiles?.full_name ?? order.profiles?.pseudo ?? "-"}
                         </span>
                       </td>
                       <td className="px-4 py-3">
@@ -167,7 +167,7 @@ export default function OrdersPage() {
                         {order.dispute_status ? (
                           <span className="font-mono text-[9px] text-red-400">{order.dispute_status}</span>
                         ) : (
-                          <span className="text-[#F3EADB]/15">—</span>
+                          <span className="text-[#F3EADB]/15">-</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -176,7 +176,7 @@ export default function OrdersPage() {
                             {order.refund_status} {order.refund_amount ? `(${order.refund_amount}€)` : ""}
                           </span>
                         ) : (
-                          <span className="text-[#F3EADB]/15">—</span>
+                          <span className="text-[#F3EADB]/15">-</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -211,7 +211,7 @@ export default function OrdersPage() {
           {total > LIMIT && (
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] text-[#F3EADB]/25">
-                {(page - 1) * LIMIT + 1}–{Math.min(page * LIMIT, total)} sur {total}
+                {(page - 1) * LIMIT + 1}-{Math.min(page * LIMIT, total)} sur {total}
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}

@@ -275,7 +275,7 @@ export default function PublierPage() {
                   style={{ background: "rgba(255,61,127,.10)", color: "#FF3D7F", border: "1px solid rgba(255,61,127,.20)" }}>
                   {type}
                 </span>
-                <p className="font-fraunces text-[22px] text-[#1A1612] mt-3">{title || "—"}</p>
+                <p className="font-fraunces text-[22px] text-[#1A1612] mt-3">{title || "-"}</p>
                 <p className="font-fraunces text-[26px] mt-1" style={{ color: "#1A1612" }}>
                   {price ? `${parseFloat(price).toFixed(2)} €` : "Prix libre"}
                 </p>

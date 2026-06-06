@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Média Spectrum — Histoires, cultures et actualités queer",
+  title: "Média Spectrum · Histoires, cultures et actualités queer",
   description: "Articles, guides, portraits et actualités de la communauté LGBTQIA+. Éditorial engagé, culture queer, mode inclusive.",
   openGraph: {
     title: "Média Spectrum For Us",

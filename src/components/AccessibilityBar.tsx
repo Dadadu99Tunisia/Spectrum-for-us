@@ -228,7 +228,7 @@ export function AccessibilityBar() {
                 Actif·ves : {[
                   textSize !== "normal" ? `Texte ${TEXT_SIZES.find(s => s.key === textSize)?.label}` : null,
                   ...[...active].map(m => TOGGLE_MODES.find(t => t.key === m)?.label),
-                ].filter(Boolean).join(" · ")} — Préférences sauvegardées
+                ].filter(Boolean).join(" · ")} · Préférences sauvegardées
               </p>
             )}
           </div>

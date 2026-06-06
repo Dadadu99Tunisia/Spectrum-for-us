@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { Tag } from "@/components/ui/Tag";
 import { useCart } from "@/store/cart";
 import { Search, ShoppingBag, SlidersHorizontal, X, Layers } from "lucide-react";
+import { Price } from "@/components/ui/Price";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import { ExploreFeed } from "@/components/mobile/ExploreFeed";
@@ -295,7 +296,7 @@ function DecouvrirContent() {
                       </div>
                     </Link>
                     <div className="pb-4 mt-auto flex items-center justify-between">
-                      <span className="font-mono text-sm font-bold text-[#1A1612]">{Number(p.price).toFixed(2)} €</span>
+                      <Price eur={p.price} className="font-mono text-sm font-bold text-[#1A1612]" />
                       <button
                         onClick={() => handleAdd(p)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${

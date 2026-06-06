@@ -319,7 +319,7 @@ async function scrapeFacebookPublic(): Promise<ScrapedEvent[]> {
 
   for (const page of pages) {
     try {
-      // Use Facebook's public event search via mbasic (mobile basic — less JS required)
+      // Use Facebook's public event search via mbasic (mobile basic · less JS required)
       const res = await fetch(`https://mbasic.facebook.com/${page.handle}/events`, {
         headers: {
           "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",

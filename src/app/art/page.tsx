@@ -1,6 +1,6 @@
 import { ComingSoon } from "@/components/ComingSoon";
 import { Palette } from "lucide-react";
-export const metadata = { title: "Art & Culture — Spectrum For Us" };
+export const metadata = { title: "Art & Culture · Spectrum For Us" };
 export default function ArtPage() {
   return (
     <ComingSoon

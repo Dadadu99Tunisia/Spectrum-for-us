@@ -1,6 +1,6 @@
 import { ComingSoon } from "@/components/ComingSoon";
 import { BookOpen } from "lucide-react";
-export const metadata = { title: "Ressources & Guides — Spectrum For Us" };
+export const metadata = { title: "Ressources & Guides · Spectrum For Us" };
 export default function RessourcesPage() {
   return (
     <ComingSoon

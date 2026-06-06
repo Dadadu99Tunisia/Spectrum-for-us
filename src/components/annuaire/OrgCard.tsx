@@ -124,7 +124,7 @@ export function OrgCard({ org, selected, hovered, onClick, onHover, compact }: P
           })}
         </div>
 
-        {/* Description — only expanded or non-compact */}
+        {/* Description · only expanded or non-compact */}
         {(selected || !compact) && (
           <p className="font-hanken text-xs text-[#F3EADB]/50 leading-relaxed mt-2.5 line-clamp-2">
             {org.description}

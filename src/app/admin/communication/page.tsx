@@ -172,7 +172,7 @@ export default function CommunicationPage() {
               {subscribers.slice(0, 100).map(s => (
                 <tr key={s.id} className="border-b border-[#F3EADB]/4 hover:bg-[#F3EADB]/2 transition-colors">
                   <td className="px-4 py-3 font-hanken text-sm text-[#F3EADB]/80">{s.email}</td>
-                  <td className="px-4 py-3 font-mono text-[10px] text-[#F3EADB]/40 uppercase">{s.locale ?? "—"}</td>
+                  <td className="px-4 py-3 font-mono text-[10px] text-[#F3EADB]/40 uppercase">{s.locale ?? "-"}</td>
                   <td className="px-4 py-3 font-mono text-[10px] text-[#F3EADB]/40">{s.source ?? "direct"}</td>
                   <td className="px-4 py-3">
                     <span className={`font-mono text-[9px] px-2 py-0.5 rounded-full border ${s.confirmed ? "text-green-400 border-green-400/20" : "text-[#F3EADB]/25 border-[#F3EADB]/10"}`}>

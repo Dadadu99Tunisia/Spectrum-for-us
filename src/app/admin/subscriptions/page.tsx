@@ -28,11 +28,11 @@ export default function AdminSubscriptions() {
   const filtered = filter === "all" ? rows : rows.filter(r => r.status === filter);
 
   const kpis = [
-    { label: "MRR", value: summary ? eur(summary.mrr) : "—", icon: CreditCard, accent: "#1C9C95" },
-    { label: "Actifs", value: summary?.active ?? "—", icon: CheckCircle2, accent: "#1C9C95", f: "active" },
-    { label: "En retard", value: summary?.pastDue ?? "—", icon: AlertTriangle, accent: "#F2A03D", f: "past_due" },
-    { label: "Annulés", value: summary?.canceled ?? "—", icon: XCircle, accent: "#FF6FA3", f: "canceled" },
-    { label: "Sans abo", value: summary?.none ?? "—", icon: Minus, accent: "rgba(243,234,219,.4)", f: "none" },
+    { label: "MRR", value: summary ? eur(summary.mrr) : "-", icon: CreditCard, accent: "#1C9C95" },
+    { label: "Actifs", value: summary?.active ?? "-", icon: CheckCircle2, accent: "#1C9C95", f: "active" },
+    { label: "En retard", value: summary?.pastDue ?? "-", icon: AlertTriangle, accent: "#F2A03D", f: "past_due" },
+    { label: "Annulés", value: summary?.canceled ?? "-", icon: XCircle, accent: "#FF6FA3", f: "canceled" },
+    { label: "Sans abo", value: summary?.none ?? "-", icon: Minus, accent: "rgba(243,234,219,.4)", f: "none" },
   ];
 
   return (
@@ -82,8 +82,8 @@ export default function AdminSubscriptions() {
                       <Link href={`/boutique/${r.slug}`} target="_blank" className="font-hanken text-sm text-[#F3EADB] hover:text-[#FF6FA3]">{r.shop}</Link>
                     </td>
                     <td className="px-5 py-3"><span className="font-mono text-[10px] font-bold uppercase px-2.5 py-1 rounded-full" style={{ background: s.bg, color: s.fg }}>{s.label}</span></td>
-                    <td className="px-5 py-3 font-hanken text-sm text-[#F3EADB]/70">{r.status === "active" ? "9,90 €" : "—"}</td>
-                    <td className="px-5 py-3 font-mono text-xs text-[#F3EADB]/45">{r.renewal ? new Date(r.renewal).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "—"}</td>
+                    <td className="px-5 py-3 font-hanken text-sm text-[#F3EADB]/70">{r.status === "active" ? "9,90 €" : "-"}</td>
+                    <td className="px-5 py-3 font-mono text-xs text-[#F3EADB]/45">{r.renewal ? new Date(r.renewal).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "-"}</td>
                     <td className="px-5 py-3">{r.hasStripe ? <CheckCircle2 size={15} className="text-[#1C9C95]" /> : <Minus size={15} className="text-[#F3EADB]/20" />}</td>
                   </tr>
                 );

@@ -114,7 +114,7 @@ export default function RejoindrePage() {
               <h2 className="font-fraunces text-3xl mb-3">Demande reçue ✦</h2>
               <p className="font-hanken text-[#F3EADB]/55 mb-8 leading-relaxed max-w-sm mx-auto">
                 Merci {form.name.split(" ")[0]} ! On revient vers toi avant le 26 juin.
-                Prépare-toi — la communauté t&apos;attend.
+                Prépare-toi · la communauté t&apos;attend.
               </p>
               <Link href="/"
                 className="inline-flex items-center gap-2 font-hanken text-sm text-[#E0337E] hover:text-[#E0337E]/80 transition-colors">

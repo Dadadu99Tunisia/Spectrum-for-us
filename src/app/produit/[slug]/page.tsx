@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
+import { Price } from "@/components/ui/Price";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tag } from "@/components/ui/Tag";
@@ -161,7 +162,7 @@ export default function ProduitPage() {
       <main className="min-h-screen md:pt-24 pb-20 md:pb-20 px-4 md:px-6 bg-[#FBF9F5] text-[#1A1612]">
         <div className="max-w-6xl mx-auto">
 
-          {/* Breadcrumb — desktop only */}
+          {/* Breadcrumb · desktop only */}
           <div className="hidden md:flex items-center gap-2 mb-8 flex-wrap">
             <Link href="/decouvrir" className="flex items-center gap-1.5 text-[#1A1612]/40 hover:text-[#FF3D7F] text-sm font-hanken transition-colors">
               <ArrowLeft size={14} /> Découvrir
@@ -236,7 +237,7 @@ export default function ProduitPage() {
               )}
 
               <div className="text-4xl font-fraunces text-[#1A1612] mb-8">
-                {Number(product.price).toFixed(2)} €
+                <Price eur={Number(product.price)} />
               </div>
 
               {/* Out of stock warning */}
@@ -256,16 +257,16 @@ export default function ProduitPage() {
                 </div>
               )}
 
-              {/* Qty — only for physical products in stock */}
+              {/* Qty · only for physical products in stock */}
               {ptype === "product" && !isOos && (
                 <div className="flex items-center gap-4 mb-8">
                   <p className="font-mono text-[10px] tracking-wide text-[#1A1612]/40">Qté</p>
                   <div className="flex items-center border border-[#1A1612]/15 rounded-xl overflow-hidden">
-                    <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-11 h-11 text-[#1A1612]/60 hover:text-[#1A1612] text-xl transition-colors">−</button>
+                    <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-11 h-11 text-[#1A1612]/60 hover:text-[#1A1612] text-xl transition-colors">-</button>
                     <span className="w-10 text-center font-mono text-sm text-[#1A1612]">{qty}</span>
                     <button onClick={() => setQty(Math.min(product.quantity || 99, qty + 1))} className="w-11 h-11 text-[#1A1612]/60 hover:text-[#1A1612] text-xl transition-colors">+</button>
                   </div>
-                  <span className="font-mono text-sm text-[#1A1612]/40">= {(product.price * qty).toFixed(2)} €</span>
+                  <span className="font-mono text-sm text-[#1A1612]/40">= <Price eur={product.price * qty} /></span>
                 </div>
               )}
 
@@ -327,7 +328,7 @@ export default function ProduitPage() {
                       </div>
                       <div className="p-3">
                         <p className="font-hanken text-sm text-[#1A1612] truncate">{r.name || r.title}</p>
-                        <p className="font-mono text-sm text-[#FF3D7F] mt-0.5">{Number(r.price).toFixed(2)} €</p>
+                        <p className="font-mono text-sm text-[#FF3D7F] mt-0.5"><Price eur={Number(r.price)} /></p>
                       </div>
                     </Link>
                   );
@@ -353,13 +354,13 @@ export default function ProduitPage() {
         <div className="flex items-center gap-3">
           <div className="shrink-0">
             <p className="font-fraunces text-[22px] leading-none text-[#1A1612]">
-              {(Number(product.price) * qty).toFixed(2)} €
+              <Price eur={Number(product.price) * qty} />
             </p>
             {ptype === "product" && !isOos && (
               <div className="flex items-center gap-1.5 mt-1">
                 <button onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Diminuer la quantité"
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-[#1A1612]/60 text-xl active:scale-90 transition-transform"
-                  style={{ background: "rgba(26,22,18,0.08)" }}>−</button>
+                  style={{ background: "rgba(26,22,18,0.08)" }}>-</button>
                 <span className="font-mono text-[12px] text-[#1A1612]/70 w-5 text-center">{qty}</span>
                 <button onClick={() => setQty(Math.min(product.quantity || 99, qty + 1))} aria-label="Augmenter la quantité"
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-[#1A1612]/60 text-xl active:scale-90 transition-transform"

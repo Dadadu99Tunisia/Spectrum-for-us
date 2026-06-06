@@ -118,7 +118,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
               Programme Fondateur Spectrum
             </h2>
             <p className="font-hanken text-sm text-[#F3EADB]/45 mt-1">
-              Rejoins les premiers à bâtir cette communauté — des avantages exclusifs à vie.
+              Rejoins les premiers à b-tir cette communauté · des avantages exclusifs à vie.
             </p>
           </div>
         </div>
@@ -139,7 +139,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
                 <span className="text-xl">🏆</span>
                 <div>
                   <p className="font-fraunces text-base text-[#FFD700]">Fondateur·ice</p>
-                  <p className="font-mono text-[9px] text-[#F3EADB]/30">Rang 1–20</p>
+                  <p className="font-mono text-[9px] text-[#F3EADB]/30">Rang 1-20</p>
                 </div>
               </div>
               {founderFull ? (
@@ -191,7 +191,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
                 <span className="text-xl">🚀</span>
                 <div>
                   <p className="font-fraunces text-base text-[#a78bfa]">Pionnier·e</p>
-                  <p className="font-mono text-[9px] text-[#F3EADB]/30">Rang 21–100</p>
+                  <p className="font-mono text-[9px] text-[#F3EADB]/30">Rang 21-100</p>
                 </div>
               </div>
               {earlyFull ? (

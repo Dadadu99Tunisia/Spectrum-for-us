@@ -1,4 +1,4 @@
-// Public endpoint — retourne tous les overrides (logo_url, is_hidden, etc.)
+// Public endpoint · retourne tous les overrides (logo_url, is_hidden, etc.)
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 

@@ -34,7 +34,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
 - Nom/marque : ${lead.company ?? lead.name}
 - Contact : ${lead.name}
 - Univers : ${lead.contact_type ?? "créateur indépendant"}
-- Infos supplémentaires : ${lead.notes ?? "—"}
+- Infos supplémentaires : ${lead.notes ?? "-"}
 
 Objectif : les inviter à rejoindre Spectrum For Us pour vendre leurs créations.`;
 
@@ -52,7 +52,7 @@ Objectif : les inviter à rejoindre Spectrum For Us pour vendre leurs créations
   if (message.length > 600) message = message.slice(0, 600).trimEnd() + "…";
 
   const dateStr   = new Date().toLocaleDateString("fr-FR");
-  const noteEntry = `\n\n[MESSAGE PRÊT — ${dateStr}]\n${message}`;
+  const noteEntry = `\n\n[MESSAGE PRÊT · ${dateStr}]\n${message}`;
   const newNotes  = lead.notes ? `${lead.notes}${noteEntry}` : noteEntry.trim();
 
   const { data: updated, error: updateErr } = await supabase

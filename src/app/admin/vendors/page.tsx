@@ -46,7 +46,7 @@ export default function VendorsPage() {
       setVendors(json.data ?? []);
       setTotal(json.meta?.total ?? 0);
     } catch {
-      // silently fail — show empty state
+      // silently fail · show empty state
     } finally {
       setLoading(false);
     }
@@ -120,7 +120,7 @@ export default function VendorsPage() {
                       </td>
                       <td className="px-4 py-3">
                         <p className="font-hanken text-sm text-[#F3EADB]/70">
-                          {v.profiles?.full_name ?? v.profiles?.pseudo ?? "—"}
+                          {v.profiles?.full_name ?? v.profiles?.pseudo ?? "-"}
                         </p>
                       </td>
                       <td className="px-4 py-3">
@@ -129,7 +129,7 @@ export default function VendorsPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-mono text-xs text-[#F3EADB]/40">{kyc?.siret ?? "—"}</span>
+                        <span className="font-mono text-xs text-[#F3EADB]/40">{kyc?.siret ?? "-"}</span>
                       </td>
                       <td className="px-4 py-3">
                         <div className={`w-2 h-2 rounded-full ${v.is_active ? "bg-green-400" : "bg-[#F3EADB]/15"}`} />
@@ -156,7 +156,7 @@ export default function VendorsPage() {
           {total > LIMIT && (
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] text-[#F3EADB]/25">
-                {(page - 1) * LIMIT + 1}–{Math.min(page * LIMIT, total)} sur {total}
+                {(page - 1) * LIMIT + 1}-{Math.min(page * LIMIT, total)} sur {total}
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}

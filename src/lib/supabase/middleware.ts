@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Keep in sync with rbac.ts — server-side only, never exposed to client
+// Keep in sync with rbac.ts · server-side only, never exposed to client
 const ADMIN_EMAILS_SERVER = ["hedibenazouz@gmail.com", "chennaoui.aicha@gmail.com"];
 const ADMIN_ROLES_SERVER  = ["super_admin","ceo","cfo","marketing","commercial","support","moderation","hr"];
 
@@ -36,7 +36,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth?redirect=/compte", request.url));
   }
 
-  // ── Admin routes — require auth + admin role ─────────────────────────
+  // ── Admin routes · require auth + admin role ─────────────────────────
   if (path.startsWith("/admin") || path.startsWith("/api/admin")) {
     if (!user) {
       // API routes get 401, page routes get redirect
@@ -49,7 +49,7 @@ export async function updateSession(request: NextRequest) {
     // Fast path: hardcoded admin emails
     const isAdminEmail = ADMIN_EMAILS_SERVER.includes(user.email ?? "");
     if (!isAdminEmail) {
-      // Check DB role — only for page routes to avoid extra latency on every API call
+      // Check DB role · only for page routes to avoid extra latency on every API call
       // API routes are also protected by requireAdmin() individually
       if (!path.startsWith("/api/")) {
         const { data: profile } = await supabase

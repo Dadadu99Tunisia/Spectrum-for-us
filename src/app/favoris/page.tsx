@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { Price } from "@/components/ui/Price";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { ArrowLeft, Heart, Store, ShoppingBag } from "lucide-react";
@@ -163,7 +164,7 @@ export default function FavorisPage() {
                       <p className="font-hanken text-[12px] text-[#1A1612]/80 leading-tight line-clamp-1">{p.name || p.title}</p>
                       {shopName && <p className="font-mono text-[9px] text-[#1A1612]/30">{shopName}</p>}
                       <div className="flex items-center justify-between mt-2">
-                        <p className="font-fraunces text-[14px] text-[#FF3D7F]">{p.price.toFixed(2)} €</p>
+                        <p className="font-fraunces text-[14px] text-[#FF3D7F]"><Price eur={p.price} /></p>
                         <button
                           onClick={() => add({ id: p.id, name: p.name || p.title, price: p.price, image: img ?? undefined, creator: "", quantity: 1, type: "product" })}
                           className="p-1.5 rounded-lg active:scale-90 transition-transform"

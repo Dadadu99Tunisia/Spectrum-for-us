@@ -55,7 +55,7 @@ export default function SupportPage() {
       setTickets(json.data ?? []);
       setTotal(json.meta?.total ?? 0);
     } catch {
-      // silently fail — show empty state
+      // silently fail · show empty state
     } finally {
       setLoading(false);
     }
@@ -175,7 +175,7 @@ export default function SupportPage() {
           {total > LIMIT && (
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] text-[#F3EADB]/25">
-                {(page - 1) * LIMIT + 1}–{Math.min(page * LIMIT, total)} sur {total}
+                {(page - 1) * LIMIT + 1}-{Math.min(page * LIMIT, total)} sur {total}
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}

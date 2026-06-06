@@ -48,7 +48,7 @@ export default function ServicesPage() {
       setItems(data ?? []);
       setTotal(count ?? 0);
     } catch {
-      // silently fail — show empty state
+      // silently fail · show empty state
     } finally {
       setLoading(false);
     }

@@ -253,11 +253,11 @@ function EditDrawer({
               <textarea placeholder={`Description · par défaut : ${org.description.slice(0, 60)}…`}
                 value={form.custom_desc} onChange={e => set("custom_desc", e.target.value)}
                 rows={3} className={`${base} resize-none`} />
-              <input type="url" placeholder={`Site · par défaut : ${org.website ?? "—"}`}
+              <input type="url" placeholder={`Site · par défaut : ${org.website ?? "-"}`}
                 value={form.website} onChange={e => set("website", e.target.value)} className={base} />
-              <input type="tel" placeholder={`Téléphone · par défaut : ${org.phone ?? "—"}`}
+              <input type="tel" placeholder={`Téléphone · par défaut : ${org.phone ?? "-"}`}
                 value={form.phone} onChange={e => set("phone", e.target.value)} className={base} />
-              <input type="email" placeholder={`Email · par défaut : ${org.email ?? "—"}`}
+              <input type="email" placeholder={`Email · par défaut : ${org.email ?? "-"}`}
                 value={form.email} onChange={e => set("email", e.target.value)} className={base} />
             </div>
           </div>
@@ -498,7 +498,7 @@ export default function AdminAnnuairePage() {
   );
 }
 
-// tiny inline useMemo workaround (no import needed — React is already available)
+// tiny inline useMemo workaround (no import needed · React is already available)
 function useMemo_<T>(fn: () => T, deps: unknown[]): T {
   const ref = useRef<{ deps: unknown[]; value: T } | null>(null);
   if (!ref.current || deps.some((d, i) => d !== ref.current!.deps[i])) {

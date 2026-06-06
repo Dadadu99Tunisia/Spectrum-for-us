@@ -173,7 +173,7 @@ export default function VendorDetailPage() {
           )}
           {kycStatus === "verified" && (
             <p className="font-mono text-[10px] text-green-400/70">
-              ✓ Vérifié le {kyc?.kyc_verified_at ? new Date(kyc.kyc_verified_at as string).toLocaleDateString("fr-FR") : "—"}
+              ✓ Vérifié le {kyc?.kyc_verified_at ? new Date(kyc.kyc_verified_at as string).toLocaleDateString("fr-FR") : "-"}
             </p>
           )}
         </div>

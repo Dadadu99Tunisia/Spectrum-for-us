@@ -173,11 +173,11 @@ export default function AdminDashboard() {
   const g = kpis?.growth;
 
   const QUICK_ACTIONS = [
-    { label: "Rejoindre",      sub: g ? `${g.pendingJoinRequests} en attente` : "—", href: "/admin/rejoindre",  color: "#E0337E", icon: UserPlus,    urgent: (g?.pendingJoinRequests ?? 0) > 0 },
-    { label: "Modération",     sub: kpis ? `${kpis.pendingMod} en attente` : "—",    href: "/admin/moderation", color: "#E0901E", icon: ShieldCheck,  urgent: (kpis?.pendingMod ?? 0) > 0 },
-    { label: "Support",        sub: kpis ? `${kpis.openTickets} tickets` : "—",      href: "/admin/support",    color: "#CF3F7C", icon: MessageSquare, urgent: (kpis?.openTickets ?? 0) > 0 },
-    { label: "CRM Pipeline",   sub: g ? `${g.crmContacted} contacts actifs` : "—",   href: "/admin/crm",        color: "#a78bfa", icon: TrendingUp,   urgent: false },
-    { label: "Annuaire",       sub: g ? `${g.totalOrgsDB} orgs dans la DB` : "—",   href: "/admin/annuaire",   color: "#1C9C95", icon: MapPin,        urgent: false },
+    { label: "Rejoindre",      sub: g ? `${g.pendingJoinRequests} en attente` : "-", href: "/admin/rejoindre",  color: "#E0337E", icon: UserPlus,    urgent: (g?.pendingJoinRequests ?? 0) > 0 },
+    { label: "Modération",     sub: kpis ? `${kpis.pendingMod} en attente` : "-",    href: "/admin/moderation", color: "#E0901E", icon: ShieldCheck,  urgent: (kpis?.pendingMod ?? 0) > 0 },
+    { label: "Support",        sub: kpis ? `${kpis.openTickets} tickets` : "-",      href: "/admin/support",    color: "#CF3F7C", icon: MessageSquare, urgent: (kpis?.openTickets ?? 0) > 0 },
+    { label: "CRM Pipeline",   sub: g ? `${g.crmContacted} contacts actifs` : "-",   href: "/admin/crm",        color: "#a78bfa", icon: TrendingUp,   urgent: false },
+    { label: "Annuaire",       sub: g ? `${g.totalOrgsDB} orgs dans la DB` : "-",   href: "/admin/annuaire",   color: "#1C9C95", icon: MapPin,        urgent: false },
     { label: "Outreach",       sub: "Prospecter associations",                        href: "/admin/outreach",   color: "#6D2DB5", icon: Mail,          urgent: false },
     { label: "Agents IA",      sub: "Aria · Fina · Koda · Mira",                     href: "/admin/agents",     color: "#34d399", icon: Bot,           urgent: false },
     { label: "Événements",     sub: "Scraper & gérer",                               href: "/admin/evenements", color: "#fbbf24", icon: CalendarDays,  urgent: false },
@@ -235,7 +235,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* ══════════════════════════════════════════════════════
-          CROISSANCE COMMUNAUTAIRE — bloc prioritaire
+          CROISSANCE COMMUNAUTAIRE · bloc prioritaire
       ══════════════════════════════════════════════════════ */}
       <div>
         <SectionTitle accent="#E0337E" action={
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
               Détails <ArrowUpRight size={10} />
             </Link>
           }>
-            Nouveaux membres — 30 jours
+            Nouveaux membres · 30 jours
           </SectionTitle>
           {chartMembers.some(p => p.count > 0) ? (
             <ResponsiveContainer width="100%" height={180}>
@@ -334,7 +334,7 @@ export default function AdminDashboard() {
               Détails <ArrowUpRight size={10} />
             </Link>
           }>
-            Revenus — 30 derniers jours
+            Revenus · 30 derniers jours
           </SectionTitle>
           {chart.some(p => p.revenue > 0) ? (
             <ResponsiveContainer width="100%" height={180}>
@@ -484,7 +484,7 @@ export default function AdminDashboard() {
                     <span className="font-fraunces text-[12px] text-[#CF3F7C]">{String(v.name ?? "?")[0].toUpperCase()}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-hanken text-sm text-[#F3EADB]/80 truncate">{String(v.name ?? "—")}</p>
+                    <p className="font-hanken text-sm text-[#F3EADB]/80 truncate">{String(v.name ?? "-")}</p>
                     <p className="font-mono text-[10px] text-[#F3EADB]/25">{new Date(String(v.created_at)).toLocaleDateString("fr-FR")}</p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">

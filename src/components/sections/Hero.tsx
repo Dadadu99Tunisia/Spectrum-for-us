@@ -66,7 +66,7 @@ export function Hero() {
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      {/* Dynamic spotlight — follows cursor */}
+      {/* Dynamic spotlight · follows cursor */}
       <div
         ref={spotlightRef}
         className="absolute inset-0 pointer-events-none transition-[background] duration-300"

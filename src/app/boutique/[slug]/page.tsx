@@ -6,6 +6,7 @@ import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { MapPin, Package, CheckCircle, Mail } from "lucide-react";
 import Link from "next/link";
 import { ShopOwnerBar } from "@/components/ShopOwnerBar";
+import { Price } from "@/components/ui/Price";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -21,8 +22,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!shop) return {};
 
-  const title       = `${shop.name} — Boutique sur Spectrum For Us`;
-  const description = shop.tagline ?? shop.description ?? `Découvrez la boutique ${shop.name} sur Spectrum For Us — la marketplace queer.`;
+  const title       = `${shop.name} · Boutique sur Spectrum For Us`;
+  const description = shop.tagline ?? shop.description ?? `Découvrez la boutique ${shop.name} sur Spectrum For Us · la marketplace queer.`;
   const url         = `https://spectrumforus.com/boutique/${slug}`;
 
   return {
@@ -81,12 +82,12 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
       <div className="hidden md:block"><Header /></div>
       <MobilePageHeader title={shop.name as string} backHref="/decouvrir" />
 
-      {/* Owner edit bar — rendered client-side, only shows if current user = owner */}
+      {/* Owner edit bar · rendered client-side, only shows if current user = owner */}
       <ShopOwnerBar ownerId={ownerId} shopSlug={slug} />
 
       <main className="min-h-screen pb-20 bg-[#FBF9F5] text-[#1A1612]">
 
-        {/* ── Banner — starts from top, sits behind transparent header ── */}
+        {/* ── Banner · starts from top, sits behind transparent header ── */}
         <div
           className="relative w-full overflow-hidden"
           style={{ height: "clamp(220px, 30vw, 320px)" }}
@@ -132,7 +133,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
 
         <div className="max-w-6xl mx-auto px-6">
 
-          {/* ── Shop header — overlaps banner bottom ── */}
+          {/* ── Shop header · overlaps banner bottom ── */}
           <div className="flex flex-col md:flex-row md:items-end gap-6 -mt-14 mb-10 relative z-10">
             {/* Logo */}
             <div className="w-24 h-24 rounded-2xl border-4 border-[#FBF9F5] overflow-hidden bg-gradient-to-br from-[#FF3D7F]/20 to-[#6D2DB5]/20 flex items-center justify-center shrink-0 shadow-xl shadow-black/30">
@@ -239,9 +240,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                         </span>
                       )}
                       <p className="font-bricolage font-semibold text-[#1A1612] text-sm leading-tight line-clamp-2">{name}</p>
-                      <p className="font-mono text-sm font-bold text-[#1A1612] mt-1.5">
-                        {Number(p.price).toFixed(2)} €
-                      </p>
+                      <Price eur={Number(p.price)} className="font-mono text-sm font-bold text-[#1A1612] mt-1.5 block" />
                     </div>
                   </Link>
                 );

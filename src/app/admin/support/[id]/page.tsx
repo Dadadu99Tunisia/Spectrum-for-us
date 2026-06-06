@@ -62,7 +62,7 @@ export default function TicketDetailPage() {
       setTicket(json.data?.ticket);
       setMessages(json.data?.messages ?? []);
     } catch {
-      // silently fail — show empty state
+      // silently fail · show empty state
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-// Public endpoint — no auth required
+// Public endpoint · no auth required
 // Returns counts for the marketing banner
 export async function GET() {
   const supabase = await createClient();

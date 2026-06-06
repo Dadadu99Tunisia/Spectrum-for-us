@@ -207,7 +207,7 @@ export default function ModerationPage() {
         <div className="text-center py-24">
           <ShieldCheck size={40} className="mx-auto mb-3 text-[#F3EADB]/10" />
           <p className="font-hanken text-[#F3EADB]/30">
-            {status === "pending" ? "File vide — tout est à jour ✓" : "Aucun élément"}
+            {status === "pending" ? "File vide · tout est à jour ✓" : "Aucun élément"}
           </p>
         </div>
       ) : (

@@ -107,7 +107,7 @@ function CommissionEditor({
   if (!editing) {
     const display = member.commission_rate_override != null
       ? `${(member.commission_rate_override * 100).toFixed(1)}%`
-      : "—";
+      : "-";
     return (
       <button onClick={() => setEditing(true)}
         className="flex items-center gap-1.5 group text-left">
@@ -342,8 +342,8 @@ export default function FounderProgramPage() {
             {sorted.map((m) => {
               const cfg  = STATUS_CFG[m.status];
               const Icon = cfg.icon;
-              const name = m.profiles?.full_name ?? m.profiles?.pseudo ?? "—";
-              const shop = m.shops?.name ?? "—";
+              const name = m.profiles?.full_name ?? m.profiles?.pseudo ?? "-";
+              const shop = m.shops?.name ?? "-";
 
               return (
                 <div key={m.id}
@@ -379,7 +379,7 @@ export default function FounderProgramPage() {
                         {new Date(m.subscription_free_until).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                     ) : (
-                      <span className="font-mono text-xs text-[#F3EADB]/20">—</span>
+                      <span className="font-mono text-xs text-[#F3EADB]/20">-</span>
                     )}
                   </div>
 
@@ -393,7 +393,7 @@ export default function FounderProgramPage() {
                         {new Date(m.commission_free_until).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                     ) : (
-                      <span className="font-mono text-xs text-[#F3EADB]/20">—</span>
+                      <span className="font-mono text-xs text-[#F3EADB]/20">-</span>
                     )}
                   </div>
 
@@ -426,7 +426,7 @@ export default function FounderProgramPage() {
           const benefits: Record<FounderStatus, string[]> = {
             FOUNDER:       ["Abonnement gratuit 3 ans", "0 % commission 12 mois", "Mise en avant prioritaire", "Badge exclusif"],
             EARLY_ADOPTER: ["Abonnement gratuit 6 mois", "0 % commission 6 mois", "Badge Pionnier·e"],
-            STANDARD:      ["Abonnement 9,90€ ou 19,90€/mois", "Commission 5–12 %"],
+            STANDARD:      ["Abonnement 9,90€ ou 19,90€/mois", "Commission 5-12 %"],
           };
           const Icon = cfg.icon;
           return (

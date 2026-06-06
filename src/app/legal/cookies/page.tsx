@@ -1,6 +1,6 @@
 import { LegalPage } from "@/components/LegalPage";
 
-export const metadata = { title: "Politique cookies — Spectrum For Us" };
+export const metadata = { title: "Politique cookies · Spectrum For Us" };
 
 export default function Cookies() {
   return (
@@ -17,15 +17,15 @@ export default function Cookies() {
       <h3>Cookies essentiels (toujours actifs)</h3>
       <p>Indispensables au fonctionnement du site :</p>
       <ul>
-        <li><strong>sb-auth-token</strong> — Session d'authentification Supabase (durée : session)</li>
-        <li><strong>spectrum-cart</strong> — Contenu de votre panier (localStorage, 30 jours)</li>
-        <li><strong>spectrum-locale</strong> — Langue préférée (localStorage, permanent)</li>
-        <li><strong>spectrum-currency</strong> — Devise préférée (localStorage, permanent)</li>
+        <li><strong>sb-auth-token</strong> · Session d'authentification Supabase (durée : session)</li>
+        <li><strong>spectrum-cart</strong> · Contenu de votre panier (localStorage, 30 jours)</li>
+        <li><strong>spectrum-locale</strong> · Langue préférée (localStorage, permanent)</li>
+        <li><strong>spectrum-currency</strong> · Devise préférée (localStorage, permanent)</li>
       </ul>
 
       <h3>Cookies fonctionnels</h3>
       <ul>
-        <li><strong>spectrum_ref</strong> — Code de parrainage ambassadeur·rice (30 jours)</li>
+        <li><strong>spectrum_ref</strong> · Code de parrainage ambassadeur·rice (30 jours)</li>
       </ul>
 
       <h3>Cookies analytiques (avec consentement)</h3>

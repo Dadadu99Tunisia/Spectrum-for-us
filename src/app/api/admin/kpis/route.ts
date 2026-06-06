@@ -23,12 +23,12 @@ export async function GET() {
     ordersToday, ordersMonth, ordersYear, allOrders,
     vendors, buyers, pendingMod, openTickets,
     revenueByDay,
-    // Croissance — membres
+    // Croissance · membres
     newMembersWeek, newMembersMonth, prevNewMembersMonth,
     totalMembers,
-    // Croissance — vendeurs
+    // Croissance · vendeurs
     newVendorsMonth, prevNewVendorsMonth,
-    // Croissance — demandes rejoindre
+    // Croissance · demandes rejoindre
     newJoinRequestsWeek, pendingJoinRequests,
     // Associations (annuaire)
     totalOrgs, featuredOrgs,

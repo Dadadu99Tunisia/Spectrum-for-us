@@ -3,7 +3,7 @@ import { Footer } from "@/components/Footer";
 import { LightAnnuaire } from "@/components/annuaire/LightAnnuaire";
 
 export const metadata = {
-  title: "Annuaire LGBTQIA+ Europe — Spectrum For Us",
+  title: "Annuaire LGBTQIA+ Europe · Spectrum For Us",
   description:
     "Organisations, associations, centres et ressources LGBTQIA+ à travers toute l'Europe.",
 };

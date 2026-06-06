@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin/rbac";
 
-/** Abonnements vendeurs (9,90 €/mois) — vue admin. */
+/** Abonnements vendeurs (9,90 €/mois) · vue admin. */
 export async function GET() {
   const auth = await requireAdmin(["super_admin", "ceo", "cfo"]);
   if ("error" in auth) return auth.error;

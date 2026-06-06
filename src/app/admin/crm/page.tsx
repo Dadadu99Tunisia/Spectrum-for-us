@@ -27,7 +27,7 @@ type Contact = {
   updated_at: string;
 };
 
-// ─── Stage config — aligned with DB enum ─────────────────────────────────────
+// ─── Stage config · aligned with DB enum ─────────────────────────────────────
 const STAGES = ["identified","qualified","nurturing","contacted","partner","rejected","closed"] as const;
 type Stage = typeof STAGES[number];
 
@@ -54,7 +54,7 @@ const TYPE_LABELS: Record<string, string> = {
   prospect_buyer:       "Acheteur·se",
 };
 
-// Segment definitions — each tab filters by these contact_types
+// Segment definitions · each tab filters by these contact_types
 const SEGMENTS = [
   { id: "all",          label: "Tout le pipeline",  icon: "◈",  types: [] as string[], color: "#F3EADB", goal: 500, goalLabel: "contacts" },
   { id: "associations", label: "Associations",       icon: "🏳️‍🌈", types: ["prospect_association","foundation","grant"], color: "#a78bfa", goal: 500, goalLabel: "organisations" },
@@ -529,7 +529,7 @@ function ContactPanel({
           </div>
         </div>
 
-        {/* ── Footer — delete ── */}
+        {/* ── Footer · delete ── */}
         <div className="shrink-0 border-t border-[#F3EADB]/6 px-5 py-3">
           {confirmDelete ? (
             <div className="flex items-center gap-2">

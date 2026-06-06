@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * LightHome — accueil desktop clair minimaliste (standing QueerMarket, mais
+ * LightHome · accueil desktop clair minimaliste (standing QueerMarket, mais
  * identité Spectrum : éditorial "B(u)y us, for us.", multi-vertical, parcours
  * par profil, confiance). Autonome (barre claire propre), zéro ornementation.
  */
@@ -11,6 +11,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowRight, ShoppingCart, Briefcase, Heart, CalendarDays, Truck, RefreshCw, ShieldCheck } from "lucide-react";
 import { Header } from "@/components/Header";
+import { Price } from "@/components/ui/Price";
 
 const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
 const CAT: Record<string, { tint: string; ink: string }> = {
@@ -56,9 +57,9 @@ export function LightHome() {
           B<span style={{ color: T.mag }}>(u)</span>y us,<br />for us.
         </h1>
         <p className="max-w-xl mx-auto mt-6 text-[16px] leading-relaxed" style={{ color: T.soft }}>
-          Créations, prestataires, associations et événements — un seul endroit, tenu pour tout le spectre.
+          Créations, prestataires, associations et événements · un seul endroit, tenu pour tout le spectre.
         </p>
-        {/* Parcours par profil — quoi faire en 30s */}
+        {/* Parcours par profil · quoi faire en 30s */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto mt-10">
           {VERTICALS.map(v => {
             const Icon = v.icon;
@@ -119,7 +120,7 @@ export function LightHome() {
                 </div>
                 <p className="font-bricolage font-semibold text-[15px] mt-2.5 leading-tight">{p.name || p.title}</p>
                 {shop && <p className="text-[12.5px]" style={{ color: T.faint }}>{shop}</p>}
-                <p className="font-mono font-bold text-[15px] mt-1">{Number(p.price).toFixed(2)} €</p>
+                <Price eur={p.price} className="font-mono font-bold text-[15px] mt-1 block" />
               </Link>
             );
           })}

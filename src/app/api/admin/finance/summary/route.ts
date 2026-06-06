@@ -61,7 +61,7 @@ export async function GET() {
     revenue: Math.round(revenue * 100) / 100,
   }));
 
-  // Top vendeurs — agrégé depuis order_items (le CA vendeur = somme des lignes vendues)
+  // Top vendeurs · agrégé depuis order_items (le CA vendeur = somme des lignes vendues)
   const vendorMap: Record<string, number> = {};
   for (const oi of (topVendors.data ?? []) as Array<{ vendor_id: string | null; quantity: number | null; price_at_purchase: number | null }>) {
     if (!oi.vendor_id) continue;

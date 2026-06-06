@@ -32,10 +32,10 @@ export async function POST(req: Request) {
       // En production, refuser tout event non signé (sinon n'importe qui peut
       // forger un paiement). En dev seulement, on tolère l'absence de secret.
       if (process.env.NODE_ENV === "production") {
-        console.error("[webhook] STRIPE_WEBHOOK_SECRET manquant en production — rejet");
+        console.error("[webhook] STRIPE_WEBHOOK_SECRET manquant en production · rejet");
         return NextResponse.json({ error: "Webhook non configuré" }, { status: 503 });
       }
-      console.warn("[webhook] STRIPE_WEBHOOK_SECRET manquant — signature non vérifiée (dev)");
+      console.warn("[webhook] STRIPE_WEBHOOK_SECRET manquant · signature non vérifiée (dev)");
       event = JSON.parse(body);
     } else {
       event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     const { user_id, cart_json, shipping_json, buyer_email } = pi.metadata ?? {};
 
     if (!user_id || !cart_json) {
-      // Payment intent non lié à une commande marketplace (ex. abonnement) — ignorer
+      // Payment intent non lié à une commande marketplace (ex. abonnement) · ignorer
       return NextResponse.json({ received: true });
     }
 
@@ -96,15 +96,15 @@ export async function POST(req: Request) {
     for (const item of cart) {
       const p = productMap[item.id];
       if (!p || !p.is_active) {
-        // Produit retiré entre le paiement et le traitement — remboursement auto
+        // Produit retiré entre le paiement et le traitement · remboursement auto
         await stripe.refunds.create({ payment_intent: pi.id, reason: "fraudulent" });
-        console.warn(`[webhook] Produit inactif ${item.id} — remboursement déclenché`);
+        console.warn(`[webhook] Produit inactif ${item.id} · remboursement déclenché`);
         return NextResponse.json({ received: true });
       }
       if (p.type === "product" && p.quantity !== null && p.quantity < item.quantity) {
-        // Stock insuffisant — remboursement auto
+        // Stock insuffisant · remboursement auto
         await stripe.refunds.create({ payment_intent: pi.id, reason: "requested_by_customer" });
-        console.warn(`[webhook] Stock insuffisant ${item.id} — remboursement déclenché`);
+        console.warn(`[webhook] Stock insuffisant ${item.id} · remboursement déclenché`);
         return NextResponse.json({ received: true });
       }
     }
@@ -160,7 +160,7 @@ export async function POST(req: Request) {
 
     await supabase.from("order_items").insert(orderItems);
 
-    // ── Commissions (par boutique) — traçables, non bloquant ────────────────
+    // ── Commissions (par boutique) · traçables, non bloquant ────────────────
     // Taux : 0 % si avantage fondateur·ice actif · sinon override · sinon défaut.
     try {
       const grossByShop: Record<string, number> = {};
@@ -240,7 +240,7 @@ export async function POST(req: Request) {
       }));
     }
 
-    // Email vendeur(s) — groupé par boutique
+    // Email vendeur(s) · groupé par boutique
     const vendorItems = new Map<string, { shopName: string; email: string; items: typeof emailItems }>();
     for (const item of cart) {
       const p = productMap[item.id];
@@ -262,7 +262,7 @@ export async function POST(req: Request) {
     // Note: sans service_role on ne peut pas lire auth.users directement.
     // En production, configurer un edge function Supabase pour notifier les vendors.
     // Pour l'instant on log seulement.
-    console.log(`[webhook] Commande ${order.id} créée — ${cart.length} article(s) — ${vendorItems.size} vendeur(s)`);
+    console.log(`[webhook] Commande ${order.id} créée · ${cart.length} article(s) · ${vendorItems.size} vendeur(s)`);
   }
 
   // ── 2. Abonnement vendeur souscrit ──────────────────────────────────────────

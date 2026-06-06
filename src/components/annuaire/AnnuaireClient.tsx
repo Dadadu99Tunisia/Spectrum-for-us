@@ -486,7 +486,7 @@ export function AnnuaireClient() {
                 {allCountries.length > 12 && (
                   <button onClick={() => setShowMoreCountries(v => !v)}
                     className="w-full text-center font-mono text-[10px] text-[#F3EADB]/25 hover:text-[#F3EADB]/60 transition-colors py-1.5">
-                    {showMoreCountries ? "− Voir moins" : `+ ${allCountries.length - 12} pays`}
+                    {showMoreCountries ? "- Voir moins" : `+ ${allCountries.length - 12} pays`}
                   </button>
                 )}
               </div>
@@ -549,7 +549,7 @@ export function AnnuaireClient() {
 
             {/* Sort */}
             <div className="flex items-center gap-1 shrink-0 border border-[#F3EADB]/10 rounded-xl overflow-hidden">
-              {([["country", "Pays"], ["name", "A–Z"], ["founded", "Ancienneté"]] as [SortKey, string][]).map(([k, label]) => (
+              {([["country", "Pays"], ["name", "A-Z"], ["founded", "Ancienneté"]] as [SortKey, string][]).map(([k, label]) => (
                 <button key={k} onClick={() => setSort(k)}
                   className="px-2.5 py-1.5 font-mono text-[10px] transition-all"
                   style={{

@@ -2,7 +2,7 @@
 
 /**
  * Synchronise les favoris (localStorage `spectrum_favorites`) vers la table DB
- * `favorites` quand l'utilisateur est connecté — pour qu'ils soient persistants,
+ * `favorites` quand l'utilisateur est connecté · pour qu'ils soient persistants,
  * multi-device et visibles côté admin/analytics.
  *
  * Stratégie additive (union) + sûre : on n'écrase jamais les favoris d'un autre

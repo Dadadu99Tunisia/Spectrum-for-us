@@ -1,6 +1,6 @@
 import { ComingSoon } from "@/components/ComingSoon";
 import { Users } from "lucide-react";
-export const metadata = { title: "Communauté — Spectrum For Us" };
+export const metadata = { title: "Communauté · Spectrum For Us" };
 export default function CommunautePage() {
   return (
     <ComingSoon

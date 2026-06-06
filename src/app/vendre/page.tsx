@@ -120,7 +120,7 @@ const FAQS = [
   },
   {
     q: "Comment sont gérés les paiements ?",
-    a: "Via Stripe, le standard sécurisé du secteur. Les paiements sont versés directement sur ton compte bancaire sous 2–3 jours ouvrés.",
+    a: "Via Stripe, le standard sécurisé du secteur. Les paiements sont versés directement sur ton compte bancaire sous 2-3 jours ouvrés.",
   },
   {
     q: "J'ai besoin d'aide pour configurer ma boutique ?",

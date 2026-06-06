@@ -26,12 +26,12 @@ export function Origines() {
         style={{ background: "linear-gradient(90deg, transparent, #E0337E60, #6D2DB560, #1C9C9560, transparent)" }}
       />
 
-      {/* Ambient glow — purple left */}
+      {/* Ambient glow · purple left */}
       <div
         className="absolute left-0 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-[120px] opacity-15 pointer-events-none"
         style={{ background: "#6D2DB5" }}
       />
-      {/* Ambient glow — teal right */}
+      {/* Ambient glow · teal right */}
       <div
         className="absolute right-0 bottom-0 w-80 h-80 rounded-full blur-[100px] opacity-10 pointer-events-none"
         style={{ background: "#1C9C95" }}

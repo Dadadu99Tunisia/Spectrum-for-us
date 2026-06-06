@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * LightAnnuaire — annuaire LGBTQIA+ en clair minimaliste, au standing de la
+ * LightAnnuaire · annuaire LGBTQIA+ en clair minimaliste, au standing de la
  * grille produit : gros sélecteur de pays déroulant, recherche, filtres
  * catégories, et fiches-cartes avec logo (façon carte produit).
  */
@@ -53,7 +53,7 @@ export function LightAnnuaire() {
           Les associations <span style={{ color: T.mag }}>près de toi.</span>
         </h1>
         <p className="max-w-xl mt-4 text-[15.5px] leading-relaxed" style={{ color: T.soft }}>
-          {ORGS.length} organisations vérifiées dans {COUNTRIES.length} pays — associations, centres,
+          {ORGS.length} organisations vérifiées dans {COUNTRIES.length} pays · associations, centres,
           santé, droit, refuges. Accès libre et gratuit.
         </p>
       </section>
