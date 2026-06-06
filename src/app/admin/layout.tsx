@@ -8,10 +8,11 @@ import {
   CalendarDays, Mail, ShieldCheck, ShoppingCart, Users,
   MessageSquare, Settings, Menu, X, ChevronRight,
   TrendingUp, Briefcase, Bot, LogOut, Layout,
-  Bell, Search, ExternalLink, Zap, MapPin, Trophy,
+  Bell, ExternalLink, Zap, MapPin, Trophy,
 } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import { AdminErrorBoundary } from "@/components/ui/AdminErrorBoundary";
+import { GlobalSearch } from "@/components/admin/GlobalSearch";
 
 type NavItem = {
   href: string;
@@ -279,12 +280,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* Right actions */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Quick search shortcut */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.08] border border-white/[0.12] cursor-pointer hover:bg-white/[0.06] transition-colors">
-              <Search size={12} className="text-[#F3EADB]/25" />
-              <span className="font-mono text-[10px] text-[#F3EADB]/25">Recherche rapide</span>
-              <kbd className="ml-2 font-mono text-[9px] text-[#F3EADB]/20 bg-white/[0.09] px-1.5 py-0.5 rounded">⌘K</kbd>
-            </div>
+            {/* Recherche globale ⌘K */}
+            <GlobalSearch />
 
             {/* Notification bell */}
             <div className="relative">
