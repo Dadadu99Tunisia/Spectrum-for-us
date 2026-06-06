@@ -54,7 +54,8 @@ export function LightHome() {
       {/* ── Barre claire minimaliste ── */}
       <header className="sticky top-0 z-40" style={{ background: "rgba(251,249,245,0.9)", backdropFilter: "blur(10px)", borderBottom: `1px solid ${T.line}` }}>
         <div className="max-w-6xl mx-auto px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="font-bricolage font-extrabold text-[20px] tracking-tight">spectrum</Link>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <Link href="/" aria-label="Spectrum For Us — accueil"><img src="/logo-dark.png" alt="Spectrum For Us" className="h-9 w-auto" /></Link>
           <nav className="flex items-center gap-7 text-[14.5px]">
             <Link href="/decouvrir" className="hover:text-[#FF3D7F] transition-colors" style={{ color: T.soft }}>Marketplace</Link>
             <Link href="/services" className="hover:text-[#FF3D7F] transition-colors" style={{ color: T.soft }}>Services</Link>
@@ -166,7 +167,8 @@ export function LightHome() {
       {/* ── Footer minimal ── */}
       <footer className="border-t" style={{ borderColor: T.line }}>
         <div className="max-w-6xl mx-auto px-8 py-10 flex flex-wrap items-center justify-between gap-4 text-[13px]" style={{ color: T.faint }}>
-          <span className="font-bricolage font-extrabold text-[16px]" style={{ color: T.ink }}>spectrum</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-dark.png" alt="Spectrum For Us" className="h-7 w-auto" />
           <nav className="flex flex-wrap gap-6">
             <Link href="/decouvrir" className="hover:text-[#FF3D7F]">Marketplace</Link>
             <Link href="/services" className="hover:text-[#FF3D7F]">Services</Link>
