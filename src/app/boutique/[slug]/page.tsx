@@ -84,7 +84,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
       {/* Owner edit bar — rendered client-side, only shows if current user = owner */}
       <ShopOwnerBar ownerId={ownerId} shopSlug={slug} />
 
-      <main className="min-h-screen pb-20">
+      <main className="min-h-screen pb-20 bg-[#FBF9F5] text-[#1A1612]">
 
         {/* ── Banner — starts from top, sits behind transparent header ── */}
         <div

@@ -210,8 +210,8 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen pt-24 pb-20 px-6">
+      <div className="hidden md:block"><Header /></div>
+      <main className="min-h-screen pt-24 pb-20 px-6 bg-[#FBF9F5] text-[#1A1612]">
         <div className="max-w-4xl mx-auto">
           <div className="mb-2">
             <span className="font-mono text-[11px] tracking-widest uppercase text-[#FF3D7F]">Checkout</span>

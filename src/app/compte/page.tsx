@@ -80,7 +80,7 @@ export default function ComptePage() {
       <div className="hidden md:block"><Header /></div>
       <MobilePageHeader title="Mon compte" backHref="/" />
 
-      <main className="min-h-screen md:pt-24 pb-24 md:pb-20 px-4 md:px-6">
+      <main className="min-h-screen md:pt-24 pb-24 md:pb-20 px-4 md:px-6 bg-[#FBF9F5] text-[#1A1612]">
         <div className="max-w-5xl mx-auto">
 
           {/* ── Mobile profile card ── */}
