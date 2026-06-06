@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Bricolage_Grotesque, Hanken_Grotesk, Space_Mono } from "next/font/google";
 import "./globals.css";
-import { CustomCursor } from "@/components/animations/CustomCursor";
-import { PrismParticles } from "@/components/animations/PrismParticles";
 import { PageTransition } from "@/components/animations/PageTransition";
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -113,7 +111,7 @@ export default function RootLayout({
       lang="fr"
       className={`${fraunces.variable} ${bricolage.variable} ${hanken.variable} ${spaceMono.variable}`}
     >
-      <body className="bg-[#3D1F5C] text-[#F3EADB] antialiased cursor-none">
+      <body className="bg-[#FBF9F5] text-[#1A1612] antialiased">
         {/* Gate pré-paint : pose le voile sombre AVANT le premier paint si l'intro
             doit jouer cette session → zéro flash de la home avant l'animation. */}
         <script
@@ -135,8 +133,6 @@ export default function RootLayout({
         {/* Desktop-only decorative elements */}
         <div className="hidden md:block">
           <ScrollProgress />
-          <CustomCursor />
-          <PrismParticles />
         </div>
         <SiteBanner />
         <BannerProvider>
