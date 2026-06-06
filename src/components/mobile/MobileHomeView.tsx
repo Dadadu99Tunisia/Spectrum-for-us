@@ -136,7 +136,8 @@ export function MobileHomeView() {
       {/* Top bar */}
       <div className="sticky top-0 z-30" style={{ background: T.bg, paddingTop: "max(14px,env(safe-area-inset-top))" }}>
         <div className="flex items-center justify-between px-4 pb-2 pt-1">
-          <span className="font-bricolage font-extrabold text-[20px]" style={{ color: T.ink }}>spectrum</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <Link href="/" aria-label="Spectrum For Us"><img src="/logo-dark.png" alt="Spectrum For Us" className="h-8 w-auto" /></Link>
           <div className="flex items-center gap-2">
             {!user && (
               <Link href="/auth" className="font-mono text-[10px] tracking-wide px-3 py-1.5 rounded-full" style={{ border: `1px solid ${T.line}`, color: T.soft }}>Connexion</Link>
