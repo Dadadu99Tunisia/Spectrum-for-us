@@ -177,7 +177,7 @@ function DecouvrirContent() {
               <button
                 key={c}
                 onClick={() => handleCategoryChange(c)}
-                className={`shrink-0 px-4 py-1.5 rounded-full font-mono text-xs tracking-widest uppercase border transition-all duration-200 ${
+                className={`shrink-0 px-4 py-2 rounded-full font-hanken text-[13.5px] font-medium border transition-all duration-200 ${
                   category === c
                     ? "border-[#E0337E] bg-[#E0337E]/10 text-[#E0337E]"
                     : "border-[#F3EADB]/15 text-[#F3EADB]/50 hover:border-[#F3EADB]/30 hover:text-[#F3EADB]/70"
@@ -193,7 +193,7 @@ function DecouvrirContent() {
             <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
               <button
                 onClick={() => setSubcategory("")}
-                className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[11px] tracking-widest uppercase border transition-all duration-200 ${
+                className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full font-hanken text-[12px] font-medium border transition-all duration-200 ${
                   !subcategory
                     ? "border-[#6D2DB5]/60 bg-[#6D2DB5]/10 text-[#9B6DD5]"
                     : "border-[#F3EADB]/10 text-[#F3EADB]/35 hover:border-[#F3EADB]/25"
@@ -205,7 +205,7 @@ function DecouvrirContent() {
                 <button
                   key={s}
                   onClick={() => setSubcategory(s)}
-                  className={`shrink-0 px-3 py-1 rounded-full font-mono text-[11px] tracking-widest uppercase border transition-all duration-200 ${
+                  className={`shrink-0 px-3 py-1 rounded-full font-hanken text-[12px] font-medium border transition-all duration-200 ${
                     subcategory === s
                       ? "border-[#6D2DB5]/60 bg-[#6D2DB5]/10 text-[#9B6DD5]"
                       : "border-[#F3EADB]/10 text-[#F3EADB]/35 hover:border-[#F3EADB]/25"
