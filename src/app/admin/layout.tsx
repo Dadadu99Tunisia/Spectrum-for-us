@@ -8,7 +8,7 @@ import {
   CalendarDays, Mail, ShieldCheck, ShoppingCart, Users,
   MessageSquare, Settings, Menu, X, ChevronRight,
   TrendingUp, Briefcase, Bot, LogOut, Layout,
-  Bell, ExternalLink, Zap, MapPin, Trophy,
+  Bell, ExternalLink, Zap, MapPin, Trophy, CreditCard,
 } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import { AdminErrorBoundary } from "@/components/ui/AdminErrorBoundary";
@@ -63,6 +63,7 @@ const NAV_SECTIONS: NavSection[] = [
     accent: "#1C9C95",
     items: [
       { href: "/admin/finance",           label: "Finance",          icon: Coins },
+      { href: "/admin/subscriptions",    label: "Abonnements",      icon: CreditCard },
       { href: "/admin/crm",              label: "CRM Pipeline",     icon: TrendingUp },
       { href: "/admin/founder-program",  label: "Prog. Fondateur",  icon: Trophy, accent: "#FFD700" },
       { href: "/admin/support",          label: "Support",          icon: MessageSquare, badge: "!" },
