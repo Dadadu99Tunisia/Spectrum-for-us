@@ -27,7 +27,7 @@ export function CommandCenter() {
     { label: "Ventes aujourd'hui", value: d ? eur(d.todayRevenue) : "-", sub: d ? `${d.todayOrders} commande${d.todayOrders > 1 ? "s" : ""}` : "", icon: Activity, accent: "#1C9C95", href: "/admin/finance", alert: false },
     { label: "À traiter", value: d ? String(d.toProcess) : "-", sub: "commandes payées", icon: ShoppingCart, accent: "#E0901E", href: "/admin/orders", alert: !!d && d.toProcess > 0 },
     { label: "Modération", value: d ? String(d.moderationPending) : "-", sub: "en attente", icon: ShieldAlert, accent: "#6D2DB5", href: "/admin/moderation", alert: !!d && d.moderationPending > 0 },
-    { label: "Abos à risque", value: d ? String(d.atRiskSubs) : "-", sub: "période expirée", icon: CreditCard, accent: "#E0337E", href: "/admin/vendors", alert: !!d && d.atRiskSubs > 0 },
+    { label: "Abos à risque", value: d ? String(d.atRiskSubs) : "-", sub: "période expirée", icon: CreditCard, accent: "#FF3D7F", href: "/admin/vendors", alert: !!d && d.atRiskSubs > 0 },
     { label: "Paiements échoués", value: d ? String(d.failed7d) : "-", sub: "7 derniers jours", icon: AlertTriangle, accent: "#E0533A", href: "/admin/orders", alert: !!d && d.failed7d > 0 },
   ];
 
@@ -36,10 +36,10 @@ export function CommandCenter() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#1C9C95] animate-pulse" />
-          <h2 className="font-hanken text-sm font-semibold text-[#F3EADB]/80">Command Center</h2>
-          <span className="font-mono text-[10px] text-[#F3EADB]/25">temps réel · 30s</span>
+          <h2 className="font-hanken text-sm font-semibold text-[#1A1612]/80">Command Center</h2>
+          <span className="font-mono text-[10px] text-[#1A1612]/25">temps réel · 30s</span>
         </div>
-        <button onClick={load} className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/[0.06] text-[#F3EADB]/40 hover:text-[#F3EADB] transition-colors" aria-label="Rafraîchir">
+        <button onClick={load} className="w-7 h-7 flex items-center justify-center rounded-lg bg-[#1A1612]/[0.06] text-[#1A1612]/40 hover:text-[#1A1612] transition-colors" aria-label="Rafraîchir">
           <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
         </button>
       </div>
@@ -56,9 +56,9 @@ export function CommandCenter() {
                 </span>
                 {t.alert && <span className="w-2 h-2 rounded-full" style={{ background: t.accent }} />}
               </div>
-              <div className="font-bricolage font-bold text-xl text-[#F3EADB] leading-none">{t.value}</div>
-              <div className="font-hanken text-[11px] text-[#F3EADB]/45 mt-1">{t.label}</div>
-              {t.sub && <div className="font-mono text-[9px] text-[#F3EADB]/25 mt-0.5">{t.sub}</div>}
+              <div className="font-bricolage font-bold text-xl text-[#1A1612] leading-none">{t.value}</div>
+              <div className="font-hanken text-[11px] text-[#1A1612]/45 mt-1">{t.label}</div>
+              {t.sub && <div className="font-mono text-[9px] text-[#1A1612]/25 mt-0.5">{t.sub}</div>}
             </Link>
           );
         })}

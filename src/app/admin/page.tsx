@@ -42,7 +42,7 @@ const STATUS_PILL: Record<string, string> = {
   paid:      "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
   pending:   "bg-amber-500/15   text-amber-400   border-amber-500/20",
   shipped:   "bg-sky-500/15     text-sky-400     border-sky-500/20",
-  cancelled: "bg-red-500/15     text-red-400     border-red-500/20",
+  cancelled: "bg-red-500/15     text-red-600     border-red-500/20",
   delivered: "bg-teal-500/15    text-teal-400    border-teal-500/20",
 };
 const STATUS_LABEL: Record<string, string> = {
@@ -56,7 +56,7 @@ function KpiCard({ label, value, sub, color, icon: Icon, href, alert }: {
   icon: React.ElementType; href?: string; alert?: boolean;
 }) {
   const content = (
-    <div className={`relative p-5 rounded-2xl border bg-white/[0.07] hover:bg-white/[0.055] transition-all group cursor-default ${alert ? "border-[#E0901E]/30" : "border-white/[0.13]"}`}
+    <div className={`relative p-5 rounded-2xl border bg-[#1A1612]/[0.07] hover:bg-[#1A1612]/[0.055] transition-all group cursor-default ${alert ? "border-[#E0901E]/30" : "border-[#1A1612]/[0.13]"}`}
       style={alert ? { boxShadow: "0 0 0 1px rgba(224,144,30,.15)" } : {}}>
       <div className="absolute left-0 top-4 bottom-4 w-[3px] rounded-full" style={{ background: color }} />
       <div className="flex items-start justify-between mb-4 pl-3">
@@ -64,13 +64,13 @@ function KpiCard({ label, value, sub, color, icon: Icon, href, alert }: {
           style={{ background: `${color}18`, border: `1px solid ${color}28` }}>
           <Icon size={16} style={{ color }} />
         </div>
-        {href && <ArrowUpRight size={13} className="text-[#F3EADB]/15 group-hover:text-[#F3EADB]/50 transition-colors mt-0.5" />}
+        {href && <ArrowUpRight size={13} className="text-[#1A1612]/15 group-hover:text-[#1A1612]/50 transition-colors mt-0.5" />}
         {alert && !href && <span className="w-2 h-2 rounded-full bg-[#E0901E] mt-1" />}
       </div>
       <div className="pl-3">
-        <p className="font-fraunces text-2xl text-[#F3EADB] leading-none mb-1">{value}</p>
-        <p className="font-mono text-[10px] text-[#F3EADB]/35 uppercase tracking-widest">{label}</p>
-        <p className="font-hanken text-xs text-[#F3EADB]/25 mt-1">{sub}</p>
+        <p className="font-fraunces text-2xl text-[#1A1612] leading-none mb-1">{value}</p>
+        <p className="font-mono text-[10px] text-[#1A1612]/35 uppercase tracking-widest">{label}</p>
+        <p className="font-hanken text-xs text-[#1A1612]/25 mt-1">{sub}</p>
       </div>
     </div>
   );
@@ -83,11 +83,11 @@ function GrowthCard({ label, value, trend, sub, color, icon: Icon, href, urgent 
   color: string; icon: React.ElementType; href?: string; urgent?: boolean;
 }) {
   const TrendIcon = trend === undefined ? null : trend > 0 ? ChevronUp : trend < 0 ? ChevronDown : Minus;
-  const trendColor = trend === undefined ? "" : trend > 0 ? "text-emerald-400" : trend < 0 ? "text-red-400" : "text-[#F3EADB]/30";
+  const trendColor = trend === undefined ? "" : trend > 0 ? "text-emerald-400" : trend < 0 ? "text-red-600" : "text-[#1A1612]/30";
 
   const content = (
     <div className={`relative p-4 rounded-2xl border transition-all group cursor-default overflow-hidden
-      ${urgent ? "border-[#E0337E]/30 bg-[#E0337E]/5" : "border-white/[0.13] bg-white/[0.07] hover:bg-white/[0.055]"}`}>
+      ${urgent ? "border-[#FF3D7F]/30 bg-[#FF3D7F]/5" : "border-[#1A1612]/[0.13] bg-[#1A1612]/[0.07] hover:bg-[#1A1612]/[0.055]"}`}>
       {/* Gradient glow */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
         style={{ background: `radial-gradient(circle at 20% 50%, ${color}08 0%, transparent 60%)` }} />
@@ -104,13 +104,13 @@ function GrowthCard({ label, value, trend, sub, color, icon: Icon, href, urgent 
               {Math.abs(trend)}%
             </span>
           )}
-          {href && <ArrowUpRight size={11} className="text-[#F3EADB]/15 group-hover:text-[#F3EADB]/50 transition-colors" />}
+          {href && <ArrowUpRight size={11} className="text-[#1A1612]/15 group-hover:text-[#1A1612]/50 transition-colors" />}
         </div>
       </div>
 
-      <p className="font-fraunces text-xl text-[#F3EADB] leading-none mb-0.5">{fmtN(Number(value))}</p>
-      <p className="font-mono text-[9px] text-[#F3EADB]/35 uppercase tracking-widest leading-tight">{label}</p>
-      <p className="font-hanken text-[11px] text-[#F3EADB]/25 mt-1 leading-tight">{sub}</p>
+      <p className="font-fraunces text-xl text-[#1A1612] leading-none mb-0.5">{fmtN(Number(value))}</p>
+      <p className="font-mono text-[9px] text-[#1A1612]/35 uppercase tracking-widest leading-tight">{label}</p>
+      <p className="font-hanken text-[11px] text-[#1A1612]/25 mt-1 leading-tight">{sub}</p>
     </div>
   );
   if (href) return <Link href={href} className="block">{content}</Link>;
@@ -122,7 +122,7 @@ function SectionTitle({ children, action, accent }: { children: React.ReactNode;
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-2">
         {accent && <div className="w-1 h-4 rounded-full shrink-0" style={{ background: accent }} />}
-        <h2 className="font-fraunces text-base text-[#F3EADB]">{children}</h2>
+        <h2 className="font-fraunces text-base text-[#1A1612]">{children}</h2>
       </div>
       {action}
     </div>
@@ -131,7 +131,7 @@ function SectionTitle({ children, action, accent }: { children: React.ReactNode;
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`p-5 rounded-2xl border border-white/[0.13] bg-white/[0.07] ${className}`}>
+    <div className={`p-5 rounded-2xl border border-[#1A1612]/[0.13] bg-[#1A1612]/[0.07] ${className}`}>
       {children}
     </div>
   );
@@ -173,7 +173,7 @@ export default function AdminDashboard() {
   const g = kpis?.growth;
 
   const QUICK_ACTIONS = [
-    { label: "Rejoindre",      sub: g ? `${g.pendingJoinRequests} en attente` : "-", href: "/admin/rejoindre",  color: "#E0337E", icon: UserPlus,    urgent: (g?.pendingJoinRequests ?? 0) > 0 },
+    { label: "Rejoindre",      sub: g ? `${g.pendingJoinRequests} en attente` : "-", href: "/admin/rejoindre",  color: "#FF3D7F", icon: UserPlus,    urgent: (g?.pendingJoinRequests ?? 0) > 0 },
     { label: "Modération",     sub: kpis ? `${kpis.pendingMod} en attente` : "-",    href: "/admin/moderation", color: "#E0901E", icon: ShieldCheck,  urgent: (kpis?.pendingMod ?? 0) > 0 },
     { label: "Support",        sub: kpis ? `${kpis.openTickets} tickets` : "-",      href: "/admin/support",    color: "#CF3F7C", icon: MessageSquare, urgent: (kpis?.openTickets ?? 0) > 0 },
     { label: "CRM Pipeline",   sub: g ? `${g.crmContacted} contacts actifs` : "-",   href: "/admin/crm",        color: "#a78bfa", icon: TrendingUp,   urgent: false },
@@ -222,13 +222,13 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2.5 mb-1">
-            <span className="font-mono text-[10px] text-[#F3EADB]/25 uppercase tracking-widest">{today}</span>
+            <span className="font-mono text-[10px] text-[#1A1612]/25 uppercase tracking-widest">{today}</span>
           </div>
-          <h1 className="font-fraunces text-2xl text-[#F3EADB]">Bonjour 👋</h1>
-          <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">Vue d&apos;ensemble · Spectrum For Us</p>
+          <h1 className="font-fraunces text-2xl text-[#1A1612]">Bonjour 👋</h1>
+          <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">Vue d&apos;ensemble · Spectrum For Us</p>
         </div>
         <button onClick={handleRefresh} disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/[0.13] bg-white/[0.07] font-hanken text-sm text-[#F3EADB]/50 hover:text-[#F3EADB] hover:bg-white/[0.06] transition-all disabled:opacity-40">
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1A1612]/[0.13] bg-[#1A1612]/[0.07] font-hanken text-sm text-[#1A1612]/50 hover:text-[#1A1612] hover:bg-[#1A1612]/[0.06] transition-all disabled:opacity-40">
           <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
           Actualiser
         </button>
@@ -238,8 +238,8 @@ export default function AdminDashboard() {
           CROISSANCE COMMUNAUTAIRE · bloc prioritaire
       ══════════════════════════════════════════════════════ */}
       <div>
-        <SectionTitle accent="#E0337E" action={
-          <Link href="/admin/rejoindre" className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] uppercase tracking-widest transition-colors flex items-center gap-1">
+        <SectionTitle accent="#FF3D7F" action={
+          <Link href="/admin/rejoindre" className="font-mono text-[10px] text-[#1A1612]/30 hover:text-[#FF3D7F] uppercase tracking-widest transition-colors flex items-center gap-1">
             Voir les demandes <ArrowUpRight size={10} />
           </Link>
         }>
@@ -248,13 +248,13 @@ export default function AdminDashboard() {
 
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 animate-pulse">
-            {[...Array(7)].map((_, i) => <div key={i} className="h-28 rounded-2xl bg-white/[0.08]" />)}
+            {[...Array(7)].map((_, i) => <div key={i} className="h-28 rounded-2xl bg-[#1A1612]/[0.08]" />)}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
             <GrowthCard
               label="Nouveaux membres" value={g?.newMembersWeek ?? 0}
-              sub="cette semaine" color="#E0337E" icon={UserPlus}
+              sub="cette semaine" color="#FF3D7F" icon={UserPlus}
               urgent={(g?.newMembersWeek ?? 0) === 0}
               href="/admin/users"
             />
@@ -298,8 +298,8 @@ export default function AdminDashboard() {
 
         {/* Chart membres 30j */}
         <Card>
-          <SectionTitle accent="#E0337E" action={
-            <Link href="/admin/users" className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] uppercase tracking-widest transition-colors flex items-center gap-1">
+          <SectionTitle accent="#FF3D7F" action={
+            <Link href="/admin/users" className="font-mono text-[10px] text-[#1A1612]/30 hover:text-[#FF3D7F] uppercase tracking-widest transition-colors flex items-center gap-1">
               Détails <ArrowUpRight size={10} />
             </Link>
           }>
@@ -312,17 +312,17 @@ export default function AdminDashboard() {
                 <XAxis dataKey="date" tick={{ fill: "rgba(243,234,219,.3)", fontSize: 9 }} tickLine={false} axisLine={false} interval={6} />
                 <YAxis tick={{ fill: "rgba(243,234,219,.3)", fontSize: 9 }} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip
-                  contentStyle={{ background: "#1a1535", border: "1px solid rgba(255,255,255,.1)", borderRadius: "12px", color: "#F3EADB", fontSize: 12 }}
+                  contentStyle={{ background: "#1a1535", border: "1px solid rgba(255,255,255,.1)", borderRadius: "12px", color: "#1A1612", fontSize: 12 }}
                   formatter={(v) => [v as number, "nouveaux membres"]}
                   labelStyle={{ color: "rgba(243,234,219,.5)" }} />
-                <Bar dataKey="count" fill="#E0337E" radius={[3, 3, 0, 0]} opacity={0.85} />
+                <Bar dataKey="count" fill="#FF3D7F" radius={[3, 3, 0, 0]} opacity={0.85} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <div className="h-[180px] flex flex-col items-center justify-center gap-2">
-              <UserPlus size={28} className="text-[#E0337E]/20" />
-              <p className="font-hanken text-sm text-[#F3EADB]/25">Aucun membre cette semaine</p>
-              <p className="font-mono text-[10px] text-[#F3EADB]/15">C&apos;est le moment de lancer la campagne de recrutement</p>
+              <UserPlus size={28} className="text-[#FF3D7F]/20" />
+              <p className="font-hanken text-sm text-[#1A1612]/25">Aucun membre cette semaine</p>
+              <p className="font-mono text-[10px] text-[#1A1612]/15">C&apos;est le moment de lancer la campagne de recrutement</p>
             </div>
           )}
         </Card>
@@ -330,7 +330,7 @@ export default function AdminDashboard() {
         {/* Chart revenus 30j */}
         <Card>
           <SectionTitle accent="#6D2DB5" action={
-            <Link href="/admin/finance" className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] uppercase tracking-widest transition-colors flex items-center gap-1">
+            <Link href="/admin/finance" className="font-mono text-[10px] text-[#1A1612]/30 hover:text-[#FF3D7F] uppercase tracking-widest transition-colors flex items-center gap-1">
               Détails <ArrowUpRight size={10} />
             </Link>
           }>
@@ -350,7 +350,7 @@ export default function AdminDashboard() {
                 <YAxis tick={{ fill: "rgba(243,234,219,.3)", fontSize: 9 }} tickLine={false} axisLine={false}
                   tickFormatter={v => v === 0 ? "0" : `${(v/1000).toFixed(1)}k`} />
                 <Tooltip
-                  contentStyle={{ background: "#1a1535", border: "1px solid rgba(255,255,255,.1)", borderRadius: "12px", color: "#F3EADB", fontSize: 12 }}
+                  contentStyle={{ background: "#1a1535", border: "1px solid rgba(255,255,255,.1)", borderRadius: "12px", color: "#1A1612", fontSize: 12 }}
                   formatter={(v: unknown) => [`${Number(v).toFixed(2)} €`, "Revenus"]}
                   labelStyle={{ color: "rgba(243,234,219,.5)" }} />
                 <Area type="monotone" dataKey="revenue" stroke="#6D2DB5" strokeWidth={2} fill="url(#rev)" dot={false} />
@@ -358,8 +358,8 @@ export default function AdminDashboard() {
             </ResponsiveContainer>
           ) : (
             <div className="h-[180px] flex flex-col items-center justify-center gap-2">
-              <BarChart2 size={28} className="text-[#F3EADB]/10" />
-              <p className="font-hanken text-sm text-[#F3EADB]/25">Aucune vente pour l&apos;instant</p>
+              <BarChart2 size={28} className="text-[#1A1612]/10" />
+              <p className="font-hanken text-sm text-[#1A1612]/25">Aucune vente pour l&apos;instant</p>
             </div>
           )}
         </Card>
@@ -370,11 +370,11 @@ export default function AdminDashboard() {
         <SectionTitle accent="#6D2DB5">Commerce</SectionTitle>
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 animate-pulse">
-            {[...Array(8)].map((_, i) => <div key={i} className="h-28 rounded-2xl bg-white/[0.08]" />)}
+            {[...Array(8)].map((_, i) => <div key={i} className="h-28 rounded-2xl bg-[#1A1612]/[0.08]" />)}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <KpiCard label="CA Aujourd'hui" value={fmt(kpis?.revenueToday ?? 0)} sub={`${fmtN(kpis?.ordersToday ?? 0)} commandes`}    color="#E0337E" icon={TrendingUp}    href="/admin/finance" />
+            <KpiCard label="CA Aujourd'hui" value={fmt(kpis?.revenueToday ?? 0)} sub={`${fmtN(kpis?.ordersToday ?? 0)} commandes`}    color="#FF3D7F" icon={TrendingUp}    href="/admin/finance" />
             <KpiCard label="CA Ce mois"     value={fmt(kpis?.revenueMonth ?? 0)} sub={`${fmtN(kpis?.ordersMonth ?? 0)} commandes`}    color="#6D2DB5" icon={TrendingUp}    href="/admin/finance" />
             <KpiCard label="CA Annuel"      value={fmt(kpis?.revenueYear ?? 0)}  sub="depuis le 1er janvier"                          color="#E0901E" icon={Coins}         href="/admin/finance" />
             <KpiCard label="Panier moyen"   value={fmtSm(kpis?.avgBasket ?? 0)} sub={`${fmtN(kpis?.totalOrders ?? 0)} commandes total`} color="#1C9C95" icon={ShoppingCart} href="/admin/orders" />
@@ -399,19 +399,19 @@ export default function AdminDashboard() {
                 <Link key={a.href} href={a.href}
                   className={`flex items-center gap-3 p-3 rounded-xl border transition-all group ${
                     a.urgent
-                      ? "border-[#E0337E]/25 bg-[#E0337E]/5 hover:bg-[#E0337E]/10"
-                      : "border-white/[0.10] hover:border-white/[0.12] hover:bg-white/[0.08]"
+                      ? "border-[#FF3D7F]/25 bg-[#FF3D7F]/5 hover:bg-[#FF3D7F]/10"
+                      : "border-[#1A1612]/[0.10] hover:border-[#1A1612]/[0.12] hover:bg-[#1A1612]/[0.08]"
                   }`}>
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                     style={{ background: `${a.color}15` }}>
                     <Icon size={13} style={{ color: a.color }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-hanken text-[13px] text-[#F3EADB]/70 group-hover:text-[#F3EADB] transition-colors leading-tight">{a.label}</p>
-                    <p className="font-mono text-[9px] text-[#F3EADB]/30 mt-0.5">{a.sub}</p>
+                    <p className="font-hanken text-[13px] text-[#1A1612]/70 group-hover:text-[#1A1612] transition-colors leading-tight">{a.label}</p>
+                    <p className="font-mono text-[9px] text-[#1A1612]/30 mt-0.5">{a.sub}</p>
                   </div>
-                  {a.urgent && <span className="w-2 h-2 rounded-full bg-[#E0337E] shrink-0 animate-pulse" />}
-                  <ArrowUpRight size={12} className="text-[#F3EADB]/15 group-hover:text-[#F3EADB]/50 transition-colors shrink-0" />
+                  {a.urgent && <span className="w-2 h-2 rounded-full bg-[#FF3D7F] shrink-0 animate-pulse" />}
+                  <ArrowUpRight size={12} className="text-[#1A1612]/15 group-hover:text-[#1A1612]/50 transition-colors shrink-0" />
                 </Link>
               );
             })}
@@ -421,34 +421,34 @@ export default function AdminDashboard() {
         {/* Recent orders */}
         <Card>
           <SectionTitle accent="#1C9C95" action={
-            <Link href="/admin/orders" className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] uppercase tracking-widest transition-colors flex items-center gap-1">
+            <Link href="/admin/orders" className="font-mono text-[10px] text-[#1A1612]/30 hover:text-[#FF3D7F] uppercase tracking-widest transition-colors flex items-center gap-1">
               Tout voir <ArrowUpRight size={10} />
             </Link>
           }>
             Dernières commandes
           </SectionTitle>
           {loading ? (
-            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-xl bg-white/[0.08]" />)}</div>
+            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-xl bg-[#1A1612]/[0.08]" />)}</div>
           ) : recentOrders.length === 0 ? (
             <div className="py-10 text-center">
-              <ShoppingCart size={28} className="text-[#F3EADB]/10 mx-auto mb-2" />
-              <p className="font-hanken text-sm text-[#F3EADB]/25">Aucune commande pour l&apos;instant</p>
+              <ShoppingCart size={28} className="text-[#1A1612]/10 mx-auto mb-2" />
+              <p className="font-hanken text-sm text-[#1A1612]/25">Aucune commande pour l&apos;instant</p>
             </div>
           ) : (
             <div className="space-y-1">
               {recentOrders.map(o => (
                 <div key={String(o.id)}
-                  className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/[0.07] transition-colors cursor-pointer"
+                  className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-[#1A1612]/[0.07] transition-colors cursor-pointer"
                   onClick={() => router.push("/admin/orders")}>
-                  <div className="w-7 h-7 rounded-lg bg-white/[0.09] flex items-center justify-center shrink-0">
-                    <Package size={12} className="text-[#F3EADB]/30" />
+                  <div className="w-7 h-7 rounded-lg bg-[#1A1612]/[0.09] flex items-center justify-center shrink-0">
+                    <Package size={12} className="text-[#1A1612]/30" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-mono text-xs text-[#F3EADB]/60 truncate">#{String(o.id).slice(0, 8)}</p>
-                    <p className="font-mono text-[10px] text-[#F3EADB]/25">{new Date(String(o.created_at)).toLocaleDateString("fr-FR")}</p>
+                    <p className="font-mono text-xs text-[#1A1612]/60 truncate">#{String(o.id).slice(0, 8)}</p>
+                    <p className="font-mono text-[10px] text-[#1A1612]/25">{new Date(String(o.created_at)).toLocaleDateString("fr-FR")}</p>
                   </div>
-                  <span className="font-mono text-sm text-[#F3EADB]/80">{fmtSm(Number(o.total_amount ?? o.total ?? 0))}</span>
-                  <span className={`font-mono text-[9px] px-2 py-0.5 rounded-full border ${STATUS_PILL[String(o.status)] ?? "bg-white/[0.06] text-[#F3EADB]/40 border-white/[0.13]"}`}>
+                  <span className="font-mono text-sm text-[#1A1612]/80">{fmtSm(Number(o.total_amount ?? o.total ?? 0))}</span>
+                  <span className={`font-mono text-[9px] px-2 py-0.5 rounded-full border ${STATUS_PILL[String(o.status)] ?? "bg-[#1A1612]/[0.06] text-[#1A1612]/40 border-[#1A1612]/[0.13]"}`}>
                     {STATUS_LABEL[String(o.status)] ?? String(o.status)}
                   </span>
                 </div>
@@ -460,36 +460,36 @@ export default function AdminDashboard() {
         {/* Recent vendors */}
         <Card>
           <SectionTitle accent="#CF3F7C" action={
-            <Link href="/admin/vendors" className="font-mono text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] uppercase tracking-widest transition-colors flex items-center gap-1">
+            <Link href="/admin/vendors" className="font-mono text-[10px] text-[#1A1612]/30 hover:text-[#FF3D7F] uppercase tracking-widest transition-colors flex items-center gap-1">
               Tout voir <ArrowUpRight size={10} />
             </Link>
           }>
             Nouveaux vendeur·ses
           </SectionTitle>
           {loading ? (
-            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-xl bg-white/[0.08]" />)}</div>
+            <div className="space-y-2 animate-pulse">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-xl bg-[#1A1612]/[0.08]" />)}</div>
           ) : recentVendors.length === 0 ? (
             <div className="py-10 text-center">
-              <Store size={28} className="text-[#F3EADB]/10 mx-auto mb-2" />
-              <p className="font-hanken text-sm text-[#F3EADB]/25">Aucune boutique pour l&apos;instant</p>
+              <Store size={28} className="text-[#1A1612]/10 mx-auto mb-2" />
+              <p className="font-hanken text-sm text-[#1A1612]/25">Aucune boutique pour l&apos;instant</p>
             </div>
           ) : (
             <div className="space-y-1">
               {recentVendors.map(v => (
                 <div key={String(v.id)}
-                  className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/[0.07] transition-colors cursor-pointer"
+                  className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-[#1A1612]/[0.07] transition-colors cursor-pointer"
                   onClick={() => router.push("/admin/vendors")}>
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                     style={{ background: "#CF3F7C18", border: "1px solid #CF3F7C22" }}>
                     <span className="font-fraunces text-[12px] text-[#CF3F7C]">{String(v.name ?? "?")[0].toUpperCase()}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-hanken text-sm text-[#F3EADB]/80 truncate">{String(v.name ?? "-")}</p>
-                    <p className="font-mono text-[10px] text-[#F3EADB]/25">{new Date(String(v.created_at)).toLocaleDateString("fr-FR")}</p>
+                    <p className="font-hanken text-sm text-[#1A1612]/80 truncate">{String(v.name ?? "-")}</p>
+                    <p className="font-mono text-[10px] text-[#1A1612]/25">{new Date(String(v.created_at)).toLocaleDateString("fr-FR")}</p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <div className={`w-2 h-2 rounded-full ${Boolean(v.is_active) ? "bg-emerald-400" : "bg-[#F3EADB]/15"}`} />
-                    <span className={`font-mono text-[9px] ${Boolean(v.is_active) ? "text-emerald-400/70" : "text-[#F3EADB]/25"}`}>
+                    <div className={`w-2 h-2 rounded-full ${Boolean(v.is_active) ? "bg-emerald-400" : "bg-[#1A1612]/15"}`} />
+                    <span className={`font-mono text-[9px] ${Boolean(v.is_active) ? "text-emerald-400/70" : "text-[#1A1612]/25"}`}>
                       {Boolean(v.is_active) ? "Actif" : "Inactif"}
                     </span>
                   </div>
@@ -504,23 +504,23 @@ export default function AdminDashboard() {
       <div>
         <div className="flex items-center gap-2.5 mb-4">
           <Zap size={14} className="text-[#a78bfa]" />
-          <h2 className="font-fraunces text-base text-[#F3EADB]">Tous les outils</h2>
+          <h2 className="font-fraunces text-base text-[#1A1612]">Tous les outils</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {ALL_TOOLS.map(section => (
-            <div key={section.section} className="rounded-2xl border border-white/[0.12] bg-white/[0.02] p-4">
+            <div key={section.section} className="rounded-2xl border border-[#1A1612]/[0.12] bg-[#1A1612]/[0.02] p-4">
               <div className="flex items-center gap-1.5 mb-3">
                 <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: section.color }} />
-                <p className="font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/25">{section.section}</p>
+                <p className="font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/25">{section.section}</p>
               </div>
               <div className="space-y-0.5">
                 {section.tools.map(t => {
                   const Icon = t.icon;
                   return (
                     <Link key={t.href} href={t.href}
-                      className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/[0.09] transition-colors group">
-                      <Icon size={13} className="text-[#F3EADB]/30 group-hover:text-[#F3EADB]/60 transition-colors shrink-0" />
-                      <span className="font-hanken text-sm text-[#F3EADB]/50 group-hover:text-[#F3EADB]/80 transition-colors">{t.label}</span>
+                      className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-[#1A1612]/[0.09] transition-colors group">
+                      <Icon size={13} className="text-[#1A1612]/30 group-hover:text-[#1A1612]/60 transition-colors shrink-0" />
+                      <span className="font-hanken text-sm text-[#1A1612]/50 group-hover:text-[#1A1612]/80 transition-colors">{t.label}</span>
                     </Link>
                   );
                 })}
@@ -531,24 +531,24 @@ export default function AdminDashboard() {
       </div>
 
       {/* ── Status bar ── */}
-      <div className="flex items-center gap-4 py-3 px-4 rounded-xl bg-white/[0.02] border border-white/[0.10]">
+      <div className="flex items-center gap-4 py-3 px-4 rounded-xl bg-[#1A1612]/[0.02] border border-[#1A1612]/[0.10]">
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-mono text-[10px] text-[#F3EADB]/35">API opérationnelle</span>
+          <span className="font-mono text-[10px] text-[#1A1612]/35">API opérationnelle</span>
         </div>
-        <div className="w-px h-3 bg-white/[0.08]" />
+        <div className="w-px h-3 bg-[#1A1612]/[0.08]" />
         <div className="flex items-center gap-1.5">
           <CheckCircle2 size={10} className="text-emerald-400/60" />
-          <span className="font-mono text-[10px] text-[#F3EADB]/35">Supabase connecté</span>
+          <span className="font-mono text-[10px] text-[#1A1612]/35">Supabase connecté</span>
         </div>
-        <div className="w-px h-3 bg-white/[0.08]" />
+        <div className="w-px h-3 bg-[#1A1612]/[0.08]" />
         <div className="flex items-center gap-1.5">
           <CheckCircle2 size={10} className="text-emerald-400/60" />
-          <span className="font-mono text-[10px] text-[#F3EADB]/35">Paiements actifs</span>
+          <span className="font-mono text-[10px] text-[#1A1612]/35">Paiements actifs</span>
         </div>
         {(kpis?.pendingMod ?? 0) > 0 && (
           <>
-            <div className="w-px h-3 bg-white/[0.08]" />
+            <div className="w-px h-3 bg-[#1A1612]/[0.08]" />
             <Link href="/admin/moderation" className="flex items-center gap-1.5 hover:text-[#E0901E] transition-colors">
               <AlertCircle size={10} className="text-[#E0901E]" />
               <span className="font-mono text-[10px] text-[#E0901E]/70">{kpis?.pendingMod} éléments à modérer</span>
@@ -557,10 +557,10 @@ export default function AdminDashboard() {
         )}
         {(g?.pendingJoinRequests ?? 0) > 0 && (
           <>
-            <div className="w-px h-3 bg-white/[0.08]" />
-            <Link href="/admin/rejoindre" className="flex items-center gap-1.5 hover:text-[#E0337E] transition-colors">
-              <AlertCircle size={10} className="text-[#E0337E]" />
-              <span className="font-mono text-[10px] text-[#E0337E]/70">{g?.pendingJoinRequests} demandes en attente</span>
+            <div className="w-px h-3 bg-[#1A1612]/[0.08]" />
+            <Link href="/admin/rejoindre" className="flex items-center gap-1.5 hover:text-[#FF3D7F] transition-colors">
+              <AlertCircle size={10} className="text-[#FF3D7F]" />
+              <span className="font-mono text-[10px] text-[#FF3D7F]/70">{g?.pendingJoinRequests} demandes en attente</span>
             </Link>
           </>
         )}

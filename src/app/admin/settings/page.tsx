@@ -14,10 +14,10 @@ const SECTIONS = [
 
 function Field({ label, description, children }: { label: string; description?: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-6 py-4 border-b border-[#F3EADB]/6 last:border-0">
+    <div className="flex items-start justify-between gap-6 py-4 border-b border-[#1A1612]/6 last:border-0">
       <div className="flex-1">
-        <p className="font-hanken text-sm text-[#F3EADB]">{label}</p>
-        {description && <p className="font-mono text-[10px] text-[#F3EADB]/30 mt-0.5">{description}</p>}
+        <p className="font-hanken text-sm text-[#1A1612]">{label}</p>
+        {description && <p className="font-mono text-[10px] text-[#1A1612]/30 mt-0.5">{description}</p>}
       </div>
       <div className="flex-shrink-0">{children}</div>
     </div>
@@ -27,7 +27,7 @@ function Field({ label, description, children }: { label: string; description?: 
 function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
   return (
     <button onClick={() => onChange(!value)}
-      className={`w-10 h-5 rounded-full transition-colors relative ${value ? "bg-[#E0337E]" : "bg-[#F3EADB]/10"}`}>
+      className={`w-10 h-5 rounded-full transition-colors relative ${value ? "bg-[#FF3D7F]" : "bg-[#1A1612]/10"}`}>
       <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${value ? "translate-x-5" : "translate-x-0.5"}`} />
     </button>
   );
@@ -36,7 +36,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
 function Input({ value, onChange, placeholder, type = "text" }: { value: string; onChange: (v: string) => void; placeholder?: string; type?: string }) {
   return (
     <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-      className="bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#F3EADB] placeholder-[#F3EADB]/20 focus:outline-none focus:border-[#E0337E]/50 transition-colors w-56" />
+      className="bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#FF3D7F]/50 transition-colors w-56" />
   );
 }
 
@@ -154,7 +154,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 gap-3 text-[#F3EADB]/40">
+      <div className="flex items-center justify-center h-64 gap-3 text-[#1A1612]/40">
         <Loader2 size={18} className="animate-spin" />
         <span className="font-hanken text-sm">Chargement des paramètres…</span>
       </div>
@@ -175,11 +175,11 @@ export default function SettingsPage() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#F3EADB]">Paramètres</h1>
-          <p className="font-hanken text-sm text-[#F3EADB]/40 mt-0.5">Configuration de la plateforme</p>
+          <h1 className="font-fraunces text-2xl text-[#1A1612]">Paramètres</h1>
+          <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">Configuration de la plateforme</p>
         </div>
         <button onClick={save} disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E0337E] text-white font-hanken text-sm hover:bg-[#E0337E]/90 transition-colors disabled:opacity-60">
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FF3D7F] text-white font-hanken text-sm hover:bg-[#FF3D7F]/90 transition-colors disabled:opacity-60">
           {saving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
           {saving ? "Sauvegarde…" : "Sauvegarder"}
         </button>
@@ -194,8 +194,8 @@ export default function SettingsPage() {
               <button key={s.id} onClick={() => setActiveSection(s.id)}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg font-hanken text-sm transition-all ${
                   activeSection === s.id
-                    ? "bg-[#E0337E]/10 text-[#E0337E] border border-[#E0337E]/20"
-                    : "text-[#F3EADB]/40 hover:text-[#F3EADB] hover:bg-[#F3EADB]/4"
+                    ? "bg-[#FF3D7F]/10 text-[#FF3D7F] border border-[#FF3D7F]/20"
+                    : "text-[#1A1612]/40 hover:text-[#1A1612] hover:bg-[#1A1612]/4"
                 }`}>
                 <Icon size={13} />
                 {s.label}
@@ -206,10 +206,10 @@ export default function SettingsPage() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-5 rounded-2xl border border-[#F3EADB]/8 bg-white/[0.03]">
+        <div className="flex-1 p-5 rounded-2xl border border-[#1A1612]/8 bg-[#1A1612]/[0.03]">
           {activeSection === "general" && (
             <div>
-              <p className="font-fraunces text-base text-[#F3EADB] mb-4">Paramètres généraux</p>
+              <p className="font-fraunces text-base text-[#1A1612] mb-4">Paramètres généraux</p>
               <Field label="Nom du site" description="Affiché dans les emails et le SEO">
                 <Input value={siteName} onChange={setSiteName} />
               </Field>
@@ -233,7 +233,7 @@ export default function SettingsPage() {
 
           {activeSection === "notifications" && (
             <div>
-              <p className="font-fraunces text-base text-[#F3EADB] mb-4">Notifications admin</p>
+              <p className="font-fraunces text-base text-[#1A1612] mb-4">Notifications admin</p>
               <Field label="Nouvelle commande" description="Notification à chaque nouvelle commande">
                 <Toggle value={newOrderNotif} onChange={setNewOrderNotif} />
               </Field>
@@ -251,7 +251,7 @@ export default function SettingsPage() {
 
           {activeSection === "security" && (
             <div>
-              <p className="font-fraunces text-base text-[#F3EADB] mb-4">Sécurité</p>
+              <p className="font-fraunces text-base text-[#1A1612] mb-4">Sécurité</p>
               <Field label="Expiration session (min)" description="Déconnexion automatique après inactivité">
                 <Input value={sessionTimeout} onChange={setSessionTimeout} placeholder="30" />
               </Field>
@@ -268,10 +268,10 @@ export default function SettingsPage() {
 
           {activeSection === "localization" && (
             <div>
-              <p className="font-fraunces text-base text-[#F3EADB] mb-4">Localisation</p>
+              <p className="font-fraunces text-base text-[#1A1612] mb-4">Localisation</p>
               <Field label="Langue par défaut">
                 <select value={defaultLocale} onChange={e => setDefaultLocale(e.target.value)}
-                  className="bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#F3EADB] focus:outline-none focus:border-[#E0337E]/50">
+                  className="bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#1A1612] focus:outline-none focus:border-[#FF3D7F]/50">
                   <option value="fr">Français</option>
                   <option value="en">English</option>
                   <option value="ar">العربية</option>
@@ -282,7 +282,7 @@ export default function SettingsPage() {
               </Field>
               <Field label="Devise">
                 <select value={currency} onChange={e => setCurrency(e.target.value)}
-                  className="bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#F3EADB] focus:outline-none focus:border-[#E0337E]/50">
+                  className="bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#1A1612] focus:outline-none focus:border-[#FF3D7F]/50">
                   <option value="EUR">EUR · Euro (€)</option>
                   <option value="USD">USD · Dollar ($)</option>
                   <option value="GBP">GBP · Livre (£)</option>
@@ -293,28 +293,28 @@ export default function SettingsPage() {
 
           {activeSection === "appearance" && (
             <div>
-              <p className="font-fraunces text-base text-[#F3EADB] mb-4">Apparence</p>
+              <p className="font-fraunces text-base text-[#1A1612] mb-4">Apparence</p>
               <div className="space-y-4">
                 <div>
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#F3EADB]/30 mb-3">Couleurs de la marque</p>
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/30 mb-3">Couleurs de la marque</p>
                   <div className="grid grid-cols-3 gap-3">
                     {[
-                      { name: "Primaire", color: "#E0337E" },
+                      { name: "Primaire", color: "#FF3D7F" },
                       { name: "Secondaire", color: "#6D2DB5" },
                       { name: "Accent", color: "#E0901E" },
                     ].map(c => (
-                      <div key={c.name} className="p-3 rounded-xl border border-[#F3EADB]/8 flex items-center gap-3">
+                      <div key={c.name} className="p-3 rounded-xl border border-[#1A1612]/8 flex items-center gap-3">
                         <div className="w-6 h-6 rounded-lg flex-shrink-0" style={{ background: c.color }} />
                         <div>
-                          <p className="font-mono text-[9px] text-[#F3EADB]/40 uppercase">{c.name}</p>
-                          <p className="font-mono text-[10px] text-[#F3EADB]/60">{c.color}</p>
+                          <p className="font-mono text-[9px] text-[#1A1612]/40 uppercase">{c.name}</p>
+                          <p className="font-mono text-[10px] text-[#1A1612]/60">{c.color}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="p-4 rounded-xl border border-[#F3EADB]/6 bg-[#F3EADB]/2">
-                  <p className="font-mono text-[10px] text-[#F3EADB]/30">La personnalisation avancée des thèmes est disponible via le fichier <code className="text-[#E0337E]/70">tailwind.config.ts</code>.</p>
+                <div className="p-4 rounded-xl border border-[#1A1612]/6 bg-[#1A1612]/2">
+                  <p className="font-mono text-[10px] text-[#1A1612]/30">La personnalisation avancée des thèmes est disponible via le fichier <code className="text-[#FF3D7F]/70">tailwind.config.ts</code>.</p>
                 </div>
               </div>
             </div>
@@ -322,13 +322,13 @@ export default function SettingsPage() {
 
           {activeSection === "payments" && (
             <div>
-              <p className="font-fraunces text-base text-[#F3EADB] mb-4">Configuration paiements</p>
+              <p className="font-fraunces text-base text-[#1A1612] mb-4">Configuration paiements</p>
               <Field label="Commission plateforme (%)" description="Pourcentage prélevé sur chaque vente">
                 <Input value={commissionRate} onChange={setCommissionRate} placeholder="15" />
               </Field>
               <Field label="Mode Stripe" description="live = production, test = sandbox">
                 <select value={stripeMode} onChange={e => setStripeMode(e.target.value)}
-                  className="bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#F3EADB] focus:outline-none focus:border-[#E0337E]/50">
+                  className="bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#1A1612] focus:outline-none focus:border-[#FF3D7F]/50">
                   <option value="live">Live (production)</option>
                   <option value="test">Test (sandbox)</option>
                 </select>
@@ -343,10 +343,10 @@ export default function SettingsPage() {
 
           {activeSection === "emails" && (
             <div>
-              <p className="font-fraunces text-base text-[#F3EADB] mb-4">Configuration emails</p>
+              <p className="font-fraunces text-base text-[#1A1612] mb-4">Configuration emails</p>
               <Field label="Provider">
                 <select value={emailProvider} onChange={e => setEmailProvider(e.target.value)}
-                  className="bg-[#F3EADB]/5 border border-[#F3EADB]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#F3EADB] focus:outline-none focus:border-[#E0337E]/50">
+                  className="bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-lg px-3 py-1.5 font-hanken text-sm text-[#1A1612] focus:outline-none focus:border-[#FF3D7F]/50">
                   <option value="resend">Resend</option>
                   <option value="sendgrid">SendGrid</option>
                   <option value="postmark">Postmark</option>
@@ -366,8 +366,8 @@ export default function SettingsPage() {
               <Field label="Adresse expéditeur (From)">
                 <Input value={smtpFrom} onChange={setSmtpFrom} type="email" />
               </Field>
-              <div className="mt-4 p-4 rounded-xl bg-[#F3EADB]/3 border border-[#F3EADB]/8">
-                <p className="font-mono text-[10px] text-[#F3EADB]/40">
+              <div className="mt-4 p-4 rounded-xl bg-[#1A1612]/3 border border-[#1A1612]/8">
+                <p className="font-mono text-[10px] text-[#1A1612]/40">
                   La clé API email est configurée via <code>RESEND_API_KEY</code> dans les variables d'environnement.
                 </p>
               </div>
