@@ -57,7 +57,7 @@ export default function NouveauProduitPage() {
     }
     setSaving(true); setError("");
     const supabase = createClient();
-    const { error: err } = await supabase.from("products").insert({
+    const { data: created, error: err } = await supabase.from("products").insert({
       shop_id: shopId,
       vendor_id: user.id,
       name: form.name.trim(),
@@ -71,9 +71,16 @@ export default function NouveauProduitPage() {
       is_active: form.is_active,
       type: form.type,
       listing_status: "approved",
-    });
+    }).select("id").single();
     setSaving(false);
     if (err) { setError(err.message); return; }
+    // Notifie les abonné·es de la boutique (si le produit est visible)
+    if (created?.id && form.is_active) {
+      fetch("/api/products/notify-followers", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: created.id }), keepalive: true,
+      }).catch(() => {});
+    }
     setSuccess(true);
     setTimeout(() => router.push("/vendeur"), 1800);
   };

@@ -207,6 +207,27 @@ export async function sendNewMessageNotification(params: {
   });
 }
 
+export async function sendFollowerNewProduct(params: {
+  to: string;
+  shopName: string;
+  productName: string;
+  productSlug: string;
+  price: number;
+}) {
+  const body = `
+    ${h2(`${params.shopName} vient de publier ✦`)}
+    ${text(`<strong style="color:#F3EADB;">${params.productName}</strong> · ${params.price.toFixed(2)} €`)}
+    ${text(`Une nouvelle création d'une boutique que tu suis. Sois parmi les premier·es à la découvrir.`)}
+    ${cta("Voir la création", `${BASE}/produit/${params.productSlug}`)}
+  `;
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    subject: `✦ Nouvelle création chez ${params.shopName}`,
+    html: baseLayout("Nouvelle création · Spectrum For Us", body),
+  });
+}
+
 /** Silently ignore email errors · never block the main flow */
 export async function trySend(fn: () => Promise<unknown>) {
   try { await fn(); } catch (e) { console.error("[email]", e); }
