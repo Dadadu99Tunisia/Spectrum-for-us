@@ -35,6 +35,7 @@ const NAV_SECTIONS: NavSection[] = [
     accent: "#FF3D7F",
     items: [
       { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+      { href: "/admin/analytics", label: "Analytics", icon: TrendingUp },
     ]
   },
   {

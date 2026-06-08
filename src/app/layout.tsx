@@ -11,6 +11,7 @@ import { ReferralTracker } from "@/components/ReferralTracker";
 import SiteBanner from "@/components/SiteBanner";
 import { LaunchBanner } from "@/components/LaunchBanner";
 import { AutoTranslate } from "@/components/AutoTranslate";
+import { Analytics } from "@/components/Analytics";
 import { CookieBanner } from "@/components/ui/CookieBanner";
 import { AccessibilityBar } from "@/components/AccessibilityBar";
 import { BottomNav } from "@/components/mobile/BottomNav";
@@ -143,6 +144,7 @@ export default function RootLayout({
           <AuthProvider>
             <I18nProvider>
               <AutoTranslate />
+              <Analytics />
               <Suspense fallback={null}>
                 <ReferralTracker />
               </Suspense>

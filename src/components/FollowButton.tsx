@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { track } from "@/lib/track";
 import { Heart, Check } from "lucide-react";
 
 /**
@@ -41,6 +42,7 @@ export function FollowButton({ shopId, className = "" }: { shopId: string; class
     } else {
       await supabase.from("follows").insert({ shop_id: shopId, user_id: user.id });
       setFollowing(true); setCount((c) => (c ?? 0) + 1);
+      track("follow_shop", { shopId });
     }
     setBusy(false);
   };

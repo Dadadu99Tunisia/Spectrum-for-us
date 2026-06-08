@@ -28,6 +28,9 @@ export const useCart = create<CartStore>()(
       items: [],
       add: (item) =>
         set((s) => {
+          if (typeof window !== "undefined") {
+            import("@/lib/track").then((m) => m.track("add_to_cart", { id: item.id, price: item.price })).catch(() => {});
+          }
           const existing = s.items.find((i) => i.id === item.id);
           if (existing) {
             return {

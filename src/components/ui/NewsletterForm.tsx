@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
+import { track } from "@/lib/track";
 
 const T = { ink: "#1A1612", line: "#ECE6DB", mag: "#FF3D7F" };
 
@@ -26,7 +27,7 @@ export function NewsletterForm({ source = "footer" }: { source?: string }) {
         body: JSON.stringify({ email, locale, source }),
       });
       const json = await res.json();
-      if (res.ok) { setState("ok"); setEmail(""); }
+      if (res.ok) { setState("ok"); setEmail(""); track("newsletter_subscribe", { source }); }
       else { setState("error"); setMsg(json.error ?? "Erreur"); }
     } catch {
       setState("error"); setMsg("Erreur réseau");
