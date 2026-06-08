@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CalendarDays, MapPin, ExternalLink, Search, X, Sparkles } from "lucide-react";
 import { Tag } from "@/components/ui/Tag";
+import { ScatterText } from "@/components/ui/ScatterText";
 
 type QueerEvent = {
   id: string;
@@ -89,8 +90,8 @@ export default function EvenementsPage() {
           {/* Header */}
           <div className="mb-10">
             <span className="font-mono text-[11px] tracking-wide text-[#2323C4] block mb-2">Agenda</span>
-            <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] mb-3">
-              Événements <span className="italic text-[#FF2DA0]">queer</span>
+            <h1 className="font-fraunces font-extrabold text-4xl md:text-5xl text-[#101014] mb-3 leading-[1.15]">
+              Événements <ScatterText text="queer" intensity={0.8} className="text-[#FF2DA0] align-baseline" />
             </h1>
             <p className="font-hanken text-[#101014]/60 max-w-xl">
               Soirées, festivals, expos, ateliers, Pride... Tous les événements LGBTQIA+ de France centralisés.
