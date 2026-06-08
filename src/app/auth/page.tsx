@@ -51,7 +51,7 @@ function AuthForm() {
       }
     } else {
       if (password.length < 8) { setError("Le mot de passe doit faire 8 caractères minimum."); setLoading(false); return; }
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email, password,
         options: {
           data: {
@@ -62,8 +62,15 @@ function AuthForm() {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
-      if (error) setError(error.message);
-      else setSuccess("Vérifie ton e-mail pour confirmer ton compte. Pense à regarder tes spams ! ✦");
+      if (error) { setError(error.message); }
+      else if (data.session) {
+        // Confirmation désactivée → session immédiate, on enchaîne sans friction
+        router.push(asVendor ? "/vendeur/onboarding" : redirect);
+        router.refresh();
+      } else {
+        // Confirmation activée → message classique
+        setSuccess("Vérifie ton e-mail pour confirmer ton compte. Pense à regarder tes spams ! ✦");
+      }
     }
     setLoading(false);
   };
