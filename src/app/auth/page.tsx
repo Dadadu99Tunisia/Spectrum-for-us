@@ -46,8 +46,7 @@ function AuthForm() {
           ? "E-mail ou mot de passe incorrect."
           : error.message);
       } else {
-        router.push(redirect);
-        router.refresh();
+        window.location.assign(redirect || "/");
       }
     } else {
       if (password.length < 8) { setError("Le mot de passe doit faire 8 caractères minimum."); setLoading(false); return; }
@@ -65,18 +64,21 @@ function AuthForm() {
       if (error) { setError(error.message); }
       else {
         let session = data.session;
-        // Pas de session = confirmation e-mail activée → on auto-confirme puis on connecte
+        // Pas de session = confirmation e-mail activée → on auto-confirme puis on connecte (avec reprise)
         if (!session && data.user) {
           await fetch("/api/auth/autoconfirm", {
             method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId: data.user.id }),
           }).catch(() => {});
-          const { data: signed } = await supabase.auth.signInWithPassword({ email, password });
-          session = signed.session ?? null;
+          for (let i = 0; i < 3 && !session; i++) {
+            const { data: signed } = await supabase.auth.signInWithPassword({ email, password });
+            session = signed.session ?? null;
+            if (!session) await new Promise((r) => setTimeout(r, 500));
+          }
         }
         if (session) {
-          router.push(asVendor ? "/vendeur/onboarding" : redirect);
-          router.refresh();
+          // Navigation complète (pas router.push) → la session est relue, pas de rebond du garde
+          window.location.assign(asVendor ? "/vendeur/onboarding" : (redirect || "/"));
         } else {
           setSuccess("Compte créé ! Connecte-toi pour continuer. ✦");
         }
