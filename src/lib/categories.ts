@@ -80,6 +80,9 @@ export const CATEGORIES: Record<string, string[]> = {
     "Astro & Tarot",
     "Bien-être & Thérapie",
     "Tatouage & Body art",
+    "Nail art & Manucure",
+    "Coiffure",
+    "Maquillage",
   ],
   "Expériences": [
     "Atelier créatif",
