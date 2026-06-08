@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { ORGS, COUNTRY_SLUGS } from "@/lib/annuaire";
 
 const BASE = "https://spectrumforus.com";
 
@@ -18,15 +19,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/auth`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
   ];
 
+  // Annuaire · pages pays (SEO programmatique)
+  const countryPages: MetadataRoute.Sitemap = COUNTRY_SLUGS.map((c) => ({
+    url: `${BASE}/annuaire/pays/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
+
+  // Annuaire · fiches organisations
+  const orgPages: MetadataRoute.Sitemap = ORGS.map((o) => ({
+    url: `${BASE}/annuaire/orga/${o.id}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.5,
+  }));
+
   // Products
   const { data: products } = await supabase
     .from("products")
-    .select("slug, updated_at")
+    .select("slug, created_at")
     .eq("is_active", true);
 
   const productPages: MetadataRoute.Sitemap = (products ?? []).map((p) => ({
     url: `${BASE}/produit/${p.slug}`,
-    lastModified: new Date(p.updated_at),
+    lastModified: new Date(p.created_at),
     changeFrequency: "weekly",
     priority: 0.8,
   }));
@@ -34,12 +51,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Shops
   const { data: shops } = await supabase
     .from("shops")
-    .select("slug, updated_at")
+    .select("slug, created_at")
     .eq("is_active", true);
 
   const shopPages: MetadataRoute.Sitemap = (shops ?? []).map((s) => ({
     url: `${BASE}/boutique/${s.slug}`,
-    lastModified: new Date(s.updated_at),
+    lastModified: new Date(s.created_at),
     changeFrequency: "weekly",
     priority: 0.7,
   }));
@@ -57,5 +74,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...productPages, ...shopPages, ...articlePages];
+  return [...staticPages, ...countryPages, ...orgPages, ...productPages, ...shopPages, ...articlePages];
 }

@@ -7,7 +7,9 @@
  */
 
 import { useMemo, useRef, useState, useEffect } from "react";
+import Link from "next/link";
 import { ORGS, COUNTRIES, CATEGORIES, type OrgEntry } from "@/data/annuaire-orgs";
+import { slugify } from "@/lib/annuaire";
 import { Search, ChevronDown, MapPin, ArrowUpRight, Check, Globe } from "lucide-react";
 
 const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
@@ -143,6 +145,20 @@ export function LightAnnuaire() {
           </div>
         )}
       </section>
+
+      {/* ── Parcourir par pays (SEO interne) ── */}
+      <section className="max-w-6xl mx-auto px-6 md:px-8 pb-20">
+        <h2 className="font-fraunces text-[22px] mb-4">Parcourir par pays</h2>
+        <div className="flex flex-wrap gap-2">
+          {[...new Set(ORGS.map((o) => o.country))].sort().map((c) => (
+            <Link key={c} href={`/annuaire/pays/${slugify(c)}`}
+              className="rounded-full px-4 py-2 font-hanken text-[14px]"
+              style={{ background: "#fff", color: T.soft, boxShadow: `inset 0 0 0 1px ${T.line}` }}>
+              {flagFor(c)} {c}
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
@@ -174,7 +190,7 @@ function OrgCard({ o }: { o: OrgEntry }) {
           {o.logo ?? "🏳️‍🌈"}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="font-bricolage font-semibold text-[16.5px] leading-tight truncate">{o.name}</h3>
+          <Link href={`/annuaire/orga/${o.id}`} className="font-bricolage font-semibold text-[16.5px] leading-tight truncate block hover:text-[#FF3D7F] transition-colors">{o.name}</Link>
           <p className="flex items-center gap-1 text-[13px] mt-0.5" style={{ color: T.soft }}>
             <MapPin size={13} /> {o.city} <span>{o.flag}</span>
           </p>
@@ -199,13 +215,11 @@ function OrgCard({ o }: { o: OrgEntry }) {
         )}
       </div>
 
-      {o.website && (
-        <a href={o.website} target="_blank" rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-full py-2.5 font-hanken font-semibold text-[14px] transition-all hover:brightness-95"
-          style={{ background: T.ink, color: "#fff" }}>
-          Visiter le site <ArrowUpRight size={15} />
-        </a>
-      )}
+      <Link href={`/annuaire/orga/${o.id}`}
+        className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-full py-2.5 font-hanken font-semibold text-[14px] transition-all hover:brightness-95"
+        style={{ background: T.ink, color: "#fff" }}>
+        Voir la fiche <ArrowUpRight size={15} />
+      </Link>
     </div>
   );
 }
