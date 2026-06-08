@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     const supabase = await createClient();
     const { error } = await supabase
       .from("newsletter_subscribers")
-      .upsert({ email, locale, source }, { onConflict: "email" });
+      .upsert({ email, locale, source }, { onConflict: "email", ignoreDuplicates: true });
 
     if (error) throw error;
 

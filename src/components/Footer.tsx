@@ -1,8 +1,9 @@
 "use client";
 
-import { Mail, ArrowRight, Heart, Accessibility } from "lucide-react";
+import { Mail, Heart, Accessibility } from "lucide-react";
 import Link from "next/link";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
+import { NewsletterForm } from "@/components/ui/NewsletterForm";
 import { useI18n } from "@/contexts/I18nContext";
 
 const T = { ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
@@ -78,17 +79,7 @@ export function Footer() {
             <h3 className="font-fraunces text-[26px] leading-tight" style={{ color: T.ink }}>{t("footer.newsletter_title")}</h3>
             <p className="font-hanken text-[14.5px] mt-1" style={{ color: T.soft }}>{t("footer.newsletter_desc")}</p>
           </div>
-          <form action="mailto:hello@spectrumforus.com" method="post" encType="text/plain"
-            className="flex items-center gap-2 w-full md:w-auto">
-            <input type="email" name="email" required placeholder={t("footer.email_placeholder")}
-              className="flex-1 md:w-64 rounded-full px-5 py-3 text-[14px] outline-none"
-              style={{ boxShadow: `inset 0 0 0 1px ${T.line}`, color: T.ink }} />
-            <button type="submit"
-              className="shrink-0 inline-flex items-center gap-1.5 rounded-full px-5 py-3 font-semibold text-[14px] text-white"
-              style={{ background: T.ink }}>
-              {t("footer.subscribe")} <ArrowRight size={15} />
-            </button>
-          </form>
+          <NewsletterForm source="footer" />
         </div>
       </div>
 
