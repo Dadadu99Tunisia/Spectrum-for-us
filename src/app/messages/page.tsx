@@ -81,6 +81,7 @@ export default function MessagesPage() {
     const body = reply.trim(); setReply("");
     const { data } = await supabase.from("messages").insert({ sender_id: user.id, recipient_id: active, body }).select().single();
     if (data) setMsgs((prev) => [...prev, data as Msg]);
+    fetch("/api/messages/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ recipientId: active }), keepalive: true }).catch(() => {});
     setTimeout(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
   };
 

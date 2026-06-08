@@ -38,6 +38,7 @@ export function ContactSellerButton({ ownerId, shopName, productId, className = 
     });
     if (error) { setState("idle"); setErr(error.message); return; }
     setState("sent"); setBody(""); track("contact_seller", { ownerId, productId: productId ?? null });
+    fetch("/api/messages/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ recipientId: ownerId }), keepalive: true }).catch(() => {});
   };
 
   return (

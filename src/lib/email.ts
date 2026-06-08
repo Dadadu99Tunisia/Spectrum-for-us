@@ -188,6 +188,25 @@ export async function sendPasswordReset(params: { to: string; resetUrl: string }
   });
 }
 
+export async function sendNewMessageNotification(params: {
+  to: string;
+  fromName: string;
+  preview: string;
+}) {
+  const body = `
+    ${h2(`Nouveau message de ${params.fromName} 💬`)}
+    ${text(`« ${params.preview.slice(0, 240)}${params.preview.length > 240 ? "…" : ""} »`)}
+    ${text("Réponds directement depuis ta boîte de réception Spectrum.")}
+    ${cta("Voir le message", `${BASE}/messages`)}
+  `;
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    subject: `💬 Nouveau message de ${params.fromName} · Spectrum For Us`,
+    html: baseLayout("Nouveau message · Spectrum For Us", body),
+  });
+}
+
 /** Silently ignore email errors · never block the main flow */
 export async function trySend(fn: () => Promise<unknown>) {
   try { await fn(); } catch (e) { console.error("[email]", e); }
