@@ -5,9 +5,9 @@
  * pivotées, écho du logo). Déterministe par index → pas de souci d'hydratation.
  */
 
-// motifs cycliques (px / deg) — subtils pour rester lisibles
-const DY = [-2.5, 2, -1, 2.5, -3, 1.5, -1.5, 3];
-const ROT = [-7, 5, -3, 6, -5, 4, -2, 7];
+// motifs cycliques (px / deg) — éclaté marqué, écho du logo
+const DY = [-5, 4, -2, 5, -6, 3, -3, 6];
+const ROT = [-11, 8, -5, 10, -9, 6, -4, 12];
 
 export function ScatterText({ text, className, intensity = 1, style }: { text: string; className?: string; intensity?: number; style?: React.CSSProperties }) {
   return (
