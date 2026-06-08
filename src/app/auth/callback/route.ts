@@ -45,7 +45,13 @@ export async function GET(request: Request) {
         }
       }
 
-      return NextResponse.redirect(`${origin}${next}`);
+      // Vendeur·se (inscription via « Ouvrir ma boutique ») sans boutique → onboarding
+      let dest = next;
+      if (user.user_metadata?.wants_vendor) {
+        const { data: shop } = await supabase.from("shops").select("id").eq("owner_id", user.id).maybeSingle();
+        if (!shop) dest = "/vendeur/onboarding";
+      }
+      return NextResponse.redirect(`${origin}${dest}`);
     }
   }
   return NextResponse.redirect(`${origin}/auth?error=callback`);
