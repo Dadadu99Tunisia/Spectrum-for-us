@@ -23,7 +23,7 @@ import { useBanner } from "@/contexts/BannerContext";
 const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", line: "#ECE6DB", mag: "#FF3D7F" };
 
 const NAV = [
-  { label: "Marketplace", href: "/decouvrir" },
+  { label: "Shop", href: "/decouvrir" },
   { label: "Services",    href: "/services" },
   { label: "Associations", href: "/annuaire" },
   { label: "Événements",  href: "/evenements" },
