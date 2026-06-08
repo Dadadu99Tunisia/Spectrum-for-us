@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MapPin, ArrowUpRight, ArrowLeft } from "lucide-react";
-import { COUNTRY_SLUGS, countryFromSlug, orgsByCountry, categoryLabels, slugify } from "@/lib/annuaire";
+import { COUNTRY_SLUGS, countryFromSlug, orgsByCountry, countryFlag } from "@/lib/annuaire";
 
 const BASE = "https://spectrumforus.com";
 const T = { ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
@@ -30,7 +30,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
   const country = countryFromSlug(slug);
   if (!country) notFound();
   const orgs = orgsByCountry(country);
-  const flag = orgs[0]?.flag ?? "🏳️‍🌈";
+  const flag = countryFlag(country);
 
   const jsonLd = {
     "@context": "https://schema.org",

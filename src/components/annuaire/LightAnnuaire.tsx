@@ -9,13 +9,12 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ORGS, COUNTRIES, CATEGORIES, type OrgEntry } from "@/data/annuaire-orgs";
-import { slugify } from "@/lib/annuaire";
+import { slugify, countryFlag } from "@/lib/annuaire";
 import { Search, ChevronDown, MapPin, ArrowUpRight, Check, Globe } from "lucide-react";
 
 const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
 
-// flag emoji for a country (from first org of that country)
-const flagFor = (country: string) => ORGS.find((o) => o.country === country)?.flag ?? "🏳️‍🌈";
+const flagFor = (country: string) => countryFlag(country);
 
 export function LightAnnuaire() {
   const [country, setCountry] = useState<string>("Tous les pays");

@@ -8,6 +8,21 @@ export function slugify(s: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+// Drapeau par PAYS (le flag d'une orga peut être différent, ex. asso tunisienne en France)
+export const COUNTRY_FLAGS: Record<string, string> = {
+  "Albanie": "🇦🇱", "Allemagne": "🇩🇪", "Arménie": "🇦🇲", "Autriche": "🇦🇹", "Belgique": "🇧🇪",
+  "Bulgarie": "🇧🇬", "Croatie": "🇭🇷", "Danemark": "🇩🇰", "Espagne": "🇪🇸", "Estonie": "🇪🇪",
+  "Finlande": "🇫🇮", "France": "🇫🇷", "Grèce": "🇬🇷", "Géorgie": "🇬🇪", "Hongrie": "🇭🇺",
+  "Irlande": "🇮🇪", "Islande": "🇮🇸", "Italie": "🇮🇹", "Lettonie": "🇱🇻", "Lituanie": "🇱🇹",
+  "Luxembourg": "🇱🇺", "Macédoine du Nord": "🇲🇰", "Malte": "🇲🇹", "Norvège": "🇳🇴", "Pays-Bas": "🇳🇱",
+  "Pologne": "🇵🇱", "Portugal": "🇵🇹", "Roumanie": "🇷🇴", "Royaume-Uni": "🇬🇧", "République Tchèque": "🇨🇿",
+  "Serbie": "🇷🇸", "Slovaquie": "🇸🇰", "Slovénie": "🇸🇮", "Suisse": "🇨🇭", "Suède": "🇸🇪", "Ukraine": "🇺🇦",
+};
+
+export function countryFlag(country: string): string {
+  return COUNTRY_FLAGS[country] ?? "🏳️‍🌈";
+}
+
 export const COUNTRY_SLUGS = COUNTRIES.map((country) => ({ slug: slugify(country), country }));
 
 export function countryFromSlug(slug: string): string | null {
