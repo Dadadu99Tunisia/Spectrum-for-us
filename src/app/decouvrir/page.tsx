@@ -120,7 +120,6 @@ function DecouvrirContent() {
 
           {/* Header */}
           <div className="mb-8">
-            <span className="font-mono text-[11px] tracking-wide text-[#FF2DA0] block mb-2">Marketplace</span>
             <h1 className="font-fraunces font-extrabold text-4xl md:text-5xl text-[#101014] leading-[1.15]"><ScatterText text="Découvrir" intensity={0.7} /></h1>
           </div>
 
