@@ -12,7 +12,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
   ShoppingBag, Menu, X, Search, User, LogOut, Store,
-  ChevronDown, LayoutDashboard, Heart,
+  ChevronDown, LayoutDashboard, Heart, MessageSquare,
 } from "lucide-react";
 import { useCart } from "@/store/cart";
 import { useAuth } from "@/contexts/AuthContext";
@@ -138,6 +138,10 @@ export function Header() {
                       className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBF9F5] transition-colors" style={{ color: T.soft }}>
                       <Heart size={15} /> Mes suivis
                     </Link>
+                    <Link href="/messages" onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBF9F5] transition-colors" style={{ color: T.soft }}>
+                      <MessageSquare size={15} /> Messages
+                    </Link>
                     <Link href="/vendeur" onClick={() => setUserMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBF9F5] transition-colors" style={{ color: T.soft }}>
                       <Store size={15} /> Espace vendeur
@@ -199,6 +203,7 @@ export function Header() {
             <>
               <Link href="/compte" onClick={() => setMobileOpen(false)} className="block text-[15px]" style={{ color: T.soft }}>Mon compte</Link>
               <Link href="/suivis" onClick={() => setMobileOpen(false)} className="block text-[15px]" style={{ color: T.soft }}>Mes suivis</Link>
+              <Link href="/messages" onClick={() => setMobileOpen(false)} className="block text-[15px]" style={{ color: T.soft }}>Messages</Link>
               {isAdmin && <Link href="/admin" onClick={() => setMobileOpen(false)} className="block text-[15px]" style={{ color: T.mag }}>Admin</Link>}
               <button onClick={() => { setMobileOpen(false); signOut(); }} className="block text-[15px]" style={{ color: T.soft }}>Déconnexion</button>
             </>

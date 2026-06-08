@@ -3,11 +3,12 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
-import { MapPin, Package, CheckCircle, Mail } from "lucide-react";
+import { MapPin, Package, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { ShopOwnerBar } from "@/components/ShopOwnerBar";
 import { Price } from "@/components/ui/Price";
 import { FollowButton } from "@/components/FollowButton";
+import { ContactSellerButton } from "@/components/ContactSellerButton";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -169,14 +170,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
             {/* Actions */}
             <div className="self-start md:self-auto flex items-center gap-2">
               <FollowButton shopId={shop.id as string} />
-              {contactEmail && (
-                <a
-                  href={`mailto:${contactEmail}`}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#1A1612]/15 text-[#1A1612]/60 font-hanken text-sm hover:border-[#FF3D7F]/40 hover:text-[#FF3D7F] transition-all duration-200"
-                >
-                  <Mail size={14} /> Contacter
-                </a>
-              )}
+              <ContactSellerButton ownerId={ownerId} shopName={shop.name as string} />
             </div>
           </div>
 
