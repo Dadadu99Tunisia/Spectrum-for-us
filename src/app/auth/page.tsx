@@ -63,13 +63,23 @@ function AuthForm() {
         },
       });
       if (error) { setError(error.message); }
-      else if (data.session) {
-        // Confirmation désactivée → session immédiate, on enchaîne sans friction
-        router.push(asVendor ? "/vendeur/onboarding" : redirect);
-        router.refresh();
-      } else {
-        // Confirmation activée → message classique
-        setSuccess("Vérifie ton e-mail pour confirmer ton compte. Pense à regarder tes spams ! ✦");
+      else {
+        let session = data.session;
+        // Pas de session = confirmation e-mail activée → on auto-confirme puis on connecte
+        if (!session && data.user) {
+          await fetch("/api/auth/autoconfirm", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: data.user.id }),
+          }).catch(() => {});
+          const { data: signed } = await supabase.auth.signInWithPassword({ email, password });
+          session = signed.session ?? null;
+        }
+        if (session) {
+          router.push(asVendor ? "/vendeur/onboarding" : redirect);
+          router.refresh();
+        } else {
+          setSuccess("Compte créé ! Connecte-toi pour continuer. ✦");
+        }
       }
     }
     setLoading(false);
