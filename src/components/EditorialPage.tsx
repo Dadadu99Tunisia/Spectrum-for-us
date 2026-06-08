@@ -1,12 +1,13 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ScatterText } from "@/components/ui/ScatterText";
 
 const T = { ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 
 export type Section = { h: string; p: string[] };
 
-export function EditorialPage({ eyebrow, title, lead, sections }: {
-  eyebrow: string; title: string; lead: string; sections: Section[];
+export function EditorialPage({ eyebrow, title, lead, sections, scatterWord }: {
+  eyebrow: string; title: string; lead: string; sections: Section[]; scatterWord?: string;
 }) {
   return (
     <>
@@ -14,7 +15,11 @@ export function EditorialPage({ eyebrow, title, lead, sections }: {
       <main className="min-h-screen" style={{ background: "#FBFAF8", color: T.ink }}>
         <section className="max-w-3xl mx-auto px-6 md:px-8 pt-32 pb-10">
           <p className="font-hanken text-[13px] mb-3" style={{ color: T.faint }}>{eyebrow}</p>
-          <h1 className="font-fraunces leading-[1.02] tracking-[-0.02em]" style={{ fontSize: "clamp(32px,5vw,52px)" }}>{title}</h1>
+          <h1 className="font-fraunces font-extrabold leading-[1.1] tracking-[-0.02em]" style={{ fontSize: "clamp(32px,5vw,52px)" }}>
+            {scatterWord && title.includes(scatterWord)
+              ? <>{title.split(scatterWord)[0]}<ScatterText text={scatterWord} intensity={0.7} className="align-baseline" style={{ color: T.mag }} />{title.split(scatterWord)[1]}</>
+              : title}
+          </h1>
           <p className="font-hanken text-[16.5px] leading-relaxed mt-5" style={{ color: T.soft }}>{lead}</p>
         </section>
 

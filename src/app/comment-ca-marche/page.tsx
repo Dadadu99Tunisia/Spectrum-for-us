@@ -10,6 +10,7 @@ export default function CommentCaMarchePage() {
     <EditorialPage
       eyebrow="Comment ça marche"
       title="Acheter, vendre, soutenir"
+      scatterWord="soutenir"
       lead="Spectrum For Us réunit créations, prestataires, associations et événements queer au même endroit. Voici comment en profiter."
       sections={[
         { h: "Pour acheter", p: [

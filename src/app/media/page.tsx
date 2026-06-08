@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Header } from "@/components/Header";
+import { ScatterText } from "@/components/ui/ScatterText";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -35,7 +36,7 @@ export default function MediaPage() {
       <section className="pt-32 pb-16 px-6 text-center">
         <p className="font-mono text-xs tracking-widest text-[#FF2DA0] uppercase mb-4">Média Spectrum</p>
         <h1 className="font-fraunces text-5xl md:text-7xl font-light mb-4">
-          Histoires, <span className="text-[#FF2DA0]">modes de vie</span>,<br />actualités queer.
+          Histoires, <span className="text-[#FF2DA0]">modes de vie</span>,<br />actualités <ScatterText text="queer" intensity={0.7} className="font-extrabold align-baseline" />.
         </h1>
         <p className="font-hanken text-[#101014]/60 max-w-xl mx-auto">
           Des récits authentiques, des guides pratiques, une culture qui nous ressemble.
