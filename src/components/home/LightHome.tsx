@@ -110,7 +110,7 @@ export function LightHome() {
         </div>
         {products.length === 0 ? (
           <div className="rounded-3xl px-8 py-12 text-center" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
-            <span className="text-3xl">🏳️‍🌈</span>
+            <span className="text-3xl">🚀</span>
             <h3 className="font-fraunces text-[24px] mt-3 mb-2" style={{ color: T.ink }}>Les premières créations arrivent</h3>
             <p className="max-w-md mx-auto text-[15px] mb-6" style={{ color: T.soft }}>Spectrum se construit avec ses premier·es créateur·ices. Prends ta place de fondateur·ice avant tout le monde.</p>
             <div className="flex flex-wrap items-center justify-center gap-3">

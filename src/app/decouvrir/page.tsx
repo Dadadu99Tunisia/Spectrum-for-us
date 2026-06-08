@@ -253,7 +253,7 @@ function DecouvrirContent() {
               </div>
             ) : (
               <div className="flex flex-col items-center text-center py-20 max-w-lg mx-auto">
-                <span className="text-4xl mb-5">🏳️‍🌈</span>
+                <span className="text-4xl mb-5">🚀</span>
                 <h2 className="font-fraunces text-3xl text-[#1A1612] mb-3 leading-tight">La marketplace ouvre ses portes</h2>
                 <p className="font-hanken text-[15.5px] text-[#1A1612]/55 mb-8 leading-relaxed">
                   Spectrum se construit avec ses premier·es créateur·ices. Sois parmi les <strong className="text-[#1A1612]">120 fondateur·ices</strong> et prends une place avant tout le monde — abonnement offert et 0 % de commission.
