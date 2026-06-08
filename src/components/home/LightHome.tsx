@@ -108,6 +108,17 @@ export function LightHome() {
           <h2 className="font-fraunces text-[26px]">Nouveautés</h2>
           <Link href="/decouvrir" className="text-[14px] font-semibold flex items-center gap-1" style={{ color: T.mag }}>Voir tout <ArrowRight size={14} /></Link>
         </div>
+        {products.length === 0 ? (
+          <div className="rounded-3xl px-8 py-12 text-center" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
+            <span className="text-3xl">🏳️‍🌈</span>
+            <h3 className="font-fraunces text-[24px] mt-3 mb-2" style={{ color: T.ink }}>Les premières créations arrivent</h3>
+            <p className="max-w-md mx-auto text-[15px] mb-6" style={{ color: T.soft }}>Spectrum se construit avec ses premier·es créateur·ices. Prends ta place de fondateur·ice avant tout le monde.</p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link href="/programme-fondateur" className="rounded-full px-6 py-3 font-semibold text-[15px] text-white" style={{ background: T.ink }}>Devenir fondateur·ice</Link>
+              <Link href="/vendeur/onboarding" className="rounded-full px-6 py-3 font-semibold text-[15px]" style={{ color: T.ink, boxShadow: `inset 0 0 0 1.5px ${T.line}` }}>Ouvrir ma boutique</Link>
+            </div>
+          </div>
+        ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {products.map(p => {
             const img = p.images?.[0] ?? p.image_url; const t = tintFor(p.category);
@@ -125,6 +136,7 @@ export function LightHome() {
             );
           })}
         </div>
+        )}
       </section>
 
       {/* ── Vendre ── */}

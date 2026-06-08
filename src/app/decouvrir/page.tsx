@@ -6,7 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tag } from "@/components/ui/Tag";
 import { useCart } from "@/store/cart";
-import { Search, ShoppingBag, SlidersHorizontal, X, Layers } from "lucide-react";
+import { Search, ShoppingBag, SlidersHorizontal, X, Layers, ArrowRight } from "lucide-react";
 import { Price } from "@/components/ui/Price";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
@@ -238,27 +238,37 @@ function DecouvrirContent() {
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="flex flex-col items-center text-center py-24 max-w-md mx-auto">
-              <div className="relative mb-6">
-                <div className="w-20 h-20 rounded-2xl flex items-center justify-center"
-                  style={{ background: "rgba(109,45,181,0.1)", border: "1px solid rgba(109,45,181,0.2)" }}>
-                  <Search size={32} className="text-[#6D2DB5]/60" />
-                </div>
-                <span className="absolute -top-1 -right-1 text-xl">✦</span>
+            (search || category || subcategory) ? (
+              <div className="flex flex-col items-center text-center py-24 max-w-md mx-auto">
+                <h2 className="font-fraunces text-2xl text-[#1A1612] mb-3">Aucun résultat</h2>
+                <p className="font-hanken text-[#1A1612]/50 mb-6 leading-relaxed">
+                  {search ? `Aucune création ne correspond à "${search}".` : "Aucune création dans cette catégorie pour le moment."}
+                </p>
+                <button
+                  onClick={() => { setSearch(""); setCategory(""); setSubcategory(""); }}
+                  className="font-mono text-xs tracking-wide text-[#FF3D7F]/70 hover:text-[#FF3D7F] transition-colors border border-[#FF3D7F]/20 hover:border-[#FF3D7F]/40 px-4 py-2 rounded-xl"
+                >
+                  Effacer les filtres
+                </button>
               </div>
-              <h2 className="font-fraunces text-2xl text-[#1A1612] mb-3">Aucun résultat</h2>
-              <p className="font-hanken text-[#1A1612]/50 mb-6 leading-relaxed">
-                {search
-                  ? `Aucune création ne correspond à "${search}". Essaie d'autres mots ou explore une catégorie.`
-                  : "Aucune création dans cette catégorie pour le moment. Revenez bientôt ✦"}
-              </p>
-              <button
-                onClick={() => { setSearch(""); setCategory(""); setSubcategory(""); }}
-                className="font-mono text-xs tracking-wide text-[#FF3D7F]/70 hover:text-[#FF3D7F] transition-colors border border-[#FF3D7F]/20 hover:border-[#FF3D7F]/40 px-4 py-2 rounded-xl"
-              >
-                Effacer les filtres
-              </button>
-            </div>
+            ) : (
+              <div className="flex flex-col items-center text-center py-20 max-w-lg mx-auto">
+                <span className="text-4xl mb-5">🏳️‍🌈</span>
+                <h2 className="font-fraunces text-3xl text-[#1A1612] mb-3 leading-tight">La marketplace ouvre ses portes</h2>
+                <p className="font-hanken text-[15.5px] text-[#1A1612]/55 mb-8 leading-relaxed">
+                  Spectrum se construit avec ses premier·es créateur·ices. Sois parmi les <strong className="text-[#1A1612]">120 fondateur·ices</strong> et prends une place avant tout le monde — abonnement offert et 0 % de commission.
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <a href="/programme-fondateur" className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-[15px] text-white" style={{ background: "#1A1612" }}>
+                    Devenir fondateur·ice <ArrowRight size={16} />
+                  </a>
+                  <a href="/vendeur/onboarding" className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-[15px]" style={{ color: "#1A1612", boxShadow: "inset 0 0 0 1.5px #ECE6DB" }}>
+                    Ouvrir ma boutique
+                  </a>
+                </div>
+                <p className="font-hanken text-[13px] text-[#1A1612]/40 mt-6">Tu cherches plutôt à soutenir ? <a href="/annuaire" className="text-[#FF3D7F] font-semibold">Découvre les associations</a></p>
+              </div>
+            )
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {filtered.map((p) => {
