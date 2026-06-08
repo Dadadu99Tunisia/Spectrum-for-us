@@ -89,7 +89,7 @@ export function OrganizationJsonLd() {
     logo: "https://spectrumforus.com/logo.png",
     sameAs: [
       "https://instagram.com/spectrumforus",
-      "https://tiktok.com/@spectrumforus",
+      "https://www.tiktok.com/@spectrum.4.us",
     ],
     contactPoint: {
       "@type": "ContactPoint",
