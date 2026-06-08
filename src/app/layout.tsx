@@ -85,6 +85,9 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
+  verification: {
+    google: "6U-QpOrSrcjcCLIfuSAoePeOCgaersJ5iHqJBLWLC58",
+  },
   alternates: {
     canonical: "https://spectrumforus.com",
     languages: {
