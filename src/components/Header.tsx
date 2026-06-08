@@ -18,7 +18,6 @@ import { useCart } from "@/store/cart";
 import { useAuth } from "@/contexts/AuthContext";
 import { useI18n } from "@/contexts/I18nContext";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
-import { ScatterText } from "@/components/ui/ScatterText";
 import { useBanner } from "@/contexts/BannerContext";
 
 const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", line: "#ECE6DB", mag: "#FF2DA0" };
@@ -85,8 +84,8 @@ export function Header() {
           <nav className="hidden lg:flex items-center gap-6 text-[14.5px]" aria-label="Navigation principale">
             {NAV.map((n) => (
               <Link key={n.href} href={n.href}
-                className="font-extrabold tracking-[-0.02em] transition-colors hover:text-[#FF2DA0]" style={{ color: T.ink }}>
-                <ScatterText text={n.label} intensity={0.6} />
+                className="transition-colors hover:text-[#FF2DA0]" style={{ color: T.soft }}>
+                {n.label}
               </Link>
             ))}
           </nav>
