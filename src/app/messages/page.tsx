@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Send, ArrowLeft, MessageSquare, ArrowRight } from "lucide-react";
 
-const T = { ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F", tint: "#F4F0E8" };
+const T = { ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0", tint: "#F4F0E8" };
 
 interface Msg { id: string; sender_id: string; recipient_id: string; body: string; read: boolean | null; created_at: string; }
 interface Profile { id: string; full_name: string | null; avatar_url: string | null; }
@@ -90,7 +90,7 @@ export default function MessagesPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-20" style={{ background: "#FBF9F5", color: T.ink }}>
+      <main className="min-h-screen pt-20" style={{ background: "#FBFAF8", color: T.ink }}>
         <div className="max-w-5xl mx-auto px-4 md:px-8 py-6">
           <h1 className="font-fraunces text-[28px] mb-4">Messages {unreadTotal > 0 && <span className="font-mono text-[13px] align-middle rounded-full px-2 py-0.5 text-white" style={{ background: T.mag }}>{unreadTotal}</span>}</h1>
 
@@ -106,8 +106,8 @@ export default function MessagesPage() {
               <div className={`${active ? "hidden md:block" : "block"} md:border-r`} style={{ borderColor: T.line, background: "#fff" }}>
                 {threads.map((t) => (
                   <button key={t.other} onClick={() => openThread(t.other)}
-                    className="w-full text-left px-4 py-3 flex items-center gap-3 transition-colors hover:bg-[#FBF9F5]"
-                    style={{ borderBottom: `1px solid ${T.line}`, background: active === t.other ? "#FBF9F5" : undefined }}>
+                    className="w-full text-left px-4 py-3 flex items-center gap-3 transition-colors hover:bg-[#FBFAF8]"
+                    style={{ borderBottom: `1px solid ${T.line}`, background: active === t.other ? "#FBFAF8" : undefined }}>
                     <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0" style={{ background: T.mag }}>{name(t.other)[0]?.toUpperCase()}</div>
                     <div className="min-w-0 flex-1">
                       <p className="font-bricolage font-semibold text-[14px] truncate">{name(t.other)}</p>
@@ -161,7 +161,7 @@ function Empty() {
     <div className="text-center py-20">
       <MessageSquare size={30} className="mx-auto mb-3" style={{ color: "#9B9285" }} />
       <p className="font-fraunces text-[20px] mb-2">Connecte-toi pour voir tes messages</p>
-      <Link href="/auth" className="inline-flex items-center gap-1.5 rounded-full px-6 py-3 text-white font-semibold text-sm mt-2" style={{ background: "#1A1612" }}>Se connecter <ArrowRight size={15} /></Link>
+      <Link href="/auth" className="inline-flex items-center gap-1.5 rounded-full px-6 py-3 text-white font-semibold text-sm mt-2" style={{ background: "#101014" }}>Se connecter <ArrowRight size={15} /></Link>
     </div>
   );
 }
@@ -171,7 +171,7 @@ function EmptyThreads() {
       <MessageSquare size={30} className="mx-auto mb-3" style={{ color: "#9B9285" }} />
       <p className="font-fraunces text-[20px] mb-2">Aucun message</p>
       <p className="font-hanken text-[15px]" style={{ color: "#6B6258" }}>Contacte une boutique depuis sa page pour démarrer une conversation.</p>
-      <Link href="/decouvrir" className="inline-flex items-center gap-1.5 rounded-full px-6 py-3 text-white font-semibold text-sm mt-4" style={{ background: "#1A1612" }}>Explorer <ArrowRight size={15} /></Link>
+      <Link href="/decouvrir" className="inline-flex items-center gap-1.5 rounded-full px-6 py-3 text-white font-semibold text-sm mt-4" style={{ background: "#101014" }}>Explorer <ArrowRight size={15} /></Link>
     </div>
   );
 }

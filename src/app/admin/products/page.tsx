@@ -24,8 +24,8 @@ type Product = {
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   approved: { label: "Approuvé",  color: "text-green-600 bg-green-400/10 border-green-400/20" },
-  pending:  { label: "En attente", color: "text-[#E0901E] bg-[#E0901E]/10 border-[#E0901E]/20" },
-  draft:    { label: "Brouillon",  color: "text-[#1A1612]/40 bg-[#1A1612]/[0.09] border-[#1A1612]/[0.14]" },
+  pending:  { label: "En attente", color: "text-[#FFD400] bg-[#FFD400]/10 border-[#FFD400]/20" },
+  draft:    { label: "Brouillon",  color: "text-[#101014]/40 bg-[#101014]/[0.09] border-[#101014]/[0.14]" },
   rejected: { label: "Rejeté",     color: "text-red-600 bg-red-400/10 border-red-400/20" },
 };
 const STATUS_TABS = ["", "pending", "approved", "rejected", "draft", "active", "inactive"];
@@ -109,19 +109,19 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      {toast && <div className="fixed top-16 right-6 z-[60] px-4 py-2 rounded-lg bg-[#FF3D7F] text-white font-hanken text-sm shadow-xl">{toast}</div>}
+      {toast && <div className="fixed top-16 right-6 z-[60] px-4 py-2 rounded-lg bg-[#FF2DA0] text-white font-hanken text-sm shadow-xl">{toast}</div>}
 
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#1A1612]">Produits</h1>
-          <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">{total} produit{total !== 1 ? "s" : ""}</p>
+          <h1 className="font-fraunces text-2xl text-[#101014]">Produits</h1>
+          <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">{total} produit{total !== 1 ? "s" : ""}</p>
         </div>
       </div>
 
-      <div className="flex gap-1 p-1 bg-[#1A1612]/[0.08] rounded-xl w-fit flex-wrap">
+      <div className="flex gap-1 p-1 bg-[#101014]/[0.08] rounded-xl w-fit flex-wrap">
         {STATUS_TABS.map(s => (
           <button key={s} onClick={() => setStatus(s)}
-            className={`px-3 py-1.5 rounded-lg font-mono text-[10px] transition-all ${status === s ? "bg-[#FF3D7F] text-white" : "text-[#1A1612]/40 hover:text-[#1A1612]"}`}>
+            className={`px-3 py-1.5 rounded-lg font-mono text-[10px] transition-all ${status === s ? "bg-[#FF2DA0] text-white" : "text-[#101014]/40 hover:text-[#101014]"}`}>
             {TAB_LABEL[s] ?? s}
           </button>
         ))}
@@ -129,17 +129,17 @@ export default function ProductsPage() {
 
       <div className="flex gap-3 flex-wrap items-center">
         <div className="relative flex-1 min-w-48">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1A1612]/25" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#101014]/25" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher un produit…"
-            className="w-full pl-9 pr-4 py-2 bg-[#1A1612]/[0.09] border border-[#1A1612]/[0.14] rounded-lg font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/25 focus:outline-none focus:border-[#a78bfa]/50" />
+            className="w-full pl-9 pr-4 py-2 bg-[#101014]/[0.09] border border-[#101014]/[0.14] rounded-lg font-hanken text-sm text-[#101014] placeholder-[#101014]/25 focus:outline-none focus:border-[#a78bfa]/50" />
         </div>
         {selected.size > 0 && (
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] text-[#1A1612]/40">{selected.size} sélectionné(s)</span>
+            <span className="font-mono text-[10px] text-[#101014]/40">{selected.size} sélectionné(s)</span>
             <button onClick={() => bulkPatch({ listing_status: "approved" })} disabled={busy} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 text-green-600 font-mono text-[10px] hover:bg-green-500/20 disabled:opacity-40"><CheckCircle size={11} /> Approuver</button>
             <button onClick={() => bulkPatch({ listing_status: "rejected" })} disabled={busy} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 font-mono text-[10px] hover:bg-red-500/20 disabled:opacity-40"><XCircle size={11} /> Rejeter</button>
-            <button onClick={() => bulkPatch({ is_active: true })} disabled={busy} className="px-3 py-1.5 rounded-lg bg-[#1A1612]/[0.08] border border-[#1A1612]/[0.14] text-[#1A1612]/70 font-mono text-[10px] hover:bg-[#1A1612]/[0.12] disabled:opacity-40">Afficher</button>
-            <button onClick={() => bulkPatch({ is_active: false })} disabled={busy} className="px-3 py-1.5 rounded-lg bg-[#1A1612]/[0.08] border border-[#1A1612]/[0.14] text-[#1A1612]/70 font-mono text-[10px] hover:bg-[#1A1612]/[0.12] disabled:opacity-40">Masquer</button>
+            <button onClick={() => bulkPatch({ is_active: true })} disabled={busy} className="px-3 py-1.5 rounded-lg bg-[#101014]/[0.08] border border-[#101014]/[0.14] text-[#101014]/70 font-mono text-[10px] hover:bg-[#101014]/[0.12] disabled:opacity-40">Afficher</button>
+            <button onClick={() => bulkPatch({ is_active: false })} disabled={busy} className="px-3 py-1.5 rounded-lg bg-[#101014]/[0.08] border border-[#101014]/[0.14] text-[#101014]/70 font-mono text-[10px] hover:bg-[#101014]/[0.12] disabled:opacity-40">Masquer</button>
             <button onClick={() => removeProducts([...selected])} disabled={busy} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 font-mono text-[10px] hover:bg-red-500/20 disabled:opacity-40"><Trash2 size={11} /> Supprimer</button>
           </div>
         )}
@@ -148,42 +148,42 @@ export default function ProductsPage() {
       {loading ? (
         <div className="flex items-center justify-center py-20"><SpectrumLoader size="sm" /></div>
       ) : products.length === 0 ? (
-        <div className="text-center py-20"><Package size={40} className="mx-auto mb-3 text-[#1A1612]/10" /><p className="font-hanken text-[#1A1612]/30">Aucun produit</p></div>
+        <div className="text-center py-20"><Package size={40} className="mx-auto mb-3 text-[#101014]/10" /><p className="font-hanken text-[#101014]/30">Aucun produit</p></div>
       ) : (
         <>
-          <div className="rounded-xl border border-[#1A1612]/[0.13] overflow-hidden overflow-x-auto">
+          <div className="rounded-xl border border-[#101014]/[0.13] overflow-hidden overflow-x-auto">
             <table className="w-full min-w-[720px]">
               <thead>
-                <tr className="border-b border-[#1A1612]/[0.12] bg-[#1A1612]/[0.07]">
-                  <th className="px-4 py-3 w-8"><input type="checkbox" checked={selected.size === products.length && products.length > 0} onChange={toggleAll} className="w-3.5 h-3.5 rounded accent-[#FF3D7F] cursor-pointer" /></th>
-                  {["Produit", "Boutique", "Prix", "Statut", "Visible", "Actions"].map(h => <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/25">{h}</th>)}
+                <tr className="border-b border-[#101014]/[0.12] bg-[#101014]/[0.07]">
+                  <th className="px-4 py-3 w-8"><input type="checkbox" checked={selected.size === products.length && products.length > 0} onChange={toggleAll} className="w-3.5 h-3.5 rounded accent-[#FF2DA0] cursor-pointer" /></th>
+                  {["Produit", "Boutique", "Prix", "Statut", "Visible", "Actions"].map(h => <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#101014]/25">{h}</th>)}
                 </tr>
               </thead>
               <tbody>
                 {products.map(p => {
                   const ui = STATUS_CONFIG[p.listing_status ?? "draft"] ?? STATUS_CONFIG.draft;
                   return (
-                    <tr key={p.id} className={`border-b border-[#1A1612]/[0.05] ${selected.has(p.id) ? "bg-[#FF3D7F]/5" : "hover:bg-[#1A1612]/[0.07]"}`}>
-                      <td className="px-4 py-3"><input type="checkbox" checked={selected.has(p.id)} onChange={() => toggleSelect(p.id)} className="w-3.5 h-3.5 rounded accent-[#FF3D7F] cursor-pointer" /></td>
+                    <tr key={p.id} className={`border-b border-[#101014]/[0.05] ${selected.has(p.id) ? "bg-[#FF2DA0]/5" : "hover:bg-[#101014]/[0.07]"}`}>
+                      <td className="px-4 py-3"><input type="checkbox" checked={selected.has(p.id)} onChange={() => toggleSelect(p.id)} className="w-3.5 h-3.5 rounded accent-[#FF2DA0] cursor-pointer" /></td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          {p.image_url ? <img src={p.image_url} alt="" className="w-9 h-9 rounded-lg object-cover border border-[#1A1612]/[0.14]" /> : <div className="w-9 h-9 rounded-lg bg-[#1A1612]/[0.09] border border-[#1A1612]/[0.14] flex items-center justify-center"><Package size={14} className="text-[#1A1612]/20" /></div>}
-                          <p className="font-hanken text-sm text-[#1A1612] truncate max-w-[220px]">{p.name || p.title}</p>
+                          {p.image_url ? <img src={p.image_url} alt="" className="w-9 h-9 rounded-lg object-cover border border-[#101014]/[0.14]" /> : <div className="w-9 h-9 rounded-lg bg-[#101014]/[0.09] border border-[#101014]/[0.14] flex items-center justify-center"><Package size={14} className="text-[#101014]/20" /></div>}
+                          <p className="font-hanken text-sm text-[#101014] truncate max-w-[220px]">{p.name || p.title}</p>
                         </div>
                       </td>
-                      <td className="px-4 py-3"><span className="font-hanken text-sm text-[#1A1612]/60">{p.shops?.name ?? "-"}</span></td>
-                      <td className="px-4 py-3"><span className="font-fraunces text-sm text-[#1A1612]">{Number(p.price).toFixed(2)} €</span></td>
+                      <td className="px-4 py-3"><span className="font-hanken text-sm text-[#101014]/60">{p.shops?.name ?? "-"}</span></td>
+                      <td className="px-4 py-3"><span className="font-fraunces text-sm text-[#101014]">{Number(p.price).toFixed(2)} €</span></td>
                       <td className="px-4 py-3"><span className={`font-mono text-[9px] px-2 py-1 rounded-full border ${ui.color}`}>{ui.label}</span></td>
                       <td className="px-4 py-3">
                         <button onClick={() => bulkPatch({ is_active: !p.is_active }, [p.id])} disabled={busy}
-                          className={`font-mono text-[9px] px-2 py-1 rounded-full border ${p.is_active ? "text-green-600 bg-green-400/10 border-green-400/20" : "text-[#1A1612]/30 bg-[#1A1612]/[0.06] border-[#1A1612]/[0.12]"}`}>
+                          className={`font-mono text-[9px] px-2 py-1 rounded-full border ${p.is_active ? "text-green-600 bg-green-400/10 border-green-400/20" : "text-[#101014]/30 bg-[#101014]/[0.06] border-[#101014]/[0.12]"}`}>
                           {p.is_active ? "Oui" : "Non"}
                         </button>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1">
-                          <button title="Modifier" onClick={() => setEditing({ ...p })} className="p-1.5 rounded-lg text-[#1A1612]/40 hover:text-[#a78bfa] border border-transparent hover:border-[#1A1612]/[0.14]"><Pencil size={12} /></button>
-                          {p.slug && <a href={`/produit/${p.slug}`} target="_blank" rel="noreferrer" className="p-1.5 rounded-lg text-[#1A1612]/25 hover:text-[#1A1612] border border-transparent hover:border-[#1A1612]/[0.14]"><Eye size={12} /></a>}
+                          <button title="Modifier" onClick={() => setEditing({ ...p })} className="p-1.5 rounded-lg text-[#101014]/40 hover:text-[#a78bfa] border border-transparent hover:border-[#101014]/[0.14]"><Pencil size={12} /></button>
+                          {p.slug && <a href={`/produit/${p.slug}`} target="_blank" rel="noreferrer" className="p-1.5 rounded-lg text-[#101014]/25 hover:text-[#101014] border border-transparent hover:border-[#101014]/[0.14]"><Eye size={12} /></a>}
                           <button title="Supprimer" onClick={() => removeProducts([p.id])} className="p-1.5 rounded-lg text-red-600/50 hover:text-red-600 border border-transparent hover:border-red-500/20"><Trash2 size={12} /></button>
                         </div>
                       </td>
@@ -196,10 +196,10 @@ export default function ProductsPage() {
 
           {total > LIMIT && (
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] text-[#1A1612]/25">{(page - 1) * LIMIT + 1}-{Math.min(page * LIMIT, total)} sur {total}</span>
+              <span className="font-mono text-[10px] text-[#101014]/25">{(page - 1) * LIMIT + 1}-{Math.min(page * LIMIT, total)} sur {total}</span>
               <div className="flex gap-2">
-                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1.5 rounded-lg border border-[#1A1612]/[0.14] font-mono text-[10px] text-[#1A1612]/40 hover:text-[#1A1612] disabled:opacity-30">← Préc.</button>
-                <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total} className="px-3 py-1.5 rounded-lg border border-[#1A1612]/[0.14] font-mono text-[10px] text-[#1A1612]/40 hover:text-[#1A1612] disabled:opacity-30">Suiv. →</button>
+                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1.5 rounded-lg border border-[#101014]/[0.14] font-mono text-[10px] text-[#101014]/40 hover:text-[#101014] disabled:opacity-30">← Préc.</button>
+                <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total} className="px-3 py-1.5 rounded-lg border border-[#101014]/[0.14] font-mono text-[10px] text-[#101014]/40 hover:text-[#101014] disabled:opacity-30">Suiv. →</button>
               </div>
             </div>
           )}
@@ -209,10 +209,10 @@ export default function ProductsPage() {
       {/* Edit modal */}
       {editing && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setEditing(null)}>
-          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl bg-[#ffffff] border border-[#1A1612]/[0.12] p-6" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl bg-[#ffffff] border border-[#101014]/[0.12] p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-fraunces text-xl text-[#1A1612]">Modifier le produit</h2>
-              <button onClick={() => setEditing(null)} className="text-[#1A1612]/40 hover:text-[#1A1612]"><X size={18} /></button>
+              <h2 className="font-fraunces text-xl text-[#101014]">Modifier le produit</h2>
+              <button onClick={() => setEditing(null)} className="text-[#101014]/40 hover:text-[#101014]"><X size={18} /></button>
             </div>
             <div className="space-y-4">
               <Field label="Nom"><input value={editing.name ?? ""} onChange={e => setEditing({ ...editing, name: e.target.value })} className={inputCls} /></Field>
@@ -236,13 +236,13 @@ export default function ProductsPage() {
                   </select>
                 </Field>
               </div>
-              <label className="flex items-center gap-2 font-hanken text-sm text-[#1A1612]/70">
-                <input type="checkbox" checked={!!editing.is_featured} onChange={e => setEditing({ ...editing, is_featured: e.target.checked })} className="w-4 h-4 rounded accent-[#FF3D7F]" /> Mis en avant
+              <label className="flex items-center gap-2 font-hanken text-sm text-[#101014]/70">
+                <input type="checkbox" checked={!!editing.is_featured} onChange={e => setEditing({ ...editing, is_featured: e.target.checked })} className="w-4 h-4 rounded accent-[#FF2DA0]" /> Mis en avant
               </label>
             </div>
             <div className="flex gap-3 mt-6">
-              <button onClick={() => saveEdit(editing)} disabled={busy} className="flex-1 py-2.5 rounded-lg bg-[#FF3D7F] text-white font-hanken font-semibold text-sm hover:brightness-110 disabled:opacity-50">Enregistrer</button>
-              <button onClick={() => setEditing(null)} className="px-5 py-2.5 rounded-lg border border-[#1A1612]/[0.14] text-[#1A1612]/60 font-hanken text-sm hover:text-[#1A1612]">Annuler</button>
+              <button onClick={() => saveEdit(editing)} disabled={busy} className="flex-1 py-2.5 rounded-lg bg-[#FF2DA0] text-white font-hanken font-semibold text-sm hover:brightness-110 disabled:opacity-50">Enregistrer</button>
+              <button onClick={() => setEditing(null)} className="px-5 py-2.5 rounded-lg border border-[#101014]/[0.14] text-[#101014]/60 font-hanken text-sm hover:text-[#101014]">Annuler</button>
             </div>
           </div>
         </div>
@@ -251,7 +251,7 @@ export default function ProductsPage() {
   );
 }
 
-const inputCls = "w-full px-3 py-2 bg-[#1A1612]/[0.07] border border-[#1A1612]/[0.14] rounded-lg font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/25 focus:outline-none focus:border-[#a78bfa]/50";
+const inputCls = "w-full px-3 py-2 bg-[#101014]/[0.07] border border-[#101014]/[0.14] rounded-lg font-hanken text-sm text-[#101014] placeholder-[#101014]/25 focus:outline-none focus:border-[#a78bfa]/50";
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block font-mono text-[10px] uppercase tracking-wide text-[#1A1612]/35 mb-1.5">{label}</label>{children}</div>;
+  return <div><label className="block font-mono text-[10px] uppercase tracking-wide text-[#101014]/35 mb-1.5">{label}</label>{children}</div>;
 }

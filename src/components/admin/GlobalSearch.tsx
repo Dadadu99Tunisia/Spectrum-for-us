@@ -53,10 +53,10 @@ export function GlobalSearch() {
   return (
     <>
       <button onClick={() => setOpen(true)}
-        className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#1A1612]/[0.08] border border-[#1A1612]/[0.12] cursor-pointer hover:bg-[#1A1612]/[0.06] transition-colors">
-        <Search size={12} className="text-[#1A1612]/25" />
-        <span className="font-mono text-[10px] text-[#1A1612]/25">Recherche rapide</span>
-        <kbd className="ml-2 font-mono text-[9px] text-[#1A1612]/20 bg-[#1A1612]/[0.09] px-1.5 py-0.5 rounded">⌘K</kbd>
+        className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#101014]/[0.08] border border-[#101014]/[0.12] cursor-pointer hover:bg-[#101014]/[0.06] transition-colors">
+        <Search size={12} className="text-[#101014]/25" />
+        <span className="font-mono text-[10px] text-[#101014]/25">Recherche rapide</span>
+        <kbd className="ml-2 font-mono text-[9px] text-[#101014]/20 bg-[#101014]/[0.09] px-1.5 py-0.5 rounded">⌘K</kbd>
       </button>
 
       {open && (
@@ -64,7 +64,7 @@ export function GlobalSearch() {
           <div onClick={e => e.stopPropagation()} className="w-full max-w-xl rounded-2xl overflow-hidden"
             style={{ background: "#221a36", border: "1px solid rgba(243,234,219,0.14)", boxShadow: "0 24px 60px rgba(0,0,0,.5)" }}>
             <div className="flex items-center gap-3 px-4 h-14 border-b" style={{ borderColor: "rgba(243,234,219,0.1)" }}>
-              <Search size={18} className="text-[#1A1612]/40" />
+              <Search size={18} className="text-[#101014]/40" />
               <input ref={inputRef} value={q}
                 onChange={e => { setQ(e.target.value); search(e.target.value); }}
                 onKeyDown={e => {
@@ -73,14 +73,14 @@ export function GlobalSearch() {
                   if (e.key === "Enter" && results[active]) go(results[active]);
                 }}
                 placeholder="Rechercher utilisateurs, boutiques, produits, commandes…"
-                className="flex-1 bg-transparent outline-none text-[15px] text-[#1A1612] placeholder-[#1A1612]/30" />
-              {loading && <span className="font-mono text-[10px] text-[#1A1612]/30">…</span>}
+                className="flex-1 bg-transparent outline-none text-[15px] text-[#101014] placeholder-[#101014]/30" />
+              {loading && <span className="font-mono text-[10px] text-[#101014]/30">…</span>}
             </div>
             <div className="max-h-[50vh] overflow-y-auto py-2">
               {q.trim().length < 2 ? (
-                <p className="px-4 py-6 text-center font-hanken text-sm text-[#1A1612]/30">Tape au moins 2 caractères.</p>
+                <p className="px-4 py-6 text-center font-hanken text-sm text-[#101014]/30">Tape au moins 2 caractères.</p>
               ) : results.length === 0 && !loading ? (
-                <p className="px-4 py-6 text-center font-hanken text-sm text-[#1A1612]/30">Aucun résultat pour « {q} ».</p>
+                <p className="px-4 py-6 text-center font-hanken text-sm text-[#101014]/30">Aucun résultat pour « {q} ».</p>
               ) : (
                 results.map((r, i) => {
                   const Icon = ICON[r.type] ?? Package;
@@ -89,13 +89,13 @@ export function GlobalSearch() {
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors"
                       style={{ background: i === active ? "rgba(224,51,126,0.14)" : "transparent" }}>
                       <span className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(243,234,219,0.07)" }}>
-                        <Icon size={15} className="text-[#1A1612]/60" />
+                        <Icon size={15} className="text-[#101014]/60" />
                       </span>
                       <span className="flex-1 min-w-0">
-                        <span className="block font-hanken text-sm text-[#1A1612] truncate">{r.title}</span>
-                        <span className="block font-mono text-[10px] text-[#1A1612]/35 truncate">{r.subtitle}</span>
+                        <span className="block font-hanken text-sm text-[#101014] truncate">{r.title}</span>
+                        <span className="block font-mono text-[10px] text-[#101014]/35 truncate">{r.subtitle}</span>
                       </span>
-                      {i === active && <CornerDownLeft size={13} className="text-[#1A1612]/30 shrink-0" />}
+                      {i === active && <CornerDownLeft size={13} className="text-[#101014]/30 shrink-0" />}
                     </button>
                   );
                 })

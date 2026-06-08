@@ -55,7 +55,7 @@ export default function ComptePage() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FBFAF8] flex items-center justify-center">
         <SpectrumLoader size="md" />
       </div>
     );
@@ -65,10 +65,10 @@ export default function ComptePage() {
   const pronouns = user.user_metadata?.pronouns || "";
 
   const STATUS_COLOR: Record<string, string> = {
-    pending: "text-[#E0901E] border-[#E0901E]/40",
-    paid: "text-[#6D2DB5] border-[#6D2DB5]/40",
-    shipped: "text-[#1C9C95] border-[#1C9C95]/40",
-    delivered: "text-[#1C9C95] border-[#1C9C95]/40",
+    pending: "text-[#FFD400] border-[#FFD400]/40",
+    paid: "text-[#7A2BF0] border-[#7A2BF0]/40",
+    shipped: "text-[#2323C4] border-[#2323C4]/40",
+    delivered: "text-[#2323C4] border-[#2323C4]/40",
     cancelled: "text-red-400 border-red-400/40",
   };
   const STATUS_LABEL: Record<string, string> = {
@@ -80,25 +80,25 @@ export default function ComptePage() {
       <div className="hidden md:block"><Header /></div>
       <MobilePageHeader title="Mon compte" backHref="/" />
 
-      <main className="min-h-screen md:pt-24 pb-24 md:pb-20 px-4 md:px-6 bg-[#FBF9F5] text-[#1A1612]">
+      <main className="min-h-screen md:pt-24 pb-24 md:pb-20 px-4 md:px-6 bg-[#FBFAF8] text-[#101014]">
         <div className="max-w-5xl mx-auto">
 
           {/* ── Mobile profile card ── */}
           <div className="md:hidden pt-4">
             <div className="flex items-center gap-4 p-4 rounded-2xl mb-4"
               style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
-              <div className="w-14 h-14 rounded-2xl bg-[#FF3D7F]/12 border border-[#FF3D7F]/30 flex items-center justify-center shrink-0">
-                <span className="font-fraunces text-xl text-[#FF3D7F]">{(pseudo?.[0] ?? "?").toUpperCase()}</span>
+              <div className="w-14 h-14 rounded-2xl bg-[#FF2DA0]/12 border border-[#FF2DA0]/30 flex items-center justify-center shrink-0">
+                <span className="font-fraunces text-xl text-[#FF2DA0]">{(pseudo?.[0] ?? "?").toUpperCase()}</span>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="font-fraunces text-[19px] text-[#1A1612] truncate">{pseudo}</h1>
-                  {pronouns && <span className="font-mono text-[10px] text-[#1A1612]/35">{pronouns}</span>}
+                  <h1 className="font-fraunces text-[19px] text-[#101014] truncate">{pseudo}</h1>
+                  {pronouns && <span className="font-mono text-[10px] text-[#101014]/35">{pronouns}</span>}
                 </div>
-                <p className="font-hanken text-[12px] text-[#1A1612]/40 truncate">{user.email}</p>
+                <p className="font-hanken text-[12px] text-[#101014]/40 truncate">{user.email}</p>
               </div>
               <button onClick={signOut}
-                className="p-2 rounded-xl border border-[#1A1612]/12 text-[#1A1612]/40 active:text-red-400 transition-colors shrink-0">
+                className="p-2 rounded-xl border border-[#101014]/12 text-[#101014]/40 active:text-red-400 transition-colors shrink-0">
                 <LogOut size={15} />
               </button>
             </div>
@@ -108,22 +108,22 @@ export default function ComptePage() {
               <Link href="/favoris" className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
                 style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
                 <span className="relative">
-                  <Heart size={20} className="text-[#FF3D7F]" />
+                  <Heart size={20} className="text-[#FF2DA0]" />
                   {favCount > 0 && (
-                    <span className="absolute -top-1.5 -right-2 min-w-[15px] h-[15px] px-0.5 rounded-full text-[8px] font-mono flex items-center justify-center text-white" style={{ background: "#FF3D7F" }}>{favCount}</span>
+                    <span className="absolute -top-1.5 -right-2 min-w-[15px] h-[15px] px-0.5 rounded-full text-[8px] font-mono flex items-center justify-center text-white" style={{ background: "#FF2DA0" }}>{favCount}</span>
                   )}
                 </span>
-                <span className="font-mono text-[9px] tracking-wide text-[#1A1612]/55">Favoris</span>
+                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">Favoris</span>
               </Link>
               <button onClick={() => setTab("Commandes")} className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
                 style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
-                <Package size={20} className="text-[#6D2DB5]" />
-                <span className="font-mono text-[9px] tracking-wide text-[#1A1612]/55">Commandes</span>
+                <Package size={20} className="text-[#7A2BF0]" />
+                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">Commandes</span>
               </button>
               <Link href="/decouvrir" className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
                 style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
-                <ArrowRight size={20} className="text-[#1C9C95]" />
-                <span className="font-mono text-[9px] tracking-wide text-[#1A1612]/55">Explorer</span>
+                <ArrowRight size={20} className="text-[#2323C4]" />
+                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">Explorer</span>
               </Link>
             </div>
 
@@ -131,21 +131,21 @@ export default function ComptePage() {
             {isAdmin && (
               <Link href="/admin" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-2 active:scale-[0.98] transition-transform"
                 style={{ background: "linear-gradient(135deg,rgba(255,61,127,0.14),rgba(109,45,181,0.14))", border: "1px solid rgba(255,61,127,0.25)" }}>
-                <LayoutDashboard size={17} className="text-[#FF3D7F]" />
-                <span className="flex-1 font-hanken text-[14px] text-[#1A1612]">Administration</span>
-                <ChevronRight size={16} className="text-[#1A1612]/30" />
+                <LayoutDashboard size={17} className="text-[#FF2DA0]" />
+                <span className="flex-1 font-hanken text-[14px] text-[#101014]">Administration</span>
+                <ChevronRight size={16} className="text-[#101014]/30" />
               </Link>
             )}
             {profile?.is_vendor ? (
               <>
                 <Link href="/vendeur" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-2 active:scale-[0.98] transition-transform"
                   style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
-                  <Store size={17} className="text-[#1C9C95]" />
-                  <span className="flex-1 font-hanken text-[14px] text-[#1A1612]">Espace vendeur·rice</span>
-                  <ChevronRight size={16} className="text-[#1A1612]/30" />
+                  <Store size={17} className="text-[#2323C4]" />
+                  <span className="flex-1 font-hanken text-[14px] text-[#101014]">Espace vendeur·rice</span>
+                  <ChevronRight size={16} className="text-[#101014]/30" />
                 </Link>
                 <Link href="/publier" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-4 active:scale-[0.98] transition-transform"
-                  style={{ background: "linear-gradient(135deg,#6D2DB5,#FF3D7F)", boxShadow: "0 4px 18px rgba(109,45,181,.35)" }}>
+                  style={{ background: "linear-gradient(135deg,#7A2BF0,#FF2DA0)", boxShadow: "0 4px 18px rgba(109,45,181,.35)" }}>
                   <PlusCircle size={17} className="text-white" />
                   <span className="flex-1 font-hanken font-semibold text-[14px] text-white">Publier une création</span>
                   <ChevronRight size={16} className="text-white/60" />
@@ -154,28 +154,28 @@ export default function ComptePage() {
             ) : (
               <Link href="/vendeur/onboarding" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-4 active:scale-[0.98] transition-transform"
                 style={{ background: "linear-gradient(135deg,rgba(109,45,181,0.16),rgba(255,61,127,0.16))", border: "1px solid rgba(109,45,181,0.3)" }}>
-                <Store size={17} className="text-[#FF3D7F]" />
-                <span className="flex-1 font-hanken text-[14px] text-[#1A1612]">Vends tes créations ici</span>
-                <ChevronRight size={16} className="text-[#1A1612]/30" />
+                <Store size={17} className="text-[#FF2DA0]" />
+                <span className="flex-1 font-hanken text-[14px] text-[#101014]">Vends tes créations ici</span>
+                <ChevronRight size={16} className="text-[#101014]/30" />
               </Link>
             )}
           </div>
 
           {/* Profile header · desktop */}
           <div className="hidden md:flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-10">
-            <div className="w-16 h-16 rounded-2xl bg-[#FF3D7F]/10 border border-[#FF3D7F]/30 flex items-center justify-center">
-              <span className="font-fraunces text-2xl text-[#FF3D7F]">{(pseudo?.[0] ?? "?").toUpperCase()}</span>
+            <div className="w-16 h-16 rounded-2xl bg-[#FF2DA0]/10 border border-[#FF2DA0]/30 flex items-center justify-center">
+              <span className="font-fraunces text-2xl text-[#FF2DA0]">{(pseudo?.[0] ?? "?").toUpperCase()}</span>
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="font-fraunces text-2xl text-[#1A1612]">{pseudo}</h1>
-                {pronouns && <span className="font-mono text-xs text-[#1A1612]/35">{pronouns}</span>}
+                <h1 className="font-fraunces text-2xl text-[#101014]">{pseudo}</h1>
+                {pronouns && <span className="font-mono text-xs text-[#101014]/35">{pronouns}</span>}
               </div>
-              <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">{user.email}</p>
+              <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">{user.email}</p>
             </div>
             <div className="flex gap-2 flex-wrap">
               {isAdmin && (
-                <Button variant="primary" href="/admin" className="text-sm py-2 px-4 bg-[#FF3D7F]">
+                <Button variant="primary" href="/admin" className="text-sm py-2 px-4 bg-[#FF2DA0]">
                   <LayoutDashboard size={14} /> Admin
                 </Button>
               )}
@@ -189,22 +189,22 @@ export default function ComptePage() {
                 </Button>
               )}
               <button onClick={signOut}
-                className="p-2.5 rounded-xl border border-[#1A1612]/15 text-[#1A1612]/40 hover:text-red-400 hover:border-red-400/20 transition-colors">
+                className="p-2.5 rounded-xl border border-[#101014]/15 text-[#101014]/40 hover:text-red-400 hover:border-red-400/20 transition-colors">
                 <LogOut size={16} />
               </button>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-1 border-b border-[#1A1612]/10 mb-8 overflow-x-auto scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
+          <div className="flex gap-1 border-b border-[#101014]/10 mb-8 overflow-x-auto scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
             {TABS.map((t) => {
               const Icon = TAB_ICONS[t];
               return (
                 <button key={t} onClick={() => setTab(t)}
                   className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 font-hanken text-sm border-b-2 transition-all duration-200 ${
                     tab === t
-                      ? "border-[#FF3D7F] text-[#FF3D7F]"
-                      : "border-transparent text-[#1A1612]/40 hover:text-[#1A1612]/70"
+                      ? "border-[#FF2DA0] text-[#FF2DA0]"
+                      : "border-transparent text-[#101014]/40 hover:text-[#101014]/70"
                   }`}>
                   <Icon size={14} /> {t}
                 </button>
@@ -216,8 +216,8 @@ export default function ComptePage() {
           {tab === "Commandes" && (
             orders.length === 0 ? (
               <div className="text-center py-16">
-                <Package size={48} className="mx-auto mb-4 text-[#1A1612]/15" />
-                <p className="font-hanken text-[#1A1612]/40 mb-6">Aucune commande pour l&apos;instant.</p>
+                <Package size={48} className="mx-auto mb-4 text-[#101014]/15" />
+                <p className="font-hanken text-[#101014]/40 mb-6">Aucune commande pour l&apos;instant.</p>
                 <Button variant="primary" href="/decouvrir">Explorer la marketplace</Button>
               </div>
             ) : (
@@ -226,16 +226,16 @@ export default function ComptePage() {
                   <Card key={order.id} hoverable={false} className="p-5 flex items-center gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 flex-wrap">
-                        <span className="font-mono text-xs text-[#1A1612]/30">#{order.id.slice(0, 8).toUpperCase()}</span>
-                        <span className={`font-mono text-[10px] px-2 py-0.5 border rounded-full ${STATUS_COLOR[order.status] ?? "text-[#1A1612]/40 border-[#1A1612]/20"}`}>
+                        <span className="font-mono text-xs text-[#101014]/30">#{order.id.slice(0, 8).toUpperCase()}</span>
+                        <span className={`font-mono text-[10px] px-2 py-0.5 border rounded-full ${STATUS_COLOR[order.status] ?? "text-[#101014]/40 border-[#101014]/20"}`}>
                           {STATUS_LABEL[order.status] ?? order.status}
                         </span>
                       </div>
-                      <p className="font-hanken text-xs text-[#1A1612]/35 mt-1">
+                      <p className="font-hanken text-xs text-[#101014]/35 mt-1">
                         {new Date(order.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                     </div>
-                    <span className="font-fraunces text-lg text-[#1A1612]">{Number(order.total_amount).toFixed(2)} €</span>
+                    <span className="font-fraunces text-lg text-[#101014]">{Number(order.total_amount).toFixed(2)} €</span>
                   </Card>
                 ))}
               </div>
@@ -245,8 +245,8 @@ export default function ComptePage() {
           {/* Favoris */}
           {tab === "Favoris" && (
             <div className="text-center py-16">
-              <Heart size={48} className="mx-auto mb-4 text-[#1A1612]/15" />
-              <p className="font-hanken text-[#1A1612]/40 mb-6">Tu n&apos;as pas encore de favoris.</p>
+              <Heart size={48} className="mx-auto mb-4 text-[#101014]/15" />
+              <p className="font-hanken text-[#101014]/40 mb-6">Tu n&apos;as pas encore de favoris.</p>
               <Button variant="primary" href="/decouvrir">Découvrir des créations</Button>
             </div>
           )}
@@ -259,8 +259,8 @@ export default function ComptePage() {
           {/* Avis */}
           {tab === "Avis" && (
             <div className="text-center py-16">
-              <Star size={48} className="mx-auto mb-4 text-[#1A1612]/15" />
-              <p className="font-hanken text-[#1A1612]/40">Tes avis apparaîtront ici après tes achats.</p>
+              <Star size={48} className="mx-auto mb-4 text-[#101014]/15" />
+              <p className="font-hanken text-[#101014]/40">Tes avis apparaîtront ici après tes achats.</p>
             </div>
           )}
         </div>
@@ -293,23 +293,23 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
         { key: "pronouns", label: "Pronoms (public)", placeholder: "iel, elle, il…", type: "text" },
       ].map(({ key, label, placeholder, type }) => (
         <div key={key}>
-          <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">{label}</label>
+          <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{label}</label>
           <input type={type} value={form[key as keyof typeof form] as string}
             onChange={(e) => setForm({ ...form, [key]: e.target.value })}
             placeholder={placeholder}
-            className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
+            className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
         </div>
       ))}
 
       <div>
-        <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">E-mail (non modifiable)</label>
+        <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">E-mail (non modifiable)</label>
         <input type="email" value={user.email ?? ""} disabled
-          className="w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-4 py-3 text-[#1A1612]/40 font-hanken text-sm cursor-not-allowed" />
+          className="w-full bg-[#101014]/5 border border-[#101014]/10 rounded-xl px-4 py-3 text-[#101014]/40 font-hanken text-sm cursor-not-allowed" />
       </div>
 
       <label className="flex items-center gap-3 cursor-pointer group">
-        <input type="checkbox" checked={form.discrete} onChange={(e) => setForm({ ...form, discrete: e.target.checked })} className="w-4 h-4 rounded accent-[#FF3D7F]" />
-        <span className="font-hanken text-sm text-[#1A1612]/60 group-hover:text-[#1A1612]/80">Colis discrets (aucune mention Spectrum à l&apos;extérieur)</span>
+        <input type="checkbox" checked={form.discrete} onChange={(e) => setForm({ ...form, discrete: e.target.checked })} className="w-4 h-4 rounded accent-[#FF2DA0]" />
+        <span className="font-hanken text-sm text-[#101014]/60 group-hover:text-[#101014]/80">Colis discrets (aucune mention Spectrum à l&apos;extérieur)</span>
       </label>
 
       <Button variant="primary" type="submit" disabled={saving} className="py-3">
@@ -317,13 +317,13 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
       </Button>
 
       {/* ── RGPD ── */}
-      <div className="pt-8 mt-8 border-t border-[#1A1612]/8 space-y-3">
-        <p className="font-mono text-[10px] tracking-wide text-[#1A1612]/30 mb-4">Données personnelles (RGPD)</p>
+      <div className="pt-8 mt-8 border-t border-[#101014]/8 space-y-3">
+        <p className="font-mono text-[10px] tracking-wide text-[#101014]/30 mb-4">Données personnelles (RGPD)</p>
 
         <a
           href="/api/account/export"
           download
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl border border-[#1A1612]/12 text-[#1A1612]/60 font-hanken text-sm hover:border-[#1C9C95]/40 hover:text-[#1C9C95] transition-all"
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl border border-[#101014]/12 text-[#101014]/60 font-hanken text-sm hover:border-[#2323C4]/40 hover:text-[#2323C4] transition-all"
         >
           <Download size={14} />
           Exporter mes données (Art. 20)
@@ -355,14 +355,14 @@ function DeleteAccountButton() {
           {deleting ? "Suppression…" : "Confirmer la suppression"}
         </button>
         <button onClick={() => setConfirm(false)}
-          className="flex-1 py-2 rounded-xl border border-[#1A1612]/12 text-[#1A1612]/50 font-hanken text-sm hover:border-[#1A1612]/25 transition-colors">
+          className="flex-1 py-2 rounded-xl border border-[#101014]/12 text-[#101014]/50 font-hanken text-sm hover:border-[#101014]/25 transition-colors">
           Annuler
         </button>
       </div>
     </div>
   ) : (
     <button onClick={() => setConfirm(true)}
-      className="flex items-center gap-3 w-full px-4 py-3 rounded-xl border border-[#1A1612]/12 text-[#1A1612]/40 font-hanken text-sm hover:border-red-400/30 hover:text-red-400 transition-all">
+      className="flex items-center gap-3 w-full px-4 py-3 rounded-xl border border-[#101014]/12 text-[#101014]/40 font-hanken text-sm hover:border-red-400/30 hover:text-red-400 transition-all">
       <Trash2 size={14} />
       Supprimer mon compte (Art. 17)
     </button>

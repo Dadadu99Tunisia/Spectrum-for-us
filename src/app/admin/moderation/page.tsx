@@ -27,10 +27,10 @@ type ModItem = {
 };
 
 const TYPE_CFG: Record<string, { label: string; icon: React.ElementType; color: string; accent: string }> = {
-  product: { label: "Produit",      icon: Package,     color: "#E0901E", accent: "rgba(224,144,30,.08)" },
+  product: { label: "Produit",      icon: Package,     color: "#FFD400", accent: "rgba(224,144,30,.08)" },
   vendor:  { label: "Vendeur",      icon: Store,       color: "#a78bfa", accent: "rgba(167,139,250,.08)" },
   report:  { label: "Signalement",  icon: Flag,        color: "#f87171", accent: "rgba(248,113,113,.08)" },
-  content: { label: "Contenu",      icon: ShieldCheck, color: "#1C9C95", accent: "rgba(28,156,149,.08)" },
+  content: { label: "Contenu",      icon: ShieldCheck, color: "#2323C4", accent: "rgba(28,156,149,.08)" },
 };
 
 const STATUS_TABS = ["pending","approved","rejected"] as const;
@@ -143,26 +143,26 @@ export default function ModerationPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#1A1612]">Modération</h1>
-          <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">File de validation des contenus</p>
+          <h1 className="font-fraunces text-2xl text-[#101014]">Modération</h1>
+          <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">File de validation des contenus</p>
         </div>
         <button onClick={() => { fetchItems(); fetchCounts(); }}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#1A1612]/[0.12] text-[#1A1612]/40 hover:text-[#1A1612] transition-colors text-sm">
+          className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#101014]/[0.12] text-[#101014]/40 hover:text-[#101014] transition-colors text-sm">
           <RefreshCw size={13} /> Actualiser
         </button>
       </div>
 
       {/* Status tabs */}
-      <div className="flex gap-1 p-1 bg-[#1A1612]/[0.06] rounded-xl w-fit">
+      <div className="flex gap-1 p-1 bg-[#101014]/[0.06] rounded-xl w-fit">
         {STATUS_TABS.map(s => (
           <button key={s} onClick={() => setStatus(s)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs transition-all ${
-              status === s ? "bg-[#FF3D7F] text-white shadow-lg shadow-[#FF3D7F]/20" : "text-[#1A1612]/40 hover:text-[#1A1612]"
+              status === s ? "bg-[#FF2DA0] text-white shadow-lg shadow-[#FF2DA0]/20" : "text-[#101014]/40 hover:text-[#101014]"
             }`}>
             {s === "pending" ? "En attente" : s === "approved" ? "Approuvés" : "Rejetés"}
             {counts[s] !== undefined && (
               <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-bold ${
-                s === "pending" && counts[s] > 0 ? "bg-red-500 text-white" : "bg-[#1A1612]/[0.10] text-[#1A1612]/50"
+                s === "pending" && counts[s] > 0 ? "bg-red-500 text-white" : "bg-[#101014]/[0.10] text-[#101014]/50"
               }`}>{counts[s]}</span>
             )}
           </button>
@@ -176,8 +176,8 @@ export default function ModerationPage() {
             <button key={t} onClick={() => setType(t)}
               className={`px-3 py-1.5 rounded-lg font-mono text-[10px] uppercase tracking-wide transition-all border ${
                 type === t
-                  ? "bg-[#1A1612]/[0.10] border-[#1A1612]/[0.20] text-[#1A1612]"
-                  : "border-transparent text-[#1A1612]/30 hover:text-[#1A1612]/60 hover:border-[#1A1612]/[0.08]"
+                  ? "bg-[#101014]/[0.10] border-[#101014]/[0.20] text-[#101014]"
+                  : "border-transparent text-[#101014]/30 hover:text-[#101014]/60 hover:border-[#101014]/[0.08]"
               }`}>
               {t === "" ? "Tous" : TYPE_CFG[t]?.label ?? t}
             </button>
@@ -186,8 +186,8 @@ export default function ModerationPage() {
 
         {/* Bulk actions */}
         {checkedIds.size > 0 && (
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#FF3D7F]/10 border border-[#FF3D7F]/25">
-            <span className="font-mono text-[10px] text-[#1A1612]/60">{checkedIds.size} sélectionné{checkedIds.size > 1 ? "s" : ""}</span>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#FF2DA0]/10 border border-[#FF2DA0]/25">
+            <span className="font-mono text-[10px] text-[#101014]/60">{checkedIds.size} sélectionné{checkedIds.size > 1 ? "s" : ""}</span>
             <button onClick={() => handleBulk("approve")} disabled={!!actionLoading}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/15 border border-green-500/25 text-green-600 font-hanken text-xs hover:bg-green-500/25 transition-colors disabled:opacity-40">
               <CheckCircle size={12} /> Approuver tout
@@ -205,8 +205,8 @@ export default function ModerationPage() {
         <div className="flex items-center justify-center py-20"><SpectrumLoader size="sm" /></div>
       ) : items.length === 0 ? (
         <div className="text-center py-24">
-          <ShieldCheck size={40} className="mx-auto mb-3 text-[#1A1612]/10" />
-          <p className="font-hanken text-[#1A1612]/30">
+          <ShieldCheck size={40} className="mx-auto mb-3 text-[#101014]/10" />
+          <p className="font-hanken text-[#101014]/30">
             {status === "pending" ? "File vide · tout est à jour ✓" : "Aucun élément"}
           </p>
         </div>
@@ -216,9 +216,9 @@ export default function ModerationPage() {
           {status === "pending" && allPending.length > 1 && (
             <div className="flex items-center gap-3 px-4 py-2">
               <button onClick={toggleAll}
-                className="flex items-center gap-2 font-mono text-[10px] text-[#1A1612]/35 hover:text-[#1A1612]/70 transition-colors">
+                className="flex items-center gap-2 font-mono text-[10px] text-[#101014]/35 hover:text-[#101014]/70 transition-colors">
                 {allChecked
-                  ? <SquareCheckBig size={13} className="text-[#FF3D7F]" />
+                  ? <SquareCheckBig size={13} className="text-[#FF2DA0]" />
                   : <Minus size={13} />}
                 {allChecked ? "Tout désélectionner" : `Tout sélectionner (${allPending.length})`}
               </button>
@@ -226,7 +226,7 @@ export default function ModerationPage() {
           )}
 
           {items.map(item => {
-            const cfg  = TYPE_CFG[item.target_type] ?? { label: item.target_type, icon: ShieldCheck, color: "#1A1612", accent: "rgba(243,234,219,.05)" };
+            const cfg  = TYPE_CFG[item.target_type] ?? { label: item.target_type, icon: ShieldCheck, color: "#101014", accent: "rgba(243,234,219,.05)" };
             const Icon = cfg.icon;
             const isSelected  = selected?.id === item.id;
             const isChecked   = checkedIds.has(item.id);
@@ -235,16 +235,16 @@ export default function ModerationPage() {
             return (
               <div key={item.id}
                 className={`rounded-2xl border transition-all ${
-                  isSelected ? "border-[#FF3D7F]/40 bg-[#FF3D7F]/5" :
+                  isSelected ? "border-[#FF2DA0]/40 bg-[#FF2DA0]/5" :
                   isChecked  ? "border-[#a78bfa]/30 bg-[#a78bfa]/5" :
-                  "border-[#1A1612]/[0.10] bg-[#1A1612]/[0.04] hover:border-[#1A1612]/[0.16]"
+                  "border-[#101014]/[0.10] bg-[#101014]/[0.04] hover:border-[#101014]/[0.16]"
                 }`}>
                 <div className="flex items-center gap-3 p-4">
                   {/* Checkbox (only pending) */}
                   {isPending && (
                     <button onClick={() => toggleCheck(item.id)}
                       className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-all ${
-                        isChecked ? "bg-[#a78bfa] border-[#a78bfa]" : "border-[#1A1612]/[0.20] bg-[#1A1612]/[0.04] hover:border-[#1A1612]/[0.40]"
+                        isChecked ? "bg-[#a78bfa] border-[#a78bfa]" : "border-[#101014]/[0.20] bg-[#101014]/[0.04] hover:border-[#101014]/[0.40]"
                       }`}>
                       {isChecked && <CheckCircle size={10} className="text-white" />}
                     </button>
@@ -268,25 +268,25 @@ export default function ModerationPage() {
                         {cfg.label}
                       </span>
                       {item.preview?.title ? (
-                        <span className="font-hanken text-sm text-[#1A1612] truncate">{item.preview.title}</span>
+                        <span className="font-hanken text-sm text-[#101014] truncate">{item.preview.title}</span>
                       ) : (
-                        <span className="font-mono text-[10px] text-[#1A1612]/30">{item.target_id.slice(0, 12).toUpperCase()}</span>
+                        <span className="font-mono text-[10px] text-[#101014]/30">{item.target_id.slice(0, 12).toUpperCase()}</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-[#1A1612]/35">
+                    <div className="flex items-center gap-3 text-[#101014]/35">
                       {item.preview?.shop_name && (
                         <span className="font-mono text-[10px]">{item.preview.shop_name}</span>
                       )}
                       {item.preview?.price !== undefined && (
-                        <span className="font-mono text-[10px] text-[#1C9C95]/70">{fmt(item.preview.price)}</span>
+                        <span className="font-mono text-[10px] text-[#2323C4]/70">{fmt(item.preview.price)}</span>
                       )}
                       {item.reason && (
                         <span className="font-hanken text-xs text-[#f87171]/70 truncate max-w-48">{item.reason}</span>
                       )}
                     </div>
                     <div className="flex items-center gap-1 mt-0.5">
-                      <Clock size={9} className="text-[#1A1612]/20" />
-                      <span className="font-mono text-[9px] text-[#1A1612]/25">
+                      <Clock size={9} className="text-[#101014]/20" />
+                      <span className="font-mono text-[9px] text-[#101014]/25">
                         {new Date(item.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                       </span>
                     </div>
@@ -297,13 +297,13 @@ export default function ModerationPage() {
                     {/* View link */}
                     {item.target_type === "product" && (
                       <Link href={`/admin/products`}
-                        className="p-2 rounded-lg border border-[#1A1612]/[0.10] text-[#1A1612]/35 hover:text-[#1A1612] transition-colors" title="Voir dans Produits">
+                        className="p-2 rounded-lg border border-[#101014]/[0.10] text-[#101014]/35 hover:text-[#101014] transition-colors" title="Voir dans Produits">
                         <ExternalLink size={13} />
                       </Link>
                     )}
                     {item.target_type === "vendor" && item.preview?.slug && (
                       <Link href={`/admin/vendors/${item.target_id}`}
-                        className="p-2 rounded-lg border border-[#1A1612]/[0.10] text-[#1A1612]/35 hover:text-[#1A1612] transition-colors" title="Voir vendeur">
+                        className="p-2 rounded-lg border border-[#101014]/[0.10] text-[#101014]/35 hover:text-[#101014] transition-colors" title="Voir vendeur">
                         <ExternalLink size={13} />
                       </Link>
                     )}
@@ -311,7 +311,7 @@ export default function ModerationPage() {
                     {isPending ? (
                       <>
                         <button onClick={() => { setSelected(isSelected ? null : item); setNotesInput(""); }}
-                          className={`p-2 rounded-lg border transition-colors ${isSelected ? "border-[#FF3D7F]/40 bg-[#FF3D7F]/10 text-[#FF3D7F]" : "border-[#1A1612]/[0.12] text-[#1A1612]/40 hover:text-[#1A1612]"}`}>
+                          className={`p-2 rounded-lg border transition-colors ${isSelected ? "border-[#FF2DA0]/40 bg-[#FF2DA0]/10 text-[#FF2DA0]" : "border-[#101014]/[0.12] text-[#101014]/40 hover:text-[#101014]"}`}>
                           <Eye size={13} />
                         </button>
                         <button disabled={!!actionLoading} onClick={() => handleAction(item.id, "reject")}
@@ -337,11 +337,11 @@ export default function ModerationPage() {
 
                 {/* Expanded notes panel */}
                 {isSelected && (
-                  <div className="px-4 pb-4 border-t border-[#1A1612]/[0.10] pt-4">
-                    <p className="font-mono text-[10px] text-[#1A1612]/30 uppercase tracking-widest mb-2">Notes de modération</p>
+                  <div className="px-4 pb-4 border-t border-[#101014]/[0.10] pt-4">
+                    <p className="font-mono text-[10px] text-[#101014]/30 uppercase tracking-widest mb-2">Notes de modération</p>
                     <textarea value={notesInput} onChange={e => setNotesInput(e.target.value)}
                       placeholder="Raison de la décision (optionnel)…" rows={2}
-                      className="w-full bg-[#1A1612]/[0.06] border border-[#1A1612]/[0.12] rounded-xl px-3 py-2 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#a78bfa]/50 resize-none mb-3 transition-colors" />
+                      className="w-full bg-[#101014]/[0.06] border border-[#101014]/[0.12] rounded-xl px-3 py-2 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#a78bfa]/50 resize-none mb-3 transition-colors" />
                     <div className="flex gap-2">
                       <button disabled={!!actionLoading} onClick={() => handleAction(item.id, "reject")}
                         className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 font-hanken text-sm hover:bg-red-500/20 transition-colors disabled:opacity-40">

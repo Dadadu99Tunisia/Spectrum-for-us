@@ -2,20 +2,29 @@
 @import 'mapbox-gl/dist/mapbox-gl.css';
 
 :root {
-  --ink: #3D1F5C;
-  --bone: #F3EADB;
-  --magenta: #E0337E;
-  --peach: #F2B79E;
-  --teal: #1C9C95;
-  --prism: linear-gradient(90deg, #E0533A, #E0901E, #CF3F7C, #6D2DB5, #1C9C95);
+  /* Charte V1 · couleurs */
+  --ink: #101014;
+  --bone: #FBFAF8;
+  --magenta: #FF2DA0;
+  --cobalt: #2323C4;
+  --violet: #7A2BF0;
+  --jaune: #FFD400;
+  --corail: #F93C2C;
+  --peach: #F93C2C;
+  --teal: #2323C4;
+  --prism: linear-gradient(90deg, #2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400);
+  /* Charte V1 · typo (2 familles) — alias des anciennes variables vers Jakarta */
+  --font-fraunces: var(--font-jakarta);
+  --font-bricolage: var(--font-jakarta);
+  --font-hanken: var(--font-jakarta);
 }
 
 @theme inline {
-  --color-ink: #3D1F5C;
-  --color-bone: #F3EADB;
-  --color-magenta: #E0337E;
-  --color-peach: #F2B79E;
-  --color-teal: #1C9C95;
+  --color-ink: #FBFAF8;
+  --color-bone: #101014;
+  --color-magenta: #FF2DA0;
+  --color-peach: #FF2DA0;
+  --color-teal: #2323C4;
   --font-fraunces: var(--font-fraunces);
   --font-bricolage: var(--font-bricolage);
   --font-hanken: var(--font-hanken);
@@ -26,13 +35,13 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #FBF9F5;
-  color: #1A1612;
+  background-color: #FBFAF8;
+  color: #101014;
   font-family: var(--font-hanken), sans-serif;
 }
 
 .prism-text {
-  background: linear-gradient(90deg, #E0533A, #E0901E, #CF3F7C, #6D2DB5, #1C9C95, #E0533A);
+  background: linear-gradient(90deg, #2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400, #F93C2C);
   background-size: 300% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -60,7 +69,7 @@ body {
 }
 
 .prism-line {
-  background: linear-gradient(90deg, #E0533A, #E0901E, #CF3F7C, #6D2DB5, #1C9C95);
+  background: linear-gradient(90deg, #2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400);
   height: 2px;
   width: 100%;
   border-radius: 1px;
@@ -122,11 +131,11 @@ body {
   white-space: nowrap;
 }
 .glitch-wrapper::before {
-  color: #1C9C95;
+  color: #2323C4;
   transition: opacity 0.1s;
 }
 .glitch-wrapper::after {
-  color: #E0533A;
+  color: #F93C2C;
   transition: opacity 0.1s;
 }
 .glitch-wrapper.is-glitching::before {
@@ -155,14 +164,14 @@ body {
   left: 0;
   height: 2px;
   z-index: 9000;
-  background: linear-gradient(90deg, #E0533A, #E0901E, #CF3F7C, #6D2DB5, #1C9C95);
+  background: linear-gradient(90deg, #2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400);
   transform-origin: left center;
   transition: transform 0.1s linear;
   pointer-events: none;
 }
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #FBF9F5; }
+::-webkit-scrollbar-track { background: #FBFAF8; }
 ::-webkit-scrollbar-thumb { background: #E0D8CC; border-radius: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -229,12 +238,12 @@ html.mode-contrast img {
 html.mode-colorblind {
   filter: url('#colorblind-filter');
 }
-html.mode-colorblind .text-\[\#E0337E\],
-html.mode-colorblind .border-\[\#E0337E\] {
+html.mode-colorblind .text-\[\#FF2DA0\],
+html.mode-colorblind .border-\[\#FF2DA0\] {
   --tw-text-opacity: 1;
   color: rgb(0 120 200 / var(--tw-text-opacity)) !important;
 }
-html.mode-colorblind .bg-\[\#E0337E\] {
+html.mode-colorblind .bg-\[\#FF2DA0\] {
   background-color: rgb(0 120 200) !important;
 }
 
@@ -255,7 +264,7 @@ html.mode-reduce-motion *::after {
 
 /* ── Mode focus visible (navigation clavier) ── */
 html.mode-focus-visible *:focus {
-  outline: 3px solid #E0337E !important;
+  outline: 3px solid #FF2DA0 !important;
   outline-offset: 3px !important;
   border-radius: 4px !important;
 }
@@ -275,8 +284,8 @@ html.mode-spacing span {
   left: 1rem;
   z-index: 99999;
   padding: 0.75rem 1.5rem;
-  background: #E0337E;
-  color: #F3EADB;
+  background: #FF2DA0;
+  color: #101014;
   font-family: var(--font-hanken), sans-serif;
   font-weight: 600;
   border-radius: 0 0 12px 12px;
@@ -285,7 +294,7 @@ html.mode-spacing span {
 }
 .skip-to-content:focus {
   top: 0;
-  outline: 3px solid #F3EADB;
+  outline: 3px solid #101014;
 }
 
 /* ── Intro splash : voile pré-paint (anti-flash) ──

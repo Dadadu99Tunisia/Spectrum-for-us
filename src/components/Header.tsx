@@ -20,7 +20,7 @@ import { useI18n } from "@/contexts/I18nContext";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 import { useBanner } from "@/contexts/BannerContext";
 
-const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", line: "#ECE6DB", mag: "#FF3D7F" };
+const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", line: "#ECE6DB", mag: "#FF2DA0" };
 
 const NAV = [
   { label: "Shop", href: "/decouvrir" },
@@ -69,7 +69,7 @@ export function Header() {
         bannerVisible ? "top-10" : "top-0",
       )}
         style={{
-          background: scrolled ? "rgba(251,249,245,0.92)" : "rgba(251,249,245,0.8)",
+          background: scrolled ? "rgba(251,250,248,0.92)" : "rgba(251,250,248,0.8)",
           backdropFilter: "blur(12px)",
           borderBottom: `1px solid ${scrolled ? T.line : "transparent"}`,
         }}>
@@ -84,7 +84,7 @@ export function Header() {
           <nav className="hidden lg:flex items-center gap-6 text-[14.5px]" aria-label="Navigation principale">
             {NAV.map((n) => (
               <Link key={n.href} href={n.href}
-                className="transition-colors hover:text-[#FF3D7F]" style={{ color: T.soft }}>
+                className="transition-colors hover:text-[#FF2DA0]" style={{ color: T.soft }}>
                 {n.label}
               </Link>
             ))}
@@ -93,7 +93,7 @@ export function Header() {
           {/* Actions */}
           <div className="flex items-center gap-2 shrink-0">
             <Link href="/decouvrir" aria-label="Rechercher"
-              className="hidden lg:flex w-10 h-10 rounded-full items-center justify-center transition-colors hover:text-[#FF3D7F]"
+              className="hidden lg:flex w-10 h-10 rounded-full items-center justify-center transition-colors hover:text-[#FF2DA0]"
               style={{ color: T.soft }}>
               <Search size={18} />
             </Link>
@@ -125,29 +125,29 @@ export function Header() {
                     style={{ background: "#fff", boxShadow: "0 12px 40px rgba(26,22,18,.14), inset 0 0 0 1px " + T.line }}>
                     {isAdmin && (
                       <Link href="/admin" onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBF9F5] transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBFAF8] transition-colors"
                         style={{ color: T.mag, borderBottom: `1px solid ${T.line}` }}>
                         <LayoutDashboard size={15} /> Admin
                       </Link>
                     )}
                     <Link href="/compte" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBF9F5] transition-colors" style={{ color: T.soft }}>
+                      className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBFAF8] transition-colors" style={{ color: T.soft }}>
                       <User size={15} /> Mon compte
                     </Link>
                     <Link href="/suivis" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBF9F5] transition-colors" style={{ color: T.soft }}>
+                      className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBFAF8] transition-colors" style={{ color: T.soft }}>
                       <Heart size={15} /> Mes suivis
                     </Link>
                     <Link href="/messages" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBF9F5] transition-colors" style={{ color: T.soft }}>
+                      className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBFAF8] transition-colors" style={{ color: T.soft }}>
                       <MessageSquare size={15} /> Messages
                     </Link>
                     <Link href="/vendeur" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBF9F5] transition-colors" style={{ color: T.soft }}>
+                      className="flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBFAF8] transition-colors" style={{ color: T.soft }}>
                       <Store size={15} /> Espace vendeur
                     </Link>
                     <button onClick={() => { setUserMenuOpen(false); signOut(); }}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBF9F5] transition-colors"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-[14px] hover:bg-[#FBFAF8] transition-colors"
                       style={{ color: T.soft, borderTop: `1px solid ${T.line}` }}>
                       <LogOut size={15} /> Déconnexion
                     </button>

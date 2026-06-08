@@ -6,7 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Trophy, Sparkles, Star, Check, Flame, ArrowRight } from "lucide-react";
 
-const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F", gold: "#C9A227", violet: "#6D2DB5", teal: "#1C9C95" };
+const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0", gold: "#C9A227", violet: "#7A2BF0", teal: "#2323C4" };
 
 interface Counts {
   founder_count: number; early_adopter_count: number;

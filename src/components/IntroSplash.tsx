@@ -18,7 +18,7 @@ import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const WORDS = ["CREATE", "SELL", "DISCOVER", "CONNECT", "SUPPORT"];
-const SPECTRUM = "linear-gradient(90deg,#FF3D7F,#C44CFF,#6B5CFF,#1FB6C9,#16A06A,#F2A03D)";
+const SPECTRUM = "linear-gradient(90deg,#FF2DA0,#C44CFF,#6B5CFF,#1FB6C9,#16A06A,#F2A03D)";
 const FINAL = "Marketplace for and by queer communities";
 const EASE = [0.2, 0.7, 0.2, 1] as const;
 const STORAGE_KEY = "sfu_intro_seen";
@@ -160,7 +160,7 @@ const S: Record<string, React.CSSProperties> = {
   bloom: {
     position: "absolute", top: "50%", left: "50%", width: "min(560px,80vw)", height: "min(560px,80vw)",
     borderRadius: "50%",
-    background: "conic-gradient(from 0deg,#FF3D7F,#C44CFF,#6B5CFF,#1FB6C9,#16A06A,#F2A03D,#FF3D7F)",
+    background: "conic-gradient(from 0deg,#FF2DA0,#C44CFF,#6B5CFF,#1FB6C9,#16A06A,#F2A03D,#FF2DA0)",
     filter: "blur(60px)", transform: "translate(-50%,-50%)", mixBlendMode: "screen",
   },
   logo: { height: "min(150px,22vh)", width: "auto", display: "block" },

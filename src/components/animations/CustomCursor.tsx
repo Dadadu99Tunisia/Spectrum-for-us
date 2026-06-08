@@ -73,7 +73,7 @@ export function CustomCursor() {
         ref={dotRef}
         className="fixed top-0 left-0 z-[9999] pointer-events-none w-2 h-2 rounded-full"
         style={{
-          background: clicking ? "#F3EADB" : "#E0337E",
+          background: clicking ? "#101014" : "#FF2DA0",
           boxShadow: clicking ? "0 0 8px 2px rgba(243,234,219,0.6)" : "0 0 6px 1px rgba(224,51,126,0.7)",
           transition: "background 0.15s, box-shadow 0.15s, transform 0.06s",
           willChange: "transform",
@@ -104,7 +104,7 @@ export function CustomCursor() {
         {/* Label text inside halo */}
         {text && hovering && (
           <span
-            className="font-mono text-[9px] tracking-wide text-[#F3EADB]/70 text-center leading-tight pointer-events-none select-none"
+            className="font-mono text-[9px] tracking-wide text-[#101014]/70 text-center leading-tight pointer-events-none select-none"
             style={{ whiteSpace: "nowrap" }}
           >
             {text}

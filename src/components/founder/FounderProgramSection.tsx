@@ -54,7 +54,7 @@ export function FounderProgramSection() {
 
         <div className="relative overflow-hidden rounded-3xl border"
           style={{
-            background: "linear-gradient(135deg,#0f0820 0%,#1a0d35 50%,#0d1a2e 100%)",
+            background: "linear-gradient(135deg,#FFFFFF 0%,#1a0d35 50%,#0d1a2e 100%)",
             borderColor: "rgba(167,139,250,.2)",
             boxShadow: "0 0 60px rgba(109,45,181,.15), inset 0 1px 0 rgba(255,255,255,.05)",
           }}>
@@ -62,9 +62,9 @@ export function FounderProgramSection() {
           {/* Glow blobs */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full blur-3xl opacity-20"
-              style={{ background: "radial-gradient(circle,#6D2DB5,transparent)" }} />
+              style={{ background: "radial-gradient(circle,#7A2BF0,transparent)" }} />
             <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full blur-3xl opacity-15"
-              style={{ background: "radial-gradient(circle,#E0337E,transparent)" }} />
+              style={{ background: "radial-gradient(circle,#FF2DA0,transparent)" }} />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-20 blur-3xl opacity-10"
               style={{ background: "radial-gradient(ellipse,#FFD700,transparent)" }} />
           </div>
@@ -74,10 +74,10 @@ export function FounderProgramSection() {
             <div className="flex items-start gap-5 mb-10">
               <div className="text-5xl leading-none">🌈</div>
               <div>
-                <h2 className="font-fraunces text-3xl md:text-4xl text-[#F3EADB] leading-tight">
+                <h2 className="font-fraunces text-3xl md:text-4xl text-[#101014] leading-tight">
                   Programme Fondateur Spectrum
                 </h2>
-                <p className="font-hanken text-sm text-[#F3EADB]/45 mt-2">
+                <p className="font-hanken text-sm text-[#101014]/45 mt-2">
                   Rejoins les premiers à b-tir cette communauté · des avantages exclusifs à vie.
                 </p>
               </div>
@@ -99,18 +99,18 @@ export function FounderProgramSection() {
                     <span className="text-xl">🏆</span>
                     <div>
                       <p className="font-fraunces text-base text-[#FFD700]">Fondateur·ice</p>
-                      <p className="font-mono text-[9px] text-[#F3EADB]/30">Rang 1-20</p>
+                      <p className="font-mono text-[9px] text-[#101014]/30">Rang 1-20</p>
                     </div>
                   </div>
                   {founderFull ? (
-                    <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#F3EADB]/5 text-[#F3EADB]/30 border border-[#F3EADB]/8">Complet</span>
+                    <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#101014]/5 text-[#101014]/30 border border-[#101014]/8">Complet</span>
                   ) : (
                     <span className="font-mono text-[10px] font-bold" style={{ color: "#FFD700" }}>
                       {loaded ? `${counts.founder_remaining} restante${counts.founder_remaining > 1 ? "s" : ""}` : "…"}
                     </span>
                   )}
                 </div>
-                <div className="h-1.5 rounded-full bg-[#F3EADB]/8 overflow-hidden mb-3">
+                <div className="h-1.5 rounded-full bg-[#101014]/8 overflow-hidden mb-3">
                   <div className="h-full rounded-full transition-all duration-700"
                     style={{
                       width: `${founderPct}%`,
@@ -138,22 +138,22 @@ export function FounderProgramSection() {
                     <span className="text-xl">🚀</span>
                     <div>
                       <p className="font-fraunces text-base text-[#a78bfa]">Pionnier·e</p>
-                      <p className="font-mono text-[9px] text-[#F3EADB]/30">Rang 21-100</p>
+                      <p className="font-mono text-[9px] text-[#101014]/30">Rang 21-100</p>
                     </div>
                   </div>
                   {earlyFull ? (
-                    <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#F3EADB]/5 text-[#F3EADB]/30 border border-[#F3EADB]/8">Complet</span>
+                    <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#101014]/5 text-[#101014]/30 border border-[#101014]/8">Complet</span>
                   ) : (
                     <span className="font-mono text-[10px] font-bold text-[#a78bfa]">
                       {loaded ? `${counts.early_remaining} restante${counts.early_remaining > 1 ? "s" : ""}` : "…"}
                     </span>
                   )}
                 </div>
-                <div className="h-1.5 rounded-full bg-[#F3EADB]/8 overflow-hidden mb-3">
+                <div className="h-1.5 rounded-full bg-[#101014]/8 overflow-hidden mb-3">
                   <div className="h-full rounded-full transition-all duration-700"
                     style={{
                       width: `${earlyPct}%`,
-                      background: earlyFull ? "rgba(107,114,128,.4)" : "linear-gradient(90deg,#a78bfa,#E0337E)",
+                      background: earlyFull ? "rgba(107,114,128,.4)" : "linear-gradient(90deg,#a78bfa,#FF2DA0)",
                     }} />
                 </div>
                 {["Abonnement gratuit 6 mois", "0 % de commission 6 mois", "Badge Pionnier·e sur profil", "Accès anticipé aux features"].map(a => (
@@ -169,15 +169,15 @@ export function FounderProgramSection() {
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Link href="/vendeur/onboarding"
                 className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-hanken font-semibold text-sm text-white transition-all hover:scale-105 active:scale-95"
-                style={{ background: "linear-gradient(135deg,#6D2DB5,#E0337E)", boxShadow: "0 8px 30px rgba(109,45,181,.4)" }}>
+                style={{ background: "linear-gradient(135deg,#7A2BF0,#FF2DA0)", boxShadow: "0 8px 30px rgba(109,45,181,.4)" }}>
                 Rejoindre le programme
                 <ArrowRight size={15} />
               </Link>
               <Link href="/programme-fondateur"
-                className="font-mono text-[11px] text-[#F3EADB]/35 hover:text-[#F3EADB]/70 transition-colors flex items-center gap-1">
+                className="font-mono text-[11px] text-[#101014]/35 hover:text-[#101014]/70 transition-colors flex items-center gap-1">
                 En savoir plus <ArrowRight size={10} />
               </Link>
-              <p className="font-mono text-[10px] text-[#F3EADB]/25 sm:ml-auto">
+              <p className="font-mono text-[10px] text-[#101014]/25 sm:ml-auto">
                 {loaded ? `${counts.founder_count + counts.early_adopter_count} vendeur·ses inscrits` : "…"}
               </p>
             </div>

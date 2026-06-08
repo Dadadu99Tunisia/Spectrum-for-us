@@ -64,13 +64,13 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
         {/* Prism line top */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 4,
-          background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)",
+          background: "linear-gradient(90deg,#2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400)",
         }} />
 
         {/* Prism line bottom */}
         <div style={{
           position: "absolute", bottom: 0, left: 0, right: 0, height: 4,
-          background: "linear-gradient(90deg,#1C9C95,#6D2DB5,#CF3F7C,#E0901E,#E0533A)",
+          background: "linear-gradient(90deg,#FFD400, #F93C2C, #FF2DA0, #7A2BF0, #2323C4)",
         }} />
 
         {/* Content */}
@@ -85,7 +85,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div style={{
               width: 36, height: 36, borderRadius: 10,
-              background: "linear-gradient(135deg, #E0337E, #6D2DB5)",
+              background: "linear-gradient(135deg, #E0337E, #7A2BF0)",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <div style={{ color: "#F3EADB", fontSize: 18, fontWeight: 700 }}>✦</div>

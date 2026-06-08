@@ -7,7 +7,7 @@ import { MapPin, ArrowUpRight, ArrowLeft } from "lucide-react";
 import { COUNTRY_SLUGS, countryFromSlug, orgsByCountry, countryFlag } from "@/lib/annuaire";
 
 const BASE = "https://spectrumforus.com";
-const T = { ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
+const T = { ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -57,7 +57,7 @@ export default async function CountryPage({ params }: { params: Promise<{ slug: 
     <>
       <Header />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <main className="min-h-screen" style={{ background: "#FBF9F5", color: T.ink }}>
+      <main className="min-h-screen" style={{ background: "#FBFAF8", color: T.ink }}>
         <section className="max-w-6xl mx-auto px-6 md:px-8 pt-28 pb-8">
           <Link href="/annuaire" className="inline-flex items-center gap-1.5 text-[13px] mb-4" style={{ color: T.soft }}>
             <ArrowLeft size={14} /> Annuaire

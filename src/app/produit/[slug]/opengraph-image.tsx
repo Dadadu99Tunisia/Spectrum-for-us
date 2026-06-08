@@ -23,8 +23,8 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
   const type      = (product?.type as string | null) ?? "product";
 
   const TYPE_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-    service: { label: "Service",     color: "#1C9C95", bg: "rgba(28,156,149,0.15)" },
-    event:   { label: "Événement",   color: "#E0901E", bg: "rgba(224,144,30,0.15)" },
+    service: { label: "Service",     color: "#2323C4", bg: "rgba(28,156,149,0.15)" },
+    event:   { label: "Événement",   color: "#FFD400", bg: "rgba(224,144,30,0.15)" },
     product: { label: "Création",    color: "#E0337E", bg: "rgba(255,61,127,0.15)" },
   };
   const typeInfo = TYPE_LABELS[type] ?? TYPE_LABELS.product;
@@ -56,11 +56,11 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
         {/* Prism lines */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 4,
-          background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)",
+          background: "linear-gradient(90deg,#2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400)",
         }} />
         <div style={{
           position: "absolute", bottom: 0, left: 0, right: 0, height: 4,
-          background: "linear-gradient(90deg,#1C9C95,#6D2DB5,#CF3F7C,#E0901E,#E0533A)",
+          background: "linear-gradient(90deg,#FFD400, #F93C2C, #FF2DA0, #7A2BF0, #2323C4)",
         }} />
 
         {/* Left: product image */}
@@ -93,7 +93,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
               width: 30, height: 30, borderRadius: 8,
-              background: "linear-gradient(135deg, #E0337E, #6D2DB5)",
+              background: "linear-gradient(135deg, #E0337E, #7A2BF0)",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <div style={{ color: "#F3EADB", fontSize: 14, fontWeight: 700 }}>✦</div>

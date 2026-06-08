@@ -7,10 +7,10 @@ interface TagProps {
 }
 
 const variants = {
-  default: "border-[#F3EADB]/20 text-[#F3EADB]/60",
-  magenta: "border-[#E0337E]/40 text-[#E0337E]",
-  peach: "border-[#F2B79E]/40 text-[#F2B79E]",
-  teal: "border-[#1C9C95]/40 text-[#1C9C95]",
+  default: "border-[#101014]/20 text-[#101014]/60",
+  magenta: "border-[#FF2DA0]/40 text-[#FF2DA0]",
+  peach: "border-[#FF2DA0]/40 text-[#FF2DA0]",
+  teal: "border-[#2323C4]/40 text-[#2323C4]",
 };
 
 export function Tag({ children, className, variant = "default" }: TagProps) {

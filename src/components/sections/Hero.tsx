@@ -90,7 +90,7 @@ export function Hero() {
           className="h-px transition-all duration-500 ease-out"
           style={{
             width: phase === "line" ? "4px" : phase === "prism" ? "220px" : "0px",
-            background: "linear-gradient(90deg, #E0533A, #E0901E, #CF3F7C, #6D2DB5, #1C9C95)",
+            background: "linear-gradient(90deg, #2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400)",
             opacity: phase === "line" || phase === "prism" ? 1 : 0,
             transitionDuration: phase === "prism" ? "500ms" : "300ms",
           }}
@@ -104,18 +104,18 @@ export function Hero() {
           style={{ fontSize: "clamp(3.5rem, 10vw, 8rem)" }}
         >
           <span
-            className="block text-[#F3EADB] transition-all duration-700"
+            className="block text-[#101014] transition-all duration-700"
             style={{
               opacity: phase === "parens" || phase === "text" || phase === "done" ? 1 : 0,
               transform: phase === "parens" || phase === "text" || phase === "done" ? "translateY(0)" : "translateY(20px)",
             }}
           >
             <GlitchText text="B" />
-            <span className="transition-colors duration-500" style={{ color: "#E0337E" }}>(u)</span>
+            <span className="transition-colors duration-500" style={{ color: "#FF2DA0" }}>(u)</span>
             <GlitchText text="y us," />
           </span>
           <span
-            className="block text-[#F3EADB] transition-all duration-700 delay-200"
+            className="block text-[#101014] transition-all duration-700 delay-200"
             style={{
               opacity: phase === "text" || phase === "done" ? 1 : 0,
               transform: phase === "text" || phase === "done" ? "translateY(0)" : "translateY(20px)",
@@ -126,7 +126,7 @@ export function Hero() {
         </h1>
 
         <p
-          className="font-hanken text-lg md:text-xl text-[#F3EADB]/70 max-w-xl mx-auto mb-10 transition-all duration-700 delay-300"
+          className="font-hanken text-lg md:text-xl text-[#101014]/70 max-w-xl mx-auto mb-10 transition-all duration-700 delay-300"
           style={{
             opacity: phase === "done" ? 1 : 0,
             transform: phase === "done" ? "translateY(0)" : "translateY(12px)",
@@ -149,7 +149,7 @@ export function Hero() {
             {btn2Label}
           </Button>
           <Button variant="ghost" href="/vendre"
-            className="text-base px-8 py-3.5 border border-[#F3EADB]/15 text-[#F3EADB]/60 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 rounded-2xl font-hanken">
+            className="text-base px-8 py-3.5 border border-[#101014]/15 text-[#101014]/60 hover:text-[#101014] hover:bg-[#101014]/5 rounded-2xl font-hanken">
             Vendre ici
           </Button>
         </div>
@@ -162,10 +162,10 @@ export function Hero() {
           opacity: phase === "done" ? 0.5 : 0,
         }}
       >
-        <p className="font-mono text-[10px] tracking-wide text-[#F3EADB]/40">
+        <p className="font-mono text-[10px] tracking-wide text-[#101014]/40">
           Ce n&apos;est pas juste une marketplace
         </p>
-        <div className="w-px h-8 bg-gradient-to-b from-[#F3EADB]/20 to-transparent animate-pulse" />
+        <div className="w-px h-8 bg-gradient-to-b from-[#101014]/20 to-transparent animate-pulse" />
       </div>
 
     </section>

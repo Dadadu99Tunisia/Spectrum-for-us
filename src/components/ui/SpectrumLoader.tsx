@@ -38,11 +38,11 @@ export function SpectrumLoader({ size = "md", label, fullscreen = false }: Props
         >
           <defs>
             <linearGradient id="prism-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%"   stopColor="#E0533A" />
-              <stop offset="25%"  stopColor="#CF3F7C" />
-              <stop offset="50%"  stopColor="#6D2DB5" />
-              <stop offset="75%"  stopColor="#1C9C95" />
-              <stop offset="100%" stopColor="#E0533A" stopOpacity="0" />
+              <stop offset="0%"   stopColor="#F93C2C" />
+              <stop offset="25%"  stopColor="#FF2DA0" />
+              <stop offset="50%"  stopColor="#7A2BF0" />
+              <stop offset="75%"  stopColor="#2323C4" />
+              <stop offset="100%" stopColor="#F93C2C" stopOpacity="0" />
             </linearGradient>
           </defs>
           <circle
@@ -58,7 +58,7 @@ export function SpectrumLoader({ size = "md", label, fullscreen = false }: Props
 
         {/* Center ✦ */}
         <div
-          className="absolute inset-0 flex items-center justify-center text-[#E0337E]"
+          className="absolute inset-0 flex items-center justify-center text-[#FF2DA0]"
           style={{ fontSize: inner * 0.5 }}
         >
           ✦
@@ -66,7 +66,7 @@ export function SpectrumLoader({ size = "md", label, fullscreen = false }: Props
       </div>
 
       {label && (
-        <p className="font-mono text-[10px] tracking-wide text-[#F3EADB]/30">
+        <p className="font-mono text-[10px] tracking-wide text-[#101014]/30">
           {label}
         </p>
       )}
@@ -75,7 +75,7 @@ export function SpectrumLoader({ size = "md", label, fullscreen = false }: Props
 
   if (fullscreen) {
     return (
-      <div className="fixed inset-0 bg-[#3D1F5C] flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-[#FBFAF8] flex items-center justify-center z-50">
         {loader}
       </div>
     );

@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Heart, ArrowRight } from "lucide-react";
 
-const T = { ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F", tint: "#F1ECE3" };
+const T = { ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0", tint: "#F1ECE3" };
 
 interface Product { id: string; name: string | null; title: string | null; price: number; image_url: string | null; images: string[] | null; slug: string | null; shops: { name: string; slug: string } | null; }
 interface Shop { id: string; name: string; slug: string; logo_url: string | null; }
@@ -41,7 +41,7 @@ export default function SuivisPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen" style={{ background: "#FBF9F5", color: T.ink }}>
+      <main className="min-h-screen" style={{ background: "#FBFAF8", color: T.ink }}>
         <section className="max-w-6xl mx-auto px-6 md:px-8 pt-28 pb-8">
           <h1 className="font-fraunces leading-[1.02] tracking-[-0.02em]" style={{ fontSize: "clamp(30px,5vw,50px)" }}>Tes suivis</h1>
           <p className="max-w-xl mt-3 text-[15.5px]" style={{ color: T.soft }}>Les nouveautés des créateur·ices et boutiques que tu suis.</p>
@@ -106,11 +106,11 @@ function Empty({ title, text, cta, href }: { title: string; text: string; cta: s
   return (
     <section className="max-w-xl mx-auto px-6 py-20 text-center">
       <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ background: "#fff", boxShadow: "inset 0 0 0 1px #ECE6DB" }}>
-        <Heart size={26} style={{ color: "#FF3D7F" }} />
+        <Heart size={26} style={{ color: "#FF2DA0" }} />
       </div>
       <h2 className="font-fraunces text-[24px] mb-2">{title}</h2>
       <p className="text-[15px] mb-6" style={{ color: "#6B6258" }}>{text}</p>
-      <Link href={href} className="inline-flex items-center gap-1.5 rounded-full px-6 py-3 font-semibold text-[15px] text-white" style={{ background: "#1A1612" }}>{cta} <ArrowRight size={15} /></Link>
+      <Link href={href} className="inline-flex items-center gap-1.5 rounded-full px-6 py-3 font-semibold text-[15px] text-white" style={{ background: "#101014" }}>{cta} <ArrowRight size={15} /></Link>
     </section>
   );
 }

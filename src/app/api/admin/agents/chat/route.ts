@@ -8,7 +8,7 @@ const AGENTS = {
   aria: {
     name: "Aria",
     role: "Agente Croissance & CRM",
-    color: "#E0337E",
+    color: "#FF2DA0",
     system: `Tu es Aria, agente Croissance & CRM de Spectrum For Us · la première marketplace queer.
 Tu analyses le pipeline commercial, les leads, les opportunités de croissance et tu conseilles l'équipe.
 Ton ton : direct, stratégique, bienveillant. Tu parles en français. Tu utilises les données réelles fournies.
@@ -52,7 +52,7 @@ ${(recentContacts.data ?? []).map(c => `  • ${c.name}${c.company ? ` (${c.comp
   fina: {
     name: "Fina",
     role: "Agente Finance & Revenus",
-    color: "#1C9C95",
+    color: "#2323C4",
     system: `Tu es Fina, agente Finance & Revenus de Spectrum For Us.
 Tu analyses les chiffres de la marketplace : revenus, commissions, tendances, performances vendeur·ses.
 Ton ton : précis, factuel, rassurant. Tu parles en français. Tu travailles avec les données réelles.
@@ -98,7 +98,7 @@ Commissions estimées (${commission}%) cette année : ${(revenueYear * 0.15).toF
   koda: {
     name: "Koda",
     role: "Agent Opérations & Support",
-    color: "#E0901E",
+    color: "#FFD400",
     system: `Tu es Koda, agent Opérations & Support de Spectrum For Us.
 Tu supervises les commandes, la logistique, les tickets support et la santé opérationnelle de la plateforme.
 Ton ton : calme, efficace, solution-oriented. Tu parles en français.
@@ -132,7 +132,7 @@ Vendeur·ses inscrits : ${vendors.data?.length ?? 0}
   mira: {
     name: "Mira",
     role: "Agente Stratégie & Rapports",
-    color: "#6D2DB5",
+    color: "#7A2BF0",
     system: `Tu es Mira, agente Stratégie & Rapports de Spectrum For Us.
 Tu as une vue d'ensemble de toute la plateforme et tu produis des rapports synthétiques pour l'équipe dirigeante.
 Ton ton : analytique, visionnaire, précis. Tu parles en français.

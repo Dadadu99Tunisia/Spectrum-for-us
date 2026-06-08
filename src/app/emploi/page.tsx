@@ -8,7 +8,7 @@ export default function EmploiPage() {
       label="Emploi & Opportunités"
       title="Travaille avec des gens qui te respectent"
       subtitle="Offres d'emploi, missions freelance, appels à projets... Dans des structures inclusives et des entreprises LGBTQIA+ friendly."
-      accent="#E0533A"
+      accent="#F93C2C"
       features={["Offres d'emploi", "Missions freelance", "Appels à projets", "Entreprises inclusives", "Bénévolat"]}
       ctaLabel="Publier une offre"
       ctaHref="/vendeur/onboarding"

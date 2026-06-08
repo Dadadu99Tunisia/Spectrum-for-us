@@ -87,7 +87,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
       {/* Owner edit bar · rendered client-side, only shows if current user = owner */}
       <ShopOwnerBar ownerId={ownerId} shopSlug={slug} />
 
-      <main className="min-h-screen pb-20 bg-[#FBF9F5] text-[#1A1612]">
+      <main className="min-h-screen pb-20 bg-[#FBFAF8] text-[#101014]">
 
         {/* ── Banner · starts from top, sits behind transparent header ── */}
         <div
@@ -106,9 +106,9 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
             >
               {/* Glows */}
               <div className="absolute inset-0 opacity-40"
-                style={{ background: "radial-gradient(ellipse at 25% 60%, #FF3D7F30, transparent 55%)" }} />
+                style={{ background: "radial-gradient(ellipse at 25% 60%, #FF2DA030, transparent 55%)" }} />
               <div className="absolute inset-0 opacity-25"
-                style={{ background: "radial-gradient(ellipse at 75% 40%, #6D2DB540, transparent 55%)" }} />
+                style={{ background: "radial-gradient(ellipse at 75% 40%, #7A2BF040, transparent 55%)" }} />
               {/* Prism particles */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 {[...Array(12)].map((_, i) => (
@@ -118,7 +118,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                       height: `${4 + (i % 4) * 3}px`,
                       left: `${(i * 31 + 7) % 95}%`,
                       top: `${(i * 17 + 11) % 85}%`,
-                      background: ["#FF3D7F", "#6D2DB5", "#1C9C95", "#E0901E"][i % 4],
+                      background: ["#FF2DA0", "#7A2BF0", "#2323C4", "#FFD400"][i % 4],
                     }}
                   />
                 ))}
@@ -127,10 +127,10 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
           )}
           {/* Prism line bottom */}
           <div className="absolute bottom-0 left-0 right-0 h-[3px]"
-            style={{ background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)" }} />
+            style={{ background: "linear-gradient(90deg,#2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400)" }} />
           {/* Gradient fade at bottom for smooth transition */}
           <div className="absolute bottom-0 left-0 right-0 h-20"
-            style={{ background: "linear-gradient(to top, #FBF9F5, transparent)" }} />
+            style={{ background: "linear-gradient(to top, #FBFAF8, transparent)" }} />
         </div>
 
         <div className="max-w-6xl mx-auto px-6">
@@ -138,26 +138,26 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
           {/* ── Shop header · overlaps banner bottom ── */}
           <div className="flex flex-col md:flex-row md:items-end gap-6 -mt-14 mb-10 relative z-10">
             {/* Logo */}
-            <div className="w-24 h-24 rounded-2xl border-4 border-[#FBF9F5] overflow-hidden bg-gradient-to-br from-[#FF3D7F]/20 to-[#6D2DB5]/20 flex items-center justify-center shrink-0 shadow-xl shadow-black/30">
+            <div className="w-24 h-24 rounded-2xl border-4 border-[#FBFAF8] overflow-hidden bg-gradient-to-br from-[#FF2DA0]/20 to-[#7A2BF0]/20 flex items-center justify-center shrink-0 shadow-xl shadow-black/30">
               {logoUrl
                 ? <img src={logoUrl} alt={shop.name as string} className="w-full h-full object-cover" />
-                : <span className="font-fraunces text-4xl text-[#FF3D7F]">{String(shop.name)[0]?.toUpperCase()}</span>
+                : <span className="font-fraunces text-4xl text-[#FF2DA0]">{String(shop.name)[0]?.toUpperCase()}</span>
               }
             </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-3 mb-1">
-                <h1 className="font-fraunces text-3xl md:text-4xl text-[#1A1612]">{shop.name as string}</h1>
+                <h1 className="font-fraunces text-3xl md:text-4xl text-[#101014]">{shop.name as string}</h1>
                 {isVerified && (
-                  <span className="flex items-center gap-1 font-mono text-[10px] tracking-wide px-2.5 py-1 border border-[#1C9C95]/40 text-[#1C9C95] rounded-full bg-[#1C9C95]/8">
+                  <span className="flex items-center gap-1 font-mono text-[10px] tracking-wide px-2.5 py-1 border border-[#2323C4]/40 text-[#2323C4] rounded-full bg-[#2323C4]/8">
                     <CheckCircle size={10} /> Vérifié·e
                   </span>
                 )}
               </div>
               {shop.tagline && (
-                <p className="font-hanken text-[#1A1612]/60 text-base mb-2">{shop.tagline as string}</p>
+                <p className="font-hanken text-[#101014]/60 text-base mb-2">{shop.tagline as string}</p>
               )}
-              <div className="flex flex-wrap items-center gap-4 font-mono text-[11px] text-[#1A1612]/35 tracking-wide">
+              <div className="flex flex-wrap items-center gap-4 font-mono text-[11px] text-[#101014]/35 tracking-wide">
                 {shop.city && (
                   <span className="flex items-center gap-1"><MapPin size={10} />{shop.city as string}</span>
                 )}
@@ -177,28 +177,28 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
           {/* Description */}
           {shop.description && (
             <div className="max-w-2xl mb-10">
-              <p className="font-hanken text-[#1A1612]/65 leading-relaxed">{shop.description as string}</p>
+              <p className="font-hanken text-[#101014]/65 leading-relaxed">{shop.description as string}</p>
             </div>
           )}
 
           {/* ── Products ── */}
-          <h2 className="font-fraunces text-xl text-[#1A1612] mb-5">
+          <h2 className="font-fraunces text-xl text-[#101014] mb-5">
             Créations ({productList.length})
           </h2>
 
           {productList.length === 0 ? (
-            <div className="flex flex-col items-center text-center py-20 border border-dashed border-[#1A1612]/10 rounded-2xl px-8">
+            <div className="flex flex-col items-center text-center py-20 border border-dashed border-[#101014]/10 rounded-2xl px-8">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
                 style={{ background: "rgba(255,61,127,0.08)", border: "1px dashed rgba(255,61,127,0.2)" }}>
-                <Package size={28} className="text-[#FF3D7F]/40" />
+                <Package size={28} className="text-[#FF2DA0]/40" />
               </div>
-              <p className="font-fraunces text-lg text-[#1A1612]/50 mb-2">Bientôt disponible</p>
-              <p className="font-hanken text-sm text-[#1A1612]/30 leading-relaxed max-w-xs">
+              <p className="font-fraunces text-lg text-[#101014]/50 mb-2">Bientôt disponible</p>
+              <p className="font-hanken text-sm text-[#101014]/30 leading-relaxed max-w-xs">
                 Cette boutique prépare ses créations. Revenez dans quelques jours ✦
               </p>
               {contactEmail && (
                 <a href={`mailto:${contactEmail}`}
-                  className="mt-6 font-mono text-[10px] tracking-wide text-[#FF3D7F]/50 hover:text-[#FF3D7F] transition-colors">
+                  className="mt-6 font-mono text-[10px] tracking-wide text-[#FF2DA0]/50 hover:text-[#FF2DA0] transition-colors">
                   Contacter la boutique →
                 </a>
               )}
@@ -225,7 +225,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                       )}
                       {ptype !== "product" && (
                         <div className="absolute top-2 left-2">
-                          <span className="font-mono text-[9px] tracking-wide px-2 py-0.5 rounded-full bg-[#FBF9F5]/80 backdrop-blur-sm text-[#E0901E] border border-[#E0901E]/30">
+                          <span className="font-mono text-[9px] tracking-wide px-2 py-0.5 rounded-full bg-[#FBFAF8]/80 backdrop-blur-sm text-[#FFD400] border border-[#FFD400]/30">
                             {TYPE_LABELS[ptype] ?? ptype}
                           </span>
                         </div>
@@ -233,12 +233,12 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                     </div>
                     <div className="pt-3">
                       {p.category && (
-                        <span className="inline-block font-mono text-[10px] tracking-wide text-[#FF3D7F] mb-1.5">
+                        <span className="inline-block font-mono text-[10px] tracking-wide text-[#FF2DA0] mb-1.5">
                           {p.category as string}
                         </span>
                       )}
-                      <p className="font-bricolage font-semibold text-[#1A1612] text-sm leading-tight line-clamp-2">{name}</p>
-                      <Price eur={Number(p.price)} className="font-mono text-sm font-bold text-[#1A1612] mt-1.5 block" />
+                      <p className="font-bricolage font-semibold text-[#101014] text-sm leading-tight line-clamp-2">{name}</p>
+                      <Price eur={Number(p.price)} className="font-mono text-sm font-bold text-[#101014] mt-1.5 block" />
                     </div>
                   </Link>
                 );

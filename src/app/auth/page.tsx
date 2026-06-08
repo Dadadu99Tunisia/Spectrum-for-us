@@ -88,26 +88,26 @@ function AuthForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center px-6 py-20">
+    <div className="min-h-screen bg-[#FBFAF8] flex items-center justify-center px-6 py-20">
       <div className="absolute inset-0 pointer-events-none" style={{
         background: "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(110,45,181,0.15) 0%, transparent 70%)"
       }} />
 
       <div className="relative z-10 w-full max-w-md">
-        <Link href="/" className="inline-flex items-center gap-2 text-[#F3EADB]/40 hover:text-[#F3EADB] text-sm font-hanken mb-8 transition-colors">
+        <Link href="/" className="inline-flex items-center gap-2 text-[#101014]/40 hover:text-[#101014] text-sm font-hanken mb-8 transition-colors">
           <ArrowLeft size={14} /> Retour à l&apos;accueil
         </Link>
 
         <div className="text-center mb-8">
-          <span className="font-fraunces text-3xl text-[#F3EADB]">B<span className="text-[#E0337E]">(u)</span>y us</span>
+          <span className="font-fraunces text-3xl text-[#101014]">B<span className="text-[#FF2DA0]">(u)</span>y us</span>
           {asVendor && (
-            <p className="font-hanken text-sm text-[#F2B79E] mt-2">Devenir créateur·rice sur Spectrum</p>
+            <p className="font-hanken text-sm text-[#FF2DA0] mt-2">Devenir créateur·rice sur Spectrum</p>
           )}
         </div>
 
         {/* Tab switcher */}
         {mode !== "reset" && (
-          <div className="flex rounded-full border border-[#F3EADB]/15 p-1 mb-8" role="tablist">
+          <div className="flex rounded-full border border-[#101014]/15 p-1 mb-8" role="tablist">
             {(["login", "signup"] as const).map((m) => (
               <button
                 key={m}
@@ -115,7 +115,7 @@ function AuthForm() {
                 aria-selected={mode === m}
                 onClick={() => { setMode(m); setError(""); setSuccess(""); }}
                 className={`flex-1 py-2.5 rounded-full text-sm font-hanken font-medium transition-all duration-200 ${
-                  mode === m ? "bg-[#E0337E] text-[#F3EADB]" : "text-[#F3EADB]/50 hover:text-[#F3EADB]"
+                  mode === m ? "bg-[#FF2DA0] text-[#101014]" : "text-[#101014]/50 hover:text-[#101014]"
                 }`}
               >
                 {m === "login" ? "Se connecter" : "Créer un compte"}
@@ -126,55 +126,55 @@ function AuthForm() {
         {mode === "reset" && (
           <div className="mb-8">
             <button onClick={() => { setMode("login"); setError(""); setSuccess(""); }}
-              className="flex items-center gap-2 text-[#F3EADB]/40 hover:text-[#F3EADB] text-sm font-hanken transition-colors">
+              className="flex items-center gap-2 text-[#101014]/40 hover:text-[#101014] text-sm font-hanken transition-colors">
               <ArrowLeft size={14} /> Retour à la connexion
             </button>
-            <h2 className="font-fraunces text-xl text-[#F3EADB] mt-4">Mot de passe oublié</h2>
-            <p className="font-hanken text-sm text-[#F3EADB]/50 mt-1">Entre ton e-mail, on t&apos;envoie un lien de réinitialisation.</p>
+            <h2 className="font-fraunces text-xl text-[#101014] mt-4">Mot de passe oublié</h2>
+            <p className="font-hanken text-sm text-[#101014]/50 mt-1">Entre ton e-mail, on t&apos;envoie un lien de réinitialisation.</p>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           {mode === "reset" && (
             <div>
-              <label htmlFor="email-reset" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40 mb-2">E-mail *</label>
+              <label htmlFor="email-reset" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">E-mail *</label>
               <input id="email-reset" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
                 placeholder="ton@email.com"
-                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+                className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
             </div>
           )}
           {mode === "signup" && (
             <>
               <div>
-                <label htmlFor="pseudo" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40 mb-2">Pseudo *</label>
+                <label htmlFor="pseudo" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Pseudo *</label>
                 <input id="pseudo" type="text" value={pseudo} onChange={(e) => setPseudo(e.target.value)}
                   placeholder="ton_pseudo"
-                  className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+                  className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               </div>
               <div>
-                <label htmlFor="pronouns" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40 mb-2">
-                  Pronoms <span className="normal-case tracking-normal text-[#F3EADB]/20">(facultatif)</span>
+                <label htmlFor="pronouns" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">
+                  Pronoms <span className="normal-case tracking-normal text-[#101014]/20">(facultatif)</span>
                 </label>
                 <input id="pronouns" type="text" value={pronouns} onChange={(e) => setPronouns(e.target.value)}
                   placeholder="il/lui, elle, iel…"
-                  className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+                  className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               </div>
             </>
           )}
 
           {mode !== "reset" && <div>
-            <label htmlFor="email" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40 mb-2">E-mail *</label>
+            <label htmlFor="email" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">E-mail *</label>
             <input id="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)}
               placeholder="ton@email.com"
-              className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+              className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
           </div>}
 
           {mode !== "reset" && <div>
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="password" className="block font-mono text-[10px] tracking-wide text-[#F3EADB]/40">Mot de passe *</label>
+              <label htmlFor="password" className="block font-mono text-[10px] tracking-wide text-[#101014]/40">Mot de passe *</label>
               {mode === "login" && (
                 <button type="button" onClick={() => { setMode("reset"); setError(""); setSuccess(""); }}
-                  className="font-hanken text-[10px] text-[#F3EADB]/30 hover:text-[#E0337E] transition-colors">
+                  className="font-hanken text-[10px] text-[#101014]/30 hover:text-[#FF2DA0] transition-colors">
                   Mot de passe oublié ?
                 </button>
               )}
@@ -183,9 +183,9 @@ function AuthForm() {
               <input id="password" type={showPw ? "text" : "password"} required autoComplete={mode === "login" ? "current-password" : "new-password"}
                 value={password} onChange={(e) => setPassword(e.target.value)}
                 placeholder={mode === "signup" ? "8 caractères minimum" : "••••••••"}
-                className="w-full bg-[#F3EADB]/5 border border-[#F3EADB]/15 rounded-xl px-4 py-3 pr-12 text-[#F3EADB] font-hanken text-sm placeholder-[#F3EADB]/25 focus:outline-none focus:border-[#E0337E]/60 transition-colors" />
+                className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 pr-12 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               <button type="button" onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/30 hover:text-[#F3EADB]/60 transition-colors">
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#101014]/30 hover:text-[#101014]/60 transition-colors">
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
@@ -197,7 +197,7 @@ function AuthForm() {
             </div>
           )}
           {success && (
-            <div role="status" className="text-sm text-[#1C9C95] font-hanken bg-[#1C9C95]/10 border border-[#1C9C95]/20 rounded-xl px-4 py-3">
+            <div role="status" className="text-sm text-[#2323C4] font-hanken bg-[#2323C4]/10 border border-[#2323C4]/20 rounded-xl px-4 py-3">
               {success}
             </div>
           )}
@@ -216,9 +216,9 @@ function AuthForm() {
         {/* ── OAuth ── */}
         {mode !== "reset" && <div className="mt-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="flex-1 h-px bg-[#F3EADB]/10" />
-            <span className="font-mono text-[10px] text-[#F3EADB]/30 tracking-wide">ou</span>
-            <div className="flex-1 h-px bg-[#F3EADB]/10" />
+            <div className="flex-1 h-px bg-[#101014]/10" />
+            <span className="font-mono text-[10px] text-[#101014]/30 tracking-wide">ou</span>
+            <div className="flex-1 h-px bg-[#101014]/10" />
           </div>
           <button
             type="button"
@@ -229,7 +229,7 @@ function AuthForm() {
                 options: { redirectTo: `${window.location.origin}/auth/callback?redirect=${redirect}` },
               });
             }}
-            className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-[#F3EADB]/15 text-[#F3EADB]/70 font-hanken text-sm hover:border-[#F3EADB]/30 hover:text-[#F3EADB] hover:bg-[#F3EADB]/5 transition-all duration-200"
+            className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-[#101014]/15 text-[#101014]/70 font-hanken text-sm hover:border-[#101014]/30 hover:text-[#101014] hover:bg-[#101014]/5 transition-all duration-200"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/>
@@ -242,17 +242,17 @@ function AuthForm() {
         </div>}
 
         {mode === "login" && (
-          <p className="text-center mt-4 font-hanken text-sm text-[#F3EADB]/40">
+          <p className="text-center mt-4 font-hanken text-sm text-[#101014]/40">
             Pas encore de compte ?{" "}
-            <button onClick={() => setMode("signup")} className="text-[#E0337E] hover:underline">S&apos;inscrire</button>
+            <button onClick={() => setMode("signup")} className="text-[#FF2DA0] hover:underline">S&apos;inscrire</button>
           </p>
         )}
 
         {mode === "signup" && (
-          <p className="text-center mt-5 text-xs font-hanken text-[#F3EADB]/25 leading-relaxed max-w-sm mx-auto">
+          <p className="text-center mt-5 text-xs font-hanken text-[#101014]/25 leading-relaxed max-w-sm mx-auto">
             En créant un compte, tu acceptes notre{" "}
-            <a href="/legal/cgu" className="text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors">charte communautaire</a>{" "}
-            et nos <a href="/legal/cgu" className="text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors">CGU</a>.
+            <a href="/legal/cgu" className="text-[#101014]/40 hover:text-[#FF2DA0] transition-colors">charte communautaire</a>{" "}
+            et nos <a href="/legal/cgu" className="text-[#101014]/40 hover:text-[#FF2DA0] transition-colors">CGU</a>.
             Tes données sensibles sont protégées (RGPD).
           </p>
         )}

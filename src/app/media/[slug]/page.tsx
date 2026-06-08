@@ -27,23 +27,23 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
   }, [slug]);
 
   if (loading) return (
-    <div className="min-h-screen bg-[#3D1F5C] flex items-center justify-center">
+    <div className="min-h-screen bg-[#FBFAF8] flex items-center justify-center">
       <SpectrumLoader size="md" />
     </div>
   );
 
   if (!article) return (
-    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB] flex flex-col items-center justify-center gap-4">
+    <div className="min-h-screen bg-[#FBFAF8] text-[#101014] flex flex-col items-center justify-center gap-4">
       <p className="font-fraunces text-2xl">Article introuvable</p>
-      <Link href="/media" className="font-hanken text-[#E0337E] hover:underline">← Retour au média</Link>
+      <Link href="/media" className="font-hanken text-[#FF2DA0] hover:underline">← Retour au média</Link>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB]">
+    <div className="min-h-screen bg-[#FBFAF8] text-[#101014]">
       <Header />
       <article className="max-w-3xl mx-auto px-6 pt-28 pb-24">
-        <Link href="/media" className="inline-flex items-center gap-2 text-[#F3EADB]/40 hover:text-[#E0337E] transition-colors font-hanken text-sm mb-8">
+        <Link href="/media" className="inline-flex items-center gap-2 text-[#101014]/40 hover:text-[#FF2DA0] transition-colors font-hanken text-sm mb-8">
           <ArrowLeft size={14} /> Retour au média
         </Link>
 
@@ -54,10 +54,10 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
         )}
 
         <div className="flex items-center gap-3 mb-4">
-          <span className="font-mono text-[10px] text-[#E0337E] tracking-wide border border-[#E0337E]/30 px-2 py-0.5 rounded-full">
+          <span className="font-mono text-[10px] text-[#FF2DA0] tracking-wide border border-[#FF2DA0]/30 px-2 py-0.5 rounded-full">
             {article.category}
           </span>
-          <span className="font-mono text-[10px] text-[#F3EADB]/30">
+          <span className="font-mono text-[10px] text-[#101014]/30">
             {new Date(article.published_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
           </span>
         </div>
@@ -65,13 +65,13 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
         <h1 className="font-fraunces text-4xl md:text-5xl font-light mb-6 leading-tight">{article.title_fr}</h1>
 
         {article.excerpt_fr && (
-          <p className="font-hanken text-lg text-[#F3EADB]/60 mb-8 leading-relaxed border-l-2 border-[#E0337E]/40 pl-4">
+          <p className="font-hanken text-lg text-[#101014]/60 mb-8 leading-relaxed border-l-2 border-[#FF2DA0]/40 pl-4">
             {article.excerpt_fr}
           </p>
         )}
 
         <div
-          className="font-hanken text-[#F3EADB]/80 leading-relaxed prose prose-invert max-w-none"
+          className="font-hanken text-[#101014]/80 leading-relaxed prose prose-invert max-w-none"
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(
             (article.content_fr ?? "").replace(/\n/g, "<br/>"),
             { ALLOWED_TAGS: ["p","br","strong","em","h2","h3","h4","ul","ol","li","a","blockquote","code","pre","span"], ALLOWED_ATTR: ["href","target","rel"] }
@@ -79,9 +79,9 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
         />
 
         {article.tags && article.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-12 pt-8 border-t border-[#F3EADB]/8">
+          <div className="flex flex-wrap gap-2 mt-12 pt-8 border-t border-[#101014]/8">
             {article.tags.map(tag => (
-              <span key={tag} className="font-mono text-[11px] bg-[#F3EADB]/5 text-[#F3EADB]/40 px-3 py-1 rounded-full">
+              <span key={tag} className="font-mono text-[11px] bg-[#101014]/5 text-[#101014]/40 px-3 py-1 rounded-full">
                 #{tag}
               </span>
             ))}

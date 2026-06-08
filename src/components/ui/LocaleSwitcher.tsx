@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useI18n, type Currency } from "@/contexts/I18nContext";
 import { ChevronDown, Check } from "lucide-react";
 
-const T = { ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F", teal: "#1C9C95" };
+const T = { ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0", teal: "#2323C4" };
 
 const LOCALES = [
   { code: "fr" as const, label: "Français", flag: "🇫🇷", sub: "Langue par défaut" },
@@ -77,8 +77,8 @@ export function LocaleSwitcher({ variant = "header" }: { variant?: "header" | "f
                 <div className="space-y-1">
                   {LOCALES.map(l => (
                     <button key={l.code} onClick={() => { setLocale(l.code); setOpen(false); }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-[#FBF9F5]"
-                      style={locale === l.code ? { background: "#FBF9F5" } : undefined}>
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-[#FBFAF8]"
+                      style={locale === l.code ? { background: "#FBFAF8" } : undefined}>
                       <span className="text-xl leading-none">{l.flag}</span>
                       <div className="flex-1 text-left">
                         <p className="font-hanken text-[14px]" style={{ color: locale === l.code ? T.mag : T.ink }}>{l.label}</p>
@@ -96,8 +96,8 @@ export function LocaleSwitcher({ variant = "header" }: { variant?: "header" | "f
                       <div className="space-y-0.5">
                         {group.items.map(c => (
                           <button key={c.code} onClick={() => { setCurrency(c.code); setOpen(false); }}
-                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-colors hover:bg-[#FBF9F5]"
-                            style={currency === c.code ? { background: "#FBF9F5" } : undefined}>
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-colors hover:bg-[#FBFAF8]"
+                            style={currency === c.code ? { background: "#FBFAF8" } : undefined}>
                             <span className="text-base leading-none">{c.flag}</span>
                             <span className="font-mono text-xs font-bold w-9" style={{ color: currency === c.code ? T.teal : T.soft }}>{c.symbol}</span>
                             <span className="font-hanken text-[13px] flex-1 text-left" style={{ color: currency === c.code ? T.ink : T.soft }}>{c.name}</span>

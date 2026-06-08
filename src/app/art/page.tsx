@@ -8,7 +8,7 @@ export default function ArtPage() {
       label="Art & Culture"
       title="L'art queer a sa scène"
       subtitle="Œuvres originales, tirages, illustrations, performances, zines, musique... La création queer dans toute sa diversité."
-      accent="#6D2DB5"
+      accent="#7A2BF0"
       features={["Œuvres originales", "Tirages d'art", "Zines & Édition", "Performances", "Musique", "Art numérique"]}
       ctaLabel="Exposer mon œuvre"
       ctaHref="/vendeur/onboarding"

@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
-const T = { ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
+const T = { ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 
 export type Section = { h: string; p: string[] };
 
@@ -11,7 +11,7 @@ export function EditorialPage({ eyebrow, title, lead, sections }: {
   return (
     <>
       <Header />
-      <main className="min-h-screen" style={{ background: "#FBF9F5", color: T.ink }}>
+      <main className="min-h-screen" style={{ background: "#FBFAF8", color: T.ink }}>
         <section className="max-w-3xl mx-auto px-6 md:px-8 pt-32 pb-10">
           <p className="font-hanken text-[13px] mb-3" style={{ color: T.faint }}>{eyebrow}</p>
           <h1 className="font-fraunces leading-[1.02] tracking-[-0.02em]" style={{ fontSize: "clamp(32px,5vw,52px)" }}>{title}</h1>

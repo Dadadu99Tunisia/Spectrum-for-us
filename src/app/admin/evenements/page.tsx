@@ -24,7 +24,7 @@ type Event = {
 };
 
 const MOD_CONFIG: Record<string, { label: string; color: string }> = {
-  pending:  { label: "En attente", color: "text-[#E0901E] bg-[#E0901E]/10 border-[#E0901E]/20" },
+  pending:  { label: "En attente", color: "text-[#FFD400] bg-[#FFD400]/10 border-[#FFD400]/20" },
   approved: { label: "Approuvé",   color: "text-green-600 bg-green-400/10 border-green-400/20" },
   rejected: { label: "Rejeté",     color: "text-red-600 bg-red-400/10 border-red-400/20" },
 };
@@ -78,28 +78,28 @@ export default function EvenementsPage() {
 
   return (
     <div className="space-y-6">
-      {toast && <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#FF3D7F] text-white font-hanken text-sm shadow-xl">{toast}</div>}
+      {toast && <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#FF2DA0] text-white font-hanken text-sm shadow-xl">{toast}</div>}
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#1A1612]">Événements</h1>
-          <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">{total} événement{total !== 1 ? "s" : ""}</p>
+          <h1 className="font-fraunces text-2xl text-[#101014]">Événements</h1>
+          <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">{total} événement{total !== 1 ? "s" : ""}</p>
         </div>
-        <button onClick={fetch_} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#1A1612]/[0.14] text-[#1A1612]/40 hover:text-[#1A1612] transition-colors text-sm">
+        <button onClick={fetch_} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#101014]/[0.14] text-[#101014]/40 hover:text-[#101014] transition-colors text-sm">
           <RefreshCw size={13} />
         </button>
       </div>
 
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-48">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1A1612]/25" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#101014]/25" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher un événement…"
-            className="w-full pl-9 pr-4 py-2 bg-[#1A1612]/[0.09] border border-[#1A1612]/[0.14] rounded-lg font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
+            className="w-full pl-9 pr-4 py-2 bg-[#101014]/[0.09] border border-[#101014]/[0.14] rounded-lg font-hanken text-sm text-[#101014] placeholder-[#101014]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
         </div>
-        <div className="flex gap-1 p-1 bg-[#1A1612]/[0.08] rounded-lg">
+        <div className="flex gap-1 p-1 bg-[#101014]/[0.08] rounded-lg">
           {[["pending","En attente"],["approved","Approuvés"],["rejected","Rejetés"],["","Tous"]].map(([v,l]) => (
             <button key={v} onClick={() => setModFilter(v)}
-              className={`px-3 py-1.5 rounded-md font-mono text-[10px] transition-all ${modFilter === v ? "bg-[#FF3D7F] text-white" : "text-[#1A1612]/40 hover:text-[#1A1612]"}`}>{l}</button>
+              className={`px-3 py-1.5 rounded-md font-mono text-[10px] transition-all ${modFilter === v ? "bg-[#FF2DA0] text-white" : "text-[#101014]/40 hover:text-[#101014]"}`}>{l}</button>
           ))}
         </div>
       </div>
@@ -107,46 +107,46 @@ export default function EvenementsPage() {
       {loading ? (
         <div className="flex items-center justify-center py-20"><SpectrumLoader size="sm" /></div>
       ) : events.length === 0 ? (
-        <div className="text-center py-20"><CalendarDays size={40} className="mx-auto mb-3 text-[#1A1612]/10" /><p className="font-hanken text-[#1A1612]/30">Aucun événement</p></div>
+        <div className="text-center py-20"><CalendarDays size={40} className="mx-auto mb-3 text-[#101014]/10" /><p className="font-hanken text-[#101014]/30">Aucun événement</p></div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {events.map(ev => {
             const modUi = MOD_CONFIG[ev.moderation] ?? MOD_CONFIG.pending;
             const isPast = ev.date_start && new Date(ev.date_start) < new Date();
             return (
-              <div key={ev.id} className={`rounded-2xl border overflow-hidden transition-all ${isPast ? "opacity-50 border-[#1A1612]/5" : "border-[#1A1612]/[0.13] hover:border-[#1A1612]/20"}`}>
+              <div key={ev.id} className={`rounded-2xl border overflow-hidden transition-all ${isPast ? "opacity-50 border-[#101014]/5" : "border-[#101014]/[0.13] hover:border-[#101014]/20"}`}>
                 {ev.image_url ? (
                   <img src={ev.image_url} alt={ev.title} className="w-full h-32 object-cover" />
                 ) : (
-                  <div className="w-full h-32 bg-gradient-to-br from-[#FF3D7F]/10 to-[#6D2DB5]/10 flex items-center justify-center">
-                    <CalendarDays size={28} className="text-[#1A1612]/15" />
+                  <div className="w-full h-32 bg-gradient-to-br from-[#FF2DA0]/10 to-[#7A2BF0]/10 flex items-center justify-center">
+                    <CalendarDays size={28} className="text-[#101014]/15" />
                   </div>
                 )}
                 <div className="p-4 space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-fraunces text-sm text-[#1A1612] leading-snug flex-1">{ev.title}</h3>
+                    <h3 className="font-fraunces text-sm text-[#101014] leading-snug flex-1">{ev.title}</h3>
                     <button onClick={() => toggleFeatured(ev.id, ev.is_featured)}
-                      className={`flex-shrink-0 p-1 rounded transition-colors ${ev.is_featured ? "text-[#E0901E]" : "text-[#1A1612]/15 hover:text-[#E0901E]"}`}>
+                      className={`flex-shrink-0 p-1 rounded transition-colors ${ev.is_featured ? "text-[#FFD400]" : "text-[#101014]/15 hover:text-[#FFD400]"}`}>
                       <Star size={13} fill={ev.is_featured ? "currentColor" : "none"} />
                     </button>
                   </div>
                   <div className="space-y-1">
-                    <div className="flex items-center gap-1.5 font-mono text-[10px] text-[#1A1612]/35">
+                    <div className="flex items-center gap-1.5 font-mono text-[10px] text-[#101014]/35">
                       <Clock size={9} />
                       {new Date(ev.date_start).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                     </div>
                     {ev.city && (
-                      <div className="flex items-center gap-1.5 font-mono text-[10px] text-[#1A1612]/35">
+                      <div className="flex items-center gap-1.5 font-mono text-[10px] text-[#101014]/35">
                         <MapPin size={9} /> {ev.city}{ev.venue ? ` · ${ev.venue}` : ""}
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-[#1A1612]/[0.12]">
+                  <div className="flex items-center justify-between pt-2 border-t border-[#101014]/[0.12]">
                     <span className={`font-mono text-[9px] px-2 py-1 rounded-full border ${modUi.color}`}>{modUi.label}</span>
                     <div className="flex gap-1">
                       {ev.url && (
                         <a href={ev.url} target="_blank" rel="noreferrer"
-                          className="p-1.5 rounded-lg text-[#1A1612]/25 hover:text-[#1A1612] border border-transparent hover:border-[#1A1612]/[0.14] transition-colors">
+                          className="p-1.5 rounded-lg text-[#101014]/25 hover:text-[#101014] border border-transparent hover:border-[#101014]/[0.14] transition-colors">
                           <ExternalLink size={11} />
                         </a>
                       )}

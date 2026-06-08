@@ -8,7 +8,7 @@ export default function CommunautePage() {
       label="Communauté"
       title="Connecte-toi à ta communauté"
       subtitle="Associations, collectifs, groupes locaux, réseaux militants, activités sportives et culturelles. L'écosystème queer."
-      accent="#CF3F7C"
+      accent="#FF2DA0"
       features={["Associations", "Collectifs artistiques", "Groupes locaux", "Réseaux militants", "Activités", "Entraide"]}
       ctaLabel="Rejoindre le mouvement"
       ctaHref="/auth"

@@ -59,17 +59,17 @@ export default function AmbassadeursPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#3D1F5C] text-[#F3EADB]">
+    <div className="min-h-screen bg-[#FBFAF8] text-[#101014]">
       <Header />
 
       {/* Hero */}
       <section className="pt-32 pb-16 px-6 text-center max-w-3xl mx-auto">
-        <p className="font-mono text-xs tracking-widest text-[#E0337E] uppercase mb-4">Programme Ambassadeur·rice</p>
+        <p className="font-mono text-xs tracking-widest text-[#FF2DA0] uppercase mb-4">Programme Ambassadeur·rice</p>
         <h1 className="font-fraunces text-5xl md:text-6xl font-light mb-4">
-          Partage. Gagne.<br /><span className="text-[#E0337E]">Fais grandir</span> la communauté.
+          Partage. Gagne.<br /><span className="text-[#FF2DA0]">Fais grandir</span> la communauté.
         </h1>
-        <p className="font-hanken text-[#F3EADB]/60 text-lg mb-8">
-          Partage Spectrum For Us et touche <strong className="text-[#F3EADB]">10% de commission</strong> sur chaque vente générée via ton lien.
+        <p className="font-hanken text-[#101014]/60 text-lg mb-8">
+          Partage Spectrum For Us et touche <strong className="text-[#101014]">10% de commission</strong> sur chaque vente générée via ton lien.
         </p>
 
         {/* Comment ça marche */}
@@ -79,10 +79,10 @@ export default function AmbassadeursPage() {
             { step: "02", title: "Partage ton lien", desc: "Sur tes réseaux, à ta communauté, partout." },
             { step: "03", title: "Touche ta commission", desc: "10% sur chaque achat via ton lien unique." },
           ].map(s => (
-            <div key={s.step} className="p-5 rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.02]">
-              <span className="font-mono text-3xl font-bold text-[#E0337E]/30">{s.step}</span>
+            <div key={s.step} className="p-5 rounded-2xl border border-[#101014]/8 bg-[#101014]/[0.02]">
+              <span className="font-mono text-3xl font-bold text-[#FF2DA0]/30">{s.step}</span>
               <h3 className="font-fraunces text-lg mt-2 mb-1">{s.title}</h3>
-              <p className="font-hanken text-sm text-[#F3EADB]/50">{s.desc}</p>
+              <p className="font-hanken text-sm text-[#101014]/50">{s.desc}</p>
             </div>
           ))}
         </div>
@@ -91,16 +91,16 @@ export default function AmbassadeursPage() {
       {/* Dashboard ambassadeur */}
       <div className="max-w-2xl mx-auto px-6 pb-24">
         {loading ? (
-          <div className="h-32 rounded-2xl bg-[#F3EADB]/5 animate-pulse" />
+          <div className="h-32 rounded-2xl bg-[#101014]/5 animate-pulse" />
         ) : !user ? (
-          <div className="text-center p-8 rounded-2xl border border-[#F3EADB]/10">
-            <p className="font-hanken text-[#F3EADB]/60 mb-4">Connecte-toi pour rejoindre le programme.</p>
+          <div className="text-center p-8 rounded-2xl border border-[#101014]/10">
+            <p className="font-hanken text-[#101014]/60 mb-4">Connecte-toi pour rejoindre le programme.</p>
             <Button href="/auth?mode=ambassador">Se connecter</Button>
           </div>
         ) : !ambassador ? (
-          <div className="text-center p-8 rounded-2xl border border-[#E0337E]/20 bg-[#E0337E]/5">
+          <div className="text-center p-8 rounded-2xl border border-[#FF2DA0]/20 bg-[#FF2DA0]/5">
             <h2 className="font-fraunces text-2xl mb-2">Prêt·e à rejoindre ?</h2>
-            <p className="font-hanken text-[#F3EADB]/60 mb-6">Ton code personnalisé sera créé instantanément.</p>
+            <p className="font-hanken text-[#101014]/60 mb-6">Ton code personnalisé sera créé instantanément.</p>
             <Button onClick={joinProgram} disabled={joining}>
               {joining ? "Création…" : "Rejoindre le programme →"}
             </Button>
@@ -114,24 +114,24 @@ export default function AmbassadeursPage() {
                 { icon: Users, label: "Parrainages", value: String(referrals.length) },
                 { icon: TrendingUp, label: "Commission", value: `${(ambassador.commission_rate * 100).toFixed(0)}%` },
               ].map(s => (
-                <div key={s.label} className="p-4 rounded-xl border border-[#F3EADB]/8 text-center">
-                  <s.icon size={18} className="text-[#E0337E] mx-auto mb-2" />
+                <div key={s.label} className="p-4 rounded-xl border border-[#101014]/8 text-center">
+                  <s.icon size={18} className="text-[#FF2DA0] mx-auto mb-2" />
                   <p className="font-fraunces text-xl">{s.value}</p>
-                  <p className="font-mono text-[10px] text-[#F3EADB]/40 mt-0.5">{s.label}</p>
+                  <p className="font-mono text-[10px] text-[#101014]/40 mt-0.5">{s.label}</p>
                 </div>
               ))}
             </div>
 
             {/* Code */}
-            <div className="p-5 rounded-2xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.02]">
-              <p className="font-mono text-xs text-[#F3EADB]/40 tracking-wide mb-2">Ton lien ambassadeur·rice</p>
+            <div className="p-5 rounded-2xl border border-[#101014]/10 bg-[#101014]/[0.02]">
+              <p className="font-mono text-xs text-[#101014]/40 tracking-wide mb-2">Ton lien ambassadeur·rice</p>
               <div className="flex items-center gap-3">
-                <code className="flex-1 font-mono text-sm text-[#E0337E] bg-[#E0337E]/5 px-3 py-2 rounded-lg truncate">
+                <code className="flex-1 font-mono text-sm text-[#FF2DA0] bg-[#FF2DA0]/5 px-3 py-2 rounded-lg truncate">
                   spectrumforus.com?ref={ambassador.referral_code}
                 </code>
                 <button
                   onClick={copyCode}
-                  className="p-2 rounded-lg border border-[#F3EADB]/10 text-[#F3EADB]/60 hover:text-[#E0337E] hover:border-[#E0337E]/30 transition-all"
+                  className="p-2 rounded-lg border border-[#101014]/10 text-[#101014]/60 hover:text-[#FF2DA0] hover:border-[#FF2DA0]/30 transition-all"
                 >
                   {copied ? <Check size={16} className="text-green-400" /> : <Copy size={16} />}
                 </button>
@@ -140,18 +140,18 @@ export default function AmbassadeursPage() {
 
             {/* Referrals */}
             {referrals.length > 0 && (
-              <div className="rounded-2xl border border-[#F3EADB]/8 overflow-hidden">
-                <div className="p-4 border-b border-[#F3EADB]/8">
+              <div className="rounded-2xl border border-[#101014]/8 overflow-hidden">
+                <div className="p-4 border-b border-[#101014]/8">
                   <h3 className="font-fraunces text-lg">Historique des parrainages</h3>
                 </div>
-                <div className="divide-y divide-[#F3EADB]/5">
+                <div className="divide-y divide-[#101014]/5">
                   {referrals.map(r => (
                     <div key={r.id} className="flex items-center justify-between p-4">
                       <div>
                         <p className="font-hanken text-sm">{new Date(r.created_at).toLocaleDateString("fr-FR")}</p>
-                        <p className="font-mono text-[10px] text-[#F3EADB]/40">{r.status}</p>
+                        <p className="font-mono text-[10px] text-[#101014]/40">{r.status}</p>
                       </div>
-                      <span className="font-mono text-sm text-[#E0337E]">+{r.commission_amount.toFixed(2)}€</span>
+                      <span className="font-mono text-sm text-[#FF2DA0]">+{r.commission_amount.toFixed(2)}€</span>
                     </div>
                   ))}
                 </div>

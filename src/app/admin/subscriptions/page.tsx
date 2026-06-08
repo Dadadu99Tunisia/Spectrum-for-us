@@ -28,8 +28,8 @@ export default function AdminSubscriptions() {
   const filtered = filter === "all" ? rows : rows.filter(r => r.status === filter);
 
   const kpis = [
-    { label: "MRR", value: summary ? eur(summary.mrr) : "-", icon: CreditCard, accent: "#1C9C95" },
-    { label: "Actifs", value: summary?.active ?? "-", icon: CheckCircle2, accent: "#1C9C95", f: "active" },
+    { label: "MRR", value: summary ? eur(summary.mrr) : "-", icon: CreditCard, accent: "#2323C4" },
+    { label: "Actifs", value: summary?.active ?? "-", icon: CheckCircle2, accent: "#2323C4", f: "active" },
     { label: "En retard", value: summary?.pastDue ?? "-", icon: AlertTriangle, accent: "#F2A03D", f: "past_due" },
     { label: "Annulés", value: summary?.canceled ?? "-", icon: XCircle, accent: "#FF6FA3", f: "canceled" },
     { label: "Sans abo", value: summary?.none ?? "-", icon: Minus, accent: "rgba(243,234,219,.4)", f: "none" },
@@ -38,8 +38,8 @@ export default function AdminSubscriptions() {
   return (
     <div className="space-y-6 max-w-[1440px]">
       <div>
-        <h1 className="font-bricolage font-bold text-2xl text-[#1A1612]">Abonnements</h1>
-        <p className="font-hanken text-sm text-[#1A1612]/40 mt-1">Abonnement vendeur · 9,90 €/mois · déclenché à la 1ʳᵉ vente.</p>
+        <h1 className="font-bricolage font-bold text-2xl text-[#101014]">Abonnements</h1>
+        <p className="font-hanken text-sm text-[#101014]/40 mt-1">Abonnement vendeur · 9,90 €/mois · déclenché à la 1ʳᵉ vente.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
@@ -47,44 +47,44 @@ export default function AdminSubscriptions() {
           const Icon = k.icon;
           return (
             <button key={k.label} onClick={() => k.f && setFilter(filter === k.f ? "all" : k.f)}
-              className="text-left rounded-2xl p-4 transition-all hover:bg-[#1A1612]/[0.06]"
+              className="text-left rounded-2xl p-4 transition-all hover:bg-[#101014]/[0.06]"
               style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${filter === k.f ? k.accent + "66" : "rgba(255,255,255,0.1)"}` }}>
               <span className="w-8 h-8 rounded-lg flex items-center justify-center mb-2" style={{ background: k.accent + "22" }}>
                 <Icon size={15} style={{ color: k.accent }} />
               </span>
-              <div className="font-bricolage font-bold text-2xl text-[#1A1612]">{k.value}</div>
-              <div className="font-hanken text-[11px] text-[#1A1612]/45 mt-0.5">{k.label}</div>
+              <div className="font-bricolage font-bold text-2xl text-[#101014]">{k.value}</div>
+              <div className="font-hanken text-[11px] text-[#101014]/45 mt-0.5">{k.label}</div>
             </button>
           );
         })}
       </div>
 
       <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}>
-        <div className="px-5 py-3 flex items-center justify-between border-b border-[#1A1612]/[0.08]">
-          <h2 className="font-hanken font-semibold text-sm text-[#1A1612]">{filtered.length} boutique{filtered.length > 1 ? "s" : ""}{filter !== "all" && ` · ${STATUS[filter]?.label}`}</h2>
+        <div className="px-5 py-3 flex items-center justify-between border-b border-[#101014]/[0.08]">
+          <h2 className="font-hanken font-semibold text-sm text-[#101014]">{filtered.length} boutique{filtered.length > 1 ? "s" : ""}{filter !== "all" && ` · ${STATUS[filter]?.label}`}</h2>
           {filter !== "all" && <button onClick={() => setFilter("all")} className="font-mono text-[10px] text-[#FF6FA3]">Tout voir</button>}
         </div>
         {loading ? (
-          <div className="p-5 space-y-2">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-lg bg-[#1A1612]/[0.05] animate-pulse" />)}</div>
+          <div className="p-5 space-y-2">{[...Array(5)].map((_, i) => <div key={i} className="h-10 rounded-lg bg-[#101014]/[0.05] animate-pulse" />)}</div>
         ) : filtered.length === 0 ? (
-          <p className="p-8 text-center font-hanken text-sm text-[#1A1612]/35">Aucune boutique.</p>
+          <p className="p-8 text-center font-hanken text-sm text-[#101014]/35">Aucune boutique.</p>
         ) : (
           <table className="w-full">
-            <thead><tr className="border-b border-[#1A1612]/[0.06]">
-              {["Boutique", "Statut", "MRR", "Renouvellement", "Stripe"].map(h => <th key={h} className="text-left font-mono text-[10px] uppercase tracking-wider text-[#1A1612]/30 px-5 py-2.5">{h}</th>)}
+            <thead><tr className="border-b border-[#101014]/[0.06]">
+              {["Boutique", "Statut", "MRR", "Renouvellement", "Stripe"].map(h => <th key={h} className="text-left font-mono text-[10px] uppercase tracking-wider text-[#101014]/30 px-5 py-2.5">{h}</th>)}
             </tr></thead>
             <tbody>
               {filtered.map(r => {
                 const s = STATUS[r.status] ?? STATUS.none;
                 return (
-                  <tr key={r.id} className="border-b border-[#1A1612]/[0.04] hover:bg-[#1A1612]/[0.03]">
+                  <tr key={r.id} className="border-b border-[#101014]/[0.04] hover:bg-[#101014]/[0.03]">
                     <td className="px-5 py-3">
-                      <Link href={`/boutique/${r.slug}`} target="_blank" className="font-hanken text-sm text-[#1A1612] hover:text-[#FF6FA3]">{r.shop}</Link>
+                      <Link href={`/boutique/${r.slug}`} target="_blank" className="font-hanken text-sm text-[#101014] hover:text-[#FF6FA3]">{r.shop}</Link>
                     </td>
                     <td className="px-5 py-3"><span className="font-mono text-[10px] font-bold uppercase px-2.5 py-1 rounded-full" style={{ background: s.bg, color: s.fg }}>{s.label}</span></td>
-                    <td className="px-5 py-3 font-hanken text-sm text-[#1A1612]/70">{r.status === "active" ? "9,90 €" : "-"}</td>
-                    <td className="px-5 py-3 font-mono text-xs text-[#1A1612]/45">{r.renewal ? new Date(r.renewal).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "-"}</td>
-                    <td className="px-5 py-3">{r.hasStripe ? <CheckCircle2 size={15} className="text-[#1C9C95]" /> : <Minus size={15} className="text-[#1A1612]/20" />}</td>
+                    <td className="px-5 py-3 font-hanken text-sm text-[#101014]/70">{r.status === "active" ? "9,90 €" : "-"}</td>
+                    <td className="px-5 py-3 font-mono text-xs text-[#101014]/45">{r.renewal ? new Date(r.renewal).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "-"}</td>
+                    <td className="px-5 py-3">{r.hasStripe ? <CheckCircle2 size={15} className="text-[#2323C4]" /> : <Minus size={15} className="text-[#101014]/20" />}</td>
                   </tr>
                 );
               })}

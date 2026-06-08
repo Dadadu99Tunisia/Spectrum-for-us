@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Star } from "lucide-react";
 
-const T = { ink: "#1A1612", soft: "#6B6258", line: "#ECE6DB", mag: "#FF3D7F", amber: "#F2A03D" };
+const T = { ink: "#101014", soft: "#6B6258", line: "#ECE6DB", mag: "#FF2DA0", amber: "#F2A03D" };
 
 type Review = {
   id: string; rating: number; comment: string | null; created_at: string;
@@ -82,7 +82,7 @@ export function ProductReviews({ productId }: { productId: string }) {
               </div>
               <textarea value={comment} onChange={e => setComment(e.target.value)} rows={3}
                 placeholder="Partage ton expérience (optionnel)…"
-                className="w-full rounded-xl px-3 py-2.5 text-sm outline-none resize-none" style={{ background: "#FBF9F5", boxShadow: `inset 0 0 0 1px ${T.line}`, color: T.ink }} />
+                className="w-full rounded-xl px-3 py-2.5 text-sm outline-none resize-none" style={{ background: "#FBFAF8", boxShadow: `inset 0 0 0 1px ${T.line}`, color: T.ink }} />
               <button type="submit" disabled={submitting}
                 className="mt-3 px-5 py-2.5 rounded-full font-hanken font-semibold text-sm text-white disabled:opacity-50" style={{ background: T.mag }}>
                 {submitting ? "Envoi…" : "Publier mon avis"}

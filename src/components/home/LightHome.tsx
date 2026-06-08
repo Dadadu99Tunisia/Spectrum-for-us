@@ -13,7 +13,7 @@ import { ArrowRight, ShoppingCart, Briefcase, Heart, CalendarDays, Truck, Refres
 import { Header } from "@/components/Header";
 import { Price } from "@/components/ui/Price";
 
-const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
+const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 const CAT: Record<string, { tint: string; ink: string }> = {
   Mode: { tint: "#FBE3EC", ink: "#C23B6B" }, Bijoux: { tint: "#FBEAD3", ink: "#B5742A" },
   Zines: { tint: "#D9EEF3", ink: "#1E7E91" }, Corps: { tint: "#DCF0E5", ink: "#1B8155" },

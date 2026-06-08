@@ -12,7 +12,7 @@ export default function AnnuairePage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen" style={{ background: "#FBF9F5", color: "#1A1612" }}>
+      <main className="min-h-screen" style={{ background: "#FBFAF8", color: "#101014" }}>
         <LightAnnuaire />
 
         {/* ─── CTA référencer ─── */}
@@ -25,7 +25,7 @@ export default function AnnuairePage() {
           <a
             href="mailto:contact@spectrumforus.com?subject=Référencement annuaire"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-hanken font-semibold text-sm text-white transition-all hover:brightness-110"
-            style={{ background: "#FF3D7F" }}
+            style={{ background: "#FF2DA0" }}
           >
             Nous contacter →
           </a>

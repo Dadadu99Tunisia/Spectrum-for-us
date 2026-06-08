@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Bricolage_Grotesque, Hanken_Grotesk, Space_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { PageTransition } from "@/components/animations/PageTransition";
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
@@ -18,22 +18,12 @@ import { BottomNav } from "@/components/mobile/BottomNav";
 import { IntroSplash } from "@/components/IntroSplash";
 import { FavoritesSync } from "@/components/FavoritesSync";
 
-const fraunces = Fraunces({
+// Charte V1 · 2 polices max : Plus Jakarta Sans (titres + corps) + Space Mono (labels/prix)
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["300", "400", "600", "700", "900"],
-});
-
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin"],
-  variable: "--font-bricolage",
-  weight: ["400", "500", "600", "700"],
-});
-
-const hanken = Hanken_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-hanken",
-  weight: ["400", "500", "600"],
+  variable: "--font-jakarta",
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 const spaceMono = Space_Mono({
@@ -113,9 +103,9 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${fraunces.variable} ${bricolage.variable} ${hanken.variable} ${spaceMono.variable}`}
+      className={`${jakarta.variable} ${spaceMono.variable}`}
     >
-      <body className="bg-[#FBF9F5] text-[#1A1612] antialiased">
+      <body className="bg-[#FBFAF8] text-[#101014] antialiased">
         {/* Gate pré-paint : pose le voile sombre AVANT le premier paint si l'intro
             doit jouer cette session → zéro flash de la home avant l'animation. */}
         <script

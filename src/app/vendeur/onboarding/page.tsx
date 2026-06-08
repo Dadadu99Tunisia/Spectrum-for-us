@@ -56,19 +56,19 @@ export default function OnboardingPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-[#FF3D7F] border-t-transparent animate-spin" />
+    <div className="min-h-screen bg-[#FBFAF8] flex items-center justify-center">
+      <div className="w-8 h-8 rounded-full border-2 border-[#FF2DA0] border-t-transparent animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] px-6 py-12">
+    <div className="min-h-screen bg-[#FBFAF8] px-6 py-12">
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 60% at 50% 50%, rgba(110,45,181,0.12) 0%, transparent 70%)" }} />
 
       <div className="relative z-10 max-w-lg mx-auto">
         {/* Logo */}
         <a href="/" className="block text-center mb-8">
-          <span className="font-fraunces text-2xl text-[#1A1612]">B<span className="text-[#FF3D7F]">(u)</span>y us</span>
+          <span className="font-fraunces text-2xl text-[#101014]">B<span className="text-[#FF2DA0]">(u)</span>y us</span>
         </a>
 
         {/* Progress */}
@@ -77,13 +77,13 @@ export default function OnboardingPage() {
             {STEPS.slice(0, 4).map((s, i) => (
               <div key={s} className="flex items-center gap-2">
                 <div className={`w-7 h-7 rounded-full border text-xs font-mono flex items-center justify-center transition-all duration-300 ${
-                  i < step ? "bg-[#1C9C95] border-[#1C9C95] text-[#1A1612]"
-                  : i === step ? "border-[#FF3D7F] text-[#FF3D7F]"
-                  : "border-[#1A1612]/20 text-[#1A1612]/30"
+                  i < step ? "bg-[#2323C4] border-[#2323C4] text-[#101014]"
+                  : i === step ? "border-[#FF2DA0] text-[#FF2DA0]"
+                  : "border-[#101014]/20 text-[#101014]/30"
                 }`}>
                   {i < step ? "✓" : i + 1}
                 </div>
-                {i < 3 && <div className={`w-6 h-px transition-colors ${i < step ? "bg-[#1C9C95]" : "bg-[#1A1612]/15"}`} />}
+                {i < 3 && <div className={`w-6 h-px transition-colors ${i < step ? "bg-[#2323C4]" : "bg-[#101014]/15"}`} />}
               </div>
             ))}
           </div>
@@ -92,11 +92,11 @@ export default function OnboardingPage() {
         {/* Step 0 · Bienvenue */}
         {step === 0 && (
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-[#FF3D7F]/10 border border-[#FF3D7F]/30 flex items-center justify-center mx-auto mb-6">
-              <Store size={28} className="text-[#FF3D7F]" />
+            <div className="w-16 h-16 rounded-2xl bg-[#FF2DA0]/10 border border-[#FF2DA0]/30 flex items-center justify-center mx-auto mb-6">
+              <Store size={28} className="text-[#FF2DA0]" />
             </div>
-            <h1 className="font-fraunces text-3xl text-[#1A1612] mb-3">Ouvre ta boutique</h1>
-            <p className="font-hanken text-[#1A1612]/55 mb-10 leading-relaxed">
+            <h1 className="font-fraunces text-3xl text-[#101014] mb-3">Ouvre ta boutique</h1>
+            <p className="font-hanken text-[#101014]/55 mb-10 leading-relaxed">
               Bienvenue dans le spectre. En 3 étapes, ta boutique est en ligne, visible par une communauté qui cherche exactement ce que tu crées.
             </p>
             <div className="grid grid-cols-2 gap-4 mb-10 text-left">
@@ -106,9 +106,9 @@ export default function OnboardingPage() {
                 { icon: Zap, text: "10 min pour être en ligne" },
                 { icon: Store, text: "9,90 €/mois, sans commission cachée" },
               ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-start gap-3 p-3 rounded-xl bg-[#1A1612]/[0.03] border border-[#1A1612]/8">
-                  <Icon size={14} className="text-[#FF3D7F] mt-0.5 shrink-0" />
-                  <p className="font-hanken text-xs text-[#1A1612]/60 leading-relaxed">{text}</p>
+                <div key={text} className="flex items-start gap-3 p-3 rounded-xl bg-[#101014]/[0.03] border border-[#101014]/8">
+                  <Icon size={14} className="text-[#FF2DA0] mt-0.5 shrink-0" />
+                  <p className="font-hanken text-xs text-[#101014]/60 leading-relaxed">{text}</p>
                 </div>
               ))}
             </div>
@@ -121,47 +121,47 @@ export default function OnboardingPage() {
         {/* Step 1 · Ta boutique */}
         {step === 1 && (
           <div>
-            <h2 className="font-fraunces text-2xl text-[#1A1612] mb-6">Présente ta boutique</h2>
+            <h2 className="font-fraunces text-2xl text-[#101014] mb-6">Présente ta boutique</h2>
             <div className="space-y-4">
               <div>
-                <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Nom de ta boutique *</label>
+                <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Nom de ta boutique *</label>
                 <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="Atelier Lumière"
-                  className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
+                  className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               </div>
               <div>
-                <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Accroche (1 ligne)</label>
+                <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Accroche (1 ligne)</label>
                 <input type="text" value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })}
                   placeholder="Bijoux forgés à la main, pièces uniques"
-                  className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
+                  className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               </div>
               <div>
-                <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Description *</label>
+                <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Description *</label>
                 <textarea rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
                   placeholder="Présente ton travail, ton univers, ta démarche…"
-                  className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors resize-none" />
+                  className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors resize-none" />
               </div>
               <div>
-                <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">
-                  Email de contact <span className="normal-case tracking-normal text-[#1A1612]/25">(visible sur ta boutique)</span>
+                <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">
+                  Email de contact <span className="normal-case tracking-normal text-[#101014]/25">(visible sur ta boutique)</span>
                 </label>
                 <input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
                   placeholder="ta@boutique.com"
-                  className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
+                  className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Ville</label>
+                  <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Ville</label>
                   <input type="text" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })}
                     placeholder="Paris"
-                    className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/25 focus:outline-none focus:border-[#FF3D7F]/60 transition-colors" />
+                    className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
                 </div>
                 <div>
-                  <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-2">Catégorie principale</label>
+                  <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Catégorie principale</label>
                   <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-xl px-4 py-3 text-[#1A1612] font-hanken text-sm focus:outline-none focus:border-[#FF3D7F]/60 transition-colors">
-                    <option value="" className="bg-[#FBF9F5]">Choisir…</option>
-                    {CATEGORIES.map((c) => <option key={c} value={c} className="bg-[#FBF9F5]">{c}</option>)}
+                    className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/60 transition-colors">
+                    <option value="" className="bg-[#FBFAF8]">Choisir…</option>
+                    {CATEGORIES.map((c) => <option key={c} value={c} className="bg-[#FBFAF8]">{c}</option>)}
                   </select>
                 </div>
               </div>
@@ -181,8 +181,8 @@ export default function OnboardingPage() {
         {step === 2 && (
           <div>
             <div className="mb-6">
-              <h2 className="font-fraunces text-2xl text-[#1A1612] mb-1">Programme Fondateur·ice</h2>
-              <p className="font-hanken text-sm text-[#1A1612]/45">
+              <h2 className="font-fraunces text-2xl text-[#101014] mb-1">Programme Fondateur·ice</h2>
+              <p className="font-hanken text-sm text-[#101014]/45">
                 En ouvrant ta boutique aujourd&apos;hui, tu rejoins automatiquement le programme · découvre tes avantages.
               </p>
             </div>
@@ -199,9 +199,9 @@ export default function OnboardingPage() {
         {/* Step 3 · Charte */}
         {step === 3 && (
           <div>
-            <h2 className="font-fraunces text-2xl text-[#1A1612] mb-2">Charte communautaire</h2>
-            <p className="font-hanken text-sm text-[#1A1612]/50 mb-6">Spectrum For Us est un safe space. Ces engagements sont non-négociables.</p>
-            <div className="rounded-2xl border border-[#1A1612]/10 bg-[#1A1612]/[0.02] p-5 mb-6 space-y-3 text-sm font-hanken text-[#1A1612]/60 leading-relaxed">
+            <h2 className="font-fraunces text-2xl text-[#101014] mb-2">Charte communautaire</h2>
+            <p className="font-hanken text-sm text-[#101014]/50 mb-6">Spectrum For Us est un safe space. Ces engagements sont non-négociables.</p>
+            <div className="rounded-2xl border border-[#101014]/10 bg-[#101014]/[0.02] p-5 mb-6 space-y-3 text-sm font-hanken text-[#101014]/60 leading-relaxed">
               {[
                 "Je m'engage à ne proposer que des produits, services et événements authentiques et conformes à ma description.",
                 "Je respecte chaque membre sans discrimination liée à l'identité de genre, l'orientation sexuelle, la race, la religion ou le handicap.",
@@ -211,14 +211,14 @@ export default function OnboardingPage() {
                 "Je comprends que les données de mes client·e·s sont protégées par le RGPD et ne peuvent pas être exploitées à d'autres fins.",
               ].map((item, i) => (
                 <div key={i} className="flex gap-3">
-                  <span className="text-[#FF3D7F] shrink-0 mt-0.5">✦</span>
+                  <span className="text-[#FF2DA0] shrink-0 mt-0.5">✦</span>
                   <p>{item}</p>
                 </div>
               ))}
             </div>
             <label className="flex items-start gap-3 cursor-pointer group mb-6">
-              <input type="checkbox" checked={form.charter} onChange={(e) => setForm({ ...form, charter: e.target.checked })} className="w-4 h-4 mt-0.5 rounded accent-[#FF3D7F]" />
-              <span className="font-hanken text-sm text-[#1A1612]/70 group-hover:text-[#1A1612] transition-colors leading-relaxed">
+              <input type="checkbox" checked={form.charter} onChange={(e) => setForm({ ...form, charter: e.target.checked })} className="w-4 h-4 mt-0.5 rounded accent-[#FF2DA0]" />
+              <span className="font-hanken text-sm text-[#101014]/70 group-hover:text-[#101014] transition-colors leading-relaxed">
                 Je lis, comprends et m&apos;engage à respecter la charte communautaire de Spectrum For Us.
               </span>
             </label>
@@ -235,12 +235,12 @@ export default function OnboardingPage() {
         {/* Step 4 · Confirmation */}
         {step === 4 && (
           <div className="text-center">
-            <div className="w-20 h-20 rounded-full bg-[#1C9C95]/10 border border-[#1C9C95]/30 flex items-center justify-center mx-auto mb-6">
-              <Check size={36} className="text-[#1C9C95]" />
+            <div className="w-20 h-20 rounded-full bg-[#2323C4]/10 border border-[#2323C4]/30 flex items-center justify-center mx-auto mb-6">
+              <Check size={36} className="text-[#2323C4]" />
             </div>
-            <h1 className="font-fraunces text-3xl text-[#1A1612] mb-3">Boutique créée ! ✦</h1>
-            <p className="font-hanken text-[#1A1612]/55 mb-10 leading-relaxed">
-              <strong className="text-[#1A1612]">{form.name}</strong> est maintenant dans le spectre.
+            <h1 className="font-fraunces text-3xl text-[#101014] mb-3">Boutique créée ! ✦</h1>
+            <p className="font-hanken text-[#101014]/55 mb-10 leading-relaxed">
+              <strong className="text-[#101014]">{form.name}</strong> est maintenant dans le spectre.
               Ajoute tes premières créations pour commencer à vendre.
             </p>
             <div className="flex gap-3">

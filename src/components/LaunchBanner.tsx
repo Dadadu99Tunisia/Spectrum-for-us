@@ -49,9 +49,9 @@ export function LaunchBanner() {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[60] h-10 flex items-center justify-center px-10 text-white"
-      style={{ background: "linear-gradient(90deg,#1A1612,#3a1f2e)" }}>
+      style={{ background: "linear-gradient(90deg,#101014,#3a1f2e)" }}>
       <div className="flex items-center gap-2.5 text-[13px] font-hanken">
-        <Rocket size={14} className="text-[#FF3D7F] shrink-0" />
+        <Rocket size={14} className="text-[#FF2DA0] shrink-0" />
         {launched ? (
           <span className="font-semibold">C&apos;est lancé&nbsp;! Bienvenue sur Spectrum For Us 🎉</span>
         ) : (
@@ -71,7 +71,7 @@ export function LaunchBanner() {
         )}
         <Link href="/vendeur/onboarding"
           className="ml-1 hidden sm:inline-flex items-center rounded-full px-3 py-0.5 text-[12px] font-semibold transition-opacity hover:opacity-90"
-          style={{ background: "#FF3D7F" }}>
+          style={{ background: "#FF2DA0" }}>
           Devenir fondateur·ice
         </Link>
       </div>

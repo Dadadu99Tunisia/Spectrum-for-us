@@ -51,8 +51,8 @@ export function FollowButton({ shopId, className = "" }: { shopId: string; class
     <button onClick={toggle} disabled={busy}
       className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-hanken font-semibold text-sm transition-all disabled:opacity-60 ${className}`}
       style={following
-        ? { background: "#fff", color: "#1A1612", boxShadow: "inset 0 0 0 1px #ECE6DB" }
-        : { background: "#1A1612", color: "#fff" }}>
+        ? { background: "#fff", color: "#101014", boxShadow: "inset 0 0 0 1px #ECE6DB" }
+        : { background: "#101014", color: "#fff" }}>
       {following ? <><Check size={15} /> Suivi{count ? ` · ${count}` : ""}</> : <><Heart size={15} /> Suivre{count ? ` · ${count}` : ""}</>}
     </button>
   );

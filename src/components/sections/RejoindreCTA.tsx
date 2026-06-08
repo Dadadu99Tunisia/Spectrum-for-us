@@ -27,14 +27,14 @@ export function RejoindreCTA() {
           className="text-center mb-14 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="inline-block font-mono text-[11px] tracking-wide text-[#E0337E] mb-4 px-4 py-1.5 rounded-full border border-[#E0337E]/20 bg-[#E0337E]/8">
+          <span className="inline-block font-mono text-[11px] tracking-wide text-[#FF2DA0] mb-4 px-4 py-1.5 rounded-full border border-[#FF2DA0]/20 bg-[#FF2DA0]/8">
             {t("rejoindre_cta.eyebrow")}
           </span>
           <h2 className="font-fraunces text-4xl md:text-5xl font-light mb-4">
             {t("rejoindre_cta.title")}{" "}
-            <span className="italic text-[#F2B79E]">{t("rejoindre_cta.title_em")}</span>
+            <span className="italic text-[#FF2DA0]">{t("rejoindre_cta.title_em")}</span>
           </h2>
-          <p className="font-hanken text-[#F3EADB]/55 max-w-xl mx-auto leading-relaxed">
+          <p className="font-hanken text-[#101014]/55 max-w-xl mx-auto leading-relaxed">
             {t("rejoindre_cta.subtitle")}
           </p>
         </div>
@@ -44,7 +44,7 @@ export function RejoindreCTA() {
           {PROFILES.map((p, i) => (
             <div
               key={p.title}
-              className="rounded-2xl border border-[#F3EADB]/8 bg-[#F3EADB]/[0.025] p-5 hover:border-[#E0337E]/25 hover:bg-[#E0337E]/5 transition-all duration-300"
+              className="rounded-2xl border border-[#101014]/8 bg-[#101014]/[0.025] p-5 hover:border-[#FF2DA0]/25 hover:bg-[#FF2DA0]/5 transition-all duration-300"
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? "none" : "translateY(16px)",
@@ -52,8 +52,8 @@ export function RejoindreCTA() {
               }}
             >
               <div className="text-2xl mb-3">{p.emoji}</div>
-              <div className="font-bricolage font-semibold text-[#F3EADB] text-base mb-1">{p.title}</div>
-              <div className="font-hanken text-xs text-[#F3EADB]/45 leading-relaxed">{p.desc}</div>
+              <div className="font-bricolage font-semibold text-[#101014] text-base mb-1">{p.title}</div>
+              <div className="font-hanken text-xs text-[#101014]/45 leading-relaxed">{p.desc}</div>
             </div>
           ))}
         </div>
@@ -65,11 +65,11 @@ export function RejoindreCTA() {
         >
           <Link
             href="/rejoindre"
-            className="inline-flex items-center gap-2 px-10 py-4 rounded-2xl bg-[#E0337E] text-white font-hanken font-semibold text-base hover:bg-[#E0337E]/85 hover:scale-[1.02] transition-all duration-200 shadow-xl shadow-[#E0337E]/20"
+            className="inline-flex items-center gap-2 px-10 py-4 rounded-2xl bg-[#FF2DA0] text-white font-hanken font-semibold text-base hover:bg-[#FF2DA0]/85 hover:scale-[1.02] transition-all duration-200 shadow-xl shadow-[#FF2DA0]/20"
           >
             {t("rejoindre_cta.cta")} <ArrowRight size={16} />
           </Link>
-          <p className="font-hanken text-xs text-[#F3EADB]/30 mt-4">
+          <p className="font-hanken text-xs text-[#101014]/30 mt-4">
             {t("rejoindre_cta.disclaimer")}
           </p>
         </div>

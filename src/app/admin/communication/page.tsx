@@ -67,20 +67,20 @@ export default function CommunicationPage() {
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-fraunces text-2xl text-[#1A1612]">Communication</h1>
-          <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">Newsletter & audience</p>
+          <h1 className="font-fraunces text-2xl text-[#101014]">Communication</h1>
+          <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">Newsletter & audience</p>
         </div>
         <button onClick={exportCSV}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1A1612]/10 text-[#1A1612]/50 hover:text-[#1A1612] font-hanken text-sm transition-colors">
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#101014]/10 text-[#101014]/50 hover:text-[#101014] font-hanken text-sm transition-colors">
           <Download size={14} /> Export CSV
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 bg-[#1A1612]/4 rounded-xl w-fit">
+      <div className="flex gap-1 p-1 bg-[#101014]/4 rounded-xl w-fit">
         {[["stats","Statistiques"],["list","Liste des abonnés"]].map(([v,l]) => (
           <button key={v} onClick={() => setTab(v as typeof tab)}
-            className={`px-4 py-1.5 rounded-lg font-mono text-[10px] transition-all ${tab === v ? "bg-[#FF3D7F] text-white" : "text-[#1A1612]/40 hover:text-[#1A1612]"}`}>{l}</button>
+            className={`px-4 py-1.5 rounded-lg font-mono text-[10px] transition-all ${tab === v ? "bg-[#FF2DA0] text-white" : "text-[#101014]/40 hover:text-[#101014]"}`}>{l}</button>
         ))}
       </div>
 
@@ -91,20 +91,20 @@ export default function CommunicationPage() {
           {/* KPI cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: "Total abonnés", value: stats.total, icon: Users, color: "#FF3D7F" },
-              { label: "Confirmés",     value: stats.confirmed, icon: Mail, color: "#1C9C95" },
-              { label: "Taux confirm.", value: `${stats.total > 0 ? Math.round(stats.confirmed/stats.total*100) : 0}%`, icon: TrendingUp, color: "#6D2DB5" },
-              { label: "Langues actives", value: [stats.fr > 0 ? "FR" : "", stats.en > 0 ? "EN" : "", stats.ar > 0 ? "AR" : ""].filter(Boolean).join(", "), icon: Globe, color: "#E0901E" },
+              { label: "Total abonnés", value: stats.total, icon: Users, color: "#FF2DA0" },
+              { label: "Confirmés",     value: stats.confirmed, icon: Mail, color: "#2323C4" },
+              { label: "Taux confirm.", value: `${stats.total > 0 ? Math.round(stats.confirmed/stats.total*100) : 0}%`, icon: TrendingUp, color: "#7A2BF0" },
+              { label: "Langues actives", value: [stats.fr > 0 ? "FR" : "", stats.en > 0 ? "EN" : "", stats.ar > 0 ? "AR" : ""].filter(Boolean).join(", "), icon: Globe, color: "#FFD400" },
             ].map(k => {
               const Icon = k.icon;
               return (
-                <div key={k.label} className="p-5 rounded-2xl border border-[#1A1612]/8 bg-[#1A1612]/[0.02]">
+                <div key={k.label} className="p-5 rounded-2xl border border-[#101014]/8 bg-[#101014]/[0.02]">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-4"
                     style={{ background: `${k.color}15`, border: `1px solid ${k.color}25` }}>
                     <Icon size={15} style={{ color: k.color }} />
                   </div>
-                  <p className="font-fraunces text-xl text-[#1A1612]">{k.value}</p>
-                  <p className="font-mono text-[9px] text-[#1A1612]/30 uppercase tracking-widest mt-1">{k.label}</p>
+                  <p className="font-fraunces text-xl text-[#101014]">{k.value}</p>
+                  <p className="font-mono text-[9px] text-[#101014]/30 uppercase tracking-widest mt-1">{k.label}</p>
                 </div>
               );
             })}
@@ -112,15 +112,15 @@ export default function CommunicationPage() {
 
           {/* Growth chart */}
           {stats.byMonth.length > 0 && (
-            <div className="p-5 rounded-2xl border border-[#1A1612]/8 bg-[#1A1612]/[0.02]">
-              <p className="font-fraunces text-base text-[#1A1612] mb-5">Nouveaux abonnés / mois</p>
+            <div className="p-5 rounded-2xl border border-[#101014]/8 bg-[#101014]/[0.02]">
+              <p className="font-fraunces text-base text-[#101014] mb-5">Nouveaux abonnés / mois</p>
               <div className="flex items-end gap-3 h-32">
                 {stats.byMonth.map(m => (
                   <div key={m.month} className="flex-1 flex flex-col items-center gap-2">
-                    <span className="font-mono text-[9px] text-[#1A1612]/40">{m.count}</span>
+                    <span className="font-mono text-[9px] text-[#101014]/40">{m.count}</span>
                     <div className="w-full rounded-t-md transition-all"
-                      style={{ height: `${(m.count / maxMonth) * 100}%`, background: "linear-gradient(180deg, #FF3D7F, #6D2DB5)", minHeight: "4px" }} />
-                    <span className="font-mono text-[8px] text-[#1A1612]/25">{m.month}</span>
+                      style={{ height: `${(m.count / maxMonth) * 100}%`, background: "linear-gradient(180deg, #FF2DA0, #7A2BF0)", minHeight: "4px" }} />
+                    <span className="font-mono text-[8px] text-[#101014]/25">{m.month}</span>
                   </div>
                 ))}
               </div>
@@ -129,28 +129,28 @@ export default function CommunicationPage() {
 
           {/* Breakdown locale + sources */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="p-5 rounded-2xl border border-[#1A1612]/8 bg-[#1A1612]/[0.02]">
-              <p className="font-fraunces text-base text-[#1A1612] mb-4">Par langue</p>
+            <div className="p-5 rounded-2xl border border-[#101014]/8 bg-[#101014]/[0.02]">
+              <p className="font-fraunces text-base text-[#101014] mb-4">Par langue</p>
               <div className="space-y-3">
-                {[["Français", stats.fr, "#FF3D7F"], ["Anglais", stats.en, "#6D2DB5"], ["Arabe", stats.ar, "#1C9C95"]].map(([l, n, c]) => (
+                {[["Français", stats.fr, "#FF2DA0"], ["Anglais", stats.en, "#7A2BF0"], ["Arabe", stats.ar, "#2323C4"]].map(([l, n, c]) => (
                   <div key={String(l)} className="flex items-center gap-3">
-                    <span className="font-mono text-[10px] text-[#1A1612]/40 w-16">{l as string}</span>
-                    <div className="flex-1 h-2 bg-[#1A1612]/5 rounded-full overflow-hidden">
+                    <span className="font-mono text-[10px] text-[#101014]/40 w-16">{l as string}</span>
+                    <div className="flex-1 h-2 bg-[#101014]/5 rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all"
                         style={{ width: `${stats.total > 0 ? (Number(n)/stats.total)*100 : 0}%`, background: c as string }} />
                     </div>
-                    <span className="font-mono text-[10px] text-[#1A1612]/40 w-8 text-right">{n as number}</span>
+                    <span className="font-mono text-[10px] text-[#101014]/40 w-8 text-right">{n as number}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="p-5 rounded-2xl border border-[#1A1612]/8 bg-[#1A1612]/[0.02]">
-              <p className="font-fraunces text-base text-[#1A1612] mb-4">Par source</p>
+            <div className="p-5 rounded-2xl border border-[#101014]/8 bg-[#101014]/[0.02]">
+              <p className="font-fraunces text-base text-[#101014] mb-4">Par source</p>
               <div className="space-y-2">
                 {Object.entries(stats.sources).sort(([,a],[,b]) => (b as number)-(a as number)).slice(0,6).map(([src, cnt]) => (
                   <div key={src} className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] text-[#1A1612]/40 capitalize">{src}</span>
-                    <span className="font-mono text-[10px] text-[#1A1612]/60">{cnt as number}</span>
+                    <span className="font-mono text-[10px] text-[#101014]/40 capitalize">{src}</span>
+                    <span className="font-mono text-[10px] text-[#101014]/60">{cnt as number}</span>
                   </div>
                 ))}
               </div>
@@ -159,27 +159,27 @@ export default function CommunicationPage() {
         </div>
       ) : (
         /* List tab */
-        <div className="rounded-xl border border-[#1A1612]/8 overflow-hidden">
+        <div className="rounded-xl border border-[#101014]/8 overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#1A1612]/6 bg-[#1A1612]/2">
+              <tr className="border-b border-[#101014]/6 bg-[#101014]/2">
                 {["Email","Langue","Source","Confirmé","Inscription"].map(h => (
-                  <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/25">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#101014]/25">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {subscribers.slice(0, 100).map(s => (
-                <tr key={s.id} className="border-b border-[#1A1612]/4 hover:bg-[#1A1612]/2 transition-colors">
-                  <td className="px-4 py-3 font-hanken text-sm text-[#1A1612]/80">{s.email}</td>
-                  <td className="px-4 py-3 font-mono text-[10px] text-[#1A1612]/40 uppercase">{s.locale ?? "-"}</td>
-                  <td className="px-4 py-3 font-mono text-[10px] text-[#1A1612]/40">{s.source ?? "direct"}</td>
+                <tr key={s.id} className="border-b border-[#101014]/4 hover:bg-[#101014]/2 transition-colors">
+                  <td className="px-4 py-3 font-hanken text-sm text-[#101014]/80">{s.email}</td>
+                  <td className="px-4 py-3 font-mono text-[10px] text-[#101014]/40 uppercase">{s.locale ?? "-"}</td>
+                  <td className="px-4 py-3 font-mono text-[10px] text-[#101014]/40">{s.source ?? "direct"}</td>
                   <td className="px-4 py-3">
-                    <span className={`font-mono text-[9px] px-2 py-0.5 rounded-full border ${s.confirmed ? "text-green-600 border-green-400/20" : "text-[#1A1612]/25 border-[#1A1612]/10"}`}>
+                    <span className={`font-mono text-[9px] px-2 py-0.5 rounded-full border ${s.confirmed ? "text-green-600 border-green-400/20" : "text-[#101014]/25 border-[#101014]/10"}`}>
                       {s.confirmed ? "Oui" : "Non"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-mono text-[10px] text-[#1A1612]/25">{new Date(s.created_at).toLocaleDateString("fr-FR")}</td>
+                  <td className="px-4 py-3 font-mono text-[10px] text-[#101014]/25">{new Date(s.created_at).toLocaleDateString("fr-FR")}</td>
                 </tr>
               ))}
             </tbody>

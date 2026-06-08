@@ -27,7 +27,7 @@ export default function SiteBanner() {
         setBanner({
           active: true,
           text: m["banner_text"] || "",
-          color: m["banner_color"] || "#E0337E",
+          color: m["banner_color"] || "#FF2DA0",
           link: m["banner_link"] || "",
           linkLabel: m["banner_link_label"] || "En savoir plus",
         });

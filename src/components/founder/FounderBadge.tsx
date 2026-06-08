@@ -21,7 +21,7 @@ const CONFIG: Record<FounderStatus, {
   EARLY_ADOPTER: {
     label: "Pionnier·e Spectrum",
     icon: "🚀",
-    gradient: "linear-gradient(135deg,#a78bfa,#6D2DB5)",
+    gradient: "linear-gradient(135deg,#a78bfa,#7A2BF0)",
     border: "rgba(167,139,250,.35)",
     text: "#a78bfa",
     glow: "rgba(167,139,250,.2)",

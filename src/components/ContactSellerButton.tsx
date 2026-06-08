@@ -44,7 +44,7 @@ export function ContactSellerButton({ ownerId, shopName, productId, className = 
   return (
     <>
       <button onClick={openModal}
-        className={`flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#1A1612]/15 text-[#1A1612]/60 font-hanken text-sm hover:border-[#FF3D7F]/40 hover:text-[#FF3D7F] transition-all ${className}`}>
+        className={`flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#101014]/15 text-[#101014]/60 font-hanken text-sm hover:border-[#FF2DA0]/40 hover:text-[#FF2DA0] transition-all ${className}`}>
         <Mail size={14} /> Contacter
       </button>
 
@@ -52,25 +52,25 @@ export function ContactSellerButton({ ownerId, shopName, productId, className = 
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setOpen(false)}>
           <div className="w-full max-w-md rounded-2xl p-6" style={{ background: "#fff", boxShadow: "0 20px 60px rgba(26,22,18,.2)" }} onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-fraunces text-xl text-[#1A1612]">Contacter {shopName}</h2>
-              <button onClick={() => setOpen(false)} className="text-[#1A1612]/40 hover:text-[#1A1612]"><X size={18} /></button>
+              <h2 className="font-fraunces text-xl text-[#101014]">Contacter {shopName}</h2>
+              <button onClick={() => setOpen(false)} className="text-[#101014]/40 hover:text-[#101014]"><X size={18} /></button>
             </div>
 
             {state === "sent" ? (
               <div className="text-center py-6">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#FF3D7F1A" }}><Check size={22} style={{ color: "#FF3D7F" }} /></div>
-                <p className="font-bricolage font-semibold text-[#1A1612]">Message envoyé !</p>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "#FF2DA01A" }}><Check size={22} style={{ color: "#FF2DA0" }} /></div>
+                <p className="font-bricolage font-semibold text-[#101014]">Message envoyé !</p>
                 <p className="font-hanken text-sm text-[#6B6258] mt-1">Retrouve la conversation dans tes messages.</p>
-                <button onClick={() => router.push("/messages")} className="mt-4 rounded-full px-5 py-2.5 text-white font-semibold text-sm" style={{ background: "#1A1612" }}>Voir mes messages</button>
+                <button onClick={() => router.push("/messages")} className="mt-4 rounded-full px-5 py-2.5 text-white font-semibold text-sm" style={{ background: "#101014" }}>Voir mes messages</button>
               </div>
             ) : (
               <>
                 <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={4} autoFocus
                   placeholder="Bonjour, j'ai une question sur…"
-                  className="w-full rounded-xl px-4 py-3 text-[15px] outline-none resize-none" style={{ boxShadow: "inset 0 0 0 1px #ECE6DB", color: "#1A1612" }} />
+                  className="w-full rounded-xl px-4 py-3 text-[15px] outline-none resize-none" style={{ boxShadow: "inset 0 0 0 1px #ECE6DB", color: "#101014" }} />
                 {err && <p className="text-[12px] mt-1.5" style={{ color: "#c0392b" }}>{err}</p>}
                 <button onClick={send} disabled={state === "sending" || !body.trim()}
-                  className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-full py-3 text-white font-semibold text-sm disabled:opacity-50" style={{ background: "#1A1612" }}>
+                  className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-full py-3 text-white font-semibold text-sm disabled:opacity-50" style={{ background: "#101014" }}>
                   {state === "sending" ? "Envoi…" : <>Envoyer <Send size={15} /></>}
                 </button>
               </>

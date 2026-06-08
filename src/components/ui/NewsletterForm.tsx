@@ -5,7 +5,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { track } from "@/lib/track";
 
-const T = { ink: "#1A1612", line: "#ECE6DB", mag: "#FF3D7F" };
+const T = { ink: "#101014", line: "#ECE6DB", mag: "#FF2DA0" };
 
 /**
  * NewsletterForm · capture réelle d'e-mails (table newsletter_subscribers via

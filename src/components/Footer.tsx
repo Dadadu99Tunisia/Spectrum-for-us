@@ -6,13 +6,13 @@ import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 import { NewsletterForm } from "@/components/ui/NewsletterForm";
 import { useI18n } from "@/contexts/I18nContext";
 
-const T = { ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
+const T = { ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 const PAYMENTS = ["Visa", "Mastercard", "Amex", "PayPal", "Apple Pay", "Google Pay", "Stripe"];
 
 function Social({ label, href, children }: { label: string; href: string; children: React.ReactNode }) {
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-      className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:text-[#FF3D7F]"
+      className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:text-[#FF2DA0]"
       style={{ boxShadow: `inset 0 0 0 1px ${T.line}`, color: T.soft }}>
       {children}
     </a>
@@ -56,7 +56,7 @@ export function Footer() {
   ];
 
   return (
-    <footer translate="no" style={{ background: "#FBF9F5", borderTop: `1px solid ${T.line}` }}>
+    <footer translate="no" style={{ background: "#FBFAF8", borderTop: `1px solid ${T.line}` }}>
       {/* Engagement accessibilité & inclusivité (en premier) */}
       <div className="max-w-6xl mx-auto px-6 md:px-8 pt-12">
         <div className="rounded-2xl px-6 py-5 flex flex-wrap items-center gap-x-6 gap-y-2"
@@ -107,7 +107,7 @@ export function Footer() {
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <Link href={link.href} className="font-hanken text-[14px] transition-colors hover:text-[#FF3D7F]" style={{ color: T.soft }}>
+                    <Link href={link.href} className="font-hanken text-[14px] transition-colors hover:text-[#FF2DA0]" style={{ color: T.soft }}>
                       {link.label}
                     </Link>
                   </li>

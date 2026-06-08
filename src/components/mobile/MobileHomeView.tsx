@@ -9,7 +9,7 @@ import { useCart } from "@/store/cart";
 import { Search, ShoppingBag, Menu, Heart, Truck, RefreshCw, ShieldCheck, ArrowRight } from "lucide-react";
 
 // ── Light theme tokens ─────────────────────────────────────────────────────
-const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
+const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 const CAT: Record<string, { tint: string; ink: string; dot: string }> = {
   Mode: { tint: "#FBE3EC", ink: "#C23B6B", dot: "#FF6FA3" },
   Bijoux: { tint: "#FBEAD3", ink: "#B5742A", dot: "#F2A03D" },
@@ -23,8 +23,8 @@ const CAT: Record<string, { tint: string; ink: string; dot: string }> = {
 const tintFor = (c: string) => CAT[Object.keys(CAT).find(k => (c || "").toLowerCase().includes(k.toLowerCase())) ?? "Mode"] ?? CAT.Mode;
 
 const COLLECTIONS = [
-  { title: "Fierté toute l'année", sub: "Pièces qui affirment", cat: "Mode", bg: "linear-gradient(135deg,#FF3D7F,#C44CFF)" },
-  { title: "Fait main & local", sub: "Créateur·ices près de toi", cat: "Bijoux", bg: "linear-gradient(135deg,#F2A03D,#FF3D7F)" },
+  { title: "Fierté toute l'année", sub: "Pièces qui affirment", cat: "Mode", bg: "linear-gradient(135deg,#FF2DA0,#C44CFF)" },
+  { title: "Fait main & local", sub: "Créateur·ices près de toi", cat: "Bijoux", bg: "linear-gradient(135deg,#F2A03D,#FF2DA0)" },
   { title: "Corps & soin", sub: "Doux, inclusif, naturel", cat: "Corps", bg: "linear-gradient(135deg,#16A06A,#1FB6C9)" },
   { title: "Zines & édition", sub: "Nos voix, nos histoires", cat: "Zines", bg: "linear-gradient(135deg,#1FB6C9,#6B5CFF)" },
 ];
@@ -265,7 +265,7 @@ export function MobileHomeView() {
       {!loading && showExtras && (
         <div className="px-4 pb-6">
           <Link href="/vendeur/onboarding" className="flex items-center gap-3 p-4 rounded-2xl" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
-            <span className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#6B5CFF,#FF3D7F)" }}>✦</span>
+            <span className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#6B5CFF,#FF2DA0)" }}>✦</span>
             <div className="flex-1 min-w-0">
               <p className="font-bricolage font-bold text-[15px]" style={{ color: T.ink }}>Vends tes créations ici</p>
               <p className="text-[12px]" style={{ color: T.soft }}>0 % de commission les premiers mois</p>

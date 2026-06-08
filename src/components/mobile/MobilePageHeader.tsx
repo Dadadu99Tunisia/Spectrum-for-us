@@ -12,7 +12,7 @@ interface Props {
   rightSlot?: React.ReactNode;
 }
 
-const T = { bg: "#FBF9F5", ink: "#1A1612", line: "#ECE6DB", mag: "#FF3D7F" };
+const T = { bg: "#FBFAF8", ink: "#101014", line: "#ECE6DB", mag: "#FF2DA0" };
 
 export function MobilePageHeader({ title, backHref, showCart = true, rightSlot }: Props) {
   const router = useRouter();

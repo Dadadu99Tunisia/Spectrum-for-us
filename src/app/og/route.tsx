@@ -33,13 +33,13 @@ export async function GET(req: NextRequest) {
         <div style={{
           position: "absolute", bottom: "-50px", left: "100px",
           width: "400px", height: "400px", borderRadius: "50%",
-          background: "radial-gradient(circle, #6D2DB533 0%, transparent 70%)",
+          background: "radial-gradient(circle, #7A2BF033 0%, transparent 70%)",
         }} />
 
         {/* Prism bar */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: "4px",
-          background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)",
+          background: "linear-gradient(90deg,#2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400)",
         }} />
 
         {/* Logo mark */}

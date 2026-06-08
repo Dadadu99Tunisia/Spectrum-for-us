@@ -54,15 +54,15 @@ export default function AbonnementPage() {
   const isActive = shop?.subscription_status === "active";
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] text-[#1A1612]">
+    <div className="min-h-screen bg-[#FBFAF8] text-[#101014]">
       <Header />
       <div className="max-w-2xl mx-auto px-6 pt-28 pb-24">
         <div className="text-center mb-10">
-          <p className="font-mono text-xs tracking-widest text-[#FF3D7F] uppercase mb-3">Vendeur·euse</p>
+          <p className="font-mono text-xs tracking-widest text-[#FF2DA0] uppercase mb-3">Vendeur·euse</p>
           <h1 className="font-fraunces text-4xl font-light mb-3">
             {isActive ? "Ton abonnement est actif ✓" : "Active ta boutique"}
           </h1>
-          <p className="font-hanken text-[#1A1612]/60">
+          <p className="font-hanken text-[#101014]/60">
             {isActive
               ? `Boutique "${shop?.name}" · abonnement actif`
               : "Un abonnement mensuel pour vendre sur Spectrum For Us."}
@@ -70,34 +70,34 @@ export default function AbonnementPage() {
         </div>
 
         {/* Pricing card */}
-        <div className={`rounded-3xl border p-8 mb-6 ${isActive ? "border-green-500/30 bg-green-500/5" : "border-[#FF3D7F]/30 bg-[#FF3D7F]/5"}`}>
+        <div className={`rounded-3xl border p-8 mb-6 ${isActive ? "border-green-500/30 bg-green-500/5" : "border-[#FF2DA0]/30 bg-[#FF2DA0]/5"}`}>
           <div className="flex items-end gap-2 mb-6">
             <span className="font-fraunces text-6xl">9,90</span>
             <div className="pb-2">
-              <span className="font-fraunces text-2xl text-[#FF3D7F]">€</span>
-              <span className="font-mono text-sm text-[#1A1612]/40 block">/mois</span>
+              <span className="font-fraunces text-2xl text-[#FF2DA0]">€</span>
+              <span className="font-mono text-sm text-[#101014]/40 block">/mois</span>
             </div>
           </div>
 
           <div className="space-y-3 mb-8">
             {FEATURES.map((f, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#FF3D7F]/20 flex items-center justify-center flex-shrink-0">
-                  <f.icon size={11} className="text-[#FF3D7F]" />
+                <div className="w-5 h-5 rounded-full bg-[#FF2DA0]/20 flex items-center justify-center flex-shrink-0">
+                  <f.icon size={11} className="text-[#FF2DA0]" />
                 </div>
-                <span className="font-hanken text-sm text-[#1A1612]/80">{f.text}</span>
+                <span className="font-hanken text-sm text-[#101014]/80">{f.text}</span>
               </div>
             ))}
           </div>
 
           {!user ? (
             <button onClick={() => router.push("/auth?mode=vendor")}
-              className="w-full py-4 rounded-xl bg-[#FF3D7F] text-white font-hanken font-semibold hover:bg-[#FF3D7F]/80 transition-all">
+              className="w-full py-4 rounded-xl bg-[#FF2DA0] text-white font-hanken font-semibold hover:bg-[#FF2DA0]/80 transition-all">
               Créer mon compte vendeur·euse
             </button>
           ) : !shop ? (
             <button onClick={() => router.push("/vendeur/onboarding")}
-              className="w-full py-4 rounded-xl bg-[#FF3D7F] text-white font-hanken font-semibold hover:bg-[#FF3D7F]/80 transition-all">
+              className="w-full py-4 rounded-xl bg-[#FF2DA0] text-white font-hanken font-semibold hover:bg-[#FF2DA0]/80 transition-all">
               Créer ma boutique d'abord →
             </button>
           ) : isActive ? (
@@ -110,7 +110,7 @@ export default function AbonnementPage() {
               <button
                 onClick={handleSubscribe}
                 disabled={subscribing}
-                className="w-full py-4 rounded-xl bg-[#FF3D7F] text-white font-hanken font-semibold hover:bg-[#FF3D7F]/80 transition-all disabled:opacity-50"
+                className="w-full py-4 rounded-xl bg-[#FF2DA0] text-white font-hanken font-semibold hover:bg-[#FF2DA0]/80 transition-all disabled:opacity-50"
               >
                 {subscribing ? "Redirection vers Stripe…" : "S'abonner maintenant · 9,90€/mois"}
               </button>
@@ -118,7 +118,7 @@ export default function AbonnementPage() {
           )}
         </div>
 
-        <p className="text-center font-hanken text-xs text-[#1A1612]/30">
+        <p className="text-center font-hanken text-xs text-[#101014]/30">
           Résiliation possible à tout moment. Premier paiement à la création de la boutique.
         </p>
       </div>

@@ -12,7 +12,7 @@ import { ORGS, COUNTRIES, CATEGORIES, type OrgEntry } from "@/data/annuaire-orgs
 import { slugify, countryFlag } from "@/lib/annuaire";
 import { Search, ChevronDown, MapPin, ArrowUpRight, Check, Globe } from "lucide-react";
 
-const T = { bg: "#FBF9F5", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
+const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 
 const flagFor = (country: string) => countryFlag(country);
 
@@ -87,8 +87,8 @@ export function LightAnnuaire() {
                   return (
                     <button key={c} role="option" aria-selected={active}
                       onClick={() => { setCountry(c); setOpen(false); }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-[#FBF9F5]"
-                      style={active ? { background: "#FBF9F5" } : undefined}>
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-[#FBFAF8]"
+                      style={active ? { background: "#FBFAF8" } : undefined}>
                       <span className="text-lg leading-none">{c === "Tous les pays" ? "🌍" : flagFor(c)}</span>
                       <span className="flex-1 font-hanken text-[15px]">{c}</span>
                       <span className="font-mono text-[12px]" style={{ color: T.faint }}>
@@ -189,7 +189,7 @@ function OrgCard({ o }: { o: OrgEntry }) {
           {o.logo ?? "🏳️‍🌈"}
         </div>
         <div className="min-w-0 flex-1">
-          <Link href={`/annuaire/orga/${o.id}`} className="font-bricolage font-semibold text-[16.5px] leading-tight truncate block hover:text-[#FF3D7F] transition-colors">{o.name}</Link>
+          <Link href={`/annuaire/orga/${o.id}`} className="font-bricolage font-semibold text-[16.5px] leading-tight truncate block hover:text-[#FF2DA0] transition-colors">{o.name}</Link>
           <p className="flex items-center gap-1 text-[13px] mt-0.5" style={{ color: T.soft }}>
             <MapPin size={13} /> {o.city} <span>{o.flag}</span>
           </p>

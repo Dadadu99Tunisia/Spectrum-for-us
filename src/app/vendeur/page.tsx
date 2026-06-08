@@ -20,10 +20,10 @@ import {
 
 // ── Palette (design tokens) ───────────────────────────────────────────────
 const C = {
-  bg: "#FBF9F5", panel: "#fff", ink: "#1A1612", soft: "#6B6258", faint: "#9B9285",
-  line: "#ECE6DB", line2: "#D8CFC0", mag: "#FF3D7F", grn: "#16A06A", amb: "#F2A03D",
+  bg: "#FBFAF8", panel: "#fff", ink: "#101014", soft: "#6B6258", faint: "#9B9285",
+  line: "#ECE6DB", line2: "#D8CFC0", mag: "#FF2DA0", grn: "#16A06A", amb: "#F2A03D",
   vio: "#6A44D6", cya: "#1FB6C9", red: "#E0335E",
-  spec: "linear-gradient(90deg,#FF3D7F,#C44CFF,#6B5CFF,#1FB6C9,#16A06A,#F2A03D)",
+  spec: "linear-gradient(90deg,#FF2DA0,#C44CFF,#6B5CFF,#1FB6C9,#16A06A,#F2A03D)",
 };
 
 type Shop = {

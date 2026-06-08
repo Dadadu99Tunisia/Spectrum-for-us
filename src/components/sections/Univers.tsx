@@ -9,49 +9,49 @@ const categories = [
     label: "Mode non-genrée",
     emoji: "✦",
     desc: "Vêtements, accessoires et pièces pensés sans genre.",
-    color: "#E0337E",
+    color: "#FF2DA0",
   },
   {
     slug: "art",
     label: "Art & Culture",
     emoji: "◈",
     desc: "Œuvres originales, prints, illustrations et objets d'art.",
-    color: "#CF3F7C",
+    color: "#FF2DA0",
   },
   {
     slug: "bijoux",
     label: "Bijoux",
     emoji: "◇",
     desc: "Créations artisanales, pièces uniques et séries limitées.",
-    color: "#6D2DB5",
+    color: "#7A2BF0",
   },
   {
     slug: "zines",
     label: "Zines & Édition",
     emoji: "▣",
     desc: "Fanzines, livres indépendants, photographie et impression.",
-    color: "#1C9C95",
+    color: "#2323C4",
   },
   {
     slug: "corps",
     label: "Corps & Soin",
     emoji: "○",
     desc: "Cosmétiques, soins, wellness et produits de beauté inclusifs.",
-    color: "#F2B79E",
+    color: "#FF2DA0",
   },
   {
     slug: "intimite",
     label: "Intimité",
     emoji: "❋",
     desc: "Produits intimes dans un espace safe et bienveillant.",
-    color: "#E0901E",
+    color: "#FFD400",
   },
   {
     slug: "maison",
     label: "Maison",
     emoji: "⬡",
     desc: "Déco, objets du quotidien et environnements qui te ressemblent.",
-    color: "#E0533A",
+    color: "#F93C2C",
   },
 ];
 
@@ -66,10 +66,10 @@ export function Univers() {
           className="mb-14 transition-all duration-700"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)" }}
         >
-          <span className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-3">
+          <span className="font-mono text-[11px] tracking-wide text-[#FF2DA0] block mb-3">
             L&apos;univers
           </span>
-          <h2 className="font-fraunces text-4xl md:text-5xl text-[#F3EADB] leading-tight">
+          <h2 className="font-fraunces text-4xl md:text-5xl text-[#101014] leading-tight">
             Tout le spectre,{" "}
             <span
               className="prism-text"
@@ -100,15 +100,15 @@ export function Univers() {
                 </div>
 
                 <h3
-                  className="font-bricolage text-lg font-semibold text-[#F3EADB] mb-2 leading-tight"
+                  className="font-bricolage text-lg font-semibold text-[#101014] mb-2 leading-tight"
                 >
                   {cat.label}
                 </h3>
-                <p className="font-hanken text-sm text-[#F3EADB]/50 leading-relaxed">
+                <p className="font-hanken text-sm text-[#101014]/50 leading-relaxed">
                   {cat.desc}
                 </p>
 
-                <div className="mt-4 flex items-center gap-1 text-xs font-mono text-[#F3EADB]/30 group-hover:text-[#E0337E] transition-colors duration-200">
+                <div className="mt-4 flex items-center gap-1 text-xs font-mono text-[#101014]/30 group-hover:text-[#FF2DA0] transition-colors duration-200">
                   <span>(</span>
                   <span>Explorer</span>
                   <span>)</span>

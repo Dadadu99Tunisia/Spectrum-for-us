@@ -9,7 +9,7 @@ type Data = {
   funnel: Record<string, number>;
 };
 
-const C = { ink: "#1A1612", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF3D7F" };
+const C = { ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 
 export default function AnalyticsPage() {
   const [days, setDays] = useState(30);

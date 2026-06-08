@@ -22,7 +22,7 @@ export default function ParametresBoutiquePage() {
     contact_email: "", logo_url: "", banner_url: "",
   });
 
-  const inputCls = "w-full bg-[#1A1612]/5 border border-[#1A1612]/10 rounded-xl px-4 py-3 font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/20 focus:outline-none focus:border-[#FF3D7F]/50 transition-colors";
+  const inputCls = "w-full bg-[#101014]/5 border border-[#101014]/10 rounded-xl px-4 py-3 font-hanken text-sm text-[#101014] placeholder-[#101014]/20 focus:outline-none focus:border-[#FF2DA0]/50 transition-colors";
 
   useEffect(() => {
     if (!loading && !user) { router.push("/auth"); return; }
@@ -67,28 +67,28 @@ export default function ParametresBoutiquePage() {
   };
 
   if (loading || !shopId) return (
-    <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-[#FF3D7F] border-t-transparent animate-spin" />
+    <div className="min-h-screen bg-[#FBFAF8] flex items-center justify-center">
+      <div className="w-8 h-8 rounded-full border-2 border-[#FF2DA0] border-t-transparent animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5]">
+    <div className="min-h-screen bg-[#FBFAF8]">
       <Header />
       {toast && (
-        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-[#FBF9F5] border border-[#FF3D7F]/30 text-[#1A1612] font-hanken text-sm shadow-2xl">
+        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-[#FBFAF8] border border-[#FF2DA0]/30 text-[#101014] font-hanken text-sm shadow-2xl">
           {toast}
         </div>
       )}
       <div className="max-w-2xl mx-auto px-6 pt-28 pb-20">
         <div className="flex items-center gap-4 mb-8">
-          <button onClick={() => router.push("/vendeur")} className="p-2 rounded-xl border border-[#1A1612]/10 text-[#1A1612]/40 hover:text-[#1A1612] transition-colors">
+          <button onClick={() => router.push("/vendeur")} className="p-2 rounded-xl border border-[#101014]/10 text-[#101014]/40 hover:text-[#101014] transition-colors">
             <ArrowLeft size={16} />
           </button>
-          <h1 className="font-fraunces text-2xl text-[#1A1612] flex-1">Paramètres de la boutique</h1>
+          <h1 className="font-fraunces text-2xl text-[#101014] flex-1">Paramètres de la boutique</h1>
           {shopSlug && (
             <a href={`/boutique/${shopSlug}`} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 font-mono text-xs text-[#1A1612]/35 hover:text-[#FF3D7F] transition-colors">
+              className="flex items-center gap-1.5 font-mono text-xs text-[#101014]/35 hover:text-[#FF2DA0] transition-colors">
               <ExternalLink size={12} /> Voir ma boutique
             </a>
           )}
@@ -96,11 +96,11 @@ export default function ParametresBoutiquePage() {
 
         <form onSubmit={handleSave} className="space-y-6">
           {/* Visuels */}
-          <div className="rounded-2xl border border-[#1A1612]/8 p-6 space-y-5">
-            <h2 className="font-bricolage font-semibold text-[#1A1612] text-sm tracking-wide">Visuels</h2>
+          <div className="rounded-2xl border border-[#101014]/8 p-6 space-y-5">
+            <h2 className="font-bricolage font-semibold text-[#101014] text-sm tracking-wide">Visuels</h2>
 
             <div>
-              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-3">Logo de la boutique</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#101014]/30 mb-3">Logo de la boutique</label>
               <ImageUploader
                 bucket="shop-images"
                 folder={shopId}
@@ -111,7 +111,7 @@ export default function ParametresBoutiquePage() {
             </div>
 
             <div>
-              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-3">Bannière de la boutique</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#101014]/30 mb-3">Bannière de la boutique</label>
               <ImageUploader
                 bucket="shop-images"
                 folder={shopId}
@@ -123,29 +123,29 @@ export default function ParametresBoutiquePage() {
           </div>
 
           {/* Infos */}
-          <div className="rounded-2xl border border-[#1A1612]/8 p-6 space-y-4">
-            <h2 className="font-bricolage font-semibold text-[#1A1612] text-sm tracking-wide">Informations</h2>
+          <div className="rounded-2xl border border-[#101014]/8 p-6 space-y-4">
+            <h2 className="font-bricolage font-semibold text-[#101014] text-sm tracking-wide">Informations</h2>
 
             <div>
-              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Nom de la boutique *</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#101014]/30 mb-2">Nom de la boutique *</label>
               <input value={form.name} onChange={e => setForm(p => ({...p, name: e.target.value}))} placeholder="Ma Boutique" className={inputCls} />
             </div>
             <div>
-              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Slogan</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#101014]/30 mb-2">Slogan</label>
               <input value={form.tagline} onChange={e => setForm(p => ({...p, tagline: e.target.value}))} placeholder="Ce qui te rend unique en une phrase" className={inputCls} />
             </div>
             <div>
-              <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Description</label>
+              <label className="block font-mono text-[9px] tracking-wide text-[#101014]/30 mb-2">Description</label>
               <textarea rows={4} value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))}
                 placeholder="Présente ta boutique, ton histoire, ta démarche…" className={`${inputCls} resize-y`} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Ville</label>
+                <label className="block font-mono text-[9px] tracking-wide text-[#101014]/30 mb-2">Ville</label>
                 <input value={form.city} onChange={e => setForm(p => ({...p, city: e.target.value}))} placeholder="Paris" className={inputCls} />
               </div>
               <div>
-                <label className="block font-mono text-[9px] tracking-wide text-[#1A1612]/30 mb-2">Email de contact</label>
+                <label className="block font-mono text-[9px] tracking-wide text-[#101014]/30 mb-2">Email de contact</label>
                 <input type="email" value={form.contact_email} onChange={e => setForm(p => ({...p, contact_email: e.target.value}))} placeholder="contact@maboutique.fr" className={inputCls} />
               </div>
             </div>

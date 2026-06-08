@@ -114,29 +114,29 @@ function DecouvrirContent() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-24 pb-20 px-6 bg-[#FBF9F5] text-[#1A1612]">
+      <main className="min-h-screen pt-24 pb-20 px-6 bg-[#FBFAF8] text-[#101014]">
         <div className="max-w-7xl mx-auto">
 
           {/* Header */}
           <div className="mb-8">
-            <span className="font-mono text-[11px] tracking-wide text-[#FF3D7F] block mb-2">Marketplace</span>
-            <h1 className="font-fraunces text-4xl md:text-5xl text-[#1A1612]">Découvrir</h1>
+            <span className="font-mono text-[11px] tracking-wide text-[#FF2DA0] block mb-2">Marketplace</span>
+            <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014]">Découvrir</h1>
           </div>
 
           {/* Search + sort + filters */}
           <div className="flex gap-3 mb-4 flex-wrap">
             <div className="flex-1 min-w-[200px] relative">
-              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1612]/30" />
+              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#101014]/30" />
               <input
                 ref={searchRef}
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Rechercher une création, un atelier, un zine…"
-                className="w-full bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-full pl-10 pr-4 py-2.5 text-[#1A1612] font-hanken text-sm placeholder-[#1A1612]/30 focus:outline-none focus:border-[#FF3D7F]/50 transition-colors"
+                className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-full pl-10 pr-4 py-2.5 text-[#101014] font-hanken text-sm placeholder-[#101014]/30 focus:outline-none focus:border-[#FF2DA0]/50 transition-colors"
               />
               {search && (
-                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1A1612]/30 hover:text-[#1A1612]/60">
+                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#101014]/30 hover:text-[#101014]/60">
                   <X size={14} />
                 </button>
               )}
@@ -144,14 +144,14 @@ function DecouvrirContent() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="bg-[#1A1612]/5 border border-[#1A1612]/15 rounded-full px-4 py-2.5 text-[#1A1612]/70 font-hanken text-sm focus:outline-none focus:border-[#FF3D7F]/50 transition-colors"
+              className="bg-[#101014]/5 border border-[#101014]/15 rounded-full px-4 py-2.5 text-[#101014]/70 font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/50 transition-colors"
             >
-              {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value} className="bg-[#FBF9F5]">{o.label}</option>)}
+              {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value} className="bg-[#FBFAF8]">{o.label}</option>)}
             </select>
             <button
               onClick={() => setFiltersOpen(!filtersOpen)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-full border font-hanken text-sm transition-all duration-200 ${
-                filtersOpen ? "border-[#FF3D7F] text-[#FF3D7F] bg-[#FF3D7F]/10" : "border-[#1A1612]/15 text-[#1A1612]/60 hover:border-[#1A1612]/30"
+                filtersOpen ? "border-[#FF2DA0] text-[#FF2DA0] bg-[#FF2DA0]/10" : "border-[#101014]/15 text-[#101014]/60 hover:border-[#101014]/30"
               }`}
             >
               <SlidersHorizontal size={14} /> Filtres
@@ -160,14 +160,14 @@ function DecouvrirContent() {
 
           {/* Filter panel */}
           {filtersOpen && (
-            <div className="mb-4 p-5 rounded-2xl border border-[#1A1612]/10 bg-[#1A1612]/[0.02]">
-              <label className="block font-mono text-[10px] tracking-wide text-[#1A1612]/40 mb-3">
+            <div className="mb-4 p-5 rounded-2xl border border-[#101014]/10 bg-[#101014]/[0.02]">
+              <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-3">
                 Prix max : {maxPrice} €
               </label>
               <input
                 type="range" min={5} max={500} step={5} value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="w-full max-w-xs accent-[#FF3D7F]"
+                className="w-full max-w-xs accent-[#FF2DA0]"
               />
             </div>
           )}
@@ -180,8 +180,8 @@ function DecouvrirContent() {
                 onClick={() => handleCategoryChange(c)}
                 className={`shrink-0 px-4 py-2 rounded-full font-hanken text-[13.5px] font-medium border transition-all duration-200 ${
                   category === c
-                    ? "border-[#FF3D7F] bg-[#FF3D7F]/10 text-[#FF3D7F]"
-                    : "border-[#1A1612]/15 text-[#1A1612]/50 hover:border-[#1A1612]/30 hover:text-[#1A1612]/70"
+                    ? "border-[#FF2DA0] bg-[#FF2DA0]/10 text-[#FF2DA0]"
+                    : "border-[#101014]/15 text-[#101014]/50 hover:border-[#101014]/30 hover:text-[#101014]/70"
                 }`}
               >
                 {c}
@@ -196,8 +196,8 @@ function DecouvrirContent() {
                 onClick={() => setSubcategory("")}
                 className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full font-hanken text-[12px] font-medium border transition-all duration-200 ${
                   !subcategory
-                    ? "border-[#6D2DB5]/60 bg-[#6D2DB5]/10 text-[#9B6DD5]"
-                    : "border-[#1A1612]/10 text-[#1A1612]/35 hover:border-[#1A1612]/25"
+                    ? "border-[#7A2BF0]/60 bg-[#7A2BF0]/10 text-[#9B6DD5]"
+                    : "border-[#101014]/10 text-[#101014]/35 hover:border-[#101014]/25"
                 }`}
               >
                 <Layers size={10} /> Toutes
@@ -208,8 +208,8 @@ function DecouvrirContent() {
                   onClick={() => setSubcategory(s)}
                   className={`shrink-0 px-3 py-1 rounded-full font-hanken text-[12px] font-medium border transition-all duration-200 ${
                     subcategory === s
-                      ? "border-[#6D2DB5]/60 bg-[#6D2DB5]/10 text-[#9B6DD5]"
-                      : "border-[#1A1612]/10 text-[#1A1612]/35 hover:border-[#1A1612]/25"
+                      ? "border-[#7A2BF0]/60 bg-[#7A2BF0]/10 text-[#9B6DD5]"
+                      : "border-[#101014]/10 text-[#101014]/35 hover:border-[#101014]/25"
                   }`}
                 >
                   {s}
@@ -219,7 +219,7 @@ function DecouvrirContent() {
           )}
 
           {/* Results count */}
-          <p className="font-mono text-xs text-[#1A1612]/30 mb-6">
+          <p className="font-mono text-xs text-[#101014]/30 mb-6">
             {loading ? "Chargement…" : `${filtered.length} résultat${filtered.length > 1 ? "s" : ""}`}
             {subcategory && <span className="ml-2 text-[#9B6DD5]">· {subcategory}</span>}
           </p>
@@ -228,11 +228,11 @@ function DecouvrirContent() {
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="rounded-[18px] border border-[#1A1612]/8 bg-[#1A1612]/[0.02] overflow-hidden animate-pulse">
-                  <div className="h-48 bg-[#1A1612]/5" />
+                <div key={i} className="rounded-[18px] border border-[#101014]/8 bg-[#101014]/[0.02] overflow-hidden animate-pulse">
+                  <div className="h-48 bg-[#101014]/5" />
                   <div className="p-4 space-y-2">
-                    <div className="h-3 bg-[#1A1612]/8 rounded w-3/4" />
-                    <div className="h-3 bg-[#1A1612]/5 rounded w-1/2" />
+                    <div className="h-3 bg-[#101014]/8 rounded w-3/4" />
+                    <div className="h-3 bg-[#101014]/5 rounded w-1/2" />
                   </div>
                 </div>
               ))}
@@ -240,13 +240,13 @@ function DecouvrirContent() {
           ) : filtered.length === 0 ? (
             (search || category || subcategory) ? (
               <div className="flex flex-col items-center text-center py-24 max-w-md mx-auto">
-                <h2 className="font-fraunces text-2xl text-[#1A1612] mb-3">Aucun résultat</h2>
-                <p className="font-hanken text-[#1A1612]/50 mb-6 leading-relaxed">
+                <h2 className="font-fraunces text-2xl text-[#101014] mb-3">Aucun résultat</h2>
+                <p className="font-hanken text-[#101014]/50 mb-6 leading-relaxed">
                   {search ? `Aucune création ne correspond à "${search}".` : "Aucune création dans cette catégorie pour le moment."}
                 </p>
                 <button
                   onClick={() => { setSearch(""); setCategory(""); setSubcategory(""); }}
-                  className="font-mono text-xs tracking-wide text-[#FF3D7F]/70 hover:text-[#FF3D7F] transition-colors border border-[#FF3D7F]/20 hover:border-[#FF3D7F]/40 px-4 py-2 rounded-xl"
+                  className="font-mono text-xs tracking-wide text-[#FF2DA0]/70 hover:text-[#FF2DA0] transition-colors border border-[#FF2DA0]/20 hover:border-[#FF2DA0]/40 px-4 py-2 rounded-xl"
                 >
                   Effacer les filtres
                 </button>
@@ -254,19 +254,19 @@ function DecouvrirContent() {
             ) : (
               <div className="flex flex-col items-center text-center py-20 max-w-lg mx-auto">
                 <span className="text-4xl mb-5">🚀</span>
-                <h2 className="font-fraunces text-3xl text-[#1A1612] mb-3 leading-tight">La marketplace ouvre ses portes</h2>
-                <p className="font-hanken text-[15.5px] text-[#1A1612]/55 mb-8 leading-relaxed">
-                  Spectrum se construit avec ses premier·es créateur·ices. Sois parmi les <strong className="text-[#1A1612]">120 fondateur·ices</strong> et prends une place avant tout le monde — abonnement offert et 0 % de commission.
+                <h2 className="font-fraunces text-3xl text-[#101014] mb-3 leading-tight">La marketplace ouvre ses portes</h2>
+                <p className="font-hanken text-[15.5px] text-[#101014]/55 mb-8 leading-relaxed">
+                  Spectrum se construit avec ses premier·es créateur·ices. Sois parmi les <strong className="text-[#101014]">120 fondateur·ices</strong> et prends une place avant tout le monde — abonnement offert et 0 % de commission.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3">
-                  <a href="/programme-fondateur" className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-[15px] text-white" style={{ background: "#1A1612" }}>
+                  <a href="/programme-fondateur" className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-[15px] text-white" style={{ background: "#101014" }}>
                     Devenir fondateur·ice <ArrowRight size={16} />
                   </a>
-                  <a href="/vendeur/onboarding" className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-[15px]" style={{ color: "#1A1612", boxShadow: "inset 0 0 0 1.5px #ECE6DB" }}>
+                  <a href="/vendeur/onboarding" className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-[15px]" style={{ color: "#101014", boxShadow: "inset 0 0 0 1.5px #ECE6DB" }}>
                     Ouvrir ma boutique
                   </a>
                 </div>
-                <p className="font-hanken text-[13px] text-[#1A1612]/40 mt-6">Tu cherches plutôt à soutenir ? <a href="/annuaire" className="text-[#FF3D7F] font-semibold">Découvre les associations</a></p>
+                <p className="font-hanken text-[13px] text-[#101014]/40 mt-6">Tu cherches plutôt à soutenir ? <a href="/annuaire" className="text-[#FF2DA0] font-semibold">Découvre les associations</a></p>
               </div>
             )
           ) : (
@@ -291,7 +291,7 @@ function DecouvrirContent() {
 
                         {ptype !== "product" && (
                           <div className="absolute top-2 left-2">
-                            <span className="font-mono text-[9px] tracking-wide px-2 py-0.5 rounded-full bg-[#FBF9F5]/80 backdrop-blur-sm text-[#E0901E] border border-[#E0901E]/30">
+                            <span className="font-mono text-[9px] tracking-wide px-2 py-0.5 rounded-full bg-[#FBFAF8]/80 backdrop-blur-sm text-[#FFD400] border border-[#FFD400]/30">
                               {TYPE_LABELS[ptype]}
                             </span>
                           </div>
@@ -299,20 +299,20 @@ function DecouvrirContent() {
                       </div>
                       <div className="pt-3 pb-1">
                         {p.category && <Tag variant="magenta" className="mb-2 text-[10px]">{p.category}</Tag>}
-                        <h3 className="font-bricolage font-semibold text-[#1A1612] text-sm leading-tight mb-1 line-clamp-2">{p.name || p.title}</h3>
+                        <h3 className="font-bricolage font-semibold text-[#101014] text-sm leading-tight mb-1 line-clamp-2">{p.name || p.title}</h3>
                         {shop && (
-                          <p className="font-hanken text-xs text-[#1A1612]/40 truncate">par {shop.name}</p>
+                          <p className="font-hanken text-xs text-[#101014]/40 truncate">par {shop.name}</p>
                         )}
                       </div>
                     </Link>
                     <div className="pb-4 mt-auto flex items-center justify-between">
-                      <Price eur={p.price} className="font-mono text-sm font-bold text-[#1A1612]" />
+                      <Price eur={p.price} className="font-mono text-sm font-bold text-[#101014]" />
                       <button
                         onClick={() => handleAdd(p)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${
                           added === p.id
-                            ? "bg-[#1C9C95]/10 text-[#1C9C95]"
-                            : "bg-[#FF3D7F]/10 text-[#FF3D7F] hover:bg-[#FF3D7F]/20"
+                            ? "bg-[#2323C4]/10 text-[#2323C4]"
+                            : "bg-[#FF2DA0]/10 text-[#FF2DA0] hover:bg-[#FF2DA0]/20"
                         }`}
                       >
                         <ShoppingBag size={11} />

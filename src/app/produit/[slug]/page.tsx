@@ -27,9 +27,9 @@ type RelatedProduct = {
 };
 
 const TYPE_CONFIG: Record<string, { label: string; icon: React.ElementType; color: string; cta: string; ctaAdding: string }> = {
-  product: { label: "Produit",    icon: Package,      color: "#FF3D7F", cta: "Ajouter au panier",   ctaAdding: "Ajouté ✓" },
-  service: { label: "Service",    icon: Zap,          color: "#E0901E", cta: "Réserver ce service", ctaAdding: "Réservé ✓" },
-  event:   { label: "Événement",  icon: CalendarDays, color: "#6D2DB5", cta: "S'inscrire",          ctaAdding: "Inscrit·e ✓" },
+  product: { label: "Produit",    icon: Package,      color: "#FF2DA0", cta: "Ajouter au panier",   ctaAdding: "Ajouté ✓" },
+  service: { label: "Service",    icon: Zap,          color: "#FFD400", cta: "Réserver ce service", ctaAdding: "Réservé ✓" },
+  event:   { label: "Événement",  icon: CalendarDays, color: "#7A2BF0", cta: "S'inscrire",          ctaAdding: "Inscrit·e ✓" },
 };
 
 export default function ProduitPage() {
@@ -117,21 +117,21 @@ export default function ProduitPage() {
   const isOos       = ptype === "product" && product?.quantity !== undefined && product.quantity !== null && product.quantity <= 0;
 
   const accentByCategory: Record<string, string> = {
-    "Bijoux": "#1C9C95", "Mode non-genrée": "#FF3D7F", "Art & Culture": "#6D2DB5",
-    "Zines & Édition": "#1A1612", "Corps & Soin": "#1C9C95", "Intimité": "#FF3D7F", "Maison": "#E0901E",
+    "Bijoux": "#2323C4", "Mode non-genrée": "#FF2DA0", "Art & Culture": "#7A2BF0",
+    "Zines & Édition": "#101014", "Corps & Soin": "#2323C4", "Intimité": "#FF2DA0", "Maison": "#FFD400",
   };
-  const accent = accentByCategory[product?.category ?? ""] ?? "#FF3D7F";
+  const accent = accentByCategory[product?.category ?? ""] ?? "#FF2DA0";
 
   if (loading) return (
     <>
       <Header />
       <main className="min-h-screen pt-24 pb-20 px-6">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 animate-pulse">
-          <div className="aspect-square rounded-2xl bg-[#1A1612]/5" />
+          <div className="aspect-square rounded-2xl bg-[#101014]/5" />
           <div className="space-y-4 pt-4">
-            <div className="h-4 bg-[#1A1612]/8 rounded w-1/4" />
-            <div className="h-12 bg-[#1A1612]/8 rounded w-3/4" />
-            <div className="h-8 bg-[#1A1612]/8 rounded w-1/4 mt-6" />
+            <div className="h-4 bg-[#101014]/8 rounded w-1/4" />
+            <div className="h-12 bg-[#101014]/8 rounded w-3/4" />
+            <div className="h-8 bg-[#101014]/8 rounded w-1/4 mt-6" />
           </div>
         </div>
       </main>
@@ -143,8 +143,8 @@ export default function ProduitPage() {
     <>
       <Header />
       <main className="min-h-screen pt-24 pb-20 px-6 flex flex-col items-center justify-center">
-        <p className="font-fraunces text-3xl text-[#1A1612]/30 mb-4">Produit introuvable</p>
-        <Link href="/decouvrir" className="font-mono text-sm text-[#FF3D7F] hover:underline">← Retour à la marketplace</Link>
+        <p className="font-fraunces text-3xl text-[#101014]/30 mb-4">Produit introuvable</p>
+        <Link href="/decouvrir" className="font-mono text-sm text-[#FF2DA0] hover:underline">← Retour à la marketplace</Link>
       </main>
       <Footer />
     </>
@@ -159,26 +159,26 @@ export default function ProduitPage() {
       {/* Mobile header */}
       <MobilePageHeader title={productName} backHref="/decouvrir" />
 
-      <main className="min-h-screen md:pt-24 pb-20 md:pb-20 px-4 md:px-6 bg-[#FBF9F5] text-[#1A1612]">
+      <main className="min-h-screen md:pt-24 pb-20 md:pb-20 px-4 md:px-6 bg-[#FBFAF8] text-[#101014]">
         <div className="max-w-6xl mx-auto">
 
           {/* Breadcrumb · desktop only */}
           <div className="hidden md:flex items-center gap-2 mb-8 flex-wrap">
-            <Link href="/decouvrir" className="flex items-center gap-1.5 text-[#1A1612]/40 hover:text-[#FF3D7F] text-sm font-hanken transition-colors">
+            <Link href="/decouvrir" className="flex items-center gap-1.5 text-[#101014]/40 hover:text-[#FF2DA0] text-sm font-hanken transition-colors">
               <ArrowLeft size={14} /> Découvrir
             </Link>
             {product.category && (
               <>
-                <span className="text-[#1A1612]/20">/</span>
-                <Link href={`/decouvrir?category=${encodeURIComponent(product.category)}`} className="text-[#1A1612]/40 hover:text-[#FF3D7F] text-sm font-hanken transition-colors">
+                <span className="text-[#101014]/20">/</span>
+                <Link href={`/decouvrir?category=${encodeURIComponent(product.category)}`} className="text-[#101014]/40 hover:text-[#FF2DA0] text-sm font-hanken transition-colors">
                   {product.category}
                 </Link>
               </>
             )}
             {shop && (
               <>
-                <span className="text-[#1A1612]/20">/</span>
-                <Link href={`/boutique/${shop.slug || product.shop_id}`} className="text-[#1A1612]/40 hover:text-[#FF3D7F] text-sm font-hanken transition-colors">
+                <span className="text-[#101014]/20">/</span>
+                <Link href={`/boutique/${shop.slug || product.shop_id}`} className="text-[#101014]/40 hover:text-[#FF2DA0] text-sm font-hanken transition-colors">
                   {shop.name}
                 </Link>
               </>
@@ -194,19 +194,19 @@ export default function ProduitPage() {
                 ) : (
                   <>
                     <div className="absolute inset-0" style={{ background: `radial-gradient(circle at 40% 40%, ${accent}30, transparent 60%)` }} />
-                    <Package size={64} className="text-[#1A1612]/10" />
+                    <Package size={64} className="text-[#101014]/10" />
                   </>
                 )}
                 <button onClick={toggleLike}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-[#FBF9F5]/60 backdrop-blur-sm transition-all hover:scale-110">
-                  <Heart size={18} className={liked ? "fill-[#FF3D7F] text-[#FF3D7F]" : "text-[#1A1612]/50"} />
+                  className="absolute top-4 right-4 p-2 rounded-full bg-[#FBFAF8]/60 backdrop-blur-sm transition-all hover:scale-110">
+                  <Heart size={18} className={liked ? "fill-[#FF2DA0] text-[#FF2DA0]" : "text-[#101014]/50"} />
                 </button>
               </div>
               {images.length > 1 && (
                 <div className="flex gap-2">
                   {images.map((img, i) => (
                     <button key={i} onClick={() => setActiveImg(i)}
-                      className={`flex-1 aspect-square rounded-xl border-2 overflow-hidden transition-all duration-200 ${activeImg === i ? "border-[#FF3D7F]" : "border-transparent"}`}>
+                      className={`flex-1 aspect-square rounded-xl border-2 overflow-hidden transition-all duration-200 ${activeImg === i ? "border-[#FF2DA0]" : "border-transparent"}`}>
                       <img src={img} alt="" className="w-full h-full object-cover" />
                     </button>
                   ))}
@@ -227,24 +227,24 @@ export default function ProduitPage() {
                 </span>
               </div>
 
-              <h1 className="font-fraunces text-4xl md:text-5xl text-[#1A1612] leading-tight mb-2">{productName}</h1>
+              <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] leading-tight mb-2">{productName}</h1>
 
               {shop && (
                 <Link href={`/boutique/${shop.slug || product.shop_id}`}
-                  className="font-mono text-sm text-[#1A1612]/40 hover:text-[#FF3D7F] transition-colors block mb-8">
+                  className="font-mono text-sm text-[#101014]/40 hover:text-[#FF2DA0] transition-colors block mb-8">
                   par {shop.name}
                 </Link>
               )}
 
-              <div className="text-4xl font-fraunces text-[#1A1612] mb-8">
+              <div className="text-4xl font-fraunces text-[#101014] mb-8">
                 <Price eur={Number(product.price)} />
               </div>
 
               {/* Out of stock warning */}
               {isOos && (
-                <div className="flex items-center gap-2 mb-6 px-4 py-3 rounded-xl bg-[#1A1612]/5 border border-[#1A1612]/15">
-                  <AlertCircle size={14} className="text-[#1A1612]/40 shrink-0" />
-                  <span className="font-hanken text-sm text-[#1A1612]/50">Ce produit est actuellement épuisé.</span>
+                <div className="flex items-center gap-2 mb-6 px-4 py-3 rounded-xl bg-[#101014]/5 border border-[#101014]/15">
+                  <AlertCircle size={14} className="text-[#101014]/40 shrink-0" />
+                  <span className="font-hanken text-sm text-[#101014]/50">Ce produit est actuellement épuisé.</span>
                 </div>
               )}
 
@@ -252,7 +252,7 @@ export default function ProduitPage() {
               {product.tags && product.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-6">
                   {product.tags.map((tag) => (
-                    <span key={tag} className="px-3 py-1 rounded-full border border-[#1A1612]/10 text-[#1A1612]/40 font-mono text-[10px] tracking-wide">{tag}</span>
+                    <span key={tag} className="px-3 py-1 rounded-full border border-[#101014]/10 text-[#101014]/40 font-mono text-[10px] tracking-wide">{tag}</span>
                   ))}
                 </div>
               )}
@@ -260,13 +260,13 @@ export default function ProduitPage() {
               {/* Qty · only for physical products in stock */}
               {ptype === "product" && !isOos && (
                 <div className="flex items-center gap-4 mb-8">
-                  <p className="font-mono text-[10px] tracking-wide text-[#1A1612]/40">Qté</p>
-                  <div className="flex items-center border border-[#1A1612]/15 rounded-xl overflow-hidden">
-                    <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-11 h-11 text-[#1A1612]/60 hover:text-[#1A1612] text-xl transition-colors">-</button>
-                    <span className="w-10 text-center font-mono text-sm text-[#1A1612]">{qty}</span>
-                    <button onClick={() => setQty(Math.min(product.quantity || 99, qty + 1))} className="w-11 h-11 text-[#1A1612]/60 hover:text-[#1A1612] text-xl transition-colors">+</button>
+                  <p className="font-mono text-[10px] tracking-wide text-[#101014]/40">Qté</p>
+                  <div className="flex items-center border border-[#101014]/15 rounded-xl overflow-hidden">
+                    <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-11 h-11 text-[#101014]/60 hover:text-[#101014] text-xl transition-colors">-</button>
+                    <span className="w-10 text-center font-mono text-sm text-[#101014]">{qty}</span>
+                    <button onClick={() => setQty(Math.min(product.quantity || 99, qty + 1))} className="w-11 h-11 text-[#101014]/60 hover:text-[#101014] text-xl transition-colors">+</button>
                   </div>
-                  <span className="font-mono text-sm text-[#1A1612]/40">= <Price eur={product.price * qty} /></span>
+                  <span className="font-mono text-sm text-[#101014]/40">= <Price eur={product.price * qty} /></span>
                 </div>
               )}
 
@@ -277,28 +277,28 @@ export default function ProduitPage() {
                   disabled={isOos}
                   className="flex-1 flex items-center justify-center gap-2 py-4 rounded-full font-hanken font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
-                    backgroundColor: added ? "#1C9C95" : isOos ? "#1A161220" : typeConf.color,
+                    backgroundColor: added ? "#2323C4" : isOos ? "#10101420" : typeConf.color,
                     color: "#fff",
                   }}
                 >
                   {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {isOos ? "Épuisé" : typeConf.cta}</>}
                 </button>
                 <button onClick={toggleLike}
-                  className="p-4 border border-[#1A1612]/15 rounded-full hover:border-[#FF3D7F]/40 transition-colors">
-                  <Heart size={18} className={liked ? "fill-[#FF3D7F] text-[#FF3D7F]" : "text-[#1A1612]/50"} />
+                  className="p-4 border border-[#101014]/15 rounded-full hover:border-[#FF2DA0]/40 transition-colors">
+                  <Heart size={18} className={liked ? "fill-[#FF2DA0] text-[#FF2DA0]" : "text-[#101014]/50"} />
                 </button>
               </div>
 
               {/* Description */}
               {product.description && (
-                <div className="border-t border-[#1A1612]/8 pt-6">
-                  <p className="font-hanken text-[#1A1612]/60 leading-relaxed text-sm whitespace-pre-line">{product.description}</p>
+                <div className="border-t border-[#101014]/8 pt-6">
+                  <p className="font-hanken text-[#101014]/60 leading-relaxed text-sm whitespace-pre-line">{product.description}</p>
                 </div>
               )}
 
               {/* Stock info */}
               {ptype === "product" && product.quantity !== null && product.quantity > 0 && (
-                <p className="mt-4 font-mono text-xs text-[#1A1612]/25">
+                <p className="mt-4 font-mono text-xs text-[#101014]/25">
                   {product.quantity <= 5 ? `⚠ Plus que ${product.quantity} en stock` : `${product.quantity} en stock`}
                 </p>
               )}
@@ -307,10 +307,10 @@ export default function ProduitPage() {
 
           {/* ── Autres créations de la boutique ── */}
           {related.length > 0 && shop && (
-            <div className="mt-20 border-t border-[#1A1612]/8 pt-12">
+            <div className="mt-20 border-t border-[#101014]/8 pt-12">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="font-fraunces text-2xl text-[#1A1612]">Autres créations de {shop.name}</h2>
-                <Link href={`/boutique/${shop.slug}`} className="font-mono text-xs text-[#FF3D7F] hover:text-[#FF3D7F]/70 transition-colors tracking-wide">
+                <h2 className="font-fraunces text-2xl text-[#101014]">Autres créations de {shop.name}</h2>
+                <Link href={`/boutique/${shop.slug}`} className="font-mono text-xs text-[#FF2DA0] hover:text-[#FF2DA0]/70 transition-colors tracking-wide">
                   Voir tout →
                 </Link>
               </div>
@@ -319,16 +319,16 @@ export default function ProduitPage() {
                   const img = r.images?.[0] ?? r.image_url;
                   return (
                     <Link key={r.id} href={`/produit/${r.slug || r.id}`}
-                      className="group rounded-2xl border border-[#1A1612]/8 overflow-hidden hover:border-[#FF3D7F]/25 transition-all">
+                      className="group rounded-2xl border border-[#101014]/8 overflow-hidden hover:border-[#FF2DA0]/25 transition-all">
                       <div className="aspect-square bg-[#F1ECE3] overflow-hidden">
                         {img
                           ? <img src={img} alt={r.name || r.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                          : <div className="w-full h-full flex items-center justify-center"><Package size={24} className="text-[#1A1612]/10" /></div>
+                          : <div className="w-full h-full flex items-center justify-center"><Package size={24} className="text-[#101014]/10" /></div>
                         }
                       </div>
                       <div className="p-3">
-                        <p className="font-hanken text-sm text-[#1A1612] truncate">{r.name || r.title}</p>
-                        <p className="font-mono text-sm text-[#FF3D7F] mt-0.5"><Price eur={Number(r.price)} /></p>
+                        <p className="font-hanken text-sm text-[#101014] truncate">{r.name || r.title}</p>
+                        <p className="font-mono text-sm text-[#FF2DA0] mt-0.5"><Price eur={Number(r.price)} /></p>
                       </div>
                     </Link>
                   );
@@ -353,17 +353,17 @@ export default function ProduitPage() {
         }}>
         <div className="flex items-center gap-3">
           <div className="shrink-0">
-            <p className="font-fraunces text-[22px] leading-none text-[#1A1612]">
+            <p className="font-fraunces text-[22px] leading-none text-[#101014]">
               <Price eur={Number(product.price) * qty} />
             </p>
             {ptype === "product" && !isOos && (
               <div className="flex items-center gap-1.5 mt-1">
                 <button onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Diminuer la quantité"
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#1A1612]/60 text-xl active:scale-90 transition-transform"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#101014]/60 text-xl active:scale-90 transition-transform"
                   style={{ background: "rgba(26,22,18,0.08)" }}>-</button>
-                <span className="font-mono text-[12px] text-[#1A1612]/70 w-5 text-center">{qty}</span>
+                <span className="font-mono text-[12px] text-[#101014]/70 w-5 text-center">{qty}</span>
                 <button onClick={() => setQty(Math.min(product.quantity || 99, qty + 1))} aria-label="Augmenter la quantité"
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#1A1612]/60 text-xl active:scale-90 transition-transform"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#101014]/60 text-xl active:scale-90 transition-transform"
                   style={{ background: "rgba(26,22,18,0.08)" }}>+</button>
               </div>
             )}
@@ -371,7 +371,7 @@ export default function ProduitPage() {
           <button onClick={handleAdd}
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-fraunces text-[16px] text-white active:scale-[0.97] transition-transform"
             style={{
-              background: added ? "#1C9C95" : `linear-gradient(135deg,${typeConf.color}dd,${typeConf.color})`,
+              background: added ? "#2323C4" : `linear-gradient(135deg,${typeConf.color}dd,${typeConf.color})`,
               boxShadow: `0 4px 20px ${typeConf.color}40`,
             }}>
             {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {typeConf.cta}</>}
@@ -379,7 +379,7 @@ export default function ProduitPage() {
           <button onClick={toggleLike}
             className="w-12 h-12 flex items-center justify-center rounded-2xl shrink-0"
             style={{ background: liked ? "rgba(255,61,127,.15)" : "rgba(26,22,18,0.06)", border: `1px solid ${liked ? "rgba(255,61,127,.35)" : "rgba(26,22,18,.10)"}` }}>
-            <Heart size={18} className={liked ? "fill-[#FF3D7F] text-[#FF3D7F]" : "text-[#1A1612]/40"} />
+            <Heart size={18} className={liked ? "fill-[#FF2DA0] text-[#FF2DA0]" : "text-[#101014]/40"} />
           </button>
         </div>
       </div>

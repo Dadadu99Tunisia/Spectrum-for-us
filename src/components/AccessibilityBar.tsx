@@ -130,11 +130,11 @@ export function AccessibilityBar() {
             aria-controls="a11y-panel"
             className={`flex items-center gap-2 px-5 py-2 border border-b-0 rounded-t-xl text-xs font-mono tracking-wide transition-all duration-200 ${
               hasAnyActive
-                ? "bg-[#E0337E]/15 border-[#E0337E]/40 text-[#E0337E]"
-                : "bg-[#1a0d28] border-[#F3EADB]/15 text-[#F3EADB]/50 hover:text-[#F3EADB]"
+                ? "bg-[#FF2DA0]/15 border-[#FF2DA0]/40 text-[#FF2DA0]"
+                : "bg-[#FFFFFF] border-[#101014]/15 text-[#101014]/50 hover:text-[#101014]"
             }`}
           >
-            {hasAnyActive && <span className="w-1.5 h-1.5 rounded-full bg-[#E0337E] animate-pulse" />}
+            {hasAnyActive && <span className="w-1.5 h-1.5 rounded-full bg-[#FF2DA0] animate-pulse" />}
             <span>Accessibilité</span>
             {open ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
           </button>
@@ -144,7 +144,7 @@ export function AccessibilityBar() {
         <div
           id="a11y-panel"
           role="group"
-          className="bg-[#1a0d28]/98 backdrop-blur-md border-t border-[#F3EADB]/10 transition-all duration-300 overflow-hidden"
+          className="bg-[#FFFFFF]/98 backdrop-blur-md border-t border-[#101014]/10 transition-all duration-300 overflow-hidden"
           style={{ maxHeight: open ? "220px" : "0px" }}
           aria-hidden={!open}
         >
@@ -153,7 +153,7 @@ export function AccessibilityBar() {
 
               {/* Taille du texte */}
               <div className="flex flex-col gap-1.5">
-                <p className="font-mono text-[9px] tracking-wide text-[#F3EADB]/30">
+                <p className="font-mono text-[9px] tracking-wide text-[#101014]/30">
                   Taille du texte
                 </p>
                 <div className="flex items-center gap-1">
@@ -165,8 +165,8 @@ export function AccessibilityBar() {
                       aria-label={`Taille de texte ${label}`}
                       className={`px-3 py-1.5 rounded-lg border font-mono text-xs transition-all duration-200 ${
                         textSize === key
-                          ? "border-[#E0337E] text-[#E0337E] bg-[#E0337E]/10"
-                          : "border-[#F3EADB]/15 text-[#F3EADB]/40 hover:border-[#F3EADB]/30 hover:text-[#F3EADB]/70"
+                          ? "border-[#FF2DA0] text-[#FF2DA0] bg-[#FF2DA0]/10"
+                          : "border-[#101014]/15 text-[#101014]/40 hover:border-[#101014]/30 hover:text-[#101014]/70"
                       }`}
                     >
                       {label}
@@ -176,11 +176,11 @@ export function AccessibilityBar() {
               </div>
 
               {/* Séparateur */}
-              <div className="w-px self-stretch bg-[#F3EADB]/8 hidden sm:block" />
+              <div className="w-px self-stretch bg-[#101014]/8 hidden sm:block" />
 
               {/* Modes toggle */}
               <div className="flex flex-col gap-1.5 flex-1">
-                <p className="font-mono text-[9px] tracking-wide text-[#F3EADB]/30">
+                <p className="font-mono text-[9px] tracking-wide text-[#101014]/30">
                   Modes visuels & navigation
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -194,14 +194,14 @@ export function AccessibilityBar() {
                         title={detail}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-hanken transition-all duration-200 ${
                           isActive
-                            ? "border-[#E0337E] text-[#E0337E] bg-[#E0337E]/10"
-                            : "border-[#F3EADB]/15 text-[#F3EADB]/45 hover:border-[#F3EADB]/30 hover:text-[#F3EADB]/70"
+                            ? "border-[#FF2DA0] text-[#FF2DA0] bg-[#FF2DA0]/10"
+                            : "border-[#101014]/15 text-[#101014]/45 hover:border-[#101014]/30 hover:text-[#101014]/70"
                         }`}
                       >
                         <Icon size={11} aria-hidden="true" />
                         <span>{label}</span>
                         {isActive && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#E0337E]" aria-hidden="true" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#FF2DA0]" aria-hidden="true" />
                         )}
                       </button>
                     );
@@ -214,7 +214,7 @@ export function AccessibilityBar() {
                 <button
                   onClick={resetAll}
                   aria-label="Réinitialiser tous les paramètres d'accessibilité"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#F3EADB]/15 text-[#F3EADB]/30 font-hanken text-xs hover:border-red-400/30 hover:text-red-400 transition-all self-end"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#101014]/15 text-[#101014]/30 font-hanken text-xs hover:border-red-400/30 hover:text-red-400 transition-all self-end"
                 >
                   <X size={11} />
                   Réinitialiser
@@ -224,7 +224,7 @@ export function AccessibilityBar() {
 
             {/* Description du mode actif */}
             {hasAnyActive && (
-              <p className="mt-3 font-hanken text-[10px] text-[#F3EADB]/30 text-center" aria-live="polite">
+              <p className="mt-3 font-hanken text-[10px] text-[#101014]/30 text-center" aria-live="polite">
                 Actif·ves : {[
                   textSize !== "normal" ? `Texte ${TEXT_SIZES.find(s => s.key === textSize)?.label}` : null,
                   ...[...active].map(m => TOGGLE_MODES.find(t => t.key === m)?.label),

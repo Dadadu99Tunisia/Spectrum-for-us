@@ -91,7 +91,7 @@ function Card({ org, onClick }: { org: OrgEntry; onClick: () => void }) {
   return (
     <article onClick={onClick} tabIndex={0} role="button" aria-label={`Voir : ${org.name}`}
       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
-      className="group flex gap-4 rounded-2xl border border-[#F3EADB]/8 bg-[#0d0a1a] hover:bg-[#110e20] hover:border-[#F3EADB]/16 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 p-4"
+      className="group flex gap-4 rounded-2xl border border-[#101014]/8 bg-[#0d0a1a] hover:bg-[#110e20] hover:border-[#101014]/16 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 p-4"
       style={{ ["--tw-ring-color" as string]: org.accent }}
     >
       {/* Left: logo + accent bar */}
@@ -104,7 +104,7 @@ function Card({ org, onClick }: { org: OrgEntry; onClick: () => void }) {
       <div className="flex-1 min-w-0 flex flex-col gap-1.5">
         {/* Name + arrow */}
         <div className="flex items-start gap-2">
-          <h3 className="font-bricolage font-bold text-[#F3EADB] text-sm leading-snug flex-1 min-w-0">
+          <h3 className="font-bricolage font-bold text-[#101014] text-sm leading-snug flex-1 min-w-0">
             {org.name}
           </h3>
           <ChevronRight size={14} className="shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"
@@ -113,12 +113,12 @@ function Card({ org, onClick }: { org: OrgEntry; onClick: () => void }) {
 
         {/* Location + founded */}
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="flex items-center gap-1 font-mono text-[10px] text-[#F3EADB]/40">
+          <span className="flex items-center gap-1 font-mono text-[10px] text-[#101014]/40">
             <MapPin size={9} style={{ color: org.accent }} />
             {codeToFlag(org.countryCode)} {org.city}, {org.country}
           </span>
           {org.founded && (
-            <span className="flex items-center gap-0.5 font-mono text-[9px] text-[#F3EADB]/20">
+            <span className="flex items-center gap-0.5 font-mono text-[9px] text-[#101014]/20">
               <Calendar size={8} />{org.founded}
             </span>
           )}
@@ -135,7 +135,7 @@ function Card({ org, onClick }: { org: OrgEntry; onClick: () => void }) {
         </div>
 
         {/* Description */}
-        <p className="font-hanken text-[11px] text-[#F3EADB]/40 leading-relaxed line-clamp-2">
+        <p className="font-hanken text-[11px] text-[#101014]/40 leading-relaxed line-clamp-2">
           {org.description}
         </p>
 
@@ -191,13 +191,13 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
           <div className="flex items-start gap-4">
             <OrgLogo org={org} size={68} />
             <div className="flex-1 min-w-0">
-              <h2 className="font-bricolage font-bold text-[#F3EADB] text-xl leading-tight">{org.name}</h2>
+              <h2 className="font-bricolage font-bold text-[#101014] text-xl leading-tight">{org.name}</h2>
               <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                <span className="flex items-center gap-1 font-mono text-xs text-[#F3EADB]/40">
+                <span className="flex items-center gap-1 font-mono text-xs text-[#101014]/40">
                   <MapPin size={10} />{org.city}, {org.country}
                 </span>
                 {org.founded && (
-                  <span className="font-mono text-[10px] text-[#F3EADB]/25">· Fondée en {org.founded}</span>
+                  <span className="font-mono text-[10px] text-[#101014]/25">· Fondée en {org.founded}</span>
                 )}
               </div>
               <div className="flex flex-wrap gap-1.5 mt-2.5">
@@ -210,7 +210,7 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
               </div>
             </div>
             <button onClick={onClose} aria-label="Fermer"
-              className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[#F3EADB]/30 hover:text-[#F3EADB] hover:bg-[#F3EADB]/8 transition-all">
+              className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[#101014]/30 hover:text-[#101014] hover:bg-[#101014]/8 transition-all">
               <X size={15} />
             </button>
           </div>
@@ -218,7 +218,7 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
 
         {/* Body */}
         <div className="overflow-y-auto flex-1 px-6 pb-8 space-y-5">
-          <p className="font-hanken text-sm text-[#F3EADB]/65 leading-relaxed">
+          <p className="font-hanken text-sm text-[#101014]/65 leading-relaxed">
             {org.description}
           </p>
 
@@ -231,8 +231,8 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
                   <Phone size={16} style={{ color: org.accent }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-mono text-[9px] text-[#F3EADB]/25 tracking-wide mb-0.5">Téléphone</p>
-                  <p className="font-hanken text-sm text-[#F3EADB]/80 font-medium">{org.phone}</p>
+                  <p className="font-mono text-[9px] text-[#101014]/25 tracking-wide mb-0.5">Téléphone</p>
+                  <p className="font-hanken text-sm text-[#101014]/80 font-medium">{org.phone}</p>
                 </div>
                 <ExternalLink size={11} className="opacity-0 group-hover:opacity-50 transition-opacity shrink-0" style={{ color: org.accent }} />
               </a>
@@ -245,8 +245,8 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
                   <Mail size={16} style={{ color: org.accent }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-mono text-[9px] text-[#F3EADB]/25 tracking-wide mb-0.5">E-mail</p>
-                  <p className="font-hanken text-sm text-[#F3EADB]/80 font-medium truncate">{org.email}</p>
+                  <p className="font-mono text-[9px] text-[#101014]/25 tracking-wide mb-0.5">E-mail</p>
+                  <p className="font-hanken text-sm text-[#101014]/80 font-medium truncate">{org.email}</p>
                 </div>
                 <ExternalLink size={11} className="opacity-0 group-hover:opacity-50 transition-opacity shrink-0" style={{ color: org.accent }} />
               </a>
@@ -259,8 +259,8 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
                   <Globe size={16} style={{ color: org.accent }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-mono text-[9px] text-[#F3EADB]/25 tracking-wide mb-0.5">Site web</p>
-                  <p className="font-hanken text-sm text-[#F3EADB]/80 font-medium truncate">{domain(org.website)}</p>
+                  <p className="font-mono text-[9px] text-[#101014]/25 tracking-wide mb-0.5">Site web</p>
+                  <p className="font-hanken text-sm text-[#101014]/80 font-medium truncate">{domain(org.website)}</p>
                 </div>
                 <ExternalLink size={11} className="opacity-40 group-hover:opacity-100 transition-opacity shrink-0" style={{ color: org.accent }} />
               </a>
@@ -284,11 +284,11 @@ function OrgModal({ org, onClose }: { org: OrgEntry; onClose: () => void }) {
 function FilterSection({ title, children, defaultOpen = true }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-[#F3EADB]/6 pb-4 mb-4">
+    <div className="border-b border-[#101014]/6 pb-4 mb-4">
       <button onClick={() => setOpen(v => !v)}
         className="flex items-center justify-between w-full mb-3 group">
-        <span className="font-mono text-[10px] tracking-wide text-[#F3EADB]/35 group-hover:text-[#F3EADB]/60 transition-colors">{title}</span>
-        <ChevronDown size={12} className="text-[#F3EADB]/20 transition-transform duration-200"
+        <span className="font-mono text-[10px] tracking-wide text-[#101014]/35 group-hover:text-[#101014]/60 transition-colors">{title}</span>
+        <ChevronDown size={12} className="text-[#101014]/20 transition-transform duration-200"
           style={{ transform: open ? "rotate(180deg)" : "rotate(0)" }} />
       </button>
       {open && <div>{children}</div>}
@@ -386,7 +386,7 @@ export function AnnuaireClient() {
         <aside className={`
           ${showFilters ? "flex" : "hidden"} md:flex
           flex-col w-full md:w-72 lg:w-80 shrink-0
-          border-r border-[#F3EADB]/8
+          border-r border-[#101014]/8
           bg-[#080612] overflow-y-auto
           absolute md:relative inset-0 z-30 md:z-auto
         `}>
@@ -394,21 +394,21 @@ export function AnnuaireClient() {
             {/* Sidebar header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal size={14} className="text-[#E0337E]" />
-                <span className="font-bricolage font-bold text-[#F3EADB] text-sm">Filtres</span>
+                <SlidersHorizontal size={14} className="text-[#FF2DA0]" />
+                <span className="font-bricolage font-bold text-[#101014] text-sm">Filtres</span>
                 {activeFilters > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full bg-[#E0337E] text-white font-mono text-[9px] tabular-nums">
+                  <span className="px-1.5 py-0.5 rounded-full bg-[#FF2DA0] text-white font-mono text-[9px] tabular-nums">
                     {activeFilters}
                   </span>
                 )}
               </div>
               <div className="flex items-center gap-2">
                 {activeFilters > 0 && (
-                  <button onClick={resetAll} className="font-mono text-[10px] text-[#E0337E]/70 hover:text-[#E0337E] transition-colors">
+                  <button onClick={resetAll} className="font-mono text-[10px] text-[#FF2DA0]/70 hover:text-[#FF2DA0] transition-colors">
                     Tout effacer
                   </button>
                 )}
-                <button onClick={() => setShowFilters(false)} className="md:hidden text-[#F3EADB]/30 hover:text-[#F3EADB]">
+                <button onClick={() => setShowFilters(false)} className="md:hidden text-[#101014]/30 hover:text-[#101014]">
                   <X size={16} />
                 </button>
               </div>
@@ -416,12 +416,12 @@ export function AnnuaireClient() {
 
             {/* Search */}
             <div className="relative mb-5">
-              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/25 pointer-events-none" />
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#101014]/25 pointer-events-none" />
               <input ref={searchRef} type="search" placeholder="Rechercher… ( / )"
                 value={search} onChange={e => setSearch(e.target.value)}
-                className="w-full pl-8 pr-8 py-2.5 rounded-xl border border-[#F3EADB]/10 bg-[#F3EADB]/[0.04] text-[#F3EADB]/80 placeholder-[#F3EADB]/20 text-sm font-hanken outline-none focus:border-[#E0337E]/50 transition-all" />
+                className="w-full pl-8 pr-8 py-2.5 rounded-xl border border-[#101014]/10 bg-[#101014]/[0.04] text-[#101014]/80 placeholder-[#101014]/20 text-sm font-hanken outline-none focus:border-[#FF2DA0]/50 transition-all" />
               {search && (
-                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#F3EADB]/30 hover:text-[#E0337E]">
+                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#101014]/30 hover:text-[#FF2DA0]">
                   <X size={12} />
                 </button>
               )}
@@ -437,21 +437,21 @@ export function AnnuaireClient() {
                     <button key={cat.value} onClick={() => toggleCat(cat.value)}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all duration-150 group text-left"
                       style={{
-                        background: active ? `${cat.value === "association" ? "#E0337E" : "#1C9C95"}15` : "transparent",
-                        border: `1px solid ${active ? (cat.value === "association" ? "#E0337E" : "#1C9C95") + "40" : "transparent"}`,
+                        background: active ? `${cat.value === "association" ? "#FF2DA0" : "#2323C4"}15` : "transparent",
+                        border: `1px solid ${active ? (cat.value === "association" ? "#FF2DA0" : "#2323C4") + "40" : "transparent"}`,
                       }}>
                       <span className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 text-sm"
-                        style={{ background: active ? "#1C9C9520" : "rgba(243,234,219,0.06)" }}>
+                        style={{ background: active ? "#2323C420" : "rgba(243,234,219,0.06)" }}>
                         {cat.emoji}
                       </span>
-                      <span className="flex-1 font-hanken text-xs" style={{ color: active ? "#F3EADB" : "rgba(243,234,219,0.50)" }}>
+                      <span className="flex-1 font-hanken text-xs" style={{ color: active ? "#101014" : "rgba(243,234,219,0.50)" }}>
                         {cat.label}
                       </span>
-                      <span className="font-mono text-[9px] tabular-nums" style={{ color: active ? "#1C9C95" : "rgba(243,234,219,0.20)" }}>
+                      <span className="font-mono text-[9px] tabular-nums" style={{ color: active ? "#2323C4" : "rgba(243,234,219,0.20)" }}>
                         {count}
                       </span>
                       {active && (
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#1C9C95] shrink-0" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#2323C4] shrink-0" />
                       )}
                     </button>
                   );
@@ -470,14 +470,14 @@ export function AnnuaireClient() {
                     <button key={c} onClick={() => toggleCountry(c)}
                       className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all text-left"
                       style={{
-                        background: active ? "#E0337E12" : "transparent",
-                        border: `1px solid ${active ? "#E0337E40" : "transparent"}`,
+                        background: active ? "#FF2DA012" : "transparent",
+                        border: `1px solid ${active ? "#FF2DA040" : "transparent"}`,
                       }}>
                       <span className="text-base leading-none w-6 text-center shrink-0">{codeToFlag(code)}</span>
-                      <span className="flex-1 font-hanken text-xs truncate" style={{ color: active ? "#F3EADB" : "rgba(243,234,219,0.50)" }}>
+                      <span className="flex-1 font-hanken text-xs truncate" style={{ color: active ? "#101014" : "rgba(243,234,219,0.50)" }}>
                         {c}
                       </span>
-                      <span className="font-mono text-[9px] tabular-nums shrink-0" style={{ color: active ? "#E0337E" : "rgba(243,234,219,0.20)" }}>
+                      <span className="font-mono text-[9px] tabular-nums shrink-0" style={{ color: active ? "#FF2DA0" : "rgba(243,234,219,0.20)" }}>
                         {count}
                       </span>
                     </button>
@@ -485,7 +485,7 @@ export function AnnuaireClient() {
                 })}
                 {allCountries.length > 12 && (
                   <button onClick={() => setShowMoreCountries(v => !v)}
-                    className="w-full text-center font-mono text-[10px] text-[#F3EADB]/25 hover:text-[#F3EADB]/60 transition-colors py-1.5">
+                    className="w-full text-center font-mono text-[10px] text-[#101014]/25 hover:text-[#101014]/60 transition-colors py-1.5">
                     {showMoreCountries ? "- Voir moins" : `+ ${allCountries.length - 12} pays`}
                   </button>
                 )}
@@ -494,7 +494,7 @@ export function AnnuaireClient() {
 
             {/* Random */}
             <button onClick={pickRandom}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[#F3EADB]/10 font-hanken text-xs text-[#F3EADB]/40 hover:text-[#E0901E] hover:border-[#E0901E]/40 transition-all">
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[#101014]/10 font-hanken text-xs text-[#101014]/40 hover:text-[#FFD400] hover:border-[#FFD400]/40 transition-all">
               <Shuffle size={13} /> Découvrir une organisation
             </button>
           </div>
@@ -504,18 +504,18 @@ export function AnnuaireClient() {
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
           {/* Topbar */}
-          <div className="sticky top-0 z-10 bg-[#0d0d16]/95 backdrop-blur-md border-b border-[#F3EADB]/8 px-5 py-3 flex items-center gap-3 shrink-0">
+          <div className="sticky top-0 z-10 bg-[#FFFFFF]/95 backdrop-blur-md border-b border-[#101014]/8 px-5 py-3 flex items-center gap-3 shrink-0">
             {/* Mobile filter toggle */}
             <button onClick={() => setShowFilters(v => !v)}
-              className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#F3EADB]/10 text-[#F3EADB]/50 hover:text-[#E0337E] hover:border-[#E0337E]/40 transition-all text-xs font-mono shrink-0">
+              className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#101014]/10 text-[#101014]/50 hover:text-[#FF2DA0] hover:border-[#FF2DA0]/40 transition-all text-xs font-mono shrink-0">
               <SlidersHorizontal size={13} />
-              {activeFilters > 0 && <span className="text-[#E0337E]">{activeFilters}</span>}
+              {activeFilters > 0 && <span className="text-[#FF2DA0]">{activeFilters}</span>}
             </button>
 
             {/* Result count */}
             <div className="flex items-center gap-1.5 min-w-0">
-              <span className="font-bricolage font-bold text-[#F3EADB] text-sm tabular-nums">{filtered.length}</span>
-              <span className="font-hanken text-xs text-[#F3EADB]/35 truncate">
+              <span className="font-bricolage font-bold text-[#101014] text-sm tabular-nums">{filtered.length}</span>
+              <span className="font-hanken text-xs text-[#101014]/35 truncate">
                 organisation{filtered.length > 1 ? "s" : ""}
                 {selectedCountries.length > 0 && ` · ${selectedCountries.length} pays`}
                 {selectedCats.length > 0 && ` · ${selectedCats.length} type${selectedCats.length > 1 ? "s" : ""}`}
@@ -525,7 +525,7 @@ export function AnnuaireClient() {
             {/* Active filter chips */}
             <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-x-auto scrollbar-none">
               {search && (
-                <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#E0337E]/15 border border-[#E0337E]/30 font-mono text-[10px] text-[#E0337E] shrink-0">
+                <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#FF2DA0]/15 border border-[#FF2DA0]/30 font-mono text-[10px] text-[#FF2DA0] shrink-0">
                   "{search}"
                   <button onClick={() => setSearch("")}><X size={9} /></button>
                 </span>
@@ -533,14 +533,14 @@ export function AnnuaireClient() {
               {selectedCats.map(c => {
                 const cat = CATEGORIES.find(x => x.value === c);
                 return cat && (
-                  <span key={c} className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#1C9C95]/15 border border-[#1C9C95]/30 font-mono text-[10px] text-[#1C9C95] shrink-0">
+                  <span key={c} className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#2323C4]/15 border border-[#2323C4]/30 font-mono text-[10px] text-[#2323C4] shrink-0">
                     {cat.emoji} {cat.label}
                     <button onClick={() => toggleCat(c)}><X size={9} /></button>
                   </span>
                 );
               })}
               {selectedCountries.map(c => (
-                <span key={c} className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#CF3F7C]/15 border border-[#CF3F7C]/30 font-mono text-[10px] text-[#CF3F7C] shrink-0">
+                <span key={c} className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#FF2DA0]/15 border border-[#FF2DA0]/30 font-mono text-[10px] text-[#FF2DA0] shrink-0">
                   {codeToFlag(mergedOrgs.find(o => o.country === c)?.countryCode ?? "")} {c}
                   <button onClick={() => toggleCountry(c)}><X size={9} /></button>
                 </span>
@@ -548,13 +548,13 @@ export function AnnuaireClient() {
             </div>
 
             {/* Sort */}
-            <div className="flex items-center gap-1 shrink-0 border border-[#F3EADB]/10 rounded-xl overflow-hidden">
+            <div className="flex items-center gap-1 shrink-0 border border-[#101014]/10 rounded-xl overflow-hidden">
               {([["country", "Pays"], ["name", "A-Z"], ["founded", "Ancienneté"]] as [SortKey, string][]).map(([k, label]) => (
                 <button key={k} onClick={() => setSort(k)}
                   className="px-2.5 py-1.5 font-mono text-[10px] transition-all"
                   style={{
-                    background: sort === k ? "#E0337E18" : "transparent",
-                    color: sort === k ? "#E0337E" : "rgba(243,234,219,0.30)",
+                    background: sort === k ? "#FF2DA018" : "transparent",
+                    color: sort === k ? "#FF2DA0" : "rgba(243,234,219,0.30)",
                   }}>
                   {label}
                 </button>
@@ -567,8 +567,8 @@ export function AnnuaireClient() {
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 gap-4 text-center px-6">
                 <span className="text-4xl">🔍</span>
-                <p className="font-hanken text-[#F3EADB]/40 text-sm">Aucune organisation pour cette recherche.</p>
-                <button onClick={resetAll} className="text-xs font-mono text-[#E0337E] hover:underline">
+                <p className="font-hanken text-[#101014]/40 text-sm">Aucune organisation pour cette recherche.</p>
+                <button onClick={resetAll} className="text-xs font-mono text-[#FF2DA0] hover:underline">
                   Réinitialiser les filtres
                 </button>
               </div>
@@ -576,13 +576,13 @@ export function AnnuaireClient() {
               <div className="p-5 space-y-10">
                 {grouped.map(({ country, code, orgs }) => (
                   <div key={country}>
-                    <div className="flex items-center gap-3 mb-4 sticky top-0 py-2 bg-[#0d0d16]/95 backdrop-blur-sm -mx-5 px-5 z-[5]">
+                    <div className="flex items-center gap-3 mb-4 sticky top-0 py-2 bg-[#FFFFFF]/95 backdrop-blur-sm -mx-5 px-5 z-[5]">
                       <span className="text-xl leading-none">{codeToFlag(code)}</span>
-                      <h2 className="font-bricolage font-bold text-[#F3EADB] text-base">{country}</h2>
-                      <span className="font-mono text-[10px] text-[#F3EADB]/25 px-2 py-0.5 rounded-full bg-[#F3EADB]/5 tabular-nums">
+                      <h2 className="font-bricolage font-bold text-[#101014] text-base">{country}</h2>
+                      <span className="font-mono text-[10px] text-[#101014]/25 px-2 py-0.5 rounded-full bg-[#101014]/5 tabular-nums">
                         {orgs.length}
                       </span>
-                      <div className="flex-1 h-px bg-gradient-to-r from-[#F3EADB]/8 to-transparent" />
+                      <div className="flex-1 h-px bg-gradient-to-r from-[#101014]/8 to-transparent" />
                     </div>
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
                       {orgs.map(org => <Card key={org.id} org={org} onClick={() => setModalOrg(org)} />)}
@@ -610,12 +610,12 @@ export function AnnuaireClient() {
 
 function Footer({ count, groupCount }: { count: number; groupCount?: number }) {
   return (
-    <div className="pt-6 pb-10 text-center border-t border-[#F3EADB]/6 space-y-2 mt-4">
-      <p className="font-mono text-[10px] text-[#F3EADB]/20">
+    <div className="pt-6 pb-10 text-center border-t border-[#101014]/6 space-y-2 mt-4">
+      <p className="font-mono text-[10px] text-[#101014]/20">
         {count} organisations{groupCount ? ` · ${groupCount} pays` : ""}
       </p>
       <a href="mailto:contact@spectrumforus.com?subject=Référencement annuaire"
-        className="inline-flex items-center gap-1.5 text-xs font-mono text-[#E0337E]/50 hover:text-[#E0337E] transition-colors">
+        className="inline-flex items-center gap-1.5 text-xs font-mono text-[#FF2DA0]/50 hover:text-[#FF2DA0] transition-colors">
         + Référencer mon organisation <ArrowUpRight size={11} />
       </a>
     </div>

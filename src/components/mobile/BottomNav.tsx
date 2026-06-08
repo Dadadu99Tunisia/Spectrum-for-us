@@ -33,7 +33,7 @@ export function BottomNav() {
       <div className="h-[70px] md:hidden" aria-hidden />
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
-        style={{ background: "#FBF9F5", borderTop: "1px solid #ECE6DB", paddingTop: 8 }}>
+        style={{ background: "#FBFAF8", borderTop: "1px solid #ECE6DB", paddingTop: 8 }}>
         <div className="flex items-center justify-around px-2 pb-[max(22px,env(safe-area-inset-bottom))]">
           {TABS.map(tab => {
             const active = isActive(tab.href);
@@ -43,16 +43,16 @@ export function BottomNav() {
                 className="relative flex flex-col items-center gap-[3px] px-2.5 py-1 active:scale-95 transition-transform">
                 <span className="relative">
                   <Icon size={23} strokeWidth={active ? 2.2 : 1.7}
-                    style={{ color: active ? "#FF3D7F" : "#9B9285" }} />
+                    style={{ color: active ? "#FF2DA0" : "#9B9285" }} />
                   {"isCart" in tab && tab.isCart && cartCount > 0 && (
                     <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full text-[10px] font-mono font-bold flex items-center justify-center text-white"
-                      style={{ background: "#FF3D7F" }}>
+                      style={{ background: "#FF2DA0" }}>
                       {cartCount > 9 ? "9+" : cartCount}
                     </span>
                   )}
                 </span>
                 <span className="font-mono text-[9.5px] tracking-[0.02em]"
-                  style={{ color: active ? "#FF3D7F" : "#9B9285", fontWeight: active ? 700 : 400 }}>
+                  style={{ color: active ? "#FF2DA0" : "#9B9285", fontWeight: active ? 700 : 400 }}>
                   {tab.label}
                 </span>
               </Link>

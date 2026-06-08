@@ -190,8 +190,8 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
         {!mapLoaded && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3"
             style={{ background: "#080612" }}>
-            <div className="w-6 h-6 rounded-full border-2 border-[#E0337E] border-t-transparent animate-spin" />
-            <span className="font-mono text-xs text-[#F3EADB]/30">Chargement de la carte…</span>
+            <div className="w-6 h-6 rounded-full border-2 border-[#FF2DA0] border-t-transparent animate-spin" />
+            <span className="font-mono text-xs text-[#101014]/30">Chargement de la carte…</span>
           </div>
         )}
 
@@ -221,10 +221,10 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
                   {selectedOrg.logo ?? selectedOrg.flag}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bricolage font-bold text-[#F3EADB] text-sm leading-tight">
+                  <p className="font-bricolage font-bold text-[#101014] text-sm leading-tight">
                     {selectedOrg.name}
                   </p>
-                  <p className="font-mono text-[10px] text-[#F3EADB]/40 mt-0.5">
+                  <p className="font-mono text-[10px] text-[#101014]/40 mt-0.5">
                     {selectedOrg.flag} {selectedOrg.city}, {selectedOrg.country}
                     {selectedOrg.founded && ` · ${selectedOrg.founded}`}
                   </p>
@@ -232,7 +232,7 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
                 <button
                   onClick={() => onSelect(selected!)}
                   aria-label="Fermer"
-                  className="text-[#F3EADB]/25 hover:text-[#F3EADB]/70 transition-colors text-xl leading-none shrink-0"
+                  className="text-[#101014]/25 hover:text-[#101014]/70 transition-colors text-xl leading-none shrink-0"
                 >×</button>
               </div>
 
@@ -246,7 +246,7 @@ export function AnnuaireMap({ orgs, selected, hovered, onSelect, onHover }: Prop
                 ))}
               </div>
 
-              <p className="font-hanken text-[11px] text-[#F3EADB]/55 leading-relaxed mb-3 line-clamp-3">
+              <p className="font-hanken text-[11px] text-[#101014]/55 leading-relaxed mb-3 line-clamp-3">
                 {selectedOrg.description}
               </p>
 

@@ -14,11 +14,11 @@ interface ComingSoonProps {
   ctaHref?: string;
 }
 
-export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#E0337E", features, ctaLabel, ctaHref }: ComingSoonProps) {
+export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#FF2DA0", features, ctaLabel, ctaHref }: ComingSoonProps) {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-24 pb-20 px-6 flex flex-col items-center justify-center bg-[#FBF9F5]">
+      <main className="min-h-screen pt-24 pb-20 px-6 flex flex-col items-center justify-center bg-[#FBFAF8]">
         <div className="max-w-2xl mx-auto text-center">
 
           {/* Icon */}
@@ -33,12 +33,12 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#E033
           </span>
 
           {/* Title */}
-          <h1 className="font-fraunces text-4xl md:text-5xl text-[#1A1612] leading-tight mb-4">
+          <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] leading-tight mb-4">
             {title}
           </h1>
 
           {/* Subtitle */}
-          <p className="font-hanken text-lg text-[#1A1612]/60 leading-relaxed mb-10 max-w-xl mx-auto">
+          <p className="font-hanken text-lg text-[#101014]/60 leading-relaxed mb-10 max-w-xl mx-auto">
             {subtitle}
           </p>
 
@@ -47,7 +47,7 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#E033
             <div className="flex flex-wrap gap-2 justify-center mb-10">
               {features.map((f) => (
                 <span key={f}
-                  className="px-4 py-1.5 rounded-full border border-[#1A1612]/10 font-mono text-[11px] tracking-wide text-[#1A1612]/40">
+                  className="px-4 py-1.5 rounded-full border border-[#101014]/10 font-mono text-[11px] tracking-wide text-[#101014]/40">
                   {f}
                 </span>
               ))}
@@ -56,12 +56,12 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#E033
 
           {/* Prism line */}
           <div className="h-px w-32 mx-auto mb-10"
-            style={{ background: "linear-gradient(90deg,#E0533A,#E0901E,#CF3F7C,#6D2DB5,#1C9C95)" }} />
+            style={{ background: "linear-gradient(90deg,#2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400)" }} />
 
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#1A1612]/15 bg-[#1A1612]/[0.03] mb-8">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#101014]/15 bg-[#101014]/[0.03] mb-8">
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: accent }} />
-            <span className="font-mono text-xs text-[#1A1612]/50 tracking-wide">En construction</span>
+            <span className="font-mono text-xs text-[#101014]/50 tracking-wide">En construction</span>
           </div>
 
           {/* CTA */}
@@ -74,7 +74,7 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#E033
               </Link>
             )}
             <Link href="/"
-              className="px-6 py-3 rounded-full border border-[#1A1612]/15 font-hanken text-sm text-[#1A1612]/60 hover:text-[#1A1612] hover:border-[#1A1612]/30 transition-all duration-200">
+              className="px-6 py-3 rounded-full border border-[#101014]/15 font-hanken text-sm text-[#101014]/60 hover:text-[#101014] hover:border-[#101014]/30 transition-all duration-200">
               ← Retour à l&apos;accueil
             </Link>
           </div>

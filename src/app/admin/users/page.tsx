@@ -16,16 +16,16 @@ type User = {
 
 const ROLES = ["","buyer","vendor","support","moderation","marketing","commercial","hr","cfo","ceo","super_admin"];
 const ROLE_COLOR: Record<string, string> = {
-  super_admin: "text-[#FF3D7F] bg-[#FF3D7F]/10 border-[#FF3D7F]/20",
-  ceo:         "text-[#E0901E] bg-[#E0901E]/10 border-[#E0901E]/20",
-  cfo:         "text-[#6D2DB5] bg-[#6D2DB5]/10 border-[#6D2DB5]/20",
-  moderation:  "text-[#CF3F7C] bg-[#CF3F7C]/10 border-[#CF3F7C]/20",
-  support:     "text-[#1C9C95] bg-[#1C9C95]/10 border-[#1C9C95]/20",
+  super_admin: "text-[#FF2DA0] bg-[#FF2DA0]/10 border-[#FF2DA0]/20",
+  ceo:         "text-[#FFD400] bg-[#FFD400]/10 border-[#FFD400]/20",
+  cfo:         "text-[#7A2BF0] bg-[#7A2BF0]/10 border-[#7A2BF0]/20",
+  moderation:  "text-[#FF2DA0] bg-[#FF2DA0]/10 border-[#FF2DA0]/20",
+  support:     "text-[#2323C4] bg-[#2323C4]/10 border-[#2323C4]/20",
   marketing:   "text-blue-400 bg-blue-400/10 border-blue-400/20",
   commercial:  "text-green-600 bg-green-400/10 border-green-400/20",
   hr:          "text-purple-400 bg-purple-400/10 border-purple-400/20",
-  vendor:      "text-[#1A1612]/60 bg-[#1A1612]/[0.09] border-[#1A1612]/[0.14]",
-  buyer:       "text-[#1A1612]/30 bg-[#1A1612]/3 border-[#1A1612]/[0.13]",
+  vendor:      "text-[#101014]/60 bg-[#101014]/[0.09] border-[#101014]/[0.14]",
+  buyer:       "text-[#101014]/30 bg-[#101014]/3 border-[#101014]/[0.13]",
 };
 
 export default function UsersPage() {
@@ -88,24 +88,24 @@ export default function UsersPage() {
   return (
     <div className="space-y-6">
       {toast && (
-        <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#FF3D7F] text-white font-hanken text-sm shadow-xl">{toast}</div>
+        <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#FF2DA0] text-white font-hanken text-sm shadow-xl">{toast}</div>
       )}
 
       <div>
-        <h1 className="font-fraunces text-2xl text-[#1A1612]">Utilisateurs</h1>
-        <p className="font-hanken text-sm text-[#1A1612]/40 mt-0.5">{total} compte{total !== 1 ? "s" : ""}</p>
+        <h1 className="font-fraunces text-2xl text-[#101014]">Utilisateurs</h1>
+        <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">{total} compte{total !== 1 ? "s" : ""}</p>
       </div>
 
       {/* Filtres */}
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-48">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1A1612]/25" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#101014]/25" />
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher…"
-            className="w-full pl-9 pr-4 py-2 bg-[#1A1612]/[0.09] border border-[#1A1612]/[0.14] rounded-lg font-hanken text-sm text-[#1A1612] placeholder-[#1A1612]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
+            className="w-full pl-9 pr-4 py-2 bg-[#101014]/[0.09] border border-[#101014]/[0.14] rounded-lg font-hanken text-sm text-[#101014] placeholder-[#101014]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors" />
         </div>
         <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)}
-          className="bg-[#1A1612]/[0.09] border border-[#1A1612]/[0.14] rounded-lg px-3 py-2 font-mono text-xs text-[#1A1612]/60 focus:outline-none focus:border-[#a78bfa]/50 transition-colors">
+          className="bg-[#101014]/[0.09] border border-[#101014]/[0.14] rounded-lg px-3 py-2 font-mono text-xs text-[#101014]/60 focus:outline-none focus:border-[#a78bfa]/50 transition-colors">
           {ROLES.map(r => <option key={r} value={r}>{r === "" ? "Tous les rôles" : r}</option>)}
         </select>
       </div>
@@ -116,28 +116,28 @@ export default function UsersPage() {
         </div>
       ) : (
         <>
-          <div className="rounded-xl border border-[#1A1612]/[0.13] overflow-hidden">
+          <div className="rounded-xl border border-[#101014]/[0.13] overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#1A1612]/[0.12] bg-[#1A1612]/[0.07]">
+                <tr className="border-b border-[#101014]/[0.12] bg-[#101014]/[0.07]">
                   {["Utilisateur","Rôle","Statut","Dernière connexion","Inscription","Actions"].map(h => (
-                    <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#1A1612]/25">{h}</th>
+                    <th key={h} className="px-4 py-3 text-left font-mono text-[9px] uppercase tracking-widest text-[#101014]/25">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {users.map(u => (
-                  <tr key={u.id} className={`border-b border-[#1A1612]/[0.05] transition-colors ${u.is_suspended ? "bg-red-500/3" : "hover:bg-[#1A1612]/[0.07]"}`}>
+                  <tr key={u.id} className={`border-b border-[#101014]/[0.05] transition-colors ${u.is_suspended ? "bg-red-500/3" : "hover:bg-[#101014]/[0.07]"}`}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-[#FF3D7F]/10 border border-[#FF3D7F]/20 flex items-center justify-center flex-shrink-0">
-                          <span className="font-fraunces text-xs text-[#FF3D7F]">
+                        <div className="w-7 h-7 rounded-lg bg-[#FF2DA0]/10 border border-[#FF2DA0]/20 flex items-center justify-center flex-shrink-0">
+                          <span className="font-fraunces text-xs text-[#FF2DA0]">
                             {(u.full_name || u.pseudo || "?")[0].toUpperCase()}
                           </span>
                         </div>
                         <div>
-                          <p className="font-hanken text-sm text-[#1A1612]">{u.full_name || u.pseudo || "-"}</p>
-                          <p className="font-mono text-[9px] text-[#1A1612]/25">{u.id.slice(0,12)}…</p>
+                          <p className="font-hanken text-sm text-[#101014]">{u.full_name || u.pseudo || "-"}</p>
+                          <p className="font-mono text-[9px] text-[#101014]/25">{u.id.slice(0,12)}…</p>
                         </div>
                       </div>
                     </td>
@@ -146,14 +146,14 @@ export default function UsersPage() {
                         <div className="flex items-center gap-1">
                           <select defaultValue={u.role}
                             onChange={e => changeRole(u.id, e.target.value)}
-                            className="bg-[#0e061a] border border-[#FF3D7F]/40 rounded px-2 py-1 font-mono text-[10px] text-[#1A1612] focus:outline-none text-xs">
+                            className="bg-[#0e061a] border border-[#FF2DA0]/40 rounded px-2 py-1 font-mono text-[10px] text-[#101014] focus:outline-none text-xs">
                             {ROLES.filter(r => r !== "").map(r => <option key={r} value={r}>{r}</option>)}
                           </select>
-                          <button onClick={() => setEditRole(null)} className="text-[#1A1612]/30 hover:text-[#1A1612] text-xs px-1">✕</button>
+                          <button onClick={() => setEditRole(null)} className="text-[#101014]/30 hover:text-[#101014] text-xs px-1">✕</button>
                         </div>
                       ) : (
                         <button onClick={() => setEditRole({ id: u.id, current: u.role })}
-                          className={`flex items-center gap-1 font-mono text-[9px] px-2 py-1 rounded-full border transition-colors hover:opacity-80 ${ROLE_COLOR[u.role] ?? "text-[#1A1612]/30 bg-[#1A1612]/[0.09] border-[#1A1612]/[0.14]"}`}>
+                          className={`flex items-center gap-1 font-mono text-[9px] px-2 py-1 rounded-full border transition-colors hover:opacity-80 ${ROLE_COLOR[u.role] ?? "text-[#101014]/30 bg-[#101014]/[0.09] border-[#101014]/[0.14]"}`}>
                           {u.role} <ChevronDown size={8} />
                         </button>
                       )}
@@ -164,17 +164,17 @@ export default function UsersPage() {
                       ) : (
                         <span className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                          <span className="font-mono text-[9px] text-[#1A1612]/30">Actif</span>
+                          <span className="font-mono text-[9px] text-[#101014]/30">Actif</span>
                         </span>
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="font-mono text-[10px] text-[#1A1612]/25">
+                      <span className="font-mono text-[10px] text-[#101014]/25">
                         {u.last_seen_at ? new Date(u.last_seen_at).toLocaleDateString("fr-FR") : "-"}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="font-mono text-[10px] text-[#1A1612]/25">
+                      <span className="font-mono text-[10px] text-[#101014]/25">
                         {new Date(u.created_at).toLocaleDateString("fr-FR")}
                       </span>
                     </td>
@@ -186,7 +186,7 @@ export default function UsersPage() {
                         className={`p-1.5 rounded-lg transition-colors disabled:opacity-40 ${
                           u.is_suspended
                             ? "text-green-600/60 hover:text-green-600 border border-green-500/20 hover:border-green-500/40"
-                            : "text-[#1A1612]/25 hover:text-red-600 border border-[#1A1612]/[0.13] hover:border-red-500/20"
+                            : "text-[#101014]/25 hover:text-red-600 border border-[#101014]/[0.13] hover:border-red-500/20"
                         }`}>
                         {u.is_suspended ? <RotateCcw size={12} /> : <Ban size={12} />}
                       </button>
@@ -199,14 +199,14 @@ export default function UsersPage() {
 
           {total > LIMIT && (
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] text-[#1A1612]/25">
+              <span className="font-mono text-[10px] text-[#101014]/25">
                 {(page - 1) * LIMIT + 1}-{Math.min(page * LIMIT, total)} sur {total}
               </span>
               <div className="flex gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                  className="px-3 py-1.5 rounded-lg border border-[#1A1612]/[0.14] font-mono text-[10px] text-[#1A1612]/40 hover:text-[#1A1612] disabled:opacity-30 transition-colors">← Préc.</button>
+                  className="px-3 py-1.5 rounded-lg border border-[#101014]/[0.14] font-mono text-[10px] text-[#101014]/40 hover:text-[#101014] disabled:opacity-30 transition-colors">← Préc.</button>
                 <button onClick={() => setPage(p => p + 1)} disabled={page * LIMIT >= total}
-                  className="px-3 py-1.5 rounded-lg border border-[#1A1612]/[0.14] font-mono text-[10px] text-[#1A1612]/40 hover:text-[#1A1612] disabled:opacity-30 transition-colors">Suiv. →</button>
+                  className="px-3 py-1.5 rounded-lg border border-[#101014]/[0.14] font-mono text-[10px] text-[#101014]/40 hover:text-[#101014] disabled:opacity-30 transition-colors">Suiv. →</button>
               </div>
             </div>
           )}
@@ -215,8 +215,8 @@ export default function UsersPage() {
 
       {users.length === 0 && !loading && (
         <div className="text-center py-20">
-          <Users size={40} className="mx-auto mb-3 text-[#1A1612]/10" />
-          <p className="font-hanken text-[#1A1612]/30">Aucun utilisateur trouvé</p>
+          <Users size={40} className="mx-auto mb-3 text-[#101014]/10" />
+          <p className="font-hanken text-[#101014]/30">Aucun utilisateur trouvé</p>
         </div>
       )}
     </div>

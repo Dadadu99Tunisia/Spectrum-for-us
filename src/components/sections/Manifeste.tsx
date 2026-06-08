@@ -32,7 +32,7 @@ export function Manifeste() {
       <div
         className="absolute left-0 top-0 bottom-0 w-[3px]"
         style={{
-          background: "linear-gradient(180deg, #E0533A, #E0901E, #CF3F7C, #6D2DB5, #1C9C95)",
+          background: "linear-gradient(180deg, #2323C4, #7A2BF0, #FF2DA0, #F93C2C, #FFD400)",
         }}
       />
 
@@ -47,7 +47,7 @@ export function Manifeste() {
 
       <div className="max-w-3xl mx-auto">
         <span
-          className="font-mono text-[11px] tracking-wide text-[#E0337E] block mb-12 transition-all duration-700"
+          className="font-mono text-[11px] tracking-wide text-[#FF2DA0] block mb-12 transition-all duration-700"
           style={{
             opacity: inView ? 1 : 0,
             transform: inView ? "translateY(0)" : "translateY(16px)",
@@ -68,10 +68,10 @@ export function Manifeste() {
                 transitionDelay: `${100 + d.delay}ms`,
               }}
             >
-              <p className="font-hanken text-xl md:text-2xl text-[#F3EADB]/50 leading-relaxed">
+              <p className="font-hanken text-xl md:text-2xl text-[#101014]/50 leading-relaxed">
                 {d.text}
               </p>
-              <p className="font-fraunces text-xl md:text-2xl text-[#F3EADB] leading-relaxed italic font-bold">
+              <p className="font-fraunces text-xl md:text-2xl text-[#101014] leading-relaxed italic font-bold">
                 {d.emphasis}
               </p>
             </div>
@@ -80,28 +80,28 @@ export function Manifeste() {
 
         {/* The turn */}
         <div
-          className="pt-10 border-t border-[#F3EADB]/10 space-y-6 transition-all duration-700 delay-500"
+          className="pt-10 border-t border-[#101014]/10 space-y-6 transition-all duration-700 delay-500"
           style={{
             opacity: inView ? 1 : 0,
             transform: inView ? "translateY(0)" : "translateY(20px)",
           }}
         >
-          <p className="font-fraunces text-3xl md:text-4xl text-[#F3EADB] leading-tight">
+          <p className="font-fraunces text-3xl md:text-4xl text-[#101014] leading-tight">
             {t("manifeste.turn_title")}{" "}
-            <span className="italic text-[#E0337E]">{t("manifeste.turn_em")}</span>
+            <span className="italic text-[#FF2DA0]">{t("manifeste.turn_em")}</span>
           </p>
-          <p className="font-hanken text-lg text-[#F3EADB]/60 leading-relaxed max-w-2xl">
-            {t("manifeste.turn_p1")} <em className="text-[#F3EADB]/80 not-italic font-medium">{t("manifeste.turn_p1_em")}</em>
+          <p className="font-hanken text-lg text-[#101014]/60 leading-relaxed max-w-2xl">
+            {t("manifeste.turn_p1")} <em className="text-[#101014]/80 not-italic font-medium">{t("manifeste.turn_p1_em")}</em>
           </p>
-          <p className="font-hanken text-lg text-[#F3EADB]/60 leading-relaxed max-w-2xl">
+          <p className="font-hanken text-lg text-[#101014]/60 leading-relaxed max-w-2xl">
             {t("manifeste.turn_p2")}{" "}
-            <strong className="text-[#F3EADB]/90 font-semibold">{t("manifeste.turn_p2_em")}</strong>
+            <strong className="text-[#101014]/90 font-semibold">{t("manifeste.turn_p2_em")}</strong>
           </p>
         </div>
 
         {/* Stats · reframed as facts, not features */}
         <div
-          className="mt-14 pt-8 border-t border-[#F3EADB]/8 grid grid-cols-2 md:grid-cols-4 gap-8 transition-all duration-700 delay-700"
+          className="mt-14 pt-8 border-t border-[#101014]/8 grid grid-cols-2 md:grid-cols-4 gap-8 transition-all duration-700 delay-700"
           style={{
             opacity: inView ? 1 : 0,
             transform: inView ? "translateY(0)" : "translateY(16px)",
@@ -109,10 +109,10 @@ export function Manifeste() {
         >
           {STATS.map(({ value, label }) => (
             <div key={label}>
-              <div className="font-fraunces text-3xl text-[#E0337E] leading-none tabular-nums mb-2">
+              <div className="font-fraunces text-3xl text-[#FF2DA0] leading-none tabular-nums mb-2">
                 {value}
               </div>
-              <div className="font-mono text-[10px] tracking-wide text-[#F3EADB]/35 uppercase leading-relaxed whitespace-pre-line">
+              <div className="font-mono text-[10px] tracking-wide text-[#101014]/35 uppercase leading-relaxed whitespace-pre-line">
                 {label}
               </div>
             </div>
