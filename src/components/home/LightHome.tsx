@@ -12,6 +12,7 @@ import { createClient } from "@/lib/supabase/client";
 import { ArrowRight, ShoppingCart, Briefcase, Heart, CalendarDays, Truck, RefreshCw, ShieldCheck } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Price } from "@/components/ui/Price";
+import { ScatterText } from "@/components/ui/ScatterText";
 
 const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 const CAT: Record<string, { tint: string; ink: string }> = {
@@ -53,8 +54,9 @@ export function LightHome() {
       {/* ── Hero éditorial ── */}
       <section className="max-w-6xl mx-auto px-8 pt-36 pb-14 text-center">
         <p className="text-[13px] mb-5" style={{ color: T.faint }}>La marketplace par et pour les communautés queer</p>
-        <h1 className="font-fraunces leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(48px,7vw,92px)" }}>
-          B<span style={{ color: T.mag }}>(u)</span>y us,<br />for us.
+        <h1 className="font-fraunces font-extrabold leading-[1.05] tracking-[-0.02em]" style={{ fontSize: "clamp(48px,7vw,92px)" }}>
+          B<span style={{ color: T.mag }}>(u)</span>y us,<br />
+          <ScatterText text="for us." intensity={0.8} className="align-baseline" />
         </h1>
         <p className="max-w-xl mx-auto mt-6 text-[16px] leading-relaxed" style={{ color: T.soft }}>
           Créations, prestataires, associations et événements · un seul endroit, tenu pour tout le spectre.
