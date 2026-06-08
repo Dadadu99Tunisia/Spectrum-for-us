@@ -7,6 +7,7 @@ export default function ServicesPage() {
       icon={Briefcase}
       label="Services"
       title={"Trouve le bon\nprofessionnel queer"}
+      scatterWord="queer"
       subtitle="Coaching, thérapie, design, juridique, événementiel... Des professionnel·les engagé·es pour toi et ta communauté."
       accent="#FF2DA0"
       features={["Coaching & Psy", "Création & Freelance", "Événementiel", "Juridique & Admin", "Thérapie & Santé", "Formation"]}

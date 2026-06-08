@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Trophy, Sparkles, Star, Check, Flame, ArrowRight } from "lucide-react";
+import { ScatterText } from "@/components/ui/ScatterText";
 
 const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0", gold: "#C9A227", violet: "#7A2BF0", teal: "#2323C4" };
 
@@ -98,7 +99,7 @@ export default function ProgrammeFondateurPage() {
             <Trophy size={12} style={{ color: T.gold }} /> Programme exclusif · Limité à 120 places
           </span>
           <h1 className="font-fraunces leading-[1] tracking-[-0.02em]" style={{ fontSize: "clamp(38px,6vw,72px)" }}>
-            Programme <span style={{ color: T.mag }}>Fondateur</span>
+            Programme <ScatterText text="Fondateur" intensity={0.7} className="align-baseline" style={{ color: T.mag }} />
           </h1>
           <p className="max-w-2xl mx-auto mt-5 text-[16.5px] leading-relaxed" style={{ color: T.soft }}>
             Les premières places pour les créateur·ices qui veulent construire Spectrum dès le début.

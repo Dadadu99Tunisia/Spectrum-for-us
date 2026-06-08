@@ -10,6 +10,7 @@ import { useMemo, useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ORGS, COUNTRIES, CATEGORIES, type OrgEntry } from "@/data/annuaire-orgs";
 import { slugify, countryFlag } from "@/lib/annuaire";
+import { ScatterText } from "@/components/ui/ScatterText";
 import { Search, ChevronDown, MapPin, ArrowUpRight, Check, Globe } from "lucide-react";
 
 const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
@@ -50,8 +51,8 @@ export function LightAnnuaire() {
       {/* ── Hero ── */}
       <section className="max-w-6xl mx-auto px-6 md:px-8 pt-28 pb-8">
         <p className="text-[13px] mb-3" style={{ color: T.faint }}>Annuaire LGBTQIA+</p>
-        <h1 className="font-fraunces leading-[1] tracking-[-0.02em]" style={{ fontSize: "clamp(34px,5vw,58px)" }}>
-          Les associations <span style={{ color: T.mag }}>près de toi.</span>
+        <h1 className="font-fraunces font-extrabold tracking-[-0.02em]" style={{ fontSize: "clamp(34px,5vw,58px)", lineHeight: 1.15 }}>
+          Les associations <ScatterText text="près de toi." intensity={0.8} className="align-baseline" style={{ color: T.mag }} />
         </h1>
         <p className="max-w-xl mt-4 text-[15.5px] leading-relaxed" style={{ color: T.soft }}>
           {ORGS.length} organisations vérifiées dans {COUNTRIES.length} pays · associations, centres,

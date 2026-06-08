@@ -8,6 +8,7 @@ import { Tag } from "@/components/ui/Tag";
 import { useCart } from "@/store/cart";
 import { Search, ShoppingBag, SlidersHorizontal, X, Layers, ArrowRight } from "lucide-react";
 import { Price } from "@/components/ui/Price";
+import { ScatterText } from "@/components/ui/ScatterText";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import { ExploreFeed } from "@/components/mobile/ExploreFeed";
@@ -120,7 +121,7 @@ function DecouvrirContent() {
           {/* Header */}
           <div className="mb-8">
             <span className="font-mono text-[11px] tracking-wide text-[#FF2DA0] block mb-2">Marketplace</span>
-            <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014]">Découvrir</h1>
+            <h1 className="font-fraunces font-extrabold text-4xl md:text-5xl text-[#101014] leading-[1.15]"><ScatterText text="Découvrir" intensity={0.7} /></h1>
           </div>
 
           {/* Search + sort + filters */}

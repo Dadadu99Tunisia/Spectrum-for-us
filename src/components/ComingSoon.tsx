@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import Link from "next/link";
 import { LucideIcon } from "lucide-react";
+import { ScatterText } from "@/components/ui/ScatterText";
 
 interface ComingSoonProps {
   icon: LucideIcon;
@@ -12,9 +13,10 @@ interface ComingSoonProps {
   features?: string[];
   ctaLabel?: string;
   ctaHref?: string;
+  scatterWord?: string;
 }
 
-export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#FF2DA0", features, ctaLabel, ctaHref }: ComingSoonProps) {
+export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#FF2DA0", features, ctaLabel, ctaHref, scatterWord }: ComingSoonProps) {
   return (
     <>
       <Header />
@@ -33,8 +35,10 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#FF2D
           </span>
 
           {/* Title */}
-          <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] leading-tight mb-4">
-            {title}
+          <h1 className="font-fraunces font-extrabold text-4xl md:text-5xl text-[#101014] leading-tight mb-4 whitespace-pre-line">
+            {scatterWord && title.includes(scatterWord)
+              ? <>{title.split(scatterWord)[0]}<ScatterText text={scatterWord} intensity={0.7} className="align-baseline" style={{ color: accent }} />{title.split(scatterWord)[1]}</>
+              : title}
           </h1>
 
           {/* Subtitle */}
