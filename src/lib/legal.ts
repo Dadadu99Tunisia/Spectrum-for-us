@@ -24,10 +24,10 @@ export const LEGAL = {
 
 const isPlaceholder = (s: string) => s.startsWith("[");
 
-/** Bloc pied de page pour les reçus / documents légaux. */
+/** Bloc pied de page pour les reçus / documents légaux (public · marque seule). */
 export function legalFooterLines(): string[] {
   const lines = [
-    `${LEGAL.brand} · ${LEGAL.legalName} — ${LEGAL.legalForm}`,
+    `${LEGAL.brand} — ${LEGAL.legalForm}`,
     `SIRET ${LEGAL.siret}`,
     isPlaceholder(LEGAL.address) ? "" : LEGAL.address,
     `${LEGAL.vat} · TVA intracom. ${LEGAL.vatIntra}`,
