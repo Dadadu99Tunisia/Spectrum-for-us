@@ -22,7 +22,8 @@ export function BottomNav() {
     pathname.startsWith("/admin") ||
     pathname.startsWith("/auth") ||
     pathname.startsWith("/checkout") ||
-    pathname === "/vendeur"
+    pathname.startsWith("/produit") ||   // la fiche a sa propre barre d'achat
+    pathname.startsWith("/vendeur")      // tout l'espace vendeur (drawer dédié)
   ) return null;
 
   const isActive = (href: string) =>
