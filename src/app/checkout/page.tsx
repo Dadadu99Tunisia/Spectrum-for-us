@@ -8,7 +8,11 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/Button";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
-import { Lock, Check, ArrowRight, ArrowLeft } from "lucide-react";
+import { Lock, Check, ArrowRight, ArrowLeft, MapPin } from "lucide-react";
+import Link from "next/link";
+import type { Address } from "@/lib/types/address";
+
+const COUNTRY_NAME: Record<string, string> = { FR: "France", BE: "Belgique", CH: "Suisse", CA: "Canada", LU: "Luxembourg" };
 
 const STEPS = ["Livraison", "Paiement", "Confirmation"] as const;
 type Step = typeof STEPS[number];
@@ -100,6 +104,31 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState<string | null>(null);
   const [stripeReady, setStripeReady] = useState(false);
   const [serverTotal, setServerTotal] = useState<number | null>(null);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+
+  const applyAddress = useCallback((a: Address) => {
+    setForm((f) => ({
+      ...f,
+      name: a.full_name,
+      address: a.line1 + (a.line2 ? `, ${a.line2}` : ""),
+      city: a.city,
+      zip: a.zip,
+      country: COUNTRY_NAME[a.country] ?? a.country,
+    }));
+  }, []);
+
+  // Charge les adresses enregistrées + pré-remplit avec celle par défaut
+  useEffect(() => {
+    if (!user) return;
+    createClient().from("addresses").select("*").eq("user_id", user.id)
+      .order("is_default", { ascending: false }).order("created_at", { ascending: false })
+      .then(({ data }) => {
+        const list = (data ?? []) as Address[];
+        setAddresses(list);
+        const def = list.find((a) => a.is_default) ?? list[0];
+        if (def) applyAddress(def);
+      });
+  }, [user, applyAddress]);
 
   // Pre-fill email from user session
   useEffect(() => {
@@ -241,6 +270,24 @@ export default function CheckoutPage() {
             <div className="lg:col-span-3 space-y-4">
               {step === "Livraison" && (
                 <>
+                  {addresses.length > 0 && (
+                    <div className="mb-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="font-mono text-[10px] tracking-wide text-[#101014]/40">Adresses enregistrées</label>
+                        <Link href="/compte/adresses" className="font-mono text-[10px] text-[#FF2DA0]">Gérer</Link>
+                      </div>
+                      <div className="flex gap-2 overflow-x-auto pb-1">
+                        {addresses.map((a) => (
+                          <button key={a.id} type="button" onClick={() => applyAddress(a)}
+                            className="shrink-0 text-left rounded-xl px-3.5 py-2.5 border transition-colors"
+                            style={{ borderColor: form.zip === a.zip && form.city === a.city ? "#FF2DA0" : "#ECE6DB", background: form.zip === a.zip && form.city === a.city ? "#FF2DA00D" : "#fff" }}>
+                            <span className="flex items-center gap-1.5 font-bricolage font-semibold text-[13.5px] text-[#101014]"><MapPin size={12} /> {a.label || a.full_name}</span>
+                            <span className="block text-[12px] text-[#101014]/45 max-w-[180px] truncate">{a.line1}, {a.zip} {a.city}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {[
                     { k: "name" as const, label: "Nom / Pseudo", ph: "Ton nom ou pseudo", type: "text" },
                     { k: "email" as const, label: "E-mail", ph: "ton@email.com", type: "email" },

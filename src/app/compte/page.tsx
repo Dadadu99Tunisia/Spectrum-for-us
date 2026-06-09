@@ -9,7 +9,7 @@ import { Footer } from "@/components/Footer";
 import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Package, Heart, Star, Settings, Store, LogOut, LayoutDashboard, Download, Trash2, PlusCircle, ChevronRight, ArrowRight } from "lucide-react";
+import { Package, Heart, Star, Settings, Store, LogOut, LayoutDashboard, Download, Trash2, PlusCircle, ChevronRight, ArrowRight, MapPin } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
 const TABS = ["Commandes", "Favoris", "Avis", "Paramètres"] as const;
@@ -120,10 +120,10 @@ export default function ComptePage() {
                 <Package size={20} className="text-[#7A2BF0]" />
                 <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">Commandes</span>
               </button>
-              <Link href="/decouvrir" className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
+              <Link href="/compte/adresses" className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
                 style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
-                <ArrowRight size={20} className="text-[#2323C4]" />
-                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">Explorer</span>
+                <MapPin size={20} className="text-[#2323C4]" />
+                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">Adresses</span>
               </Link>
             </div>
 
