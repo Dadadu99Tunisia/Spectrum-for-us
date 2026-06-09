@@ -52,7 +52,7 @@ export default function ProduitPage() {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
     supabase
       .from("products")
-      .select("*, shops(name, slug)")
+      .select("*, shops(name, slug, stripe_charges_enabled)")
       .or(isUuid ? `slug.eq.${slug},id.eq.${slug}` : `slug.eq.${slug}`)
       .eq("is_active", true)
       .single()
@@ -151,6 +151,7 @@ export default function ProduitPage() {
   );
 
   const shop = getShop();
+  const payReady = !!(shop as { stripe_charges_enabled?: boolean } | null)?.stripe_charges_enabled;
 
   return (
     <>
@@ -271,17 +272,22 @@ export default function ProduitPage() {
               )}
 
               {/* CTAs */}
+              {!payReady && (
+                <p className="mb-3 text-[13px] font-hanken px-4 py-3 rounded-xl" style={{ background: "#FFF4D6", color: "#8A6D1A" }}>
+                  ✦ Cette boutique finalise sa configuration de paiement. Suis-la pour être prévenu·e dès l'ouverture des ventes.
+                </p>
+              )}
               <div className="flex gap-3 mb-8">
                 <button
                   onClick={handleAdd}
-                  disabled={isOos}
-                  className="flex-1 flex items-center justify-center gap-2 py-4 rounded-full font-hanken font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isOos || !payReady}
+                  className="flex-1 flex items-center justify-center gap-2 py-4 rounded-full font-hanken font-semibold transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{
-                    backgroundColor: added ? "#2323C4" : isOos ? "#10101420" : typeConf.color,
-                    color: "#fff",
+                    backgroundColor: added ? "#2323C4" : (isOos || !payReady) ? "#10101420" : typeConf.color,
+                    color: (isOos || !payReady) ? "#10101480" : "#fff",
                   }}
                 >
-                  {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {isOos ? "Épuisé" : typeConf.cta}</>}
+                  {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {isOos ? "Épuisé" : !payReady ? "Bientôt en vente" : typeConf.cta}</>}
                 </button>
                 <button onClick={toggleLike}
                   className="p-4 border border-[#101014]/15 rounded-full hover:border-[#FF2DA0]/40 transition-colors">
@@ -368,13 +374,13 @@ export default function ProduitPage() {
               </div>
             )}
           </div>
-          <button onClick={handleAdd}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-fraunces text-[16px] text-white active:scale-[0.97] transition-transform"
+          <button onClick={handleAdd} disabled={!payReady}
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-fraunces text-[16px] text-white active:scale-[0.97] transition-transform disabled:opacity-60"
             style={{
-              background: added ? "#2323C4" : `linear-gradient(135deg,${typeConf.color}dd,${typeConf.color})`,
-              boxShadow: `0 4px 20px ${typeConf.color}40`,
+              background: added ? "#2323C4" : !payReady ? "#10101430" : `linear-gradient(135deg,${typeConf.color}dd,${typeConf.color})`,
+              boxShadow: payReady ? `0 4px 20px ${typeConf.color}40` : "none",
             }}>
-            {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {typeConf.cta}</>}
+            {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {!payReady ? "Bientôt en vente" : typeConf.cta}</>}
           </button>
           <button onClick={toggleLike}
             className="w-12 h-12 flex items-center justify-center rounded-2xl shrink-0"

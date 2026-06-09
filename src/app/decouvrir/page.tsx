@@ -57,7 +57,7 @@ function DecouvrirContent() {
     const supabase = createClient();
     let q = supabase
       .from("products")
-      .select("id,name,title,description,price,category,subcategory,slug,shop_id,quantity,images,image_url,type,shops(name,slug)")
+      .select("id,name,title,description,price,category,subcategory,slug,shop_id,quantity,images,image_url,type,shops(name,slug,stripe_charges_enabled)")
       .eq("is_active", true);
 
     if (category !== "Toutes") q = q.eq("category", category);
@@ -307,17 +307,21 @@ function DecouvrirContent() {
                     </Link>
                     <div className="pb-4 mt-auto flex items-center justify-between">
                       <Price eur={p.price} className="font-mono text-sm font-bold text-[#101014]" />
-                      <button
-                        onClick={() => handleAdd(p)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${
-                          added === p.id
-                            ? "bg-[#2323C4]/10 text-[#2323C4]"
-                            : "bg-[#FF2DA0]/10 text-[#FF2DA0] hover:bg-[#FF2DA0]/20"
-                        }`}
-                      >
-                        <ShoppingBag size={11} />
-                        {added === p.id ? "✓" : ptype === "service" ? "Réserver" : ptype === "event" ? "S'inscrire" : "Ajouter"}
-                      </button>
+                      {(shop as { stripe_charges_enabled?: boolean } | null)?.stripe_charges_enabled ? (
+                        <button
+                          onClick={() => handleAdd(p)}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${
+                            added === p.id
+                              ? "bg-[#2323C4]/10 text-[#2323C4]"
+                              : "bg-[#FF2DA0]/10 text-[#FF2DA0] hover:bg-[#FF2DA0]/20"
+                          }`}
+                        >
+                          <ShoppingBag size={11} />
+                          {added === p.id ? "✓" : ptype === "service" ? "Réserver" : ptype === "event" ? "S'inscrire" : "Ajouter"}
+                        </button>
+                      ) : (
+                        <span className="px-3 py-1.5 rounded-full text-xs font-hanken font-medium text-[#101014]/35 bg-[#101014]/5">Bientôt</span>
+                      )}
                     </div>
                   </div>
                 );
