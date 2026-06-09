@@ -7,9 +7,13 @@ export default function MentionsLegales() {
     <LegalPage title="Mentions légales">
       <h2>Éditeur du site</h2>
       <p>
-        Le site <strong>spectrumforus.com</strong> est édité par <strong>Spectrum For Us</strong>,
-        marketplace queer.<br />
-        Directeur de publication : <strong>Dada Azouz</strong>, CEO & co-fondateur·rice.<br />
+        Le site <strong>spectrumforus.com</strong> (« Spectrum For Us ») est édité par :<br />
+        <strong>Aïcha Chennaoui</strong> — Entrepreneur individuel (auto-entreprise)<br />
+        SIREN : 894 102 912 · SIRET (siège) : 894 102 912 00017<br />
+        Code APE/NAF : 7021Z (conseil en relations publiques et communication)<br />
+        TVA non applicable, art. 293 B du CGI (franchise en base de TVA)<br />
+        Adresse du siège : <strong>[À COMPLÉTER — adresse du siège]</strong><br />
+        Directrice de la publication : <strong>Aïcha Chennaoui</strong><br />
         Email : <a href="mailto:hello@spectrumforus.com">hello@spectrumforus.com</a>
       </p>
 

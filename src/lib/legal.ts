@@ -1,16 +1,17 @@
 /**
  * Informations légales centralisées de la plateforme.
- * ⚠️ À COMPLÉTER avec les vraies données fournies par l'éditeur·rice.
  * Utilisé par : reçus de commande, mentions légales, CGV.
  */
 export const LEGAL = {
   brand: "Spectrum For Us",
-  legalName: "[À COMPLÉTER — raison sociale]",
-  legalForm: "[À COMPLÉTER — forme juridique]",
-  siret: "[À COMPLÉTER — SIRET]",
+  legalName: "Aïcha Chennaoui",
+  legalForm: "Entrepreneur individuel (auto-entreprise)",
+  siren: "894 102 912",
+  siret: "894 102 912 00017",
+  ape: "7021Z (conseil en relations publiques et communication)",
   address: "[À COMPLÉTER — adresse du siège]",
-  vat: "[À COMPLÉTER — n° TVA intracom, ou « non assujetti · franchise en base »]",
-  capital: "", // ex. "1 000 €" si société, sinon vide
+  vat: "TVA non applicable, art. 293 B du CGI (franchise en base de TVA)",
+  capital: "", // sans objet en entreprise individuelle
   contactEmail: "hello@spectrumforus.com",
   site: "spectrumforus.com",
   mediator: {
@@ -20,14 +21,15 @@ export const LEGAL = {
   },
 } as const;
 
+const isPlaceholder = (s: string) => s.startsWith("[");
+
 /** Bloc pied de page pour les reçus / documents légaux. */
 export function legalFooterLines(): string[] {
   const lines = [
-    `${LEGAL.brand}${LEGAL.legalName.startsWith("[") ? "" : ` · ${LEGAL.legalName}`}`,
-    LEGAL.legalForm.startsWith("[") ? "" : LEGAL.legalForm,
-    LEGAL.siret.startsWith("[") ? "" : `SIRET ${LEGAL.siret}`,
-    LEGAL.address.startsWith("[") ? "" : LEGAL.address,
-    LEGAL.vat.startsWith("[") ? "" : `TVA : ${LEGAL.vat}`,
+    `${LEGAL.brand} · ${LEGAL.legalName} — ${LEGAL.legalForm}`,
+    `SIRET ${LEGAL.siret}`,
+    isPlaceholder(LEGAL.address) ? "" : LEGAL.address,
+    LEGAL.vat,
     `${LEGAL.contactEmail} · ${LEGAL.site}`,
   ];
   return lines.filter(Boolean);
