@@ -305,5 +305,17 @@ export async function POST(req: Request) {
     }
   }
 
+  // Connect · synchronise le statut du compte vendeur
+  if (event.type === "account.updated") {
+    const account = event.data.object as Stripe.Account;
+    await supabase
+      .from("shops")
+      .update({
+        stripe_charges_enabled: !!account.charges_enabled,
+        stripe_payouts_enabled: !!account.payouts_enabled,
+      })
+      .eq("stripe_account_id", account.id);
+  }
+
   return NextResponse.json({ received: true });
 }

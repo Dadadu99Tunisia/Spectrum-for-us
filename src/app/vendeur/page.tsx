@@ -10,6 +10,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { ConnectPayments } from "@/components/vendor/ConnectPayments";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
@@ -276,6 +277,11 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go }
         <Kpi tint="#FCEAD2" label="Commandes" value={String(m.orderCount)} delta={`${m.toPrepare.size} à préparer`} deltaColor={m.toPrepare.size ? C.amb : C.faint} />
         <Kpi tint="#EAE0FB" label="Produits actifs" value={`${activeCount}/${products.length}`} delta="en ligne" deltaColor={C.faint} />
         <Kpi tint="#FBEAD3" label="Total encaissé" value={eur(m.totalRevenue)} delta="depuis le début" deltaColor={C.grn} />
+      </div>
+
+      {/* Connexion paiements Stripe */}
+      <div className="mb-4" style={{ marginBottom: 18 }}>
+        <ConnectPayments />
       </div>
 
       <div className="grid lg:grid-cols-[1.7fr_1fr] gap-4">
