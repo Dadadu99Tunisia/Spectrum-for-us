@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { Accessibility } from "lucide-react";
 import {
   Eye, Type, Palette, Minus, Plus,
   ChevronUp, ChevronDown, MousePointer2, ZoomIn, Space, X
@@ -112,6 +113,30 @@ export function AccessibilityBar() {
 
   const hasAnyActive = active.size > 0 || textSize !== "normal";
 
+  // ── FAB mobile déplaçable ──
+  const [fab, setFab] = useState<{ x: number; y: number } | null>(null);
+  const drag = useRef<{ ox: number; oy: number; sx: number; sy: number; moved: boolean } | null>(null);
+  useEffect(() => { try { const s = localStorage.getItem("sfu-a11y-fab"); if (s) setFab(JSON.parse(s)); } catch {} }, []);
+  const onDown = (e: React.PointerEvent) => {
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    drag.current = { ox: r.left, oy: r.top, sx: e.clientX, sy: e.clientY, moved: false };
+  };
+  const onMove = (e: React.PointerEvent) => {
+    if (!drag.current) return;
+    const dx = e.clientX - drag.current.sx, dy = e.clientY - drag.current.sy;
+    if (Math.abs(dx) + Math.abs(dy) > 6) drag.current.moved = true;
+    const x = Math.min(window.innerWidth - 56, Math.max(8, drag.current.ox + dx));
+    const y = Math.min(window.innerHeight - 64, Math.max(64, drag.current.oy + dy));
+    setFab({ x, y });
+  };
+  const onUp = () => {
+    const d = drag.current; drag.current = null;
+    if (!d) return;
+    if (!d.moved) setOpen((o) => !o);
+    else if (fab) { try { localStorage.setItem("sfu-a11y-fab", JSON.stringify(fab)); } catch {} }
+  };
+
   if (!mounted) return null;
 
   // La bottom-nav (mobile) est présente sauf sur ces sections → décaler au-dessus d'elle
@@ -125,11 +150,65 @@ export function AccessibilityBar() {
     <>
       <ColorblindSVGFilter />
 
-      {/* Barre d'accessibilité · au-dessus de la bottom-nav sur mobile */}
+      {/* ── Mobile : bouton rond flottant déplaçable ── */}
+      <button
+        onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp}
+        aria-label="Options d'accessibilité"
+        className="md:hidden fixed z-[61] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-xl touch-none active:scale-95 transition-transform"
+        style={fab
+          ? { left: fab.x, top: fab.y, background: hasAnyActive ? "#FF2DA0" : "#101014" }
+          : { right: 16, bottom: hasBottomNav ? 84 : 24, background: hasAnyActive ? "#FF2DA0" : "#101014" }}
+      >
+        <Accessibility size={22} />
+      </button>
+
+      {/* Mobile : feuille d'options */}
+      {open && (
+        <div className="md:hidden fixed inset-0 z-[60] bg-black/30" onClick={() => setOpen(false)}>
+          <div className="absolute left-0 right-0 bottom-0 bg-white rounded-t-3xl p-5 pb-[max(20px,env(safe-area-inset-bottom))]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bricolage font-bold text-[17px] text-[#101014]">Accessibilité</h3>
+              <button onClick={() => setOpen(false)} aria-label="Fermer" className="text-[#101014]/40"><X size={18} /></button>
+            </div>
+            <div className="flex flex-col gap-4">
+              <div>
+                <p className="font-mono text-[10px] tracking-wide text-[#101014]/35 mb-2">Taille du texte</p>
+                <div className="flex items-center gap-1.5">
+                  {TEXT_SIZES.map(({ key, label }) => (
+                    <button key={key} onClick={() => changeTextSize(key)} aria-pressed={textSize === key}
+                      className={`px-3.5 py-2 rounded-xl border font-mono text-xs ${textSize === key ? "border-[#FF2DA0] text-[#FF2DA0] bg-[#FF2DA0]/10" : "border-[#101014]/15 text-[#101014]/50"}`}>{label}</button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="font-mono text-[10px] tracking-wide text-[#101014]/35 mb-2">Modes visuels & navigation</p>
+                <div className="flex flex-wrap gap-2">
+                  {TOGGLE_MODES.map(({ key, icon: Icon, label }) => {
+                    const isActive = active.has(key);
+                    return (
+                      <button key={key} onClick={() => toggleMode(key)} aria-pressed={isActive}
+                        className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-[13px] font-hanken ${isActive ? "border-[#FF2DA0] text-[#FF2DA0] bg-[#FF2DA0]/10" : "border-[#101014]/15 text-[#101014]/55"}`}>
+                        <Icon size={13} /> {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              {hasAnyActive && (
+                <button onClick={resetAll} className="self-start flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-[#101014]/15 text-[#101014]/40 text-[13px] font-hanken">
+                  <X size={13} /> Réinitialiser
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Desktop : barre en bas ── */}
       <div
         role="region"
         aria-label="Options d'accessibilité"
-        className={`fixed left-0 right-0 z-40 ${hasBottomNav ? "bottom-[70px] md:bottom-0" : "bottom-0"}`}
+        className="hidden md:block fixed left-0 right-0 bottom-0 z-40"
       >
         {/* Toggle button */}
         <div className="flex justify-center">
