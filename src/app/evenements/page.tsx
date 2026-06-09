@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { CalendarDays, MapPin, ExternalLink, Search, X, Sparkles } from "lucide-react";
+import { CalendarDays, MapPin, ExternalLink, Search, X, Sparkles, LayoutGrid, CalendarRange, ChevronLeft, ChevronRight } from "lucide-react";
 import { Tag } from "@/components/ui/Tag";
 import { ScatterText } from "@/components/ui/ScatterText";
 
@@ -58,6 +58,7 @@ export default function EvenementsPage() {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("Toutes");
   const [category, setCategory] = useState("Tous");
+  const [view, setView] = useState<"list" | "calendar">("list");
 
   useEffect(() => {
     const supabase = createClient();
@@ -116,9 +117,26 @@ export default function EvenementsPage() {
             </select>
           </div>
 
-          <p className="font-mono text-xs text-[#101014]/30 mb-8">
-            {loading ? "Chargement…" : `${filtered.length} événement${filtered.length > 1 ? "s" : ""}`}
-          </p>
+          <div className="flex items-center justify-between gap-3 mb-8">
+            <p className="font-mono text-xs text-[#101014]/30">
+              {loading ? "Chargement…" : `${filtered.length} événement${filtered.length > 1 ? "s" : ""}`}
+            </p>
+            <div className="flex items-center gap-1 bg-white border border-[#ECE6DB] rounded-full p-1">
+              <button onClick={() => setView("list")} aria-pressed={view === "list"}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wide transition-colors ${view === "list" ? "bg-[#101014] text-white" : "text-[#101014]/50"}`}>
+                <LayoutGrid size={13} /> Liste
+              </button>
+              <button onClick={() => setView("calendar")} aria-pressed={view === "calendar"}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wide transition-colors ${view === "calendar" ? "bg-[#101014] text-white" : "text-[#101014]/50"}`}>
+                <CalendarRange size={13} /> Calendrier
+              </button>
+            </div>
+          </div>
+
+          {/* Vue calendrier */}
+          {!loading && view === "calendar" && events.length > 0 && (
+            <MonthCalendar events={filtered} />
+          )}
 
           {/* Loading skeleton */}
           {loading && (
@@ -149,7 +167,7 @@ export default function EvenementsPage() {
           )}
 
           {/* Featured events */}
-          {featured.length > 0 && (
+          {view === "list" && featured.length > 0 && (
             <div className="mb-10">
               <div className="flex items-center gap-2 mb-5">
                 <Sparkles size={14} className="text-[#FF2DA0]" />
@@ -162,7 +180,7 @@ export default function EvenementsPage() {
           )}
 
           {/* Regular grid */}
-          {regular.length > 0 && (
+          {view === "list" && regular.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {regular.map(e => <EventCard key={e.id} event={e} />)}
             </div>
@@ -189,6 +207,115 @@ export default function EvenementsPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+/* ── Vue calendrier mensuel ─────────────────────────────── */
+const dayKey = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const WEEKDAYS = ["L", "M", "M", "J", "V", "S", "D"];
+const MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
+function MonthCalendar({ events }: { events: QueerEvent[] }) {
+  // Regroupe les événements par jour (clé locale YYYY-MM-DD)
+  const byDay = new Map<string, QueerEvent[]>();
+  for (const e of events) {
+    if (!e.date_start) continue;
+    const d = new Date(e.date_start);
+    if (isNaN(d.getTime())) continue;
+    const k = dayKey(d);
+    (byDay.get(k) ?? byDay.set(k, []).get(k)!).push(e);
+  }
+
+  // Mois affiché par défaut : celui du premier événement à venir, sinon aujourd'hui
+  const firstUpcoming = events.find(e => e.date_start && new Date(e.date_start).getTime() >= Date.now());
+  const initial = firstUpcoming?.date_start ? new Date(firstUpcoming.date_start) : new Date();
+  const [cursor, setCursor] = useState({ y: initial.getFullYear(), m: initial.getMonth() });
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const first = new Date(cursor.y, cursor.m, 1);
+  const startOffset = (first.getDay() + 6) % 7; // lundi = 0
+  const daysInMonth = new Date(cursor.y, cursor.m + 1, 0).getDate();
+  const todayKey = dayKey(new Date());
+
+  const cells: (Date | null)[] = [];
+  for (let i = 0; i < startOffset; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(cursor.y, cursor.m, d));
+
+  const move = (delta: number) => {
+    const nm = cursor.m + delta;
+    setCursor({ y: cursor.y + Math.floor(nm / 12), m: ((nm % 12) + 12) % 12 });
+    setSelected(null);
+  };
+
+  const selectedEvents = selected ? (byDay.get(selected) ?? []) : [];
+
+  return (
+    <div>
+      {/* Navigation mois */}
+      <div className="flex items-center justify-between mb-5">
+        <button onClick={() => move(-1)} aria-label="Mois précédent"
+          className="w-9 h-9 rounded-full border border-[#ECE6DB] bg-white flex items-center justify-center text-[#101014]/60 hover:border-[#2323C4]/40 transition-colors">
+          <ChevronLeft size={16} />
+        </button>
+        <h2 className="font-fraunces text-xl md:text-2xl text-[#101014] capitalize">
+          {MONTHS[cursor.m]} {cursor.y}
+        </h2>
+        <button onClick={() => move(1)} aria-label="Mois suivant"
+          className="w-9 h-9 rounded-full border border-[#ECE6DB] bg-white flex items-center justify-center text-[#101014]/60 hover:border-[#2323C4]/40 transition-colors">
+          <ChevronRight size={16} />
+        </button>
+      </div>
+
+      {/* Grille */}
+      <div className="bg-white border border-[#ECE6DB] rounded-2xl p-2 sm:p-4">
+        <div className="grid grid-cols-7 mb-1">
+          {WEEKDAYS.map((w, i) => (
+            <div key={i} className="text-center font-mono text-[10px] text-[#101014]/30 py-1">{w}</div>
+          ))}
+        </div>
+        <div className="grid grid-cols-7 gap-1">
+          {cells.map((d, i) => {
+            if (!d) return <div key={i} />;
+            const k = dayKey(d);
+            const evs = byDay.get(k) ?? [];
+            const has = evs.length > 0;
+            const isToday = k === todayKey;
+            const isSel = k === selected;
+            return (
+              <button key={i} disabled={!has} onClick={() => setSelected(isSel ? null : k)}
+                className={`aspect-square rounded-xl flex flex-col items-center justify-center gap-0.5 transition-colors relative
+                  ${isSel ? "bg-[#FF2DA0] text-white" : has ? "bg-[#FF2DA0]/8 hover:bg-[#FF2DA0]/15 text-[#101014]" : "text-[#101014]/25 cursor-default"}
+                  ${isToday && !isSel ? "ring-1 ring-[#2323C4]/50" : ""}`}>
+                <span className={`font-mono text-xs sm:text-sm ${isToday && !isSel ? "text-[#2323C4] font-bold" : ""}`}>{d.getDate()}</span>
+                {has && (
+                  <span className={`text-[8px] font-mono leading-none ${isSel ? "text-white/90" : "text-[#FF2DA0]"}`}>
+                    {evs.length > 1 ? `${evs.length}●` : "●"}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Détail du jour sélectionné */}
+      {selected && selectedEvents.length > 0 && (
+        <div className="mt-6">
+          <p className="font-mono text-[11px] tracking-wide text-[#101014]/40 mb-3 capitalize">
+            {new Date(selected + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
+            {" · "}{selectedEvents.length} événement{selectedEvents.length > 1 ? "s" : ""}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {selectedEvents.map(e => <EventCard key={e.id} event={e} />)}
+          </div>
+        </div>
+      )}
+      {!selected && (
+        <p className="text-center font-hanken text-sm text-[#101014]/30 mt-6">
+          Touche un jour surligné pour voir les événements.
+        </p>
+      )}
+    </div>
   );
 }
 
