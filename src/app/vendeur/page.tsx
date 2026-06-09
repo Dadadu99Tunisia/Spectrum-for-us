@@ -32,6 +32,7 @@ type Shop = {
   id: string; name: string; slug: string; is_active: boolean;
   logo_url: string | null; banner_url: string | null; contact_email: string | null;
   description: string | null; subscription_status: string | null;
+  shipping_options?: ShippingMethod[] | null;
 };
 type Product = {
   id: string; name: string; title: string; price: number;
