@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft, Plus, X } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 
 import { CATEGORY_LIST, getSubcategories } from "@/lib/categories";
 const TYPES = [
@@ -29,6 +30,7 @@ export default function NouveauProduitPage() {
   const [form, setForm] = useState({
     name: "", description: "", price: "", type: "product" as "product" | "service" | "event",
     category: "", subcategory: "", quantity: "1", is_active: true, variants: [] as string[],
+    image_url: "",
   });
 
   useEffect(() => {
@@ -71,6 +73,8 @@ export default function NouveauProduitPage() {
       is_active: form.is_active,
       type: form.type,
       listing_status: "approved",
+      image_url: form.image_url || null,
+      images: form.image_url ? [form.image_url] : null,
     }).select("id").single();
     setSaving(false);
     if (err) { setError(err.message); return; }
@@ -110,6 +114,20 @@ export default function NouveauProduitPage() {
         <h1 className="font-fraunces text-3xl text-[#101014] mb-8">Nouveau produit</h1>
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          {/* Image */}
+          <div>
+            <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-3">Photo du produit</label>
+            {shopId && user && (
+              <ImageUploader
+                bucket="product-images"
+                folder={user.id}
+                value={form.image_url}
+                onChange={(url) => setForm((f) => ({ ...f, image_url: url }))}
+                label="Ajoute une belle photo (carré recommandé)"
+              />
+            )}
+          </div>
+
           {/* Type */}
           <div>
             <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-3">Type d&apos;offre *</label>

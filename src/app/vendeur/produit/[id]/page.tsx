@@ -139,7 +139,7 @@ export default function EditProduitPage() {
           {shopId && (
             <MultiImageUploader
               bucket="product-images"
-              folder={shopId}
+              folder={user?.id ?? shopId}
               values={form.images}
               onChange={imgs => setForm(p => ({ ...p, images: imgs }))}
               max={5}
