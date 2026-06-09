@@ -295,10 +295,16 @@ export default function ComptePage() {
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       <span className="font-fraunces text-lg text-[#101014]">{Number(order.total_amount).toFixed(2)} €</span>
-                      <button onClick={() => rebuy(order.id)} disabled={rebuying === order.id}
-                        className="rounded-full px-3.5 py-1.5 font-mono text-[10px] tracking-wide text-white disabled:opacity-50" style={{ background: "#101014" }}>
-                        {rebuying === order.id ? "…" : "↻ Racheter"}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <Link href={`/compte/recu/${order.id}`}
+                          className="rounded-full px-3.5 py-1.5 font-mono text-[10px] tracking-wide border border-[#101014]/15 text-[#101014]/55 hover:text-[#101014] hover:border-[#101014]/30 transition-colors">
+                          🧾 Reçu
+                        </Link>
+                        <button onClick={() => rebuy(order.id)} disabled={rebuying === order.id}
+                          className="rounded-full px-3.5 py-1.5 font-mono text-[10px] tracking-wide text-white disabled:opacity-50" style={{ background: "#101014" }}>
+                          {rebuying === order.id ? "…" : "↻ Racheter"}
+                        </button>
+                      </div>
                     </div>
                   </Card>
                 ))}
