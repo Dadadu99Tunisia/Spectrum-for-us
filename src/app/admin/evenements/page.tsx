@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { CalendarDays, Search, Star, CheckCircle, XCircle, ExternalLink, MapPin, Clock, RefreshCw, Plus, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
@@ -17,6 +17,7 @@ type Event = {
   venue: string | null;
   url: string | null;
   image_url: string | null;
+  image_position: string | null;
   price: number | null;
   category: string | null;
   source: string | null;
@@ -34,7 +35,7 @@ const MOD_CONFIG: Record<string, { label: string; color: string }> = {
 
 const CATEGORIES = ["Soirée & Clubbing", "Événement LGBTQIA+", "Militant & Associatif", "Art & Culture", "Festival", "Pride"];
 
-const EMPTY_FORM = { title: "", date_start: "", date_end: "", city: "", venue: "", category: "", price: "", url: "", image_url: "", organizer: "", description: "", is_featured: false };
+const EMPTY_FORM = { title: "", date_start: "", date_end: "", city: "", venue: "", category: "", price: "", url: "", image_url: "", image_position: "50% 50%", organizer: "", description: "", is_featured: false };
 
 export default function EvenementsPage() {
   const [events, setEvents]   = useState<Event[]>([]);
@@ -104,6 +105,7 @@ export default function EvenementsPage() {
       price: form.price.trim() || null,
       url: form.url.trim() || null,
       image_url: form.image_url.trim() || null,
+      image_position: form.image_position || "50% 50%",
       organizer: form.organizer.trim() || null,
       description: form.description.trim() || null,
       is_featured: form.is_featured,
@@ -124,7 +126,7 @@ export default function EvenementsPage() {
     setForm({
       title: ev.title ?? "", date_start: toLocalInput(ev.date_start), date_end: toLocalInput(ev.date_end),
       city: ev.city ?? "", venue: ev.venue ?? "", category: ev.category ?? "",
-      price: ev.price != null ? String(ev.price) : "", url: ev.url ?? "", image_url: ev.image_url ?? "",
+      price: ev.price != null ? String(ev.price) : "", url: ev.url ?? "", image_url: ev.image_url ?? "", image_position: ev.image_position ?? "50% 50%",
       organizer: ev.organizer ?? "", description: ev.description ?? "", is_featured: ev.is_featured ?? false,
     });
     setShowForm(true);
@@ -191,8 +193,12 @@ export default function EvenementsPage() {
             <Field label="Lien billetterie / infos"><input value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} className={inputCls} placeholder="https://…" /></Field>
             <div className="md:col-span-2">
               <ImageUploader bucket="event-images" folder={user?.id} value={form.image_url}
-                onChange={url => setForm({ ...form, image_url: url })}
+                onChange={url => setForm({ ...form, image_url: url, image_position: "50% 50%" })}
                 label="Image de l'événement" aspect="banner" hint="JPG/PNG/WebP · max 10 Mo" />
+              {form.image_url && (
+                <FocalPointPicker src={form.image_url} value={form.image_position}
+                  onChange={pos => setForm({ ...form, image_position: pos })} />
+              )}
             </div>
             <Field label="Description" full><textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2} className={inputCls} placeholder="Quelques mots…" /></Field>
           </div>
@@ -235,7 +241,7 @@ export default function EvenementsPage() {
             return (
               <div key={ev.id} className={`rounded-2xl border overflow-hidden transition-all ${isPast ? "opacity-50 border-[#101014]/5" : "border-[#101014]/[0.13] hover:border-[#101014]/20"}`}>
                 {ev.image_url ? (
-                  <img src={ev.image_url} alt={ev.title} className="w-full h-32 object-cover" />
+                  <img src={ev.image_url} alt={ev.title} className="w-full h-32 object-cover" style={{ objectPosition: ev.image_position ?? "50% 50%" }} />
                 ) : (
                   <div className="w-full h-32 bg-gradient-to-br from-[#FF2DA0]/10 to-[#7A2BF0]/10 flex items-center justify-center">
                     <CalendarDays size={28} className="text-[#101014]/15" />
@@ -302,6 +308,41 @@ export default function EvenementsPage() {
 }
 
 const inputCls = "w-full px-3 py-2 bg-white border border-[#101014]/[0.14] rounded-lg font-hanken text-sm text-[#101014] placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/50 transition-colors";
+
+/* Sélecteur de point focal : glisse sur l'aperçu pour choisir la zone visible (recadrage bannière). */
+function FocalPointPicker({ src, value, onChange }: { src: string; value: string; onChange: (pos: string) => void }) {
+  const [x, y] = (() => {
+    const m = (value || "50% 50%").match(/([\d.]+)%\s+([\d.]+)%/);
+    return m ? [parseFloat(m[1]), parseFloat(m[2])] : [50, 50];
+  })();
+  const dragging = useRef(false);
+
+  const apply = (e: React.PointerEvent) => {
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const nx = Math.min(100, Math.max(0, ((e.clientX - r.left) / r.width) * 100));
+    const ny = Math.min(100, Math.max(0, ((e.clientY - r.top) / r.height) * 100));
+    onChange(`${Math.round(nx)}% ${Math.round(ny)}%`);
+  };
+
+  return (
+    <div className="mt-2">
+      <p className="font-mono text-[10px] tracking-wide text-[#101014]/35 mb-1">Recadrage · glisse pour choisir la zone visible</p>
+      <div
+        className="relative w-full aspect-[3/1] rounded-xl overflow-hidden border border-[#101014]/[0.14] cursor-crosshair touch-none select-none"
+        onPointerDown={e => { dragging.current = true; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); apply(e); }}
+        onPointerMove={e => { if (dragging.current) apply(e); }}
+        onPointerUp={e => { dragging.current = false; (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); }}
+      >
+        <img src={src} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" style={{ objectPosition: `${x}% ${y}%` }} />
+        <div className="absolute w-6 h-6 -ml-3 -mt-3 rounded-full border-2 border-white shadow-[0_0_0_2px_rgba(0,0,0,0.4)] pointer-events-none"
+          style={{ left: `${x}%`, top: `${y}%`, background: "rgba(255,45,160,0.5)" }} />
+      </div>
+      <div className="flex justify-end mt-1">
+        <button type="button" onClick={() => onChange("50% 50%")} className="font-mono text-[10px] text-[#101014]/35 hover:text-[#101014]">Centrer</button>
+      </div>
+    </div>
+  );
+}
 
 function Field({ label, full, children }: { label: string; full?: boolean; children: React.ReactNode }) {
   return (

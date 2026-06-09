@@ -18,6 +18,7 @@ type QueerEvent = {
   location?: string;
   url?: string;
   image_url?: string;
+  image_position?: string;
   price?: string;
   category?: string;
   tags?: string[];
@@ -328,7 +329,7 @@ function EventCard({ event: e, featured }: { event: QueerEvent; featured?: boole
       {/* Image / placeholder */}
       <div className="relative h-44 overflow-hidden bg-[#F1ECE3] flex items-center justify-center">
         {e.image_url ? (
-          <img src={e.image_url} alt={e.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <img src={e.image_url} alt={e.title} style={{ objectPosition: e.image_position ?? "50% 50%" }} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 40% 40%, ${accent}25, transparent 70%)` }} />
         )}
