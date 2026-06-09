@@ -382,14 +382,21 @@ export default function VendrePage() {
                     );
                   })}
                 </div>
+                <Link href="/programme-fondateur"
+                  className="mt-6 block rounded-xl border border-[#FFD400]/40 bg-[#FFD400]/10 px-4 py-3 hover:bg-[#FFD400]/15 transition-colors">
+                  <p className="font-hanken text-[12.5px] text-[#101014]/80 leading-snug">
+                    🏆 <strong>Offre de lancement</strong> — les 120 premier·ères rejoignent le programme Fondateur·ice : jusqu'à <strong>12 mois d'abonnement offerts</strong> et <strong>0 % de commission</strong>.
+                  </p>
+                  <span className="font-mono text-[10px] text-[#FF2DA0] inline-flex items-center gap-1 mt-1">Voir le programme <ArrowRight size={10} /></span>
+                </Link>
                 <Link
                   href="/vendeur/onboarding"
-                  className="mt-8 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#FF2DA0] text-white font-hanken font-semibold text-sm hover:bg-[#FF2DA0]/85 transition-all"
+                  className="mt-5 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#FF2DA0] text-white font-hanken font-semibold text-sm hover:bg-[#FF2DA0]/85 transition-all"
                 >
                   Ouvrir ma boutique <ArrowRight size={14} />
                 </Link>
                 <p className="font-hanken text-[11px] text-[#101014]/25 text-center mt-3">
-                  Commission 0% pendant 3 mois
+                  Après le programme fondateur · commission 0 % les 3 premiers mois
                 </p>
               </div>
             </FadeIn>
