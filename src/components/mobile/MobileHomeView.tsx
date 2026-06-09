@@ -33,6 +33,7 @@ const CHIPS = ["Tout", "Mode", "Art", "Bijoux", "Zines", "Corps", "Services"];
 interface Product {
   id: string; name: string; title: string; price: number;
   images: string[] | null; image_url: string | null; slug: string; category: string;
+  is_adult?: boolean;
   shops: { name: string; slug: string } | null;
 }
 interface Shop { id: string; name: string; slug: string; logo_url: string | null; tagline: string | null; }
@@ -80,6 +81,9 @@ function ProductCard({ p }: { p: Product }) {
       <div className="relative rounded-2xl overflow-hidden" style={{ boxShadow: "0 1px 0 rgba(0,0,0,.03)" }}>
         {img ? <img src={img} alt={p.name || p.title} loading="lazy" className="w-full object-cover" style={{ height: tall ? 220 : 160 }} />
           : <Ph category={p.category} h={tall ? 220 : 160} />}
+        {p.is_adult && (
+          <span className="absolute top-2 left-2 font-mono text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(16,16,20,.78)", color: "#fff" }}>🔞 18+</span>
+        )}
         <button onClick={toggleLike} aria-label="Favori"
           className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center"
           style={{ background: "rgba(255,255,255,.85)", backdropFilter: "blur(6px)" }}>
@@ -121,7 +125,7 @@ export function MobileHomeView() {
     const supabase = createClient();
     let q = supabase
       .from("products")
-      .select("id,name,title,price,images,image_url,slug,category,shops(name,slug)")
+      .select("id,name,title,price,images,image_url,slug,category,is_adult,shops(name,slug)")
       .eq("is_active", true).order("created_at", { ascending: false }).limit(20);
     if (cat !== "Tout") q = q.ilike("category", `%${cat}%`);
     if (search.trim()) q = q.or(`name.ilike.%${search}%,title.ilike.%${search}%`);

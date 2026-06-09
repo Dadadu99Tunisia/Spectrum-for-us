@@ -29,7 +29,7 @@ export default function NouveauProduitPage() {
   const [variant, setVariant] = useState("");
   const [form, setForm] = useState({
     name: "", description: "", price: "", type: "product" as "product" | "service" | "event",
-    category: "", subcategory: "", quantity: "1", is_active: true, variants: [] as string[],
+    category: "", subcategory: "", quantity: "1", is_active: true, is_adult: false, variants: [] as string[],
     image_url: "",
   });
 
@@ -71,6 +71,7 @@ export default function NouveauProduitPage() {
       subcategory: form.subcategory || null,
       quantity: parseInt(form.quantity) || 0,
       is_active: form.is_active,
+      is_adult: form.is_adult,
       type: form.type,
       listing_status: "approved",
       image_url: form.image_url || null,
@@ -239,6 +240,13 @@ export default function NouveauProduitPage() {
             <input type="checkbox" checked={form.is_active} onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
               className="w-4 h-4 rounded accent-[#FF2DA0]" />
             <span className="font-hanken text-sm text-[#101014]/60 group-hover:text-[#101014]/80">Mettre en ligne immédiatement</span>
+          </label>
+
+          {/* 18+ */}
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <input type="checkbox" checked={form.is_adult} onChange={(e) => setForm((f) => ({ ...f, is_adult: e.target.checked }))}
+              className="w-4 h-4 rounded accent-[#FF2DA0]" />
+            <span className="font-hanken text-sm text-[#101014]/60 group-hover:text-[#101014]/80">Produit réservé aux adultes 🔞 (affiche un badge 18+)</span>
           </label>
 
           {error && <div role="alert" className="text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">{error}</div>}

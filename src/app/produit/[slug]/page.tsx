@@ -17,7 +17,7 @@ type Product = {
   price: number; category: string; subcategory: string | null;
   slug: string; shop_id: string; image_url: string | null;
   images: string[] | null; tags: string[] | null;
-  quantity: number; is_active: boolean; type: string | null;
+  quantity: number; is_active: boolean; is_adult?: boolean; type: string | null;
   shops?: { name: string; slug: string } | { name: string; slug: string }[] | null;
 };
 
@@ -226,6 +226,11 @@ export default function ProduitPage() {
                 >
                   <TypeIcon size={10} /> {typeConf.label}
                 </span>
+                {product.is_adult && (
+                  <span className="inline-flex items-center gap-1 font-mono text-[10px] tracking-wide px-2 py-1 rounded-full border border-[#101014]/15 bg-[#101014]/5 text-[#101014]/70">
+                    🔞 Réservé aux adultes
+                  </span>
+                )}
               </div>
 
               <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] leading-tight mb-2">{productName}</h1>

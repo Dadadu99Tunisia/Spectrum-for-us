@@ -22,7 +22,7 @@ export default function EditProduitPage() {
   const [shopId, setShopId] = useState<string | null>(null);
   const [form, setForm]     = useState({
     name: "", description: "", price: "", category: "", subcategory: "",
-    quantity: "1", is_active: true, images: [] as string[], type: "product" as string,
+    quantity: "1", is_active: true, is_adult: false, images: [] as string[], type: "product" as string,
   });
 
   useEffect(() => {
@@ -45,6 +45,7 @@ export default function EditProduitPage() {
             subcategory: String(p.subcategory || ""),
             quantity: String(p.quantity ?? 1),
             is_active: Boolean(p.is_active),
+            is_adult: Boolean(p.is_adult),
             images: (p.images as string[] | null) ?? (p.image_url ? [p.image_url as string] : []),
             type: String(p.type || "product"),
           });
@@ -70,6 +71,7 @@ export default function EditProduitPage() {
       subcategory: form.subcategory || null,
       quantity: parseInt(form.quantity) || 0,
       is_active: form.is_active,
+      is_adult: form.is_adult,
       images: form.images,
       image_url: form.images[0] ?? null,
       type: form.type,
@@ -201,6 +203,13 @@ export default function EditProduitPage() {
               </select>
             </div>
           </div>
+
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <input type="checkbox" checked={form.is_adult}
+              onChange={(e) => setForm((f) => ({ ...f, is_adult: e.target.checked }))}
+              className="w-4 h-4 rounded accent-[#FF2DA0]" />
+            <span className="font-hanken text-sm text-[#101014]/60 group-hover:text-[#101014]/80">Produit réservé aux adultes 🔞 (affiche un badge 18+)</span>
+          </label>
 
           {error && <p className="font-hanken text-sm text-red-400 bg-red-400/8 border border-red-400/20 rounded-xl px-4 py-3">{error}</p>}
 
