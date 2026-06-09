@@ -160,6 +160,28 @@ export async function POST(req: Request) {
 
     await supabase.from("order_items").insert(orderItems);
 
+    // ── Reversements Connect aux vendeurs (separate charges & transfers) ──────
+    // Chaque vendeur reçoit son sous-total − commission, prélevé sur la charge.
+    try {
+      const transfers: { a: string; c: number; s: string }[] = JSON.parse(pi.metadata?.transfers_json ?? "[]");
+      const chargeId = typeof pi.latest_charge === "string" ? pi.latest_charge : pi.latest_charge?.id;
+      const group = pi.metadata?.transfer_group ?? pi.transfer_group ?? undefined;
+      for (const t of transfers) {
+        if (t.c > 0 && t.a) {
+          await stripe.transfers.create({
+            amount: t.c,
+            currency: pi.currency,
+            destination: t.a,
+            ...(chargeId ? { source_transaction: chargeId } : {}),
+            ...(group ? { transfer_group: group } : {}),
+            metadata: { order_pi: pi.id, shop_id: t.s },
+          });
+        }
+      }
+    } catch (e) {
+      console.error("[webhook] transfers vendeurs (non-bloquant)", e);
+    }
+
     // ── Commissions (par boutique) · traçables, non bloquant ────────────────
     // Taux : 0 % si avantage fondateur·ice actif · sinon override · sinon défaut.
     try {

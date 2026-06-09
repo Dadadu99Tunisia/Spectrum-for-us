@@ -76,33 +76,44 @@ export async function POST(req: NextRequest) {
 
   const stripe = new Stripe(secretKey, { apiVersion: "2026-05-27.dahlia" });
 
-  // ── Stripe Connect · un seul vendeur par commande (destination charge) ──
-  const shopIds = [...new Set(cart.map(i => productMap[i.id].shop_id).filter(Boolean))] as string[];
-  if (shopIds.length !== 1) {
-    return NextResponse.json(
-      { error: "Un seul vendeur par commande pour l'instant. Règle chaque boutique séparément." },
-      { status: 400 }
-    );
+  // ── Stripe Connect · multi-vendeur (separate charges & transfers) ──
+  // Sous-total (centimes) par boutique
+  const subtotalByShop: Record<string, number> = {};
+  for (const item of cart) {
+    const p = productMap[item.id];
+    const sid = p.shop_id as string;
+    if (!sid) continue;
+    subtotalByShop[sid] = (subtotalByShop[sid] ?? 0) + Math.round(Number(p.price) * 100 * item.quantity);
   }
-  const shopId = shopIds[0];
+  const shopIds = Object.keys(subtotalByShop);
 
   const admin = createAdminClient();
-  const { data: shop } = await admin
+  const { data: shops } = await admin
     .from("shops")
     .select("id, name, stripe_account_id, stripe_charges_enabled")
-    .eq("id", shopId)
-    .maybeSingle();
+    .in("id", shopIds);
+  const shopMap = Object.fromEntries((shops ?? []).map(s => [s.id, s]));
 
-  if (!shop?.stripe_account_id || !shop.stripe_charges_enabled) {
-    return NextResponse.json(
-      { error: `${shop?.name ?? "Ce vendeur"} n'a pas encore activé ses paiements. Reviens bientôt !` },
-      { status: 400 }
-    );
+  // Tous les vendeurs du panier doivent avoir activé leurs paiements
+  for (const sid of shopIds) {
+    const s = shopMap[sid];
+    if (!s?.stripe_account_id || !s.stripe_charges_enabled) {
+      return NextResponse.json(
+        { error: `${s?.name ?? "Un vendeur"} n'a pas encore activé ses paiements. Retire ses articles ou reviens bientôt.` },
+        { status: 400 }
+      );
+    }
   }
 
-  // Commission plateforme (0 % pour les fondateur·ices actif·ves)
-  const rate = await getCommissionRate(admin, shopId);
-  const applicationFee = Math.round(totalCents * (rate / 100));
+  // Reversement par vendeur = sous-total − commission (0 % pour les fondateur·ices)
+  const transfers: { a: string; c: number; s: string }[] = [];
+  for (const sid of shopIds) {
+    const rate = await getCommissionRate(admin, sid);
+    const sub = subtotalByShop[sid];
+    const commission = Math.round(sub * (rate / 100));
+    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: sub - commission, s: sid });
+  }
+  const transferGroup = `sfu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
   // Enrichir le panier avec les prix serveur (pour le webhook)
   const serverCart = cart.map(item => {
@@ -120,16 +131,15 @@ export async function POST(req: NextRequest) {
     amount: totalCents,
     currency,
     automatic_payment_methods: { enabled: true },
-    // L'argent va directement au vendeur ; la commission reste à la plateforme
-    transfer_data: { destination: shop.stripe_account_id },
-    application_fee_amount: applicationFee,
+    // Paiement encaissé par la plateforme, puis reversé à chaque vendeur (webhook)
+    transfer_group: transferGroup,
     metadata: {
       user_id: user.id,
       buyer_email: user.email ?? "",
-      shop_id: shopId,
-      commission_rate: String(rate),
       cart_json: JSON.stringify(serverCart),
       shipping_json: shipping ? JSON.stringify(shipping) : "",
+      transfer_group: transferGroup,
+      transfers_json: JSON.stringify(transfers),
     },
   });
 
