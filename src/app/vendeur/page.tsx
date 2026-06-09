@@ -161,8 +161,8 @@ export default function VendeurDashboard() {
 
       {/* ── SIDEBAR ── */}
       <aside
-        className="fixed lg:sticky top-0 z-[60] flex flex-col h-screen w-[248px] shrink-0 px-3.5 py-5 transition-[left] duration-200"
-        style={{ background: C.panel, borderRight: `1px solid ${C.line}`, left: menuOpen ? 0 : undefined }}
+        className={`fixed lg:sticky top-0 left-0 z-[60] flex flex-col h-screen w-[248px] shrink-0 px-3.5 py-5 transition-transform duration-200 ${menuOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+        style={{ background: C.panel, borderRight: `1px solid ${C.line}` }}
         data-open={menuOpen}
       >
         <div className="flex items-center gap-2.5 px-2 pb-4">
