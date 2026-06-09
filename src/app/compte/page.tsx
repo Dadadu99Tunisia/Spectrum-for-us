@@ -55,6 +55,7 @@ export default function ComptePage() {
   const [tab, setTab] = useState<Tab>("Commandes");
   const [profile, setProfile] = useState<{ full_name?: string; pseudo?: string; pronouns?: string; is_vendor?: boolean } | null>(null);
   const [orders, setOrders] = useState<Array<{ id: string; total_amount: number; status: string; created_at: string }>>([]);
+  const [shipments, setShipments] = useState<Record<string, Array<{ method_label: string | null; status: string; carrier: string | null; tracking_number: string | null }>>>({});
   const [favCount, setFavCount] = useState(0);
 
   useEffect(() => {
@@ -77,7 +78,19 @@ export default function ComptePage() {
     supabase.from("profiles").select("*").eq("id", user.id).single()
       .then(({ data }) => setProfile(data));
     supabase.from("orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
-      .then(({ data }) => setOrders(data ?? []));
+      .then(async ({ data }) => {
+        setOrders(data ?? []);
+        const ids = (data ?? []).map(o => o.id);
+        if (ids.length) {
+          const { data: sh } = await supabase
+            .from("order_shipments")
+            .select("order_id, method_label, status, carrier, tracking_number")
+            .in("order_id", ids);
+          const byOrder: Record<string, Array<{ method_label: string | null; status: string; carrier: string | null; tracking_number: string | null }>> = {};
+          (sh ?? []).forEach(s => { (byOrder[s.order_id] ??= []).push(s); });
+          setShipments(byOrder);
+        }
+      });
   }, [user]);
 
   if (loading || !user) {
@@ -261,6 +274,13 @@ export default function ComptePage() {
                       <p className="font-hanken text-xs text-[#101014]/35 mt-1">
                         {new Date(order.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                       </p>
+                      {(shipments[order.id] ?? []).map((s, i) => (
+                        <p key={i} className="font-mono text-[10px] text-[#101014]/45 mt-1.5">
+                          📦 {s.method_label ?? "Colis"} ·{" "}
+                          {s.status === "delivered" ? "Livré" : s.status === "shipped" ? "Expédié" : "En préparation"}
+                          {s.tracking_number ? <> · {s.carrier ?? "Suivi"} <strong className="text-[#101014]/70">{s.tracking_number}</strong></> : null}
+                        </p>
+                      ))}
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       <span className="font-fraunces text-lg text-[#101014]">{Number(order.total_amount).toFixed(2)} €</span>
