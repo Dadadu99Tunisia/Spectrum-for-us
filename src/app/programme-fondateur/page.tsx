@@ -50,12 +50,12 @@ export default function ProgrammeFondateurPage() {
 
   const tiers: Tier[] = [
     {
-      key: "super", emoji: "🥇", name: "Super Fondateur·ices", accent: T.gold,
-      sub: "Les tout premiers à rejoindre Spectrum.",
+      key: "fondateur", emoji: "🏆", name: "Fondateur·ices", accent: T.gold,
+      sub: "Les 20 tout premiers à rejoindre Spectrum.",
       count: founderCount, total: 20, remaining: founderLeft,
       benefits: [
-        { label: "Abonnement offert pendant 12 mois", bold: true },
-        { label: "0 % de commission pendant 6 mois", bold: true },
+        { label: "Abonnement offert pendant 3 ans", bold: true },
+        { label: "0 % de commission pendant 12 mois", bold: true },
         { label: "Badge exclusif 🏆 à vie sur ton profil" },
         { label: "Mise en avant prioritaire à vie dans la marketplace" },
         { label: "Accès anticipé à toutes les nouvelles fonctionnalités" },
@@ -63,27 +63,16 @@ export default function ProgrammeFondateurPage() {
       ],
     },
     {
-      key: "fondateur", emoji: "🏆", name: "Fondateur·ices", accent: T.mag,
-      sub: "Les premiers piliers de la communauté Spectrum.",
+      key: "pionnier", emoji: "✨", name: "Pionnier·es", accent: T.violet,
+      sub: "Les 100 piliers suivants de la communauté Spectrum.",
       count: earlyCount, total: 100, remaining: earlyLeft,
       benefits: [
-        { label: "Abonnement offert pendant 12 mois", bold: true },
-        { label: "0 % de commission pendant 3 mois", bold: true },
-        { label: "Badge fondateur 🏆 à vie" },
-        { label: "Mise en avant prioritaire dans les résultats de recherche" },
-        { label: "Accès anticipé aux nouvelles fonctionnalités" },
-        { label: "Statut à vie, non transférable" },
-      ],
-    },
-    {
-      key: "pionnier", emoji: "✨", name: "Pionnier·es", accent: T.violet,
-      sub: "Les derniers membres du lancement fondateur.", soft: "Dernières places",
-      benefits: [
         { label: "Abonnement offert pendant 6 mois", bold: true },
-        { label: "0 % de commission pendant 3 mois", bold: true },
+        { label: "0 % de commission pendant 6 mois", bold: true },
         { label: "Badge pionnier ✨ à vie" },
         { label: "Visibilité prioritaire dans la marketplace" },
         { label: "Accès early adopters aux nouveautés" },
+        { label: "Statut à vie, non transférable" },
       ],
     },
   ];
@@ -122,7 +111,7 @@ export default function ProgrammeFondateurPage() {
 
           {founderLeft > 0 && founderLeft <= 8 && (
             <p className="flex items-center justify-center gap-2 mt-5 font-hanken text-sm" style={{ color: T.mag }}>
-              <Flame size={15} /> Plus que {founderLeft} place{founderLeft > 1 ? "s" : ""} Super Fondateur·ice !
+              <Flame size={15} /> Plus que {founderLeft} place{founderLeft > 1 ? "s" : ""} Fondateur·ice !
             </p>
           )}
 
@@ -136,7 +125,7 @@ export default function ProgrammeFondateurPage() {
 
         {/* ── Paliers ── */}
         <section className="max-w-6xl mx-auto px-6 md:px-8 pb-14">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 max-w-4xl mx-auto">
             {tiers.map((t) => {
               const full = t.remaining !== undefined && t.remaining <= 0;
               return (

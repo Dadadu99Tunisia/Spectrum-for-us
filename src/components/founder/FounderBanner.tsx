@@ -137,7 +137,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xl shrink-0">🥇</span>
               <div className="min-w-0">
-                <p className="font-fraunces text-base text-[#FFD700] truncate">Super Fondateur·ice</p>
+                <p className="font-fraunces text-base text-[#FFD700] truncate">Fondateur·ice</p>
                 <p className="font-mono text-[9px] text-[#101014]/30">
                   Rang 1-20 · {founderFull ? "complet" : `${counts.founder_remaining} restante${counts.founder_remaining > 1 ? "s" : ""}`}
                 </p>
@@ -155,8 +155,8 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             </div>
             <div className="space-y-1">
               {[
-                "Abonnement offert 12 mois",
-                "0 % de commission 6 mois",
+                "Abonnement offert 3 ans",
+                "0 % de commission 12 mois",
                 "Mise en avant prioritaire à vie",
                 "Badge exclusif à vie",
               ].map(a => (
@@ -180,7 +180,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xl shrink-0">🏆</span>
               <div className="min-w-0">
-                <p className="font-fraunces text-base text-[#a78bfa] truncate">Fondateur·ice</p>
+                <p className="font-fraunces text-base text-[#a78bfa] truncate">Pionnier·e</p>
                 <p className="font-mono text-[9px] text-[#101014]/30">
                   Rang 21-120 · {earlyFull ? "complet" : `${counts.early_remaining} restante${counts.early_remaining > 1 ? "s" : ""}`}
                 </p>
@@ -197,10 +197,10 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             </div>
             <div className="space-y-1">
               {[
-                "Abonnement offert 12 mois",
-                "0 % de commission 3 mois",
+                "Abonnement offert 6 mois",
+                "0 % de commission 6 mois",
                 "Priorité dans la recherche",
-                "Badge Fondateur·ice à vie",
+                "Badge Pionnier·e à vie",
               ].map(a => (
                 <p key={a} className="font-hanken text-xs flex items-center gap-1.5"
                   style={{ color: earlyFull ? "rgba(243,234,219,.25)" : "rgba(243,234,219,.6)" }}>

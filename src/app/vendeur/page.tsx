@@ -307,7 +307,11 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go }
             </span>
             <h3 className="font-bricolage font-extrabold text-[21px] mb-2">Tes avantages à vie</h3>
             <p className="text-[13.5px] leading-relaxed mb-3.5" style={{ color: "rgba(255,255,255,.82)" }}>
-              0 % de commission pendant 12 mois · abonnement déclenché à ta 1re vente · badge sur ton profil.
+              {founderRank && founderRank <= 20
+                ? "0 % de commission pendant 12 mois · abonnement offert 3 ans · badge exclusif sur ton profil."
+                : founderRank
+                ? "0 % de commission pendant 6 mois · abonnement offert 6 mois · badge sur ton profil."
+                : "0 % de commission les premiers mois · abonnement offert · badge sur ton profil."}
             </p>
             {founderRank ? (
               <>
@@ -529,7 +533,7 @@ function Subscription({ shop, founderRank }: { shop: Shop; founderRank: number |
         <div className="relative">
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold rounded-full px-2.5 py-1 mb-3" style={{ background: "rgba(255,255,255,.16)" }}>✦ Programme Fondateur·ice</span>
           <h3 className="font-bricolage font-extrabold text-[21px] mb-2">{founderRank ? `Place #${String(founderRank).padStart(3, "0")} / 120` : "120 places"}</h3>
-          <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,.82)" }}>Abonnement offert 12 mois · 0 % commission 6 mois (rang 1-20) ou 3 mois (rang 21-120) · mise en avant prioritaire à vie.</p>
+          <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,.82)" }}>Fondateur·ice (rang 1-20) : abonnement offert 3 ans · 0 % commission 12 mois. Pionnier·e (rang 21-120) : abonnement offert 6 mois · 0 % commission 6 mois. Mise en avant prioritaire à vie.</p>
         </div>
       </div>
     </div>
