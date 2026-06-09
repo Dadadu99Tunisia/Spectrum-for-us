@@ -154,10 +154,10 @@ export function AccessibilityBar() {
       <button
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp}
         aria-label="Options d'accessibilité"
-        className="md:hidden fixed z-[61] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-xl touch-none active:scale-95 transition-transform"
+        className="md:hidden fixed z-[61] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-xl ring-2 ring-white/70 touch-none active:scale-95 transition-transform"
         style={fab
-          ? { left: fab.x, top: fab.y, background: hasAnyActive ? "#FF2DA0" : "#101014" }
-          : { right: 16, bottom: hasBottomNav ? 84 : 24, background: hasAnyActive ? "#FF2DA0" : "#101014" }}
+          ? { left: fab.x, top: fab.y, background: "#FF2DA0" }
+          : { right: 16, bottom: hasBottomNav ? 84 : 24, background: "#FF2DA0" }}
       >
         <Accessibility size={22} />
       </button>
