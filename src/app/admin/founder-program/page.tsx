@@ -424,8 +424,8 @@ export default function FounderProgramPage() {
       <div className="grid sm:grid-cols-3 gap-3">
         {(Object.entries(STATUS_CFG) as [FounderStatus, typeof STATUS_CFG[FounderStatus]][]).map(([s, cfg]) => {
           const benefits: Record<FounderStatus, string[]> = {
-            FOUNDER:       ["Abonnement gratuit 3 ans", "0 % commission 12 mois", "Mise en avant prioritaire", "Badge exclusif"],
-            EARLY_ADOPTER: ["Abonnement gratuit 6 mois", "0 % commission 6 mois", "Badge Pionnier·e"],
+            FOUNDER:       ["Abonnement gratuit 12 mois", "0 % commission 6 mois", "Mise en avant prioritaire", "Badge exclusif"],
+            EARLY_ADOPTER: ["Abonnement gratuit 6 mois", "0 % commission 3 mois", "Badge Pionnier·e"],
             STANDARD:      ["Abonnement 9,90€ ou 19,90€/mois", "Commission 5-12 %"],
           };
           const Icon = cfg.icon;

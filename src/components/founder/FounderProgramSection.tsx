@@ -117,7 +117,7 @@ export function FounderProgramSection() {
                       background: founderFull ? "rgba(107,114,128,.4)" : "linear-gradient(90deg,#FFD700,#FFA500)",
                     }} />
                 </div>
-                {["Abonnement gratuit 3 ans", "0 % de commission 12 mois", "Mise en avant prioritaire", "Badge exclusif sur profil"].map(a => (
+                {["Abonnement gratuit 12 mois", "0 % de commission 6 mois", "Mise en avant prioritaire", "Badge exclusif sur profil"].map(a => (
                   <p key={a} className="font-hanken text-xs flex items-center gap-1.5"
                     style={{ color: founderFull ? "rgba(243,234,219,.25)" : "rgba(243,234,219,.6)" }}>
                     <span style={{ color: founderFull ? "rgba(107,114,128,.4)" : "#FFD700" }}>✓</span> {a}
@@ -138,7 +138,7 @@ export function FounderProgramSection() {
                     <span className="text-xl">🚀</span>
                     <div>
                       <p className="font-fraunces text-base text-[#a78bfa]">Pionnier·e</p>
-                      <p className="font-mono text-[9px] text-[#101014]/30">Rang 21-100</p>
+                      <p className="font-mono text-[9px] text-[#101014]/30">Rang 21-120</p>
                     </div>
                   </div>
                   {earlyFull ? (
@@ -156,7 +156,7 @@ export function FounderProgramSection() {
                       background: earlyFull ? "rgba(107,114,128,.4)" : "linear-gradient(90deg,#a78bfa,#FF2DA0)",
                     }} />
                 </div>
-                {["Abonnement gratuit 6 mois", "0 % de commission 6 mois", "Badge Pionnier·e sur profil", "Accès anticipé aux features"].map(a => (
+                {["Abonnement gratuit 6 mois", "0 % de commission 3 mois", "Badge Pionnier·e sur profil", "Accès anticipé aux features"].map(a => (
                   <p key={a} className="font-hanken text-xs flex items-center gap-1.5"
                     style={{ color: earlyFull ? "rgba(243,234,219,.25)" : "rgba(243,234,219,.6)" }}>
                     <span style={{ color: earlyFull ? "rgba(107,114,128,.4)" : "#a78bfa" }}>✓</span> {a}

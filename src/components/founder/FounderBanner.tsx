@@ -155,8 +155,8 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             </div>
             <div className="space-y-1">
               {[
-                "Abonnement offert 3 ans",
-                "0 % de commission 12 mois",
+                "Abonnement offert 12 mois",
+                "0 % de commission 6 mois",
                 "Mise en avant prioritaire à vie",
                 "Badge exclusif à vie",
               ].map(a => (
@@ -198,7 +198,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             <div className="space-y-1">
               {[
                 "Abonnement offert 6 mois",
-                "0 % de commission 6 mois",
+                "0 % de commission 3 mois",
                 "Priorité dans la recherche",
                 "Badge Pionnier·e à vie",
               ].map(a => (
