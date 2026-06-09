@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/Button";
-import { ArrowLeft, Save, ExternalLink } from "lucide-react";
+import { ArrowLeft, Save, ExternalLink, Trash2 } from "lucide-react";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
@@ -15,6 +15,7 @@ export default function ParametresBoutiquePage() {
   const [shopId, setShopId] = useState<string | null>(null);
   const [shopSlug, setShopSlug] = useState<string>("");
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [toast, setToast] = useState("");
   const [error, setError] = useState("");
   const [form, setForm] = useState({
@@ -64,6 +65,16 @@ export default function ParametresBoutiquePage() {
     if (err) { setError(err.message); return; }
     setToast("Boutique mise à jour ✓");
     setTimeout(() => setToast(""), 2500);
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Supprimer définitivement ta boutique et tous ses produits ? Cette action est irréversible.")) return;
+    if (!confirm("Confirme une dernière fois : tout sera effacé et tu perdras ta place dans le programme fondateur.")) return;
+    setDeleting(true); setError("");
+    const res = await fetch("/api/vendor/shop", { method: "DELETE" });
+    const json = await res.json();
+    if (json.error) { setError(json.error); setDeleting(false); return; }
+    window.location.assign("/");
   };
 
   if (loading || !shopId) return (
@@ -157,6 +168,18 @@ export default function ParametresBoutiquePage() {
             <Save size={14} /> {saving ? "Sauvegarde…" : "Enregistrer les modifications"}
           </Button>
         </form>
+
+        {/* Zone de danger */}
+        <div className="mt-10 rounded-2xl border border-red-300/60 bg-red-50 p-6">
+          <h2 className="font-bricolage font-semibold text-[#101014] text-sm mb-1">Zone de danger</h2>
+          <p className="font-hanken text-[13.5px] text-[#101014]/55 mb-4">
+            Supprimer ta boutique efface définitivement tes produits, ton KYC et ta place dans le programme fondateur. Irréversible.
+          </p>
+          <button onClick={handleDelete} disabled={deleting}
+            className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-hanken font-semibold text-sm text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-50">
+            <Trash2 size={15} /> {deleting ? "Suppression…" : "Supprimer ma boutique"}
+          </button>
+        </div>
       </div>
     </div>
   );
