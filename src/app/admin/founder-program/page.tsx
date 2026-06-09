@@ -52,7 +52,7 @@ function StatCard({
 }) {
   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
   return (
-    <div className="bg-[#1c1235] border border-[#101014]/8 rounded-2xl p-5">
+    <div className="bg-white border border-[#101014]/8 rounded-2xl p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-xl flex items-center justify-center"
@@ -269,7 +269,7 @@ export default function FounderProgramPage() {
             icon={Rocket}
             sub={counts.early_remaining > 0 ? `${counts.early_remaining} places restantes` : "Complet 🎉"}
           />
-          <div className="bg-[#1c1235] border border-[#101014]/8 rounded-2xl p-5 flex flex-col justify-between">
+          <div className="bg-white border border-[#101014]/8 rounded-2xl p-5 flex flex-col justify-between">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-[#2323C4]/15">
                 <Users size={16} className="text-[#2323C4]" />
@@ -325,7 +325,7 @@ export default function FounderProgramPage() {
           </p>
         </div>
       ) : (
-        <div className="bg-[#1c1235] border border-[#101014]/8 rounded-2xl overflow-hidden">
+        <div className="bg-white border border-[#101014]/8 rounded-2xl overflow-hidden">
           {/* Table header */}
           <div className="grid grid-cols-[56px_1fr_160px_140px_120px_120px_110px] gap-4 px-5 py-3 border-b border-[#101014]/6">
             <SortButton label="Rang" sortKey="rank" current={sortKey} dir={sortDir} onClick={toggleSort} />
