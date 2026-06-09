@@ -16,8 +16,9 @@ import Link from "next/link";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import {
   Home, Package, Boxes, Store, CircleDollarSign, BarChart3, CreditCard,
-  Settings, Search, Bell, Plus, Menu, ExternalLink, Check, ArrowUpRight,
+  Settings, Search, Bell, Plus, Menu, ExternalLink, Check, ArrowUpRight, Truck,
 } from "lucide-react";
+import { ShippingSettings, type ShippingMethod } from "@/components/vendor/ShippingSettings";
 
 // ── Palette (design tokens) ───────────────────────────────────────────────
 const C = {
@@ -48,7 +49,7 @@ type Metrics = {
   amount: (o: VendorOrder) => number;
 };
 
-type View = "overview" | "products" | "orders" | "shop" | "revenue" | "stats" | "subscription" | "settings";
+type View = "overview" | "products" | "orders" | "shop" | "livraison" | "revenue" | "stats" | "subscription" | "settings";
 const PAID = ["paid", "shipped", "delivered"];
 const eur = (n: number) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Math.round(n)) + " €";
 
@@ -66,6 +67,7 @@ const NAV: { v: View; label: string; icon: React.ElementType; section?: string }
   { v: "products", label: "Produits", icon: Package },
   { v: "orders", label: "Commandes", icon: Boxes },
   { v: "shop", label: "Ma boutique", icon: Store },
+  { v: "livraison", label: "Livraison", icon: Truck },
   { v: "revenue", label: "Revenus", icon: CircleDollarSign, section: "Business" },
   { v: "stats", label: "Statistiques", icon: BarChart3 },
   { v: "subscription", label: "Abonnement", icon: CreditCard },
@@ -73,7 +75,7 @@ const NAV: { v: View; label: string; icon: React.ElementType; section?: string }
 ];
 const TITLES: Record<View, string> = {
   overview: "Vue d'ensemble", products: "Produits", orders: "Commandes", shop: "Ma boutique",
-  revenue: "Revenus", stats: "Statistiques", subscription: "Abonnement", settings: "Paramètres",
+  livraison: "Livraison", revenue: "Revenus", stats: "Statistiques", subscription: "Abonnement", settings: "Paramètres",
 };
 
 export default function VendeurDashboard() {
@@ -234,6 +236,7 @@ export default function VendeurDashboard() {
           {view === "orders" && <Orders orders={orders} toPrepare={m.toPrepare} />}
           {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} />}
           {view === "subscription" && <Subscription shop={shop} founderRank={founderRank} />}
+          {view === "livraison" && <ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} />}
           {(view === "shop" || view === "stats" || view === "settings") && (
             <Placeholder view={view} shopSlug={shop.slug} />
           )}
