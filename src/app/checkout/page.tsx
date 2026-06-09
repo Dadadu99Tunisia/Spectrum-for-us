@@ -321,15 +321,9 @@ export default function CheckoutPage() {
                     </Elements>
                   ) : intentError ? (
                     <div className="space-y-4">
-                      <div className="p-5 rounded-xl border border-amber-400/20 bg-amber-400/5">
-                        <p className="font-bricolage font-bold text-amber-400 mb-2">Clé secrète Stripe manquante</p>
-                        <p className="font-hanken text-sm text-[#101014]/60 leading-relaxed">
-                          La clé publique Stripe est configurée ✓<br />
-                          Pour activer les vrais paiements, ajoute dans <code className="text-[#FF2DA0] font-mono text-xs">.env.local</code> :
-                        </p>
-                        <pre className="mt-3 p-3 bg-[#101014]/5 rounded-lg text-xs font-mono text-[#101014]">
-                          STRIPE_SECRET_KEY=sk_live_...
-                        </pre>
+                      <div className="p-5 rounded-xl border border-amber-400/30 bg-amber-400/5">
+                        <p className="font-bricolage font-bold text-[#101014] mb-2">Paiement indisponible</p>
+                        <p className="font-hanken text-sm text-[#101014]/65 leading-relaxed">{intentError}</p>
                       </div>
                       <button onClick={() => setStep("Livraison")} className="flex items-center gap-2 font-mono text-xs text-[#101014]/30 hover:text-[#101014]/60 transition-colors">
                         <ArrowLeft size={12} /> Retour
