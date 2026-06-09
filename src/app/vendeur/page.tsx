@@ -93,7 +93,7 @@ export default function VendeurDashboard() {
     const supabase = createClient();
     (async () => {
       try {
-        const { data: shopData } = await supabase.from("shops").select("*").eq("owner_id", user.id).single();
+        const { data: shopData } = await supabase.from("shops").select("*").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle();
         if (!shopData) { router.push("/vendeur/onboarding"); return; }
         setShop(shopData as Shop);
         supabase.from("founder_program_members").select("rank").eq("user_id", user.id).single()

@@ -34,7 +34,7 @@ export default function NouveauProduitPage() {
   useEffect(() => {
     if (!loading && !user) { router.push("/auth?redirect=/vendeur/nouveau-produit"); return; }
     if (!user) return;
-    createClient().from("shops").select("id").eq("owner_id", user.id).single()
+    createClient().from("shops").select("id").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle()
       .then(({ data }) => {
         if (!data) router.push("/vendeur/onboarding");
         else setShopId(data.id);

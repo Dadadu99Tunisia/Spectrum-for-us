@@ -30,7 +30,7 @@ export default function EditProduitPage() {
     if (!user) return;
     const supabase = createClient();
     // Charger la boutique du vendeur
-    supabase.from("shops").select("id").eq("owner_id", user.id).single().then(({ data: shop }) => {
+    supabase.from("shops").select("id").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle().then(({ data: shop }) => {
       if (!shop) { router.push("/vendeur/onboarding"); return; }
       setShopId(shop.id);
       // Charger le produit · vérifier qu'il appartient bien à cette boutique

@@ -28,7 +28,7 @@ export default function ParametresBoutiquePage() {
     if (!loading && !user) { router.push("/auth"); return; }
     if (!user) return;
     const supabase = createClient();
-    supabase.from("shops").select("*").eq("owner_id", user.id).single()
+    supabase.from("shops").select("*").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle()
       .then(({ data }) => {
         if (!data) { router.push("/vendeur/onboarding"); return; }
         setShopId(data.id);

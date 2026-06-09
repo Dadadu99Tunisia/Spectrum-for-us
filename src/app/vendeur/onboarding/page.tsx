@@ -26,7 +26,11 @@ export default function OnboardingPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!loading && !user) router.push("/auth?mode=vendor");
+    if (loading) return;
+    if (!user) { router.push("/auth?mode=vendor"); return; }
+    // Anti-doublon : si une boutique existe déjà, on va au dashboard
+    createClient().from("shops").select("id").eq("owner_id", user.id).limit(1)
+      .then(({ data }) => { if (data && data.length) router.replace("/vendeur"); });
   }, [user, loading, router]);
 
   const handleSubmit = async () => {
@@ -34,6 +38,11 @@ export default function OnboardingPage() {
     setSubmitting(true);
     setError("");
     const supabase = createClient();
+
+    // Garde-fou : ne pas créer un 2e shop si l'utilisateur en a déjà un
+    const { data: existing } = await supabase.from("shops").select("id").eq("owner_id", user.id).limit(1);
+    if (existing && existing.length) { setSubmitting(false); router.replace("/vendeur"); return; }
+
     const slug = slugify(form.name) + "-" + Math.random().toString(36).slice(2, 6);
 
     const { error: shopError } = await supabase.from("shops").insert({

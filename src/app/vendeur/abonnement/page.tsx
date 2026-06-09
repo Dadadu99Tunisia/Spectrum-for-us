@@ -26,7 +26,7 @@ export default function AbonnementPage() {
   useEffect(() => {
     if (!user) return;
     const supabase = createClient();
-    supabase.from("shops").select("id,name,subscription_status").eq("owner_id", user.id).single()
+    supabase.from("shops").select("id,name,subscription_status").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle()
       .then(({ data }) => { setShop(data); setLoading(false); });
   }, [user]);
 
