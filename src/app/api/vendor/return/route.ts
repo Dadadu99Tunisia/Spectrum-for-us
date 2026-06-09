@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripeServer } from "@/lib/stripe-server";
+import { sendRefundConfirmation, trySend } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -89,6 +90,19 @@ export async function POST(req: NextRequest) {
 
   // Reflète aussi l'état sur la commande (best-effort)
   try { await admin.from("orders").update({ refund_status: "refunded", refund_amount: refundCents / 100 }).eq("id", rr.order_id); } catch {}
+
+  // E-mail de confirmation à l'acheteur·se (best-effort, non bloquant)
+  try {
+    const { data: ord } = await admin.from("orders").select("shipping_email, user_id").eq("id", rr.order_id).maybeSingle();
+    let to = ord?.shipping_email as string | null;
+    if (!to && ord?.user_id) {
+      const { data: prof } = await admin.from("profiles").select("email").eq("id", ord.user_id).maybeSingle();
+      to = (prof?.email as string) ?? null;
+    }
+    if (to) await trySend(() => sendRefundConfirmation({ to, orderRef: rr.order_id, amount: refundCents / 100 }));
+  } catch (e) {
+    console.error("[return] email remboursement non bloquant", e);
+  }
 
   return NextResponse.json({ ok: true, status: "refunded", refund_amount: refundCents / 100 });
 }

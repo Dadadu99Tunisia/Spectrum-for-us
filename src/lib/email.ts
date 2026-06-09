@@ -154,6 +154,26 @@ export async function sendShippingNotification(params: {
   });
 }
 
+export async function sendRefundConfirmation(params: {
+  to: string;
+  orderRef: string;
+  amount: number; // en euros
+}) {
+  const body = `
+    ${h2("Ton remboursement est confirmé ✓")}
+    ${text(`Ta demande de retour pour la commande #${params.orderRef.slice(0,8).toUpperCase()} a été acceptée.`)}
+    ${text(`Un remboursement de <strong style="color:#F3EADB;">${params.amount.toFixed(2)} €</strong> a été émis sur ton moyen de paiement d'origine. Selon ta banque, il peut apparaître sous 5 à 10 jours ouvrés.`)}
+    ${cta("Voir mes commandes", `${BASE}/compte`)}
+  `;
+
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    subject: `Remboursement confirmé · commande #${params.orderRef.slice(0,8).toUpperCase()}`,
+    html: baseLayout("Remboursement · Spectrum For Us", body),
+  });
+}
+
 export async function sendWelcomeEmail(params: { to: string; pseudo: string }) {
   const body = `
     ${h2(`Bienvenue sur Spectrum, ${params.pseudo} ✦`)}
