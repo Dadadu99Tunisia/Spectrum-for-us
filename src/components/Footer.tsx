@@ -50,6 +50,7 @@ export function Footer() {
     { title: t("footer.col_legal"), links: [
       { label: t("footer.legal_mentions"), href: "/legal/mentions" },
       { label: t("footer.cgu"), href: "/legal/cgu" },
+      { label: "CGV", href: "/legal/cgv" },
       { label: t("footer.privacy"), href: "/legal/confidentialite" },
       { label: t("footer.cookies"), href: "/legal/cookies" },
     ]},

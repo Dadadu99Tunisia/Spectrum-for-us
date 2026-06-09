@@ -82,6 +82,12 @@ function StripeForm({ totalCents, onSuccess, onBack }: {
         {processing ? "Traitement en cours…" : `Payer ${(totalCents / 100).toFixed(2)} €`}
       </button>
 
+      <p className="text-center font-hanken text-[11px] text-[#101014]/35 leading-relaxed px-2">
+        En validant ta commande, tu acceptes les{" "}
+        <a href="/legal/cgv" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#101014]/60">Conditions Générales de Vente</a>.
+        Droit de rétractation 14 jours (hors exceptions légales).
+      </p>
+
       <button type="button" onClick={onBack}
         className="w-full text-center font-mono text-xs text-[#101014]/25 hover:text-[#101014]/50 transition-colors">
         ← Modifier la livraison
