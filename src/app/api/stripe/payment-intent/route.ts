@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getCommissionRate } from "@/lib/commission";
 import { limits, rateLimitResponse } from "@/lib/rate-limit";
 
 interface CartItemInput {
@@ -41,7 +43,7 @@ export async function POST(req: NextRequest) {
   const productIds = cart.map(i => i.id);
   const { data: products, error: dbErr } = await supabase
     .from("products")
-    .select("id, price, is_active, quantity, type, name, title")
+    .select("id, price, is_active, quantity, type, name, title, shop_id")
     .in("id", productIds);
 
   if (dbErr) return NextResponse.json({ error: "Erreur base de données" }, { status: 500 });
@@ -74,6 +76,34 @@ export async function POST(req: NextRequest) {
 
   const stripe = new Stripe(secretKey, { apiVersion: "2026-05-27.dahlia" });
 
+  // ── Stripe Connect · un seul vendeur par commande (destination charge) ──
+  const shopIds = [...new Set(cart.map(i => productMap[i.id].shop_id).filter(Boolean))] as string[];
+  if (shopIds.length !== 1) {
+    return NextResponse.json(
+      { error: "Un seul vendeur par commande pour l'instant. Règle chaque boutique séparément." },
+      { status: 400 }
+    );
+  }
+  const shopId = shopIds[0];
+
+  const admin = createAdminClient();
+  const { data: shop } = await admin
+    .from("shops")
+    .select("id, name, stripe_account_id, stripe_charges_enabled")
+    .eq("id", shopId)
+    .maybeSingle();
+
+  if (!shop?.stripe_account_id || !shop.stripe_charges_enabled) {
+    return NextResponse.json(
+      { error: `${shop?.name ?? "Ce vendeur"} n'a pas encore activé ses paiements. Reviens bientôt !` },
+      { status: 400 }
+    );
+  }
+
+  // Commission plateforme (0 % pour les fondateur·ices actif·ves)
+  const rate = await getCommissionRate(admin, shopId);
+  const applicationFee = Math.round(totalCents * (rate / 100));
+
   // Enrichir le panier avec les prix serveur (pour le webhook)
   const serverCart = cart.map(item => {
     const p = productMap[item.id];
@@ -90,9 +120,14 @@ export async function POST(req: NextRequest) {
     amount: totalCents,
     currency,
     automatic_payment_methods: { enabled: true },
+    // L'argent va directement au vendeur ; la commission reste à la plateforme
+    transfer_data: { destination: shop.stripe_account_id },
+    application_fee_amount: applicationFee,
     metadata: {
       user_id: user.id,
       buyer_email: user.email ?? "",
+      shop_id: shopId,
+      commission_rate: String(rate),
       cart_json: JSON.stringify(serverCart),
       shipping_json: shipping ? JSON.stringify(shipping) : "",
     },
