@@ -268,7 +268,7 @@ export default function CheckoutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             {/* Form col */}
             <div className="lg:col-span-3 space-y-4">
-              {step === "Livraison" && (
+              {!clientSecret && step !== "Confirmation" && (
                 <>
                   {addresses.length > 0 && (
                     <div className="mb-2">
@@ -340,8 +340,16 @@ export default function CheckoutPage() {
                 </>
               )}
 
-              {step === "Paiement" && (
+              {clientSecret && step !== "Confirmation" && (
                 <>
+                  {/* Adresse repliée · même page */}
+                  <div className="flex items-start justify-between gap-3 rounded-xl p-4 mb-1" style={{ background: "#fff", boxShadow: "inset 0 0 0 1px #ECE6DB" }}>
+                    <div className="min-w-0">
+                      <p className="font-mono text-[10px] tracking-wide text-[#101014]/40 mb-0.5">Livrer à</p>
+                      <p className="font-hanken text-[14px] text-[#101014] truncate">{form.name} · {form.address}, {form.zip} {form.city}</p>
+                    </div>
+                    <button onClick={() => { setClientSecret(null); setStep("Livraison"); }} className="shrink-0 font-mono text-[11px] text-[#FF2DA0]">Modifier</button>
+                  </div>
                   {clientSecret && stripeReady ? (
                     <Elements
                       stripe={getStripe()}
@@ -363,7 +371,7 @@ export default function CheckoutPage() {
                       <StripeForm
                         totalCents={serverTotal !== null ? Math.round(serverTotal * 100) : totalCents}
                         onSuccess={handlePaymentSuccess}
-                        onBack={() => setStep("Livraison")}
+                        onBack={() => { setClientSecret(null); setStep("Livraison"); }}
                       />
                     </Elements>
                   ) : intentError ? (
