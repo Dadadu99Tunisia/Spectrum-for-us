@@ -115,6 +115,25 @@ export async function POST(req: NextRequest) {
   }
   const transferGroup = `sfu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
+  // ── Customer Stripe (cartes enregistrées + réutilisation) ──
+  const { data: prof } = await admin.from("profiles").select("stripe_customer_id").eq("id", user.id).maybeSingle();
+  let customerId = prof?.stripe_customer_id as string | null;
+  if (!customerId) {
+    const c = await stripe.customers.create({ email: user.email ?? undefined, metadata: { user_id: user.id } });
+    customerId = c.id;
+    await admin.from("profiles").update({ stripe_customer_id: customerId }).eq("id", user.id);
+  }
+  // Session client pour afficher les cartes enregistrées dans le PaymentElement
+  const customerSession = await stripe.customerSessions.create({
+    customer: customerId,
+    components: {
+      payment_element: {
+        enabled: true,
+        features: { payment_method_save: "enabled", payment_method_redisplay: "enabled", payment_method_remove: "enabled" },
+      },
+    },
+  });
+
   // Enrichir le panier avec les prix serveur (pour le webhook)
   const serverCart = cart.map(item => {
     const p = productMap[item.id];
@@ -131,6 +150,8 @@ export async function POST(req: NextRequest) {
     amount: totalCents,
     currency,
     automatic_payment_methods: { enabled: true },
+    customer: customerId,
+    setup_future_usage: "off_session", // enregistre la carte pour les prochains achats
     // Paiement encaissé par la plateforme, puis reversé à chaque vendeur (webhook)
     transfer_group: transferGroup,
     metadata: {
@@ -145,6 +166,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     clientSecret: paymentIntent.client_secret,
+    customerSessionClientSecret: customerSession.client_secret,
     serverTotal: totalCents / 100,
   });
 }

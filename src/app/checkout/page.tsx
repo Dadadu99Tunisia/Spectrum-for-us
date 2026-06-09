@@ -98,6 +98,7 @@ export default function CheckoutPage() {
     name: "", email: "", address: "", city: "", zip: "", country: "France", discrete: false,
   });
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [customerSession, setCustomerSession] = useState<string | null>(null);
   const [loadingIntent, setLoadingIntent] = useState(false);
   const [intentError, setIntentError] = useState("");
   const [confirmed, setConfirmed] = useState(false);
@@ -164,6 +165,7 @@ export default function CheckoutPage() {
         setIntentError(data.error);
       } else {
         setClientSecret(data.clientSecret);
+        setCustomerSession(data.customerSessionClientSecret ?? null);
         // Mettre à jour le total avec celui recalculé serveur
         if (data.serverTotal) setServerTotal(data.serverTotal);
       }
@@ -355,6 +357,7 @@ export default function CheckoutPage() {
                       stripe={getStripe()}
                       options={{
                         clientSecret,
+                        ...(customerSession ? { customerSessionClientSecret: customerSession } : {}),
                         appearance: {
                           theme: "stripe",
                           variables: {
