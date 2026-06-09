@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
+import { useCart } from "@/store/cart";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -25,6 +26,32 @@ const TAB_ICONS = {
 export default function ComptePage() {
   const { user, isAdmin, loading, signOut } = useAuth();
   const router = useRouter();
+  const { add } = useCart();
+  const [rebuying, setRebuying] = useState<string | null>(null);
+
+  const rebuy = async (orderId: string) => {
+    setRebuying(orderId);
+    const supabase = createClient();
+    const { data: its } = await supabase.from("order_items").select("product_id, quantity").eq("order_id", orderId);
+    const ids = (its ?? []).map((i) => i.product_id);
+    if (ids.length) {
+      const { data: prods } = await supabase
+        .from("products")
+        .select("id,name,title,price,type,image_url,images,is_active")
+        .in("id", ids);
+      const pmap = Object.fromEntries((prods ?? []).map((p) => [p.id, p]));
+      let n = 0;
+      for (const it of its ?? []) {
+        const p = pmap[it.product_id];
+        if (!p || !p.is_active) continue;
+        add({ id: p.id, name: p.name || p.title, creator: "", price: Number(p.price), quantity: it.quantity, type: (p.type ?? "product") as "product" | "service" | "event", image: (p.images?.[0] as string) ?? p.image_url ?? undefined });
+        n++;
+      }
+      setRebuying(null);
+      if (n) { router.push("/panier"); return; }
+    }
+    setRebuying(null);
+  };
   const [tab, setTab] = useState<Tab>("Commandes");
   const [profile, setProfile] = useState<{ full_name?: string; pseudo?: string; pronouns?: string; is_vendor?: boolean } | null>(null);
   const [orders, setOrders] = useState<Array<{ id: string; total_amount: number; status: string; created_at: string }>>([]);
@@ -235,7 +262,13 @@ export default function ComptePage() {
                         {new Date(order.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                     </div>
-                    <span className="font-fraunces text-lg text-[#101014]">{Number(order.total_amount).toFixed(2)} €</span>
+                    <div className="flex flex-col items-end gap-2">
+                      <span className="font-fraunces text-lg text-[#101014]">{Number(order.total_amount).toFixed(2)} €</span>
+                      <button onClick={() => rebuy(order.id)} disabled={rebuying === order.id}
+                        className="rounded-full px-3.5 py-1.5 font-mono text-[10px] tracking-wide text-white disabled:opacity-50" style={{ background: "#101014" }}>
+                        {rebuying === order.id ? "…" : "↻ Racheter"}
+                      </button>
+                    </div>
                   </Card>
                 ))}
               </div>

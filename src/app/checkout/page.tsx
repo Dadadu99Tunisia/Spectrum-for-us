@@ -75,7 +75,7 @@ function StripeForm({ totalCents, onSuccess, onBack }: {
       <button
         type="submit"
         disabled={!stripe || !elements || processing}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-[#FF2DA0] text-white font-hanken font-semibold text-base hover:brightness-110 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-[#FF2DA0] text-white font-hanken font-semibold text-base hover:brightness-110 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed sticky bottom-3 md:static z-30 shadow-lg shadow-[#FF2DA0]/20 md:shadow-none"
       >
         <Lock size={14} />
         {processing ? "Traitement en cours…" : `Payer ${(totalCents / 100).toFixed(2)} €`}
