@@ -19,7 +19,8 @@ export default function AbonnementPage() {
   const { user } = useAuth();
   const router = useRouter();
   const [shop, setShop] = useState<{ id: string; subscription_status: string; name: string } | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [subFreeUntil, setSubFreeUntil] = useState<string | null>(null);
+  const [, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(false);
   const [error, setError] = useState("");
 
@@ -28,7 +29,12 @@ export default function AbonnementPage() {
     const supabase = createClient();
     supabase.from("shops").select("id,name,subscription_status").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle()
       .then(({ data }) => { setShop(data); setLoading(false); });
+    supabase.from("founder_program_members").select("subscription_free_until").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => setSubFreeUntil(data?.subscription_free_until ?? null));
   }, [user]);
+
+  const founderFree = !!subFreeUntil && new Date(subFreeUntil).getTime() > Date.now();
+  const freeDate = subFreeUntil ? new Date(subFreeUntil).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "";
 
   const handleSubscribe = async () => {
     if (!shop) return;
@@ -60,23 +66,35 @@ export default function AbonnementPage() {
         <div className="text-center mb-10">
           <p className="font-mono text-xs tracking-widest text-[#FF2DA0] uppercase mb-3">Vendeur·euse</p>
           <h1 className="font-fraunces text-4xl font-light mb-3">
-            {isActive ? "Ton abonnement est actif ✓" : "Active ta boutique"}
+            {founderFree ? "Ton abonnement est offert ✦" : isActive ? "Ton abonnement est actif ✓" : "Active ta boutique"}
           </h1>
           <p className="font-hanken text-[#101014]/60">
-            {isActive
+            {founderFree
+              ? `Avantage fondateur·ice : rien à payer jusqu'au ${freeDate}.`
+              : isActive
               ? `Boutique "${shop?.name}" · abonnement actif`
               : "Un abonnement mensuel pour vendre sur Spectrum For Us."}
           </p>
         </div>
 
         {/* Pricing card */}
-        <div className={`rounded-3xl border p-8 mb-6 ${isActive ? "border-green-500/30 bg-green-500/5" : "border-[#FF2DA0]/30 bg-[#FF2DA0]/5"}`}>
+        <div className={`rounded-3xl border p-8 mb-6 ${founderFree || isActive ? "border-green-500/30 bg-green-500/5" : "border-[#FF2DA0]/30 bg-[#FF2DA0]/5"}`}>
           <div className="flex items-end gap-2 mb-6">
-            <span className="font-fraunces text-6xl">9,90</span>
-            <div className="pb-2">
-              <span className="font-fraunces text-2xl text-[#FF2DA0]">€</span>
-              <span className="font-mono text-sm text-[#101014]/40 block">/mois</span>
-            </div>
+            {founderFree ? (
+              <>
+                <span className="font-fraunces text-6xl text-green-600">0 €</span>
+                <div className="pb-2"><span className="font-mono text-sm text-[#101014]/40 block">offert · fondateur·ice</span></div>
+                <span className="font-fraunces text-2xl text-[#101014]/25 line-through ml-2 pb-2">9,90 €</span>
+              </>
+            ) : (
+              <>
+                <span className="font-fraunces text-6xl">9,90</span>
+                <div className="pb-2">
+                  <span className="font-fraunces text-2xl text-[#FF2DA0]">€</span>
+                  <span className="font-mono text-sm text-[#101014]/40 block">/mois</span>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="space-y-3 mb-8">
@@ -90,7 +108,11 @@ export default function AbonnementPage() {
             ))}
           </div>
 
-          {!user ? (
+          {founderFree ? (
+            <div className="w-full py-4 rounded-xl bg-green-500/15 text-green-700 font-hanken font-semibold text-center">
+              ✦ Offert grâce au programme fondateur · rien à payer
+            </div>
+          ) : !user ? (
             <button onClick={() => router.push("/auth?mode=vendor")}
               className="w-full py-4 rounded-xl bg-[#FF2DA0] text-white font-hanken font-semibold hover:bg-[#FF2DA0]/80 transition-all">
               Créer mon compte vendeur·euse
@@ -119,7 +141,9 @@ export default function AbonnementPage() {
         </div>
 
         <p className="text-center font-hanken text-xs text-[#101014]/30">
-          Résiliation possible à tout moment. Premier paiement à la création de la boutique.
+          {founderFree
+            ? "Ton avantage fondateur·ice s'applique automatiquement. Tu seras prévenu·e avant toute facturation."
+            : "Résiliation possible à tout moment."}
         </p>
       </div>
     </div>
