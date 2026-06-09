@@ -9,7 +9,7 @@ export const LEGAL = {
   siren: "894 102 912",
   siret: "894 102 912 00017",
   ape: "7021Z (conseil en relations publiques et communication)",
-  address: "[À COMPLÉTER — adresse du siège]",
+  address: "61 rue Lautréamont, 93300 Aubervilliers",
   vat: "TVA non applicable, art. 293 B du CGI (franchise en base de TVA)",
   vatIntra: "FR49894102912",
   capital: "", // sans objet en entreprise individuelle
