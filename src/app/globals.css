@@ -38,6 +38,8 @@ body {
   background-color: #FBFAF8;
   color: #101014;
   font-family: var(--font-hanken), sans-serif;
+  /* Garde-fou anti-débordement horizontal sur mobile (clip préserve position:sticky) */
+  overflow-x: clip;
 }
 
 .prism-text {

@@ -71,11 +71,11 @@ export default function PanierPage() {
                       <div className="flex items-center gap-2 mt-2">
                         <div className="flex items-center rounded-lg overflow-hidden"
                           style={{ border: "1px solid rgba(26,22,18,0.12)" }}>
-                          <button onClick={() => update(item.id, item.quantity - 1)}
-                            className="w-7 h-7 text-[#101014]/55 text-base active:bg-white/5 transition-colors">-</button>
-                          <span className="w-6 text-center font-mono text-[11px] text-[#101014]">{item.quantity}</span>
-                          <button onClick={() => update(item.id, item.quantity + 1)}
-                            className="w-7 h-7 text-[#101014]/55 text-base active:bg-white/5 transition-colors">+</button>
+                          <button onClick={() => update(item.id, item.quantity - 1)} aria-label="Diminuer la quantité"
+                            className="w-9 h-9 text-[#101014]/55 text-base active:bg-black/5 transition-colors">-</button>
+                          <span className="w-7 text-center font-mono text-[11px] text-[#101014]">{item.quantity}</span>
+                          <button onClick={() => update(item.id, item.quantity + 1)} aria-label="Augmenter la quantité"
+                            className="w-9 h-9 text-[#101014]/55 text-base active:bg-black/5 transition-colors">+</button>
                         </div>
                         <span className="font-fraunces text-[14px] text-[#101014]">
                           {(item.price * item.quantity).toFixed(2)} €
