@@ -11,6 +11,7 @@ export const LEGAL = {
   ape: "7021Z (conseil en relations publiques et communication)",
   address: "[À COMPLÉTER — adresse du siège]",
   vat: "TVA non applicable, art. 293 B du CGI (franchise en base de TVA)",
+  vatIntra: "FR49894102912",
   capital: "", // sans objet en entreprise individuelle
   contactEmail: "hello@spectrumforus.com",
   site: "spectrumforus.com",
@@ -29,7 +30,7 @@ export function legalFooterLines(): string[] {
     `${LEGAL.brand} · ${LEGAL.legalName} — ${LEGAL.legalForm}`,
     `SIRET ${LEGAL.siret}`,
     isPlaceholder(LEGAL.address) ? "" : LEGAL.address,
-    LEGAL.vat,
+    `${LEGAL.vat} · TVA intracom. ${LEGAL.vatIntra}`,
     `${LEGAL.contactEmail} · ${LEGAL.site}`,
   ];
   return lines.filter(Boolean);

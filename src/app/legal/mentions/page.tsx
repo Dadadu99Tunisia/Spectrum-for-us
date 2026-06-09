@@ -12,6 +12,7 @@ export default function MentionsLegales() {
         SIREN : 894 102 912 · SIRET (siège) : 894 102 912 00017<br />
         Code APE/NAF : 7021Z (conseil en relations publiques et communication)<br />
         TVA non applicable, art. 293 B du CGI (franchise en base de TVA)<br />
+        N° TVA intracommunautaire : FR49894102912<br />
         Adresse du siège : <strong>[À COMPLÉTER — adresse du siège]</strong><br />
         Directrice de la publication : <strong>Aïcha Chennaoui</strong><br />
         Email : <a href="mailto:hello@spectrumforus.com">hello@spectrumforus.com</a>
