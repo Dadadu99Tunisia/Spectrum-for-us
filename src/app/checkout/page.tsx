@@ -242,15 +242,20 @@ export default function CheckoutPage() {
   return (
     <>
       <div className="hidden md:block"><Header /></div>
-      <main className="min-h-screen pt-24 pb-20 px-6 bg-[#FBFAF8] text-[#101014]">
+      {/* Barre mobile */}
+      <div className="md:hidden sticky top-0 z-40 flex items-center gap-3 px-4 h-14 border-b" style={{ background: "rgba(251,250,248,0.95)", backdropFilter: "blur(10px)", borderColor: "#ECE6DB" }}>
+        <Link href="/panier" aria-label="Retour au panier" className="w-9 h-9 -ml-1 flex items-center justify-center rounded-full"><ArrowLeft size={20} /></Link>
+        <span className="font-bricolage font-bold text-[17px]">Commander</span>
+      </div>
+      <main className="min-h-screen pt-6 md:pt-24 pb-28 md:pb-20 px-4 md:px-6 bg-[#FBFAF8] text-[#101014]">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-2">
+          <div className="mb-2 hidden md:block">
             <span className="font-mono text-[11px] tracking-wide text-[#FF2DA0]">Checkout</span>
           </div>
-          <h1 className="font-fraunces text-4xl text-[#101014] mb-8">Commander</h1>
+          <h1 className="font-fraunces text-2xl md:text-4xl text-[#101014] mb-6 md:mb-8 hidden md:block">Commander</h1>
 
           {/* Step indicator */}
-          <div className="flex items-center gap-2 mb-10 flex-wrap">
+          <div className="flex items-center gap-2 mb-6 md:mb-10 flex-wrap">
             {STEPS.map((s, i) => (
               <div key={s} className="flex items-center gap-2">
                 <div className={`flex items-center gap-2 transition-colors ${s === step ? "text-[#101014]" : STEPS.indexOf(step) > i ? "text-[#2323C4]" : "text-[#101014]/25"}`}>
@@ -267,7 +272,7 @@ export default function CheckoutPage() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 md:gap-8">
             {/* Form col */}
             <div className="lg:col-span-3 space-y-4">
               {!clientSecret && step !== "Confirmation" && (
