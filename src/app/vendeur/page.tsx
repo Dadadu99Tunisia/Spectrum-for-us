@@ -368,7 +368,8 @@ function Kpi({ tint, label, value, delta, deltaColor }: { tint: string; label: s
 function ordersTable(rows: VendorOrder[], full: boolean) {
   if (rows.length === 0) return <p className="text-sm py-6 text-center" style={{ color: C.faint }}>Aucune commande pour l&apos;instant.</p>;
   return (
-    <table className="w-full border-collapse">
+    <div className="overflow-x-auto">
+    <table className="w-full border-collapse min-w-[460px]">
       <thead><tr>
         {full && <th className={TH} style={{ color: C.faint }}>N°</th>}
         <th className={TH} style={{ color: C.faint }}>Produit</th>
@@ -395,6 +396,7 @@ function ordersTable(rows: VendorOrder[], full: boolean) {
         ))}
       </tbody>
     </table>
+    </div>
   );
 }
 
@@ -407,7 +409,25 @@ function Products({ products }: { products: Product[] }) {
       </div>
       <div className="p-2">
         {products.length === 0 ? <p className="text-sm py-8 text-center" style={{ color: C.faint }}>Aucun produit. Ajoute ta première création ✦</p> : (
-          <table className="w-full border-collapse">
+          <>
+          {/* Cartes mobile */}
+          <div className="md:hidden space-y-2 p-1">
+            {products.map(p => (
+              <Link key={p.id} href={`/vendeur/produit/${p.id}`} className="flex items-center gap-3 p-3 rounded-2xl" style={{ boxShadow: `inset 0 0 0 1px ${C.line}` }}>
+                <span className="w-12 h-12 rounded-xl shrink-0" style={{ background: "#FBEAD3" }} />
+                <div className="flex-1 min-w-0">
+                  <p className="font-bricolage font-semibold text-[14.5px] leading-tight line-clamp-2">{p.name || p.title}</p>
+                  <p className="text-[12.5px] mt-0.5" style={{ color: C.soft }}>{p.category || "—"} · {(p.quantity ?? 0) <= 0 ? "Rupture" : `${p.quantity} en stock`}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="font-mono font-bold text-[14px]">{eur(p.price)}</p>
+                  <span className="inline-block mt-1 font-mono text-[9px] font-bold uppercase px-2 py-0.5 rounded-full" style={p.is_active ? { background: "#DCF0E5", color: C.grn } : { background: "#EEEAE1", color: C.soft }}>{p.is_active ? "Actif" : "Brouillon"}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+          {/* Tableau desktop */}
+          <table className="hidden md:table w-full border-collapse">
             <thead><tr>
               {["Produit", "Catégorie", "Prix", "Stock", "Statut", ""].map((h, i) => <th key={i} className={TH} style={{ color: C.faint }}>{h}</th>)}
             </tr></thead>
@@ -428,6 +448,7 @@ function Products({ products }: { products: Product[] }) {
               ))}
             </tbody>
           </table>
+          </>
         )}
       </div>
     </Panel>
@@ -469,7 +490,7 @@ function Revenue({ total, commissions }: { total: number; commissions: { gross_a
         {commissions.length === 0 ? (
           <p className="text-sm py-4" style={{ color: C.faint }}>Aucune vente pour l&apos;instant · tes versements apparaîtront ici.</p>
         ) : (
-          <table className="w-full border-collapse">
+          <div className="overflow-x-auto"><table className="w-full border-collapse min-w-[420px]">
             <thead><tr>{["Commandes", "Brut", "Commission", "Net", "Statut"].map(h => <th key={h} className={TH} style={{ color: C.faint }}>{h}</th>)}</tr></thead>
             <tbody>
               <tr>
@@ -480,7 +501,7 @@ function Revenue({ total, commissions }: { total: number; commissions: { gross_a
                 <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><span className="font-mono text-[10.5px] font-bold uppercase px-2.5 py-1 rounded-full" style={{ background: "#FCEAD2", color: "#9A6516" }}>{eur(pending)} en attente</span></td>
               </tr>
             </tbody>
-          </table>
+          </table></div>
         )}
         <p className="text-[11px] mt-4" style={{ color: C.faint }}>Versements manuels pour l&apos;instant · contacte le support. Commission 0 % pendant l&apos;avantage fondateur·ice.</p>
       </Panel>
