@@ -165,11 +165,10 @@ export default function VendeurDashboard() {
         style={{ background: C.panel, borderRight: `1px solid ${C.line}` }}
         data-open={menuOpen}
       >
-        <div className="flex items-center gap-2.5 px-2 pb-4">
-          <span className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bricolage font-extrabold text-sm shrink-0"
-            style={{ background: C.spec }}>S</span>
-          <span className="font-bricolage font-extrabold text-[17px]">spectrum</span>
-        </div>
+        <Link href="/" className="flex items-center px-2 pb-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-dark.png" alt="Spectrum For Us" className="h-9 w-auto" />
+        </Link>
 
         <nav className="flex flex-col gap-0.5 overflow-y-auto">
           {NAV.map(({ v, label, icon: Icon, section }) => (
