@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { CalendarDays, Search, Star, CheckCircle, XCircle, ExternalLink, MapPin, Clock, RefreshCw } from "lucide-react";
+import { CalendarDays, Search, Star, CheckCircle, XCircle, ExternalLink, MapPin, Clock, RefreshCw, Plus, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
@@ -29,6 +29,10 @@ const MOD_CONFIG: Record<string, { label: string; color: string }> = {
   rejected: { label: "Rejeté",     color: "text-red-600 bg-red-400/10 border-red-400/20" },
 };
 
+const CATEGORIES = ["Soirée & Clubbing", "Événement LGBTQIA+", "Militant & Associatif", "Art & Culture", "Festival", "Pride"];
+
+const EMPTY_FORM = { title: "", date_start: "", date_end: "", city: "", venue: "", category: "", price: "", url: "", image_url: "", organizer: "", description: "", is_featured: false };
+
 export default function EvenementsPage() {
   const [events, setEvents]   = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +41,9 @@ export default function EvenementsPage() {
   const [total, setTotal]     = useState(0);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [toast, setToast]     = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm]       = useState(EMPTY_FORM);
+  const [saving, setSaving]   = useState(false);
 
   const fetch_ = useCallback(async () => {
     setLoading(true);
@@ -69,6 +76,32 @@ export default function EvenementsPage() {
     fetch_();
   };
 
+  const createEvent = async () => {
+    if (!form.title.trim() || !form.date_start) { showToast("Titre et date de début requis"); return; }
+    setSaving(true);
+    const supabase = createClient();
+    const { error } = await supabase.from("queer_events").insert({
+      title: form.title.trim(),
+      date_start: new Date(form.date_start).toISOString(),
+      date_end: form.date_end ? new Date(form.date_end).toISOString() : null,
+      city: form.city.trim() || null,
+      venue: form.venue.trim() || null,
+      category: form.category || null,
+      price: form.price.trim() || null,
+      url: form.url.trim() || null,
+      image_url: form.image_url.trim() || null,
+      organizer: form.organizer.trim() || null,
+      description: form.description.trim() || null,
+      is_featured: form.is_featured,
+      source: "manual",
+      moderation: "approved",
+    });
+    setSaving(false);
+    if (error) { showToast("Erreur : " + error.message); return; }
+    showToast("Événement ajouté ✓");
+    setForm(EMPTY_FORM); setShowForm(false); setModFilter("approved"); fetch_();
+  };
+
   const toggleFeatured = async (id: string, current: boolean) => {
     const supabase = createClient();
     await supabase.from("queer_events").update({ is_featured: !current }).eq("id", id);
@@ -85,10 +118,53 @@ export default function EvenementsPage() {
           <h1 className="font-fraunces text-2xl text-[#101014]">Événements</h1>
           <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">{total} événement{total !== 1 ? "s" : ""}</p>
         </div>
-        <button onClick={fetch_} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#101014]/[0.14] text-[#101014]/40 hover:text-[#101014] transition-colors text-sm">
-          <RefreshCw size={13} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setShowForm(s => !s)} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FF2DA0] text-white hover:brightness-110 transition-all text-sm font-hanken">
+            <Plus size={14} /> Ajouter
+          </button>
+          <button onClick={fetch_} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#101014]/[0.14] text-[#101014]/40 hover:text-[#101014] transition-colors text-sm">
+            <RefreshCw size={13} />
+          </button>
+        </div>
       </div>
+
+      {/* Formulaire de création */}
+      {showForm && (
+        <div className="rounded-2xl border border-[#FF2DA0]/30 bg-[#FF2DA0]/[0.03] p-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="font-fraunces text-lg text-[#101014]">Nouvel événement</h2>
+            <button onClick={() => { setShowForm(false); setForm(EMPTY_FORM); }} className="text-[#101014]/30 hover:text-[#101014]"><X size={16} /></button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Field label="Titre *" full><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className={inputCls} placeholder="Soirée…" /></Field>
+            <Field label="Début *"><input type="datetime-local" value={form.date_start} onChange={e => setForm({ ...form, date_start: e.target.value })} className={inputCls} /></Field>
+            <Field label="Fin"><input type="datetime-local" value={form.date_end} onChange={e => setForm({ ...form, date_end: e.target.value })} className={inputCls} /></Field>
+            <Field label="Ville"><input value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} className={inputCls} placeholder="Paris" /></Field>
+            <Field label="Lieu / Salle"><input value={form.venue} onChange={e => setForm({ ...form, venue: e.target.value })} className={inputCls} placeholder="La Machine du Moulin Rouge" /></Field>
+            <Field label="Catégorie">
+              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className={inputCls}>
+                <option value="">—</option>
+                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </Field>
+            <Field label="Prix"><input value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} className={inputCls} placeholder="Gratuit · 12€…" /></Field>
+            <Field label="Organisateur·ice"><input value={form.organizer} onChange={e => setForm({ ...form, organizer: e.target.value })} className={inputCls} placeholder="Assoc…" /></Field>
+            <Field label="Lien billetterie / infos"><input value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} className={inputCls} placeholder="https://…" /></Field>
+            <Field label="Image (URL)" full><input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} className={inputCls} placeholder="https://…" /></Field>
+            <Field label="Description" full><textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2} className={inputCls} placeholder="Quelques mots…" /></Field>
+          </div>
+          <div className="flex items-center justify-between pt-1">
+            <label className="flex items-center gap-2 font-hanken text-sm text-[#101014]/60 cursor-pointer">
+              <input type="checkbox" checked={form.is_featured} onChange={e => setForm({ ...form, is_featured: e.target.checked })} className="accent-[#FF2DA0]" />
+              Mettre à la une
+            </label>
+            <button onClick={createEvent} disabled={saving}
+              className="px-5 py-2 rounded-lg bg-[#101014] text-white font-hanken text-sm hover:brightness-125 transition-all disabled:opacity-40">
+              {saving ? "Ajout…" : "Publier l'événement"}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-48">
@@ -170,6 +246,17 @@ export default function EvenementsPage() {
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+const inputCls = "w-full px-3 py-2 bg-white border border-[#101014]/[0.14] rounded-lg font-hanken text-sm text-[#101014] placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/50 transition-colors";
+
+function Field({ label, full, children }: { label: string; full?: boolean; children: React.ReactNode }) {
+  return (
+    <div className={full ? "md:col-span-2" : ""}>
+      <label className="block font-mono text-[10px] tracking-wide text-[#101014]/35 mb-1">{label}</label>
+      {children}
     </div>
   );
 }
