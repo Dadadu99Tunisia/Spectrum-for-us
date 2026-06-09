@@ -26,7 +26,10 @@ export async function POST(req: NextRequest) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) return NextResponse.json({ error: "Stripe non configuré" }, { status: 503 });
 
-  let body: { cart: CartItemInput[]; currency?: string; shipping?: Record<string, string> };
+  let body: {
+    cart: CartItemInput[]; currency?: string; shipping?: Record<string, string>;
+    shipping_selections?: { shop_id: string; method_id: string; relay_point: Record<string, string> | null }[];
+  };
   try {
     body = await req.json();
   } catch {
@@ -90,7 +93,7 @@ export async function POST(req: NextRequest) {
   const admin = createAdminClient();
   const { data: shops } = await admin
     .from("shops")
-    .select("id, name, stripe_account_id, stripe_charges_enabled")
+    .select("id, name, stripe_account_id, stripe_charges_enabled, shipping_options")
     .in("id", shopIds);
   const shopMap = Object.fromEntries((shops ?? []).map(s => [s.id, s]));
 
@@ -105,14 +108,41 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Reversement par vendeur = sous-total − commission (0 % pour les fondateur·ices)
+  // ── Frais de port par boutique (recalculés SERVEUR, jamais le client) ──
+  const shipSelections = Array.isArray(body.shipping_selections) ? body.shipping_selections : [];
+  const shipmentByShop: Record<string, { method_type: string; method_label: string; cost: number; relay_point: Record<string, string> | null }> = {};
+  let shippingCents = 0;
+  for (const sid of shopIds) {
+    const opts = Array.isArray(shopMap[sid]?.shipping_options) ? (shopMap[sid].shipping_options as Array<Record<string, unknown>>) : [];
+    if (!opts.length) continue; // boutique sans livraison configurée → pas de frais (ex. services)
+    const sel = shipSelections.find(s => s.shop_id === sid);
+    const method = sel ? opts.find(m => m.id === sel.method_id && m.enabled) : null;
+    if (!method) {
+      return NextResponse.json({ error: `Choisis un mode de livraison pour ${shopMap[sid]?.name ?? "une boutique"}.` }, { status: 400 });
+    }
+    const sub = subtotalByShop[sid];
+    const freeAbove = method.free_above != null ? Math.round(Number(method.free_above) * 100) : null;
+    const free = freeAbove != null && sub >= freeAbove;
+    const cost = free ? 0 : Math.round(Math.max(0, Number(method.price) || 0) * 100);
+    shippingCents += cost;
+    shipmentByShop[sid] = {
+      method_type: String(method.type),
+      method_label: String(method.label ?? ""),
+      cost,
+      relay_point: method.type === "relay" ? (sel?.relay_point ?? null) : null,
+    };
+  }
+
+  // Reversement par vendeur = (sous-total − commission) + frais de port (pas de commission sur le port)
   const transfers: { a: string; c: number; s: string }[] = [];
   for (const sid of shopIds) {
     const rate = await getCommissionRate(admin, sid);
     const sub = subtotalByShop[sid];
     const commission = Math.round(sub * (rate / 100));
-    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: sub - commission, s: sid });
+    const ship = shipmentByShop[sid]?.cost ?? 0;
+    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: sub - commission + ship, s: sid });
   }
+  const grandTotalCents = totalCents + shippingCents;
   const transferGroup = `sfu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
   // ── Customer Stripe (cartes enregistrées + réutilisation) ──
@@ -146,8 +176,11 @@ export async function POST(req: NextRequest) {
     };
   });
 
+  // Colis à créer par le webhook (un par boutique)
+  const shipmentsMeta = Object.entries(shipmentByShop).map(([shop_id, v]) => ({ shop_id, ...v }));
+
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: totalCents,
+    amount: grandTotalCents,
     currency,
     automatic_payment_methods: { enabled: true },
     customer: customerId,
@@ -161,12 +194,13 @@ export async function POST(req: NextRequest) {
       shipping_json: shipping ? JSON.stringify(shipping) : "",
       transfer_group: transferGroup,
       transfers_json: JSON.stringify(transfers),
+      shipments_json: JSON.stringify(shipmentsMeta),
     },
   });
 
   return NextResponse.json({
     clientSecret: paymentIntent.client_secret,
     customerSessionClientSecret: customerSession.client_secret,
-    serverTotal: totalCents / 100,
+    serverTotal: grandTotalCents / 100,
   });
 }

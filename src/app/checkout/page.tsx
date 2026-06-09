@@ -9,6 +9,7 @@ import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/Button";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import { Lock, Check, ArrowRight, ArrowLeft, MapPin } from "lucide-react";
+import { ShippingStep, type ShipmentSelection } from "@/components/checkout/ShippingStep";
 import Link from "next/link";
 import type { Address } from "@/lib/types/address";
 
@@ -105,6 +106,12 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState<string | null>(null);
   const [stripeReady, setStripeReady] = useState(false);
   const [serverTotal, setServerTotal] = useState<number | null>(null);
+  const [shipSel, setShipSel] = useState<ShipmentSelection[]>([]);
+  const [shipTotal, setShipTotal] = useState(0);
+  const [shipComplete, setShipComplete] = useState(false);
+  const onShipping = useCallback((s: ShipmentSelection[], t: number, c: boolean) => {
+    setShipSel(s); setShipTotal(t); setShipComplete(c);
+  }, []);
   const [addresses, setAddresses] = useState<Address[]>([]);
 
   const applyAddress = useCallback((a: Address) => {
@@ -158,6 +165,7 @@ export default function CheckoutPage() {
             address: form.address, city: form.city,
             zip: form.zip, country: form.country,
           } : undefined,
+          shipping_selections: shipSel.map(s => ({ shop_id: s.shop_id, method_id: s.method_id, relay_point: s.relay_point })),
         }),
       });
       const data = await res.json();
@@ -173,7 +181,7 @@ export default function CheckoutPage() {
       setIntentError("Erreur réseau. Réessaie.");
     }
     setLoadingIntent(false);
-  }, [total, user, items, form]);
+  }, [total, user, items, form, shipSel]);
 
   const handleGoToPayment = async () => {
     // Recréer le payment intent avec les infos de livraison à jour
@@ -331,6 +339,9 @@ export default function CheckoutPage() {
                     </span>
                   </label>
 
+                  {/* Modes de livraison · par boutique */}
+                  <ShippingStep items={items} onChange={onShipping} />
+
                   {intentError && (
                     <div className="text-sm text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-xl px-4 py-3 font-hanken">
                       ⚠️ {intentError}
@@ -339,7 +350,7 @@ export default function CheckoutPage() {
 
                   <button
                     onClick={handleGoToPayment}
-                    disabled={!deliveryComplete || loadingIntent}
+                    disabled={!deliveryComplete || !shipComplete || loadingIntent}
                     className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-[#FF2DA0] text-white font-hanken font-semibold hover:brightness-110 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loadingIntent ? "Préparation…" : <><span>Continuer vers le paiement</span><ArrowRight size={14} /></>}
@@ -414,12 +425,18 @@ export default function CheckoutPage() {
                     </div>
                   ))}
                 </div>
-                <div className="border-t border-[#101014]/10 pt-3 mb-1 flex justify-between text-sm font-hanken text-[#101014]/50">
-                  <span>Frais de port</span><span className="text-[#2323C4]">Calculés</span>
+                <div className="border-t border-[#101014]/10 pt-3 mb-1 space-y-1.5">
+                  <div className="flex justify-between text-sm font-hanken text-[#101014]/60">
+                    <span>Sous-total</span><span className="font-mono">{total().toFixed(2)} €</span>
+                  </div>
+                  <div className="flex justify-between text-sm font-hanken text-[#101014]/60">
+                    <span>Frais de port</span>
+                    <span className="font-mono">{shipComplete ? (shipTotal === 0 ? "Offert" : `${shipTotal.toFixed(2)} €`) : <span className="text-[#2323C4]">À choisir</span>}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between font-bricolage font-bold text-[#101014] text-lg">
+                <div className="flex justify-between font-bricolage font-bold text-[#101014] text-lg mt-2">
                   <span>Total</span>
-                  <span>{serverTotal !== null ? serverTotal.toFixed(2) : total().toFixed(2)} €</span>
+                  <span>{serverTotal !== null ? serverTotal.toFixed(2) : (total() + shipTotal).toFixed(2)} €</span>
                 </div>
                 {serverTotal !== null && Math.abs(serverTotal - total()) > 0.01 && (
                   <p className="font-hanken text-[10px] text-amber-400/70 mt-1 text-right">

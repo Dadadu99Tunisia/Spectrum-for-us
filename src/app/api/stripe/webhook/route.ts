@@ -58,7 +58,7 @@ export async function POST(req: Request) {
   // ── 1. Paiement produit réussi → créer commande, décrémenter stock, envoyer emails ──
   if (event.type === "payment_intent.succeeded") {
     const pi = event.data.object as Stripe.PaymentIntent;
-    const { user_id, cart_json, shipping_json, buyer_email } = pi.metadata ?? {};
+    const { user_id, cart_json, shipping_json, shipments_json, buyer_email } = pi.metadata ?? {};
 
     if (!user_id || !cart_json) {
       // Payment intent non lié à une commande marketplace (ex. abonnement) · ignorer
@@ -67,9 +67,11 @@ export async function POST(req: Request) {
 
     let cart: CartItem[];
     let shipping: Record<string, string> | null = null;
+    let shipments: { shop_id: string; method_type: string; method_label: string; cost: number; relay_point: Record<string, string> | null }[] = [];
     try {
       cart = JSON.parse(cart_json);
       if (shipping_json) shipping = JSON.parse(shipping_json);
+      if (shipments_json) shipments = JSON.parse(shipments_json);
     } catch {
       console.error("[webhook] Erreur parsing cart_json", cart_json);
       return NextResponse.json({ error: "Données panier invalides" }, { status: 400 });
@@ -109,11 +111,13 @@ export async function POST(req: Request) {
       }
     }
 
-    // Calculer le total réel côté serveur
-    const serverTotal = cart.reduce((sum, item) => {
+    // Calculer le total réel côté serveur (produits + frais de port)
+    const productsTotal = cart.reduce((sum, item) => {
       const p = productMap[item.id];
       return sum + (p ? Number(p.price) * item.quantity : 0);
     }, 0);
+    const shippingTotal = shipments.reduce((sum, s) => sum + (Number(s.cost) || 0) / 100, 0);
+    const serverTotal = productsTotal + shippingTotal;
 
     // Récupérer les shop owner_ids pour les notifications vendeurs
     const shopIds = [...new Set((products ?? []).map(p => p.shop_id).filter(Boolean))];
@@ -159,6 +163,21 @@ export async function POST(req: Request) {
     });
 
     await supabase.from("order_items").insert(orderItems);
+
+    // Créer les colis (un par boutique) à partir des frais de port choisis
+    if (shipments.length > 0) {
+      const shipmentRows = shipments.map(s => ({
+        order_id: order.id,
+        shop_id: s.shop_id,
+        method_type: s.method_type || "home",
+        method_label: s.method_label || null,
+        shipping_cost: Math.round((Number(s.cost) || 0)) / 100,
+        relay_point: s.relay_point ?? null,
+        status: "pending",
+      }));
+      const { error: shipErr } = await supabase.from("order_shipments").insert(shipmentRows);
+      if (shipErr) console.error("[webhook] order_shipments insert", shipErr);
+    }
 
     // ── Reversements Connect aux vendeurs (separate charges & transfers) ──────
     // Chaque vendeur reçoit son sous-total − commission, prélevé sur la charge.
