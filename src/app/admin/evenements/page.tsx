@@ -3,6 +3,9 @@ import { useEffect, useState, useCallback } from "react";
 import { CalendarDays, Search, Star, CheckCircle, XCircle, ExternalLink, MapPin, Clock, RefreshCw, Plus, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
+import { ImageUploader } from "@/components/ui/ImageUploader";
+import { useAuth } from "@/contexts/AuthContext";
+import { Pencil, Trash2 } from "lucide-react";
 
 type Event = {
   id: string;
@@ -44,6 +47,17 @@ export default function EvenementsPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm]       = useState(EMPTY_FORM);
   const [saving, setSaving]   = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const { user } = useAuth();
+
+  // datetime-local attend "YYYY-MM-DDTHH:mm" en heure locale
+  const toLocalInput = (iso?: string | null) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
 
   const fetch_ = useCallback(async () => {
     setLoading(true);
@@ -76,11 +90,11 @@ export default function EvenementsPage() {
     fetch_();
   };
 
-  const createEvent = async () => {
+  const saveEvent = async () => {
     if (!form.title.trim() || !form.date_start) { showToast("Titre et date de début requis"); return; }
     setSaving(true);
     const supabase = createClient();
-    const { error } = await supabase.from("queer_events").insert({
+    const payload = {
       title: form.title.trim(),
       date_start: new Date(form.date_start).toISOString(),
       date_end: form.date_end ? new Date(form.date_end).toISOString() : null,
@@ -93,13 +107,38 @@ export default function EvenementsPage() {
       organizer: form.organizer.trim() || null,
       description: form.description.trim() || null,
       is_featured: form.is_featured,
-      source: "manual",
-      moderation: "approved",
-    });
+    };
+    const { error } = editingId
+      ? await supabase.from("queer_events").update(payload).eq("id", editingId)
+      : await supabase.from("queer_events").insert({ ...payload, source: "manual", moderation: "approved" });
     setSaving(false);
     if (error) { showToast("Erreur : " + error.message); return; }
-    showToast("Événement ajouté ✓");
-    setForm(EMPTY_FORM); setShowForm(false); setModFilter("approved"); fetch_();
+    showToast(editingId ? "Événement mis à jour ✓" : "Événement ajouté ✓");
+    setForm(EMPTY_FORM); setShowForm(false); setEditingId(null);
+    if (!editingId) setModFilter("approved");
+    fetch_();
+  };
+
+  const startEdit = (ev: Event) => {
+    setEditingId(ev.id);
+    setForm({
+      title: ev.title ?? "", date_start: toLocalInput(ev.date_start), date_end: toLocalInput(ev.date_end),
+      city: ev.city ?? "", venue: ev.venue ?? "", category: ev.category ?? "",
+      price: ev.price != null ? String(ev.price) : "", url: ev.url ?? "", image_url: ev.image_url ?? "",
+      organizer: ev.organizer ?? "", description: ev.description ?? "", is_featured: ev.is_featured ?? false,
+    });
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const deleteEvent = async (id: string, title: string) => {
+    if (!confirm(`Supprimer définitivement « ${title} » ?`)) return;
+    setActionLoading(id);
+    const supabase = createClient();
+    const { error } = await supabase.from("queer_events").delete().eq("id", id);
+    setActionLoading(null);
+    showToast(error ? "Erreur : " + error.message : "Événement supprimé");
+    if (!error) fetch_();
   };
 
   const toggleFeatured = async (id: string, current: boolean) => {
@@ -119,7 +158,7 @@ export default function EvenementsPage() {
           <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">{total} événement{total !== 1 ? "s" : ""}</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setShowForm(s => !s)} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FF2DA0] text-white hover:brightness-110 transition-all text-sm font-hanken">
+          <button onClick={() => { setEditingId(null); setForm(EMPTY_FORM); setShowForm(s => !s); }} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FF2DA0] text-white hover:brightness-110 transition-all text-sm font-hanken">
             <Plus size={14} /> Ajouter
           </button>
           <button onClick={fetch_} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#101014]/[0.14] text-[#101014]/40 hover:text-[#101014] transition-colors text-sm">
@@ -132,8 +171,8 @@ export default function EvenementsPage() {
       {showForm && (
         <div className="rounded-2xl border border-[#FF2DA0]/30 bg-[#FF2DA0]/[0.03] p-5 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="font-fraunces text-lg text-[#101014]">Nouvel événement</h2>
-            <button onClick={() => { setShowForm(false); setForm(EMPTY_FORM); }} className="text-[#101014]/30 hover:text-[#101014]"><X size={16} /></button>
+            <h2 className="font-fraunces text-lg text-[#101014]">{editingId ? "Modifier l'événement" : "Nouvel événement"}</h2>
+            <button onClick={() => { setShowForm(false); setForm(EMPTY_FORM); setEditingId(null); }} className="text-[#101014]/30 hover:text-[#101014]"><X size={16} /></button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Field label="Titre *" full><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className={inputCls} placeholder="Soirée…" /></Field>
@@ -150,7 +189,11 @@ export default function EvenementsPage() {
             <Field label="Prix"><input value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} className={inputCls} placeholder="Gratuit · 12€…" /></Field>
             <Field label="Organisateur·ice"><input value={form.organizer} onChange={e => setForm({ ...form, organizer: e.target.value })} className={inputCls} placeholder="Assoc…" /></Field>
             <Field label="Lien billetterie / infos"><input value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} className={inputCls} placeholder="https://…" /></Field>
-            <Field label="Image (URL)" full><input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} className={inputCls} placeholder="https://…" /></Field>
+            <div className="md:col-span-2">
+              <ImageUploader bucket="event-images" folder={user?.id} value={form.image_url}
+                onChange={url => setForm({ ...form, image_url: url })}
+                label="Image de l'événement" aspect="banner" hint="JPG/PNG/WebP · max 10 Mo" />
+            </div>
             <Field label="Description" full><textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2} className={inputCls} placeholder="Quelques mots…" /></Field>
           </div>
           <div className="flex items-center justify-between pt-1">
@@ -158,9 +201,9 @@ export default function EvenementsPage() {
               <input type="checkbox" checked={form.is_featured} onChange={e => setForm({ ...form, is_featured: e.target.checked })} className="accent-[#FF2DA0]" />
               Mettre à la une
             </label>
-            <button onClick={createEvent} disabled={saving}
+            <button onClick={saveEvent} disabled={saving}
               className="px-5 py-2 rounded-lg bg-[#101014] text-white font-hanken text-sm hover:brightness-125 transition-all disabled:opacity-40">
-              {saving ? "Ajout…" : "Publier l'événement"}
+              {saving ? "Enregistrement…" : editingId ? "Enregistrer" : "Publier l'événement"}
             </button>
           </div>
         </div>
@@ -226,6 +269,14 @@ export default function EvenementsPage() {
                           <ExternalLink size={11} />
                         </a>
                       )}
+                      <button onClick={() => startEdit(ev)}
+                        className="p-1.5 rounded-lg text-[#101014]/25 hover:text-[#2323C4] border border-transparent hover:border-[#2323C4]/20 transition-colors">
+                        <Pencil size={11} />
+                      </button>
+                      <button onClick={() => deleteEvent(ev.id, ev.title)} disabled={actionLoading === ev.id}
+                        className="p-1.5 rounded-lg text-red-600/40 hover:text-red-600 border border-transparent hover:border-red-500/20 transition-colors disabled:opacity-40">
+                        <Trash2 size={11} />
+                      </button>
                       {ev.moderation === "pending" && (
                         <>
                           <button onClick={() => moderate(ev.id, "rejected")} disabled={actionLoading === ev.id}

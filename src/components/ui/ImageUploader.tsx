@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 import { Upload, X, ImageIcon, Loader2 } from "lucide-react";
 
-type Bucket = "shop-assets" | "shop-images" | "product-images" | "kyc-documents";
+type Bucket = "shop-assets" | "shop-images" | "product-images" | "kyc-documents" | "event-images";
 
 interface ImageUploaderProps {
   bucket: Bucket;
