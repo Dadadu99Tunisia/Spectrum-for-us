@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { ShippingSettings, type ShippingMethod } from "@/components/vendor/ShippingSettings";
 import { ShipmentsManager } from "@/components/vendor/ShipmentsManager";
+import { ReturnsManager } from "@/components/vendor/ReturnsManager";
 
 // ── Palette (design tokens) ───────────────────────────────────────────────
 const C = {
@@ -235,7 +236,7 @@ export default function VendeurDashboard() {
         <div className="px-5 lg:px-8 py-6 pb-16 w-full max-w-[1180px]">
           {view === "overview" && <Overview m={m} shop={shop} products={products} activeCount={activeCount} founderRank={founderRank} checklist={checklist} go={setView} />}
           {view === "products" && <Products products={products} />}
-          {view === "orders" && <><Orders orders={orders} toPrepare={m.toPrepare} /><ShipmentsManager shopId={shop.id} /></>}
+          {view === "orders" && <><Orders orders={orders} toPrepare={m.toPrepare} /><ShipmentsManager shopId={shop.id} /><ReturnsManager shopId={shop.id} /></>}
           {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} />}
           {view === "subscription" && <Subscription shop={shop} founderRank={founderRank} />}
           {view === "livraison" && <ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} />}

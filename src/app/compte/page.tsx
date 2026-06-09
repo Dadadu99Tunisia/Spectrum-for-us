@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
+import { ReturnRequestButton } from "@/components/account/ReturnRequestButton";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -55,7 +56,8 @@ export default function ComptePage() {
   const [tab, setTab] = useState<Tab>("Commandes");
   const [profile, setProfile] = useState<{ full_name?: string; pseudo?: string; pronouns?: string; is_vendor?: boolean } | null>(null);
   const [orders, setOrders] = useState<Array<{ id: string; total_amount: number; status: string; created_at: string }>>([]);
-  const [shipments, setShipments] = useState<Record<string, Array<{ method_label: string | null; status: string; carrier: string | null; tracking_number: string | null }>>>({});
+  const [shipments, setShipments] = useState<Record<string, Array<{ shop_id: string; method_label: string | null; status: string; carrier: string | null; tracking_number: string | null }>>>({});
+  const [returns, setReturns] = useState<Record<string, string>>({}); // `${order_id}|${shop_id}` -> status
   const [favCount, setFavCount] = useState(0);
 
   useEffect(() => {
@@ -82,13 +84,16 @@ export default function ComptePage() {
         setOrders(data ?? []);
         const ids = (data ?? []).map(o => o.id);
         if (ids.length) {
-          const { data: sh } = await supabase
-            .from("order_shipments")
-            .select("order_id, method_label, status, carrier, tracking_number")
-            .in("order_id", ids);
-          const byOrder: Record<string, Array<{ method_label: string | null; status: string; carrier: string | null; tracking_number: string | null }>> = {};
+          const [{ data: sh }, { data: rr }] = await Promise.all([
+            supabase.from("order_shipments").select("order_id, shop_id, method_label, status, carrier, tracking_number").in("order_id", ids),
+            supabase.from("return_requests").select("order_id, shop_id, status").in("order_id", ids),
+          ]);
+          const byOrder: Record<string, Array<{ shop_id: string; method_label: string | null; status: string; carrier: string | null; tracking_number: string | null }>> = {};
           (sh ?? []).forEach(s => { (byOrder[s.order_id] ??= []).push(s); });
           setShipments(byOrder);
+          const rmap: Record<string, string> = {};
+          (rr ?? []).forEach(r => { rmap[`${r.order_id}|${r.shop_id}`] = r.status; });
+          setReturns(rmap);
         }
       });
   }, [user]);
@@ -275,11 +280,17 @@ export default function ComptePage() {
                         {new Date(order.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                       {(shipments[order.id] ?? []).map((s, i) => (
-                        <p key={i} className="font-mono text-[10px] text-[#101014]/45 mt-1.5">
-                          📦 {s.method_label ?? "Colis"} ·{" "}
-                          {s.status === "delivered" ? "Livré" : s.status === "shipped" ? "Expédié" : "En préparation"}
-                          {s.tracking_number ? <> · {s.carrier ?? "Suivi"} <strong className="text-[#101014]/70">{s.tracking_number}</strong></> : null}
-                        </p>
+                        <div key={i} className="mt-1.5">
+                          <p className="font-mono text-[10px] text-[#101014]/45">
+                            📦 {s.method_label ?? "Colis"} ·{" "}
+                            {s.status === "delivered" ? "Livré" : s.status === "shipped" ? "Expédié" : "En préparation"}
+                            {s.tracking_number ? <> · {s.carrier ?? "Suivi"} <strong className="text-[#101014]/70">{s.tracking_number}</strong></> : null}
+                          </p>
+                          {user && (
+                            <ReturnRequestButton orderId={order.id} shopId={s.shop_id} userId={user.id}
+                              existingStatus={returns[`${order.id}|${s.shop_id}`]} />
+                          )}
+                        </div>
                       ))}
                     </div>
                     <div className="flex flex-col items-end gap-2">
