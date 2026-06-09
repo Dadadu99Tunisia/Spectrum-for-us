@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import {
   Eye, Type, Palette, Minus, Plus,
   ChevronUp, ChevronDown, MousePointer2, ZoomIn, Space, X
@@ -70,6 +71,7 @@ function applyToDOM(modes: Set<ToggleMode>, textSize: TextSize) {
 }
 
 export function AccessibilityBar() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<Set<ToggleMode>>(new Set());
   const [textSize, setTextSize] = useState<TextSize>("normal");
@@ -112,15 +114,22 @@ export function AccessibilityBar() {
 
   if (!mounted) return null;
 
+  // La bottom-nav (mobile) est présente sauf sur ces sections → décaler au-dessus d'elle
+  const hasBottomNav = !(
+    pathname.startsWith("/admin") || pathname.startsWith("/auth") ||
+    pathname.startsWith("/checkout") || pathname.startsWith("/produit") ||
+    pathname.startsWith("/vendeur")
+  );
+
   return (
     <>
       <ColorblindSVGFilter />
 
-      {/* Barre d'accessibilité */}
+      {/* Barre d'accessibilité · au-dessus de la bottom-nav sur mobile */}
       <div
         role="region"
         aria-label="Options d'accessibilité"
-        className="fixed bottom-0 left-0 right-0 z-40"
+        className={`fixed left-0 right-0 z-40 ${hasBottomNav ? "bottom-[70px] md:bottom-0" : "bottom-0"}`}
       >
         {/* Toggle button */}
         <div className="flex justify-center">
