@@ -112,13 +112,13 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
       <div className="relative z-10 p-8 md:p-10">
         {/* Header */}
         <div className="flex items-start gap-4 mb-8">
-          <div className="text-4xl leading-none">🌈</div>
+          <div className="text-4xl leading-none">🚀</div>
           <div>
             <h2 className="font-fraunces text-2xl md:text-3xl text-[#101014] leading-tight">
               Programme Fondateur Spectrum
             </h2>
             <p className="font-hanken text-sm text-[#101014]/45 mt-1">
-              Rejoins les premiers à b-tir cette communauté · des avantages exclusifs à vie.
+              Rejoins les premier·es à bâtir cette communauté · des avantages exclusifs à vie.
             </p>
           </div>
         </div>
@@ -134,23 +134,14 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
                 : "linear-gradient(135deg,rgba(255,215,0,.06),rgba(255,107,53,.04))",
               borderColor: founderFull ? "rgba(107,114,128,.15)" : "rgba(255,215,0,.2)",
             }}>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🏆</span>
-                <div>
-                  <p className="font-fraunces text-base text-[#FFD700]">Fondateur·ice</p>
-                  <p className="font-mono text-[9px] text-[#101014]/30">Rang 1-20</p>
-                </div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xl shrink-0">🥇</span>
+              <div className="min-w-0">
+                <p className="font-fraunces text-base text-[#FFD700] truncate">Super Fondateur·ice</p>
+                <p className="font-mono text-[9px] text-[#101014]/30">
+                  Rang 1-20 · {founderFull ? "complet" : `${counts.founder_remaining} restante${counts.founder_remaining > 1 ? "s" : ""}`}
+                </p>
               </div>
-              {founderFull ? (
-                <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#101014]/5 text-[#101014]/30 border border-[#101014]/8">
-                  Complet
-                </span>
-              ) : (
-                <span className="font-mono text-[10px] font-bold" style={{ color: "#FFD700" }}>
-                  {counts.founder_remaining} restante{counts.founder_remaining > 1 ? "s" : ""}
-                </span>
-              )}
             </div>
             {/* Progress bar */}
             <div className="h-1.5 rounded-full bg-[#101014]/8 overflow-hidden mb-3">
@@ -164,10 +155,10 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             </div>
             <div className="space-y-1">
               {[
-                "Abonnement gratuit 3 ans",
-                "0 % de commission 12 mois",
-                "Mise en avant prioritaire",
-                "Badge exclusif sur profil",
+                "Abonnement offert 12 mois",
+                "0 % de commission 6 mois",
+                "Mise en avant prioritaire à vie",
+                "Badge exclusif à vie",
               ].map(a => (
                 <p key={a} className="font-hanken text-xs flex items-center gap-1.5"
                   style={{ color: founderFull ? "rgba(243,234,219,.25)" : "rgba(243,234,219,.6)" }}>
@@ -186,23 +177,14 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
                 : "linear-gradient(135deg,rgba(167,139,250,.06),rgba(224,51,126,.04))",
               borderColor: earlyFull ? "rgba(107,114,128,.15)" : "rgba(167,139,250,.2)",
             }}>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🚀</span>
-                <div>
-                  <p className="font-fraunces text-base text-[#a78bfa]">Pionnier·e</p>
-                  <p className="font-mono text-[9px] text-[#101014]/30">Rang 21-100</p>
-                </div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xl shrink-0">🏆</span>
+              <div className="min-w-0">
+                <p className="font-fraunces text-base text-[#a78bfa] truncate">Fondateur·ice</p>
+                <p className="font-mono text-[9px] text-[#101014]/30">
+                  Rang 21-120 · {earlyFull ? "complet" : `${counts.early_remaining} restante${counts.early_remaining > 1 ? "s" : ""}`}
+                </p>
               </div>
-              {earlyFull ? (
-                <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-[#101014]/5 text-[#101014]/30 border border-[#101014]/8">
-                  Complet
-                </span>
-              ) : (
-                <span className="font-mono text-[10px] font-bold text-[#a78bfa]">
-                  {counts.early_remaining} restante{counts.early_remaining > 1 ? "s" : ""}
-                </span>
-              )}
             </div>
             <div className="h-1.5 rounded-full bg-[#101014]/8 overflow-hidden mb-3">
               <div className="h-full rounded-full transition-all duration-700"
@@ -215,10 +197,10 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             </div>
             <div className="space-y-1">
               {[
-                "Abonnement gratuit 6 mois",
-                "0 % de commission 6 mois",
-                "Badge Pionnier·e sur profil",
-                "Accès anticipé aux features",
+                "Abonnement offert 12 mois",
+                "0 % de commission 3 mois",
+                "Priorité dans la recherche",
+                "Badge Fondateur·ice à vie",
               ].map(a => (
                 <p key={a} className="font-hanken text-xs flex items-center gap-1.5"
                   style={{ color: earlyFull ? "rgba(243,234,219,.25)" : "rgba(243,234,219,.6)" }}>

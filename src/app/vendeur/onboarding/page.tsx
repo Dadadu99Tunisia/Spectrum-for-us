@@ -8,7 +8,7 @@ import { ArrowRight, ArrowLeft, Check, Store, Shield, Eye, Zap } from "lucide-re
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import { FounderBanner } from "@/components/founder/FounderBanner";
 
-const CATEGORIES = ["Mode non-genrée", "Art & Culture", "Bijoux", "Zines & Édition", "Corps & Soin", "Intimité", "Maison", "Services", "Expériences"];
+import { CATEGORIES as TAXONOMY } from "@/lib/categories";
 
 const STEPS = ["Bienvenue", "Ta boutique", "Programme", "Charte", "Confirmation"] as const;
 type Step = 0 | 1 | 2 | 3 | 4;
@@ -169,8 +169,13 @@ export default function OnboardingPage() {
                   <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Catégorie principale</label>
                   <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
                     className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/60 transition-colors">
-                    <option value="" className="bg-[#FBFAF8]">Choisir…</option>
-                    {CATEGORIES.map((c) => <option key={c} value={c} className="bg-[#FBFAF8]">{c}</option>)}
+                    <option value="">Choisir…</option>
+                    {Object.entries(TAXONOMY).map(([cat, subs]) => (
+                      <optgroup key={cat} label={cat}>
+                        <option value={cat}>{cat} (tout)</option>
+                        {(subs as string[]).map((s) => <option key={s} value={s}>{s}</option>)}
+                      </optgroup>
+                    ))}
                   </select>
                 </div>
               </div>

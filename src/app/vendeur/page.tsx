@@ -502,8 +502,8 @@ function Subscription({ shop, founderRank }: { shop: Shop; founderRank: number |
         <div className="absolute inset-0" style={{ background: C.spec, opacity: 0.16, mixBlendMode: "screen" }} />
         <div className="relative">
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold rounded-full px-2.5 py-1 mb-3" style={{ background: "rgba(255,255,255,.16)" }}>✦ Programme Fondateur·ice</span>
-          <h3 className="font-bricolage font-extrabold text-[21px] mb-2">{founderRank ? `Place #${String(founderRank).padStart(3, "0")} / 100` : "100 places"}</h3>
-          <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,.82)" }}>0 % commission 12 mois · 3 ans d&apos;abonnement offerts (rang 1-20) ou 6 mois (rang 21-100) · mise en avant prioritaire.</p>
+          <h3 className="font-bricolage font-extrabold text-[21px] mb-2">{founderRank ? `Place #${String(founderRank).padStart(3, "0")} / 120` : "120 places"}</h3>
+          <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,.82)" }}>Abonnement offert 12 mois · 0 % commission 6 mois (rang 1-20) ou 3 mois (rang 21-120) · mise en avant prioritaire à vie.</p>
         </div>
       </div>
     </div>
