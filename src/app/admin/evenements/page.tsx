@@ -13,6 +13,8 @@ type Event = {
   description: string | null;
   date_start: string;
   date_end: string | null;
+  kind?: string | null;
+  capacity?: number | null;
   city: string | null;
   venue: string | null;
   url: string | null;
@@ -35,7 +37,7 @@ const MOD_CONFIG: Record<string, { label: string; color: string }> = {
 
 const CATEGORIES = ["Soirée & Clubbing", "Événement LGBTQIA+", "Militant & Associatif", "Art & Culture", "Festival", "Pride"];
 
-const EMPTY_FORM = { title: "", date_start: "", date_end: "", city: "", venue: "", category: "", price: "", url: "", image_url: "", image_position: "50% 50%", organizer: "", description: "", is_featured: false };
+const EMPTY_FORM = { kind: "event", title: "", date_start: "", date_end: "", city: "", venue: "", category: "", price: "", url: "", image_url: "", image_position: "50% 50%", organizer: "", description: "", capacity: "", is_featured: false };
 
 export default function EvenementsPage() {
   const [events, setEvents]   = useState<Event[]>([]);
@@ -96,6 +98,8 @@ export default function EvenementsPage() {
     setSaving(true);
     const supabase = createClient();
     const payload = {
+      kind: form.kind,
+      capacity: form.capacity ? parseInt(form.capacity) : null,
       title: form.title.trim(),
       date_start: new Date(form.date_start).toISOString(),
       date_end: form.date_end ? new Date(form.date_end).toISOString() : null,
@@ -124,6 +128,7 @@ export default function EvenementsPage() {
   const startEdit = (ev: Event) => {
     setEditingId(ev.id);
     setForm({
+      kind: ev.kind ?? "event", capacity: ev.capacity != null ? String(ev.capacity) : "",
       title: ev.title ?? "", date_start: toLocalInput(ev.date_start), date_end: toLocalInput(ev.date_end),
       city: ev.city ?? "", venue: ev.venue ?? "", category: ev.category ?? "",
       price: ev.price != null ? String(ev.price) : "", url: ev.url ?? "", image_url: ev.image_url ?? "", image_position: ev.image_position ?? "50% 50%",
@@ -177,6 +182,13 @@ export default function EvenementsPage() {
             <button onClick={() => { setShowForm(false); setForm(EMPTY_FORM); setEditingId(null); }} className="text-[#101014]/30 hover:text-[#101014]"><X size={16} /></button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Field label="Type">
+              <select value={form.kind} onChange={e => setForm({ ...form, kind: e.target.value })} className={inputCls}>
+                <option value="event">🎉 Événement</option>
+                <option value="workshop">🛠️ Atelier</option>
+              </select>
+            </Field>
+            <Field label="Nombre de places"><input type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} className={inputCls} placeholder="ex. 20" /></Field>
             <Field label="Titre *" full><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className={inputCls} placeholder="Soirée…" /></Field>
             <Field label="Début *"><input type="datetime-local" value={form.date_start} onChange={e => setForm({ ...form, date_start: e.target.value })} className={inputCls} /></Field>
             <Field label="Fin"><input type="datetime-local" value={form.date_end} onChange={e => setForm({ ...form, date_end: e.target.value })} className={inputCls} /></Field>
