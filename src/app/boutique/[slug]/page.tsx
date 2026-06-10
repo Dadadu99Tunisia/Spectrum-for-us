@@ -60,7 +60,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
 
   const [{ data: products }, { data: kyc }] = await Promise.all([
     supabase.from("products")
-      .select("id, name, title, price, images, image_url, category, slug, type, quantity")
+      .select("id, name, title, price, images, image_url, category, slug, type, quantity, is_adult")
       .eq("shop_id", shop.id)
       .eq("is_active", true)
       .order("created_at", { ascending: false }),
@@ -222,6 +222,9 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src="/logo-dark.png" alt="Spectrum For Us" className="w-full h-full object-contain opacity-25" />
                         </div>
+                      )}
+                      {(p.is_adult as boolean) && (
+                        <span className="absolute top-2 right-2 font-mono text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(16,16,20,.78)", color: "#fff" }}>🔞 18+</span>
                       )}
                       {ptype !== "product" && (
                         <div className="absolute top-2 left-2">

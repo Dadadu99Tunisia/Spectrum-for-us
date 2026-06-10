@@ -32,7 +32,7 @@ type Product = {
   price: number; category: string; subcategory: string | null;
   slug: string; shop_id: string; quantity: number | null;
   images: string[] | null; image_url: string | null;
-  type: string | null;
+  type: string | null; is_adult?: boolean;
   shops: { name: string; slug: string } | { name: string; slug: string }[] | null;
 };
 
@@ -57,7 +57,7 @@ function DecouvrirContent() {
     const supabase = createClient();
     let q = supabase
       .from("products")
-      .select("id,name,title,description,price,category,subcategory,slug,shop_id,quantity,images,image_url,type,shops(name,slug,stripe_charges_enabled)")
+      .select("id,name,title,description,price,category,subcategory,slug,shop_id,quantity,images,image_url,type,is_adult,shops(name,slug,stripe_charges_enabled)")
       .eq("is_active", true);
 
     if (category !== "Toutes") q = q.eq("category", category);
@@ -287,6 +287,10 @@ function DecouvrirContent() {
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src="/logo-dark.png" alt="Spectrum For Us" className="w-full h-full object-contain opacity-25" />
                           </div>
+                        )}
+
+                        {p.is_adult && (
+                          <span className="absolute top-2 right-2 font-mono text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(16,16,20,.78)", color: "#fff" }}>🔞 18+</span>
                         )}
 
                         {ptype !== "product" && (

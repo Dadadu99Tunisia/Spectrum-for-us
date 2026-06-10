@@ -243,7 +243,8 @@ export default function VendeurDashboard() {
           {view === "subscription" && <Subscription shop={shop} founderRank={founderRank} />}
           {view === "livraison" && <ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} />}
           {view === "agenda" && <ServiceAvailability shopId={shop.id} />}
-          {(view === "shop" || view === "stats" || view === "settings") && (
+          {view === "stats" && <Stats m={m} products={products} orders={orders} commissions={commissions} />}
+          {(view === "shop" || view === "settings") && (
             <Placeholder view={view} shopSlug={shop.slug} />
           )}
         </div>
@@ -544,6 +545,76 @@ function Subscription({ shop, founderRank }: { shop: Shop; founderRank: number |
           <h3 className="font-bricolage font-extrabold text-[21px] mb-2">{founderRank ? `Place #${String(founderRank).padStart(3, "0")} / 120` : "120 places"}</h3>
           <p className="text-[13.5px] leading-relaxed" style={{ color: "rgba(255,255,255,.82)" }}>Fondateur·ice (rang 1-20) : abonnement offert 12 mois · 0 % commission 6 mois. Pionnier·e (rang 21-120) : abonnement offert 6 mois · 0 % commission 3 mois. Mise en avant prioritaire à vie.</p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function Stats({ m, products, orders, commissions }: {
+  m: Metrics; products: Product[]; orders: VendorOrder[];
+  commissions: { gross_amount: number; commission_amount: number; status: string }[];
+}) {
+  const avgOrder = m.orderCount > 0 ? m.totalRevenue / m.orderCount : 0;
+  const commissionPaid = commissions.reduce((s, c) => s + Number(c.commission_amount || 0), 0);
+  const activeCount = products.filter(p => p.is_active).length;
+
+  // Top produits par CA
+  const byProduct = new Map<string, number>();
+  m.paid.forEach(o => {
+    const n = o.products?.name || o.products?.title || "—";
+    byProduct.set(n, (byProduct.get(n) ?? 0) + m.amount(o));
+  });
+  const top = [...byProduct.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const topMax = top[0]?.[1] ?? 1;
+
+  const kpis = [
+    { label: "Revenu total", value: `${m.totalRevenue.toFixed(2)} €` },
+    { label: "Ce mois", value: `${m.revenueMonth.toFixed(2)} €` },
+    { label: "Commandes", value: String(m.orderCount) },
+    { label: "Panier moyen", value: `${avgOrder.toFixed(2)} €` },
+    { label: "Produits actifs", value: `${activeCount}/${products.length}` },
+    { label: "Commission versée", value: `${commissionPaid.toFixed(2)} €` },
+  ];
+
+  return (
+    <div className="space-y-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {kpis.map(k => (
+          <div key={k.label} className="rounded-2xl border p-4" style={{ borderColor: C.line, background: "#fff" }}>
+            <p className="font-mono text-[10px] uppercase tracking-wide" style={{ color: C.faint }}>{k.label}</p>
+            <p className="font-fraunces text-2xl mt-1" style={{ color: C.ink }}>{k.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded-2xl border p-5" style={{ borderColor: C.line, background: "#fff" }}>
+        <p className="font-bricolage font-bold text-[15px] mb-4" style={{ color: C.ink }}>Revenus · 12 dernières semaines</p>
+        <div className="flex items-end gap-1.5 h-32">
+          {m.weeks.map((w, i) => (
+            <div key={i} className="flex-1 rounded-t" style={{ height: `${m.maxWeek > 0 ? Math.max(4, (w / m.maxWeek) * 100) : 4}%`, background: w > 0 ? C.mag : "#EEE9DF" }} title={`${w.toFixed(0)} €`} />
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border p-5" style={{ borderColor: C.line, background: "#fff" }}>
+        <p className="font-bricolage font-bold text-[15px] mb-4" style={{ color: C.ink }}>Top produits</p>
+        {top.length === 0 ? (
+          <p className="font-hanken text-sm" style={{ color: C.faint }}>Aucune vente pour l'instant.</p>
+        ) : (
+          <div className="space-y-2.5">
+            {top.map(([name, val]) => (
+              <div key={name}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-hanken text-sm truncate" style={{ color: C.ink }}>{name}</span>
+                  <span className="font-mono text-xs" style={{ color: C.soft }}>{val.toFixed(2)} €</span>
+                </div>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "#EEE9DF" }}>
+                  <div className="h-full rounded-full" style={{ width: `${(val / topMax) * 100}%`, background: C.mag }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
