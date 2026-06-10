@@ -21,9 +21,10 @@ export default function FinancePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/admin/finance/summary")
+    fetch("/api/admin/finance/summary", { cache: "no-store" })
       .then(r => r.json())
-      .then(j => { setData(j.data); setLoading(false); });
+      .then(j => { setData(j.data ?? null); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
   const fmt = (n: number) =>
@@ -44,7 +45,13 @@ export default function FinancePage() {
     </div>
   );
 
-  if (!data) return null;
+  if (!data) return (
+    <div className="text-center py-24">
+      <Coins size={40} className="mx-auto mb-3 text-[#101014]/15" />
+      <p className="font-fraunces text-xl text-[#101014]/40 mb-1">Pas encore de données financières</p>
+      <p className="font-hanken text-sm text-[#101014]/30">Les revenus, commissions et top vendeur·ses apparaîtront dès les premières ventes.</p>
+    </div>
+  );
 
   const growth = data.monthGrowthPct;
   const kpis = [

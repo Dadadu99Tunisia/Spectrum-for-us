@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiError } from "@/lib/admin/rbac";
 
 export async function GET() {
   const auth = await requireAdmin(["super_admin","ceo","cfo"]);
   if ("error" in auth) return auth.error;
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const now = new Date();
   const monthStart     = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
   const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
