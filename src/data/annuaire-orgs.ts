@@ -143,7 +143,7 @@ export const ORGS: OrgEntry[] = [
     city: "Paris",
     lat: 48.868, lng: 2.345,
     categories: ["association"],
-    description: "Première association bisexuelle francophone. Visibilité bi+, lutte contre la biphobie, groupes de parole.",
+    description: "Association bisexuelle de référence. Visibilité bi+, lutte contre la biphobie, groupes de parole.",
     website: "https://bicause.fr",
     logo: "💜", accent: "#6D2DB5", founded: 2007, flag: "🇫🇷",
   },

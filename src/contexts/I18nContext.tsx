@@ -28,7 +28,7 @@ export const CURRENCY_SYMBOLS: Record<Currency, string> = {
 
 // Country code → [locale, currency]
 const GEO_MAP: Record<string, [Locale, Currency]> = {
-  // Francophone Europe
+  // Europe (locales FR)
   FR: ["fr", "EUR"], BE: ["fr", "EUR"], LU: ["fr", "EUR"],
   CH: ["fr", "CHF"], MC: ["fr", "EUR"],
   // Anglophone
@@ -39,7 +39,7 @@ const GEO_MAP: Record<string, [Locale, Currency]> = {
   SA: ["ar", "SAR"], AE: ["ar", "AED"], EG: ["ar", "EGP"],
   LY: ["ar", "EUR"], IQ: ["ar", "EUR"], SY: ["ar", "EUR"],
   LB: ["ar", "EUR"], JO: ["ar", "EUR"], KW: ["ar", "EUR"],
-  // Afrique subsaharienne francophone
+  // Afrique subsaharienne (locales FR)
   SN: ["fr", "XOF"], CI: ["fr", "XOF"], CM: ["fr", "XOF"],
   ML: ["fr", "XOF"], BF: ["fr", "XOF"], TG: ["fr", "XOF"],
   // Reste EU → EN + EUR par défaut
