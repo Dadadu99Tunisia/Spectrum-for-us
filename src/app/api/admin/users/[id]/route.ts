@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError, logActivity } from "@/lib/admin/rbac";
 
@@ -50,7 +49,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     update.suspended_reason = null;
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("profiles")
     .update(update)

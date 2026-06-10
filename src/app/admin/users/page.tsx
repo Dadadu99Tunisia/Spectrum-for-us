@@ -165,7 +165,7 @@ export default function UsersPage() {
                         <div className="flex items-center gap-1">
                           <select defaultValue={u.role}
                             onChange={e => changeRole(u.id, e.target.value)}
-                            className="bg-[#0e061a] border border-[#FF2DA0]/40 rounded px-2 py-1 font-mono text-[10px] text-[#101014] focus:outline-none text-xs">
+                            className="bg-white border border-[#FF2DA0]/40 rounded px-2 py-1 font-mono text-xs text-[#101014] focus:outline-none">
                             {ROLES.filter(r => r !== "").map(r => <option key={r} value={r}>{r}</option>)}
                           </select>
                           <button onClick={() => setEditRole(null)} className="text-[#101014]/30 hover:text-[#101014] text-xs px-1">✕</button>
