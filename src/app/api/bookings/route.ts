@@ -17,6 +17,9 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminClient();
 
+  // Libère les créneaux des réservations "en attente" périmées (paiement abandonné)
+  try { await admin.rpc("expire_stale_bookings"); } catch { /* non bloquant */ }
+
   // Produit service + boutique
   const { data: product } = await admin.from("products")
     .select("id, name, title, price, type, shop_id, is_active").eq("id", product_id).maybeSingle();
