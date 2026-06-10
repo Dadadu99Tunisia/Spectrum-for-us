@@ -180,7 +180,16 @@ export function ServiceAvailability({ shopId }: { shopId: string }) {
             {bookings.map(b => (
               <div key={b.id} className="flex items-center justify-between rounded-xl border border-[#101014]/10 bg-white px-3 py-2">
                 <span className="font-hanken text-sm text-[#101014]">{new Date(b.start_at).toLocaleString("fr-FR", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
-                <span className="font-mono text-[10px] text-[#101014]/45">{b.customer_name ?? ""} · {b.status === "confirmed" ? "confirmé" : b.status === "pending" ? "en attente" : b.status}</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] text-[#101014]/45">{b.customer_name ?? ""} · {b.status === "confirmed" ? "confirmé" : b.status === "pending" ? "en attente" : b.status}</span>
+                  {b.status !== "cancelled" && (
+                    <button onClick={async () => {
+                      if (!confirm("Annuler cette réservation ? Le·la client·e sera remboursé·e.")) return;
+                      const res = await fetch("/api/bookings/cancel", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ booking_id: b.id }) });
+                      if (res.ok) loadFor(pid); else { const j = await res.json().catch(() => ({})); alert("Erreur : " + (j.error ?? res.status)); }
+                    }} className="font-mono text-[10px] text-[#101014]/35 hover:text-red-500">Annuler</button>
+                  )}
+                </div>
               </div>
             ))}
           </div>

@@ -271,9 +271,19 @@ export default function ComptePage() {
                       <p className="font-hanken text-sm text-[#101014]">{b.products?.name || b.products?.title || "Service"}</p>
                       <p className="font-mono text-[11px] text-[#101014]/45">{new Date(b.start_at).toLocaleString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}</p>
                     </div>
-                    <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full border ${b.status === "confirmed" ? "text-green-600 border-green-400/30 bg-green-400/10" : b.status === "cancelled" ? "text-red-500 border-red-400/30" : "text-[#101014]/40 border-[#101014]/20"}`}>
-                      {b.status === "confirmed" ? "Confirmé" : b.status === "cancelled" ? "Annulé" : "En attente"}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full border ${b.status === "confirmed" ? "text-green-600 border-green-400/30 bg-green-400/10" : b.status === "cancelled" ? "text-red-500 border-red-400/30" : "text-[#101014]/40 border-[#101014]/20"}`}>
+                        {b.status === "confirmed" ? "Confirmé" : b.status === "cancelled" ? "Annulé" : "En attente"}
+                      </span>
+                      {b.status !== "cancelled" && new Date(b.start_at).getTime() > Date.now() && (
+                        <button onClick={async () => {
+                          if (!confirm("Annuler cette réservation ? Tu seras remboursé·e.")) return;
+                          const res = await fetch("/api/bookings/cancel", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ booking_id: b.id }) });
+                          if (res.ok) setBookings(bs => bs.map(x => x.id === b.id ? { ...x, status: "cancelled" } : x));
+                          else { const j = await res.json().catch(() => ({})); alert("Erreur : " + (j.error ?? res.status)); }
+                        }} className="font-mono text-[10px] text-[#101014]/40 hover:text-red-500 transition-colors">Annuler</button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
