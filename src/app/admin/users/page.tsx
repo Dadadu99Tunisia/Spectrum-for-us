@@ -1,7 +1,16 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Users, Search, ShieldCheck, Ban, RotateCcw, ChevronDown } from "lucide-react";
+import { Users, Search, ShieldCheck, Ban, RotateCcw, ChevronDown, X, Loader2 } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
+
+type UserDetail = {
+  id: string; full_name: string | null; pseudo: string | null; role: string; email: string | null;
+  country: string | null; created_at: string; is_suspended: boolean;
+  orders: Array<{ id: string; total_amount: number; status: string; created_at: string }>;
+  orders_count: number; total_spent: number;
+  bookings: Array<{ id: string; start_at: string; status: string; amount: number | null; products: { name: string | null; title: string | null } | null }>;
+  bookings_count: number;
+};
 
 type User = {
   id: string;
@@ -38,6 +47,16 @@ export default function UsersPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [toast, setToast]       = useState<string | null>(null);
   const [editRole, setEditRole] = useState<{ id: string; current: string } | null>(null);
+  const [detail, setDetail] = useState<UserDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+
+  const openDetail = async (id: string) => {
+    setDetailLoading(true); setDetail({ id } as UserDetail);
+    const res = await fetch(`/api/admin/users/${id}`);
+    const json = await res.json();
+    setDetail(json.data ?? null);
+    setDetailLoading(false);
+  };
   const LIMIT = 25;
 
   const fetchUsers = useCallback(async () => {
@@ -135,10 +154,10 @@ export default function UsersPage() {
                             {(u.full_name || u.pseudo || "?")[0].toUpperCase()}
                           </span>
                         </div>
-                        <div>
-                          <p className="font-hanken text-sm text-[#101014]">{u.full_name || u.pseudo || "-"}</p>
+                        <button onClick={() => openDetail(u.id)} className="text-left group">
+                          <p className="font-hanken text-sm text-[#101014] group-hover:text-[#FF2DA0] transition-colors">{u.full_name || u.pseudo || "-"}</p>
                           <p className="font-mono text-[9px] text-[#101014]/25">{u.id.slice(0,12)}…</p>
-                        </div>
+                        </button>
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -217,6 +236,79 @@ export default function UsersPage() {
         <div className="text-center py-20">
           <Users size={40} className="mx-auto mb-3 text-[#101014]/10" />
           <p className="font-hanken text-[#101014]/30">Aucun utilisateur trouvé</p>
+        </div>
+      )}
+
+      {/* Panneau détail utilisateur */}
+      {detail && (
+        <div className="fixed inset-0 z-[80] flex justify-end" onClick={() => setDetail(null)}>
+          <div className="absolute inset-0 bg-black/30" />
+          <div className="relative w-full max-w-md h-full bg-white shadow-2xl overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="font-fraunces text-xl text-[#101014]">Fiche utilisateur·ice</h2>
+              <button onClick={() => setDetail(null)} className="text-[#101014]/40 hover:text-[#101014]"><X size={18} /></button>
+            </div>
+            {detailLoading || !detail.email && !detail.orders ? (
+              <div className="flex items-center gap-2 text-[#101014]/40 py-10"><Loader2 size={15} className="animate-spin" /> Chargement…</div>
+            ) : (
+              <div className="space-y-5">
+                <div>
+                  <p className="font-bricolage font-bold text-lg text-[#101014]">{detail.full_name || detail.pseudo || "—"}</p>
+                  <p className="font-hanken text-sm text-[#101014]/55">{detail.email ?? "—"}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className={`font-mono text-[9px] px-2 py-1 rounded-full border ${ROLE_COLOR[detail.role] ?? "text-[#101014]/40 border-[#101014]/15"}`}>{detail.role}</span>
+                    {detail.is_suspended && <span className="font-mono text-[9px] px-2 py-1 rounded-full bg-red-500/10 text-red-500 border border-red-400/20">suspendu</span>}
+                    {detail.country && <span className="font-mono text-[9px] text-[#101014]/40">{detail.country}</span>}
+                  </div>
+                  <p className="font-mono text-[10px] text-[#101014]/30 mt-2">Inscrit·e le {new Date(detail.created_at).toLocaleDateString("fr-FR")}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-[#101014]/10 p-3">
+                    <p className="font-mono text-[9px] text-[#101014]/35 uppercase">Commandes</p>
+                    <p className="font-fraunces text-2xl text-[#101014]">{detail.orders_count}</p>
+                    <p className="font-mono text-[10px] text-[#101014]/40">{detail.total_spent.toFixed(2)} € dépensés</p>
+                  </div>
+                  <div className="rounded-xl border border-[#101014]/10 p-3">
+                    <p className="font-mono text-[9px] text-[#101014]/35 uppercase">Réservations</p>
+                    <p className="font-fraunces text-2xl text-[#101014]">{detail.bookings_count}</p>
+                  </div>
+                </div>
+
+                {detail.orders?.length > 0 && (
+                  <div>
+                    <p className="font-mono text-[10px] text-[#101014]/40 mb-2">Dernières commandes</p>
+                    <div className="space-y-1.5">
+                      {detail.orders.map(o => (
+                        <div key={o.id} className="flex items-center justify-between rounded-lg border border-[#101014]/8 px-3 py-2">
+                          <span className="font-mono text-[10px] text-[#101014]/45">#{o.id.slice(0,8).toUpperCase()} · {new Date(o.created_at).toLocaleDateString("fr-FR")}</span>
+                          <span className="font-mono text-xs text-[#101014]">{Number(o.total_amount).toFixed(2)} €</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {detail.bookings?.length > 0 && (
+                  <div>
+                    <p className="font-mono text-[10px] text-[#101014]/40 mb-2">Réservations</p>
+                    <div className="space-y-1.5">
+                      {detail.bookings.map(b => (
+                        <div key={b.id} className="flex items-center justify-between rounded-lg border border-[#101014]/8 px-3 py-2">
+                          <span className="font-hanken text-xs text-[#101014]">{b.products?.name || b.products?.title || "Service"}</span>
+                          <span className="font-mono text-[10px] text-[#101014]/45">{new Date(b.start_at).toLocaleDateString("fr-FR")} · {b.status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {detail.orders_count === 0 && detail.bookings_count === 0 && (
+                  <p className="font-hanken text-sm text-[#101014]/40">Aucune commande ni réservation pour l'instant.</p>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

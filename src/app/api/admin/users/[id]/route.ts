@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError, logActivity } from "@/lib/admin/rbac";
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -7,15 +8,30 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   if ("error" in auth) return auth.error;
 
   const { id } = await params;
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const admin = createAdminClient();
 
+  const { data: profile, error } = await admin.from("profiles").select("*").eq("id", id).single();
   if (error) return apiError(error.message, 404);
-  return apiResponse(data);
+
+  // E-mail (auth) + commandes + réservations
+  const [{ data: authUser }, { data: orders }, { data: bookings }] = await Promise.all([
+    admin.auth.admin.getUserById(id),
+    admin.from("orders").select("id, total_amount, status, created_at").eq("user_id", id).order("created_at", { ascending: false }).limit(10),
+    admin.from("bookings").select("id, start_at, status, amount, products(name, title)").eq("customer_id", id).order("start_at", { ascending: false }).limit(10),
+  ]);
+
+  const ordersList = orders ?? [];
+  const totalSpent = ordersList.reduce((s, o) => s + Number(o.total_amount ?? 0), 0);
+
+  return apiResponse({
+    ...profile,
+    email: authUser?.user?.email ?? null,
+    orders: ordersList,
+    orders_count: ordersList.length,
+    total_spent: totalSpent,
+    bookings: bookings ?? [],
+    bookings_count: (bookings ?? []).length,
+  });
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
