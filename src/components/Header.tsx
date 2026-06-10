@@ -26,7 +26,7 @@ const NAV = [
   { label: "Shop", href: "/decouvrir" },
   { label: "Services",    href: "/services" },
   { label: "Associations", href: "/annuaire" },
-  { label: "Événements",  href: "/evenements" },
+  { label: "Événements & Ateliers",  href: "/evenements" },
   { label: "Média",       href: "/media" },
   { label: "Communauté",  href: "/communaute" },
 ];
