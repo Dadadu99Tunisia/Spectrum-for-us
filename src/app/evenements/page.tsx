@@ -29,6 +29,7 @@ type QueerEvent = {
   internal?: boolean;   // événement vendu sur Spectrum (billetterie interne)
   slug?: string;        // pour le lien produit interne
   capacity?: number | null;
+  kind?: string;        // 'event' | 'workshop'
 };
 
 const CITIES = ["Toutes", "Paris", "Lyon", "Marseille", "Bordeaux", "Toulouse", "Nantes", "Lille", "France"];
@@ -340,7 +341,7 @@ function SubmitEventCTA() {
   const [sent, setSent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
-  const [f, setF] = useState({ title: "", date_start: "", city: "", venue: "", url: "", organizer: "", category: "", description: "" });
+  const [f, setF] = useState({ kind: "event", title: "", date_start: "", city: "", venue: "", url: "", organizer: "", category: "", description: "", capacity: "" });
   const set = (k: keyof typeof f, v: string) => setF(s => ({ ...s, [k]: v }));
 
   const submit = async () => {
@@ -348,11 +349,13 @@ function SubmitEventCTA() {
     setSaving(true); setErr("");
     const supabase = createClient();
     const { error } = await supabase.from("queer_events").insert({
+      kind: f.kind,
       title: f.title.trim(),
       date_start: new Date(f.date_start).toISOString(),
       city: f.city.trim() || null, venue: f.venue.trim() || null,
       url: f.url.trim() || null, organizer: f.organizer.trim() || null,
       category: f.category || null, description: f.description.trim() || null,
+      capacity: f.capacity ? parseInt(f.capacity) : null,
       source: "manual", moderation: "pending",
     });
     setSaving(false);
@@ -370,19 +373,31 @@ function SubmitEventCTA() {
   return (
     <div className="mt-16 p-6 md:p-8 rounded-2xl border border-[#ECE6DB] bg-white">
       <div className="text-center">
-        <h3 className="font-fraunces text-2xl text-[#101014] mb-2">Tu organises un événement ?</h3>
+        <h3 className="font-fraunces text-2xl text-[#101014] mb-2">Tu organises un événement ou un atelier ?</h3>
         <p className="font-hanken text-sm text-[#101014]/50 mb-5">Soumets-le directement ici pour le faire apparaître dans l&apos;agenda.</p>
         {!open && (
           <button onClick={() => setOpen(true)}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2323C4] text-white font-hanken font-medium text-sm hover:brightness-110 transition-all">
-            <CalendarDays size={15} /> Soumettre mon événement
+            <CalendarDays size={15} /> Soumettre un événement ou un atelier
           </button>
         )}
       </div>
 
       {open && (
         <div className="max-w-xl mx-auto mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
-          <input value={f.title} onChange={e => set("title", e.target.value)} placeholder="Nom de l'événement *" className={subInput + " sm:col-span-2"} />
+          {/* Type */}
+          <div className="sm:col-span-2">
+            <label className="block font-mono text-[10px] text-[#101014]/40 mb-1.5">C'est un…</label>
+            <div className="grid grid-cols-2 gap-2">
+              {[{ v: "event", l: "🎉 Événement" }, { v: "workshop", l: "🛠️ Atelier" }].map(o => (
+                <button key={o.v} type="button" onClick={() => set("kind", o.v)}
+                  className={`px-3 py-2.5 rounded-xl border text-sm font-hanken transition-all ${f.kind === o.v ? "border-[#2323C4] bg-[#2323C4]/10 text-[#2323C4]" : "border-[#101014]/15 text-[#101014]/55 hover:border-[#101014]/30"}`}>
+                  {o.l}
+                </button>
+              ))}
+            </div>
+          </div>
+          <input value={f.title} onChange={e => set("title", e.target.value)} placeholder={f.kind === "workshop" ? "Nom de l'atelier *" : "Nom de l'événement *"} className={subInput + " sm:col-span-2"} />
           <input type="datetime-local" value={f.date_start} onChange={e => set("date_start", e.target.value)} className={subInput} />
           <select value={f.category} onChange={e => set("category", e.target.value)} className={subInput}>
             <option value="">Catégorie…</option>
@@ -391,7 +406,9 @@ function SubmitEventCTA() {
           <input value={f.venue} onChange={e => set("venue", e.target.value)} placeholder="Lieu / salle" className={subInput} />
           <input value={f.city} onChange={e => set("city", e.target.value)} placeholder="Ville" className={subInput} />
           <input value={f.organizer} onChange={e => set("organizer", e.target.value)} placeholder="Organisateur·ice" className={subInput} />
-          <input value={f.url} onChange={e => set("url", e.target.value)} placeholder="Lien (billetterie / infos)" className={subInput} />
+          <input type="number" min="1" value={f.capacity} onChange={e => set("capacity", e.target.value)}
+            placeholder={f.kind === "workshop" ? "Nombre de places (atelier)" : "Nombre de places (facultatif)"} className={subInput} />
+          <input value={f.url} onChange={e => set("url", e.target.value)} placeholder="Lien (billetterie / infos)" className={subInput + " sm:col-span-2"} />
           <textarea value={f.description} onChange={e => set("description", e.target.value)} rows={2} placeholder="Description" className={subInput + " sm:col-span-2"} />
           {err && <p className="sm:col-span-2 font-hanken text-sm text-red-500">{err}</p>}
           <div className="sm:col-span-2 flex items-center gap-3">
@@ -446,7 +463,13 @@ function EventCard({ event: e, featured }: { event: QueerEvent; featured?: boole
       </div>
 
       <div className="p-4">
-        {e.category && <Tag variant="teal" className="mb-2 text-[9px]">{e.category}</Tag>}
+        <div className="flex items-center gap-1.5 flex-wrap mb-2">
+          {e.kind === "workshop" && (
+            <span className="font-mono text-[9px] px-2 py-0.5 rounded-full bg-[#7A2BF0]/10 text-[#7A2BF0] border border-[#7A2BF0]/20">🛠️ Atelier</span>
+          )}
+          {e.category && <Tag variant="teal" className="text-[9px]">{e.category}</Tag>}
+          {e.capacity ? <span className="font-mono text-[9px] text-[#101014]/40">{e.capacity} places</span> : null}
+        </div>
         <h3 className="font-fraunces text-lg text-[#101014] leading-tight mb-2 line-clamp-2">{e.title}</h3>
 
         {dateStr && (
