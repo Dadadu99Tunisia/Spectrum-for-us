@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   const supabase = await createClient();
   let query = supabase
     .from("profiles")
-    .select("id,full_name,pseudo,role,is_suspended,country,last_seen_at,created_at", { count: "exact" })
+    .select("id,full_name,role,is_suspended,country,last_seen_at,created_at", { count: "exact" })
     .range(offset, offset + limit - 1)
     .order("created_at", { ascending: false });
 
