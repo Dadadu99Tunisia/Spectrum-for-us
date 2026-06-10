@@ -18,6 +18,7 @@ type Product = {
   slug: string; shop_id: string; image_url: string | null;
   images: string[] | null; tags: string[] | null;
   quantity: number; is_active: boolean; is_adult?: boolean; type: string | null;
+  event_date?: string | null; event_end?: string | null; event_location?: string | null; event_city?: string | null; event_capacity?: number | null;
   shops?: { name: string; slug: string } | { name: string; slug: string }[] | null;
 };
 
@@ -234,6 +235,23 @@ export default function ProduitPage() {
               </div>
 
               <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] leading-tight mb-2">{productName}</h1>
+
+              {ptype === "event" && (product.event_date || product.event_location || product.event_city) && (
+                <div className="rounded-xl border border-[#7A2BF0]/25 bg-[#7A2BF0]/[0.05] p-3 my-3 space-y-1">
+                  {product.event_date && (
+                    <p className="flex items-center gap-2 font-hanken text-sm text-[#101014]">
+                      <CalendarDays size={14} className="text-[#7A2BF0]" />
+                      <span className="capitalize">{new Date(product.event_date).toLocaleString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}</span>
+                    </p>
+                  )}
+                  {(product.event_location || product.event_city) && (
+                    <p className="flex items-center gap-2 font-hanken text-sm text-[#101014]/70">
+                      <span className="text-[#7A2BF0]">📍</span>
+                      {[product.event_location, product.event_city].filter(Boolean).join(" · ")}
+                    </p>
+                  )}
+                </div>
+              )}
 
               {shop && (
                 <Link href={`/boutique/${shop.slug || product.shop_id}`}

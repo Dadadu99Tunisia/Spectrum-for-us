@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { CalendarDays, MapPin, ExternalLink, Search, X, Sparkles, LayoutGrid, CalendarRange, ChevronLeft, ChevronRight } from "lucide-react";
 import { Tag } from "@/components/ui/Tag";
 import { ScatterText } from "@/components/ui/ScatterText";
+import Link from "next/link";
 
 type QueerEvent = {
   id: string;
@@ -25,6 +26,9 @@ type QueerEvent = {
   source?: string;
   organizer?: string;
   is_featured?: boolean;
+  internal?: boolean;   // événement vendu sur Spectrum (billetterie interne)
+  slug?: string;        // pour le lien produit interne
+  capacity?: number | null;
 };
 
 const CITIES = ["Toutes", "Paris", "Lyon", "Marseille", "Bordeaux", "Toulouse", "Nantes", "Lille", "France"];
@@ -40,7 +44,7 @@ function formatDate(iso?: string) {
 function sourceLabel(source?: string) {
   const map: Record<string, string> = {
     eventbrite: "Eventbrite", shotgun: "Shotgun", timeout: "Time Out",
-    "inter-lgbt": "Inter-LGBT", tetu: "Têtu", facebook: "Facebook", manual: "Spectrum",
+    "inter-lgbt": "Inter-LGBT", tetu: "Têtu", facebook: "Facebook", manual: "Spectrum", spectrum: "Spectrum",
   };
   return map[source ?? ""] ?? source ?? "";
 }
@@ -48,7 +52,7 @@ function sourceLabel(source?: string) {
 function sourceBadgeColor(source?: string): string {
   const map: Record<string, string> = {
     eventbrite: "#F93C2C", shotgun: "#7A2BF0", timeout: "#FFD400",
-    "inter-lgbt": "#FF2DA0", tetu: "#FF2DA0", facebook: "#2323C4", manual: "#FF2DA0",
+    "inter-lgbt": "#FF2DA0", tetu: "#FF2DA0", facebook: "#2323C4", manual: "#FF2DA0", spectrum: "#7A2BF0",
   };
   return map[source ?? ""] ?? "#101014";
 }
@@ -63,11 +67,29 @@ export default function EvenementsPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.from("queer_events")
-      .select("*")
-      .eq("moderation", "approved")
-      .order("date_start", { ascending: true })
-      .then(({ data }) => { setEvents(data ?? []); setLoading(false); });
+    (async () => {
+      const [{ data: ext }, { data: internal }] = await Promise.all([
+        supabase.from("queer_events").select("*").eq("moderation", "approved"),
+        supabase.from("products").select("id, name, title, description, price, slug, images, image_url, event_date, event_end, event_location, event_city, event_capacity, is_featured, shops(name)")
+          .eq("type", "event").eq("is_active", true).not("event_date", "is", null),
+      ]);
+      const internalEvents: QueerEvent[] = (internal ?? []).map((p) => {
+        const shop = Array.isArray(p.shops) ? p.shops[0] : p.shops;
+        return {
+          id: p.id, title: p.name || p.title, description: p.description ?? undefined,
+          date_start: p.event_date ?? undefined, date_end: p.event_end ?? undefined,
+          city: p.event_city ?? undefined, venue: p.event_location ?? undefined,
+          image_url: (p.images?.[0] ?? p.image_url) ?? undefined,
+          price: p.price ? `${Number(p.price).toFixed(0)} €` : "Gratuit",
+          source: "spectrum", organizer: shop?.name, is_featured: p.is_featured ?? false,
+          internal: true, slug: p.slug ?? undefined, capacity: p.event_capacity,
+        };
+      });
+      const all = [...(ext ?? []) as QueerEvent[], ...internalEvents]
+        .sort((a, b) => new Date(a.date_start ?? 0).getTime() - new Date(b.date_start ?? 0).getTime());
+      setEvents(all);
+      setLoading(false);
+    })();
   }, []);
 
   const filtered = events.filter(e => {
@@ -374,12 +396,18 @@ function EventCard({ event: e, featured }: { event: QueerEvent; featured?: boole
           <p className="font-hanken text-xs text-[#101014]/40 line-clamp-2 mb-3">{e.description}</p>
         )}
 
-        {e.url && (
+        {e.internal && e.slug ? (
+          <Link href={`/produit/${e.slug}`}
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide px-3 py-1.5 rounded-full text-white"
+            style={{ background: "#7A2BF0" }}>
+            🎟️ Réserver
+          </Link>
+        ) : e.url ? (
           <a href={e.url} target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-[#2323C4] hover:text-[#101014] transition-colors">
             Voir l&apos;événement <ExternalLink size={10} />
           </a>
-        )}
+        ) : null}
       </div>
     </div>
   );

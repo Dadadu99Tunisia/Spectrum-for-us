@@ -31,6 +31,7 @@ export default function NouveauProduitPage() {
     name: "", description: "", price: "", type: "product" as "product" | "service" | "event",
     category: "", subcategory: "", quantity: "1", is_active: true, is_adult: false, variants: [] as string[],
     image_url: "",
+    event_date: "", event_end: "", event_location: "", event_city: "", event_capacity: "",
   });
 
   useEffect(() => {
@@ -76,6 +77,13 @@ export default function NouveauProduitPage() {
       listing_status: "approved",
       image_url: form.image_url || null,
       images: form.image_url ? [form.image_url] : null,
+      ...(form.type === "event" ? {
+        event_date: form.event_date ? new Date(form.event_date).toISOString() : null,
+        event_end: form.event_end ? new Date(form.event_end).toISOString() : null,
+        event_location: form.event_location.trim() || null,
+        event_city: form.event_city.trim() || null,
+        event_capacity: form.event_capacity ? parseInt(form.event_capacity) : null,
+      } : {}),
     }).select("id").single();
     setSaving(false);
     if (err) { setError(err.message); return; }
@@ -141,6 +149,41 @@ export default function NouveauProduitPage() {
               ))}
             </div>
           </div>
+
+          {/* Champs Événement (billetterie interne) */}
+          {form.type === "event" && (
+            <div className="rounded-2xl border border-[#7A2BF0]/30 bg-[#7A2BF0]/[0.04] p-4 space-y-3">
+              <p className="font-mono text-[10px] tracking-wide text-[#7A2BF0]">🎟️ Détails de l'événement · billetterie Spectrum</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-mono text-[10px] text-[#101014]/40 mb-1">Date & heure de début *</label>
+                  <input type="datetime-local" value={form.event_date} onChange={(e) => setForm((f) => ({ ...f, event_date: e.target.value }))}
+                    className="w-full bg-white border border-[#101014]/15 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#7A2BF0]/50" />
+                </div>
+                <div>
+                  <label className="block font-mono text-[10px] text-[#101014]/40 mb-1">Fin (facultatif)</label>
+                  <input type="datetime-local" value={form.event_end} onChange={(e) => setForm((f) => ({ ...f, event_end: e.target.value }))}
+                    className="w-full bg-white border border-[#101014]/15 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#7A2BF0]/50" />
+                </div>
+                <div>
+                  <label className="block font-mono text-[10px] text-[#101014]/40 mb-1">Lieu / salle</label>
+                  <input type="text" value={form.event_location} onChange={(e) => setForm((f) => ({ ...f, event_location: e.target.value }))}
+                    placeholder="La Mutinerie" className="w-full bg-white border border-[#101014]/15 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#7A2BF0]/50" />
+                </div>
+                <div>
+                  <label className="block font-mono text-[10px] text-[#101014]/40 mb-1">Ville</label>
+                  <input type="text" value={form.event_city} onChange={(e) => setForm((f) => ({ ...f, event_city: e.target.value }))}
+                    placeholder="Paris" className="w-full bg-white border border-[#101014]/15 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#7A2BF0]/50" />
+                </div>
+                <div>
+                  <label className="block font-mono text-[10px] text-[#101014]/40 mb-1">Nombre de places (capacité)</label>
+                  <input type="number" min="1" value={form.event_capacity} onChange={(e) => setForm((f) => ({ ...f, event_capacity: e.target.value }))}
+                    placeholder="50" className="w-full bg-white border border-[#101014]/15 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#7A2BF0]/50" />
+                </div>
+              </div>
+              <p className="font-mono text-[9px] text-[#101014]/35">Le « stock » (champ quantité plus bas) = nombre de billets disponibles.</p>
+            </div>
+          )}
 
           {/* Name */}
           <div>
