@@ -52,7 +52,7 @@ export default function UsersPage() {
 
   const openDetail = async (id: string) => {
     setDetailLoading(true); setDetail({ id } as UserDetail);
-    const res = await fetch(`/api/admin/users/${id}`);
+    const res = await fetch(`/api/admin/users/${id}`, { cache: "no-store" });
     const json = await res.json();
     setDetail(json.data ?? null);
     setDetailLoading(false);
@@ -64,7 +64,7 @@ export default function UsersPage() {
     const params = new URLSearchParams({ page: String(page), limit: String(LIMIT) });
     if (search)     params.set("search", search);
     if (roleFilter) params.set("role", roleFilter);
-    const res  = await fetch(`/api/admin/users?${params}`);
+    const res  = await fetch(`/api/admin/users?${params}`, { cache: "no-store" });
     const json = await res.json();
     setUsers(json.data ?? []);
     setTotal(json.meta?.total ?? 0);
@@ -85,10 +85,10 @@ export default function UsersPage() {
     });
     const json = await res.json();
     setActionLoading(null);
-    if (!json.error) {
-      showToast(user.is_suspended ? "Compte réactivé ✓" : "Compte suspendu ✓");
-      fetchUsers();
-    }
+    if (json.error) { showToast("Erreur : " + json.error); return; }
+    setUsers(us => us.map(u => u.id === user.id ? { ...u, is_suspended: !user.is_suspended } : u));
+    showToast(user.is_suspended ? "Compte réactivé ✓" : "Compte suspendu ✓");
+    fetchUsers();
   };
 
   const changeRole = async (userId: string, role: string) => {
@@ -101,7 +101,10 @@ export default function UsersPage() {
     const json = await res.json();
     setActionLoading(null);
     setEditRole(null);
-    if (!json.error) { showToast("Rôle mis à jour ✓"); fetchUsers(); }
+    if (json.error) { showToast("Erreur : " + json.error); return; }
+    setUsers(us => us.map(u => u.id === userId ? { ...u, role } : u)); // maj optimiste immédiate
+    showToast("Rôle mis à jour ✓");
+    fetchUsers();
   };
 
   return (
