@@ -217,15 +217,8 @@ export default function EvenementsPage() {
             </div>
           )}
 
-          {/* Submit CTA */}
-          <div className="mt-16 p-8 rounded-2xl border border-[#ECE6DB] bg-white text-center">
-            <h3 className="font-fraunces text-2xl text-[#101014] mb-2">Tu organises un événement ?</h3>
-            <p className="font-hanken text-sm text-[#101014]/50 mb-6">Soumets-le ici pour le faire apparaître dans l&apos;agenda.</p>
-            <a href="mailto:hello@spectrumforus.com?subject=Soumettre un événement&body=Nom de l'événement :%0ADate :%0ALieu :%0ADescription :%0AURL :"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2323C4] text-white font-hanken font-medium text-sm hover:brightness-110 transition-all">
-              <CalendarDays size={15} /> Soumettre mon événement
-            </a>
-          </div>
+          {/* Soumission directe */}
+          <SubmitEventCTA />
         </div>
       </main>
       <Footer />
@@ -341,6 +334,83 @@ function MonthCalendar({ events }: { events: QueerEvent[] }) {
     </div>
   );
 }
+
+function SubmitEventCTA() {
+  const [open, setOpen] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState("");
+  const [f, setF] = useState({ title: "", date_start: "", city: "", venue: "", url: "", organizer: "", category: "", description: "" });
+  const set = (k: keyof typeof f, v: string) => setF(s => ({ ...s, [k]: v }));
+
+  const submit = async () => {
+    if (!f.title.trim() || !f.date_start) { setErr("Titre et date requis."); return; }
+    setSaving(true); setErr("");
+    const supabase = createClient();
+    const { error } = await supabase.from("queer_events").insert({
+      title: f.title.trim(),
+      date_start: new Date(f.date_start).toISOString(),
+      city: f.city.trim() || null, venue: f.venue.trim() || null,
+      url: f.url.trim() || null, organizer: f.organizer.trim() || null,
+      category: f.category || null, description: f.description.trim() || null,
+      source: "manual", moderation: "pending",
+    });
+    setSaving(false);
+    if (error) { setErr(error.message); return; }
+    setSent(true);
+  };
+
+  if (sent) return (
+    <div className="mt-16 p-8 rounded-2xl border border-green-500/30 bg-green-500/5 text-center">
+      <h3 className="font-fraunces text-2xl text-[#101014] mb-2">Merci ! 🎉</h3>
+      <p className="font-hanken text-sm text-[#101014]/55">Ton événement a été soumis. Il apparaîtra dans l&apos;agenda après validation.</p>
+    </div>
+  );
+
+  return (
+    <div className="mt-16 p-6 md:p-8 rounded-2xl border border-[#ECE6DB] bg-white">
+      <div className="text-center">
+        <h3 className="font-fraunces text-2xl text-[#101014] mb-2">Tu organises un événement ?</h3>
+        <p className="font-hanken text-sm text-[#101014]/50 mb-5">Soumets-le directement ici pour le faire apparaître dans l&apos;agenda.</p>
+        {!open && (
+          <button onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2323C4] text-white font-hanken font-medium text-sm hover:brightness-110 transition-all">
+            <CalendarDays size={15} /> Soumettre mon événement
+          </button>
+        )}
+      </div>
+
+      {open && (
+        <div className="max-w-xl mx-auto mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+          <input value={f.title} onChange={e => set("title", e.target.value)} placeholder="Nom de l'événement *" className={subInput + " sm:col-span-2"} />
+          <input type="datetime-local" value={f.date_start} onChange={e => set("date_start", e.target.value)} className={subInput} />
+          <select value={f.category} onChange={e => set("category", e.target.value)} className={subInput}>
+            <option value="">Catégorie…</option>
+            {CATEGORIES.filter(c => c !== "Tous").map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <input value={f.venue} onChange={e => set("venue", e.target.value)} placeholder="Lieu / salle" className={subInput} />
+          <input value={f.city} onChange={e => set("city", e.target.value)} placeholder="Ville" className={subInput} />
+          <input value={f.organizer} onChange={e => set("organizer", e.target.value)} placeholder="Organisateur·ice" className={subInput} />
+          <input value={f.url} onChange={e => set("url", e.target.value)} placeholder="Lien (billetterie / infos)" className={subInput} />
+          <textarea value={f.description} onChange={e => set("description", e.target.value)} rows={2} placeholder="Description" className={subInput + " sm:col-span-2"} />
+          {err && <p className="sm:col-span-2 font-hanken text-sm text-red-500">{err}</p>}
+          <div className="sm:col-span-2 flex items-center gap-3">
+            <button onClick={submit} disabled={saving}
+              className="px-5 py-2.5 rounded-full bg-[#2323C4] text-white font-hanken text-sm hover:brightness-110 disabled:opacity-40">
+              {saving ? "Envoi…" : "Envoyer pour validation"}
+            </button>
+            <button onClick={() => setOpen(false)} className="font-mono text-xs text-[#101014]/35 hover:text-[#101014]/60">Annuler</button>
+          </div>
+          <p className="sm:col-span-2 font-mono text-[10px] text-[#101014]/35">
+            Tu veux <strong>vendre des billets</strong> directement sur Spectrum ? <Link href="/vendeur/nouveau-produit" className="text-[#7A2BF0] underline">Crée un événement depuis ton espace vendeur·se</Link>.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const subInput = "w-full bg-[#101014]/[0.03] border border-[#ECE6DB] rounded-xl px-3.5 py-2.5 text-[#101014] font-hanken text-sm placeholder-[#101014]/30 focus:outline-none focus:border-[#2323C4]/50 transition-colors";
 
 function EventCard({ event: e, featured }: { event: QueerEvent; featured?: boolean }) {
   const dateStr = formatDate(e.date_start);
