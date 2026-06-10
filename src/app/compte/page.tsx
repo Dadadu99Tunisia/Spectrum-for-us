@@ -58,6 +58,7 @@ export default function ComptePage() {
   const [orders, setOrders] = useState<Array<{ id: string; total_amount: number; status: string; created_at: string }>>([]);
   const [shipments, setShipments] = useState<Record<string, Array<{ shop_id: string; method_label: string | null; status: string; carrier: string | null; tracking_number: string | null }>>>({});
   const [returns, setReturns] = useState<Record<string, string>>({}); // `${order_id}|${shop_id}` -> status
+  const [bookings, setBookings] = useState<Array<{ id: string; start_at: string; status: string; amount: number | null; products: { name: string | null; title: string | null } | null }>>([]);
   const [favCount, setFavCount] = useState(0);
 
   useEffect(() => {
@@ -79,6 +80,8 @@ export default function ComptePage() {
     const supabase = createClient();
     supabase.from("profiles").select("*").eq("id", user.id).single()
       .then(({ data }) => setProfile(data));
+    supabase.from("bookings").select("id, start_at, status, amount, products(name, title)").eq("customer_id", user.id).order("start_at", { ascending: false })
+      .then(({ data }) => setBookings((data ?? []) as unknown as typeof bookings));
     supabase.from("orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
       .then(async ({ data }) => {
         setOrders(data ?? []);
@@ -256,6 +259,26 @@ export default function ComptePage() {
               );
             })}
           </div>
+
+          {/* Réservations */}
+          {tab === "Commandes" && bookings.length > 0 && (
+            <div className="mb-6">
+              <p className="font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">🗓️ Mes réservations</p>
+              <div className="space-y-2">
+                {bookings.map(b => (
+                  <div key={b.id} className="flex items-center justify-between rounded-2xl border border-[#101014]/10 bg-white px-4 py-3">
+                    <div>
+                      <p className="font-hanken text-sm text-[#101014]">{b.products?.name || b.products?.title || "Service"}</p>
+                      <p className="font-mono text-[11px] text-[#101014]/45">{new Date(b.start_at).toLocaleString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}</p>
+                    </div>
+                    <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full border ${b.status === "confirmed" ? "text-green-600 border-green-400/30 bg-green-400/10" : b.status === "cancelled" ? "text-red-500 border-red-400/30" : "text-[#101014]/40 border-[#101014]/20"}`}>
+                      {b.status === "confirmed" ? "Confirmé" : b.status === "cancelled" ? "Annulé" : "En attente"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Commandes */}
           {tab === "Commandes" && (

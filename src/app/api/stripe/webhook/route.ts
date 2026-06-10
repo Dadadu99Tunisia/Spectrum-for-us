@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendOrderConfirmation, trySend } from "@/lib/email";
+import { sendOrderConfirmation, trySend, sendBookingConfirmation, sendBookingVendorAlert } from "@/lib/email";
 
 /** current_period_end a migré au niveau de l'item d'abonnement (Stripe API récente). */
 function subPeriodEndISO(sub: Stripe.Subscription): string | null {
@@ -59,6 +59,44 @@ export async function POST(req: Request) {
   if (event.type === "payment_intent.succeeded") {
     const pi = event.data.object as Stripe.PaymentIntent;
     const { user_id, cart_json, shipping_json, shipments_json, buyer_email } = pi.metadata ?? {};
+
+    // ── 0. Réservation de service (booking) ──
+    const bookingId = pi.metadata?.booking_id;
+    if (bookingId) {
+      const { data: bk } = await supabase.from("bookings").select("id, status, start_at, customer_email, product_id, shop_id, amount").eq("id", bookingId).maybeSingle();
+      if (bk && bk.status !== "confirmed") {
+        await supabase.from("bookings").update({ status: "confirmed", updated_at: new Date().toISOString() }).eq("id", bookingId);
+        // Transfert au·à la prestataire (sous-total − commission)
+        try {
+          const account = pi.metadata?.transfer_account;
+          const amount = parseInt(pi.metadata?.transfer_amount ?? "0");
+          const chargeId = typeof pi.latest_charge === "string" ? pi.latest_charge : pi.latest_charge?.id;
+          if (account && amount > 0) {
+            await stripe.transfers.create({
+              amount, currency: pi.currency, destination: account,
+              ...(chargeId ? { source_transaction: chargeId } : {}),
+              transfer_group: pi.metadata?.transfer_group ?? `bk_${bookingId}`,
+              metadata: { booking_id: bookingId, shop_id: bk.shop_id },
+            });
+          }
+        } catch (e) { console.error("[webhook] transfert booking (non bloquant)", e); }
+        // E-mails (client·e + prestataire)
+        try {
+          const { data: prod } = await supabase.from("products").select("name, title").eq("id", bk.product_id).maybeSingle();
+          const { data: shop } = await supabase.from("shops").select("name, owner_id").eq("id", bk.shop_id).maybeSingle();
+          const when = new Date(bk.start_at as string).toLocaleString("fr-FR", { dateStyle: "full", timeStyle: "short" });
+          const svc = prod?.name || prod?.title || "votre service";
+          if (bk.customer_email) {
+            await trySend(() => sendBookingConfirmation({ to: bk.customer_email as string, service: svc, when, shop: shop?.name ?? "" }));
+          }
+          if (shop?.owner_id) {
+            const { data: owner } = await supabase.from("profiles").select("email").eq("id", shop.owner_id).maybeSingle();
+            if (owner?.email) await trySend(() => sendBookingVendorAlert({ to: owner.email as string, service: svc, when }));
+          }
+        } catch (e) { console.error("[webhook] emails booking (non bloquant)", e); }
+      }
+      return NextResponse.json({ received: true });
+    }
 
     if (!user_id || !cart_json) {
       // Payment intent non lié à une commande marketplace (ex. abonnement) · ignorer

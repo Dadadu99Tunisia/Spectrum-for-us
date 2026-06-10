@@ -174,6 +174,26 @@ export async function sendRefundConfirmation(params: {
   });
 }
 
+export async function sendBookingConfirmation(params: { to: string; service: string; when: string; shop: string }) {
+  const body = `
+    ${h2("Ta réservation est confirmée ✓")}
+    ${text(`Ton rendez-vous pour <strong style="color:#F3EADB;">${params.service}</strong>${params.shop ? ` avec ${params.shop}` : ""} est confirmé.`)}
+    ${text(`📅 <strong style="color:#F3EADB;">${params.when}</strong>`)}
+    ${cta("Voir mes réservations", `${BASE}/compte`)}
+  `;
+  return getResend().emails.send({ from: FROM, to: params.to, subject: `Réservation confirmée · ${params.service}`, html: baseLayout("Réservation · Spectrum For Us", body) });
+}
+
+export async function sendBookingVendorAlert(params: { to: string; service: string; when: string }) {
+  const body = `
+    ${h2("Nouvelle réservation 🗓️")}
+    ${text(`Tu as une nouvelle réservation pour <strong style="color:#F3EADB;">${params.service}</strong>.`)}
+    ${text(`📅 <strong style="color:#F3EADB;">${params.when}</strong>`)}
+    ${cta("Voir mon agenda", `${BASE}/vendeur`)}
+  `;
+  return getResend().emails.send({ from: FROM, to: params.to, subject: `Nouvelle réservation · ${params.service}`, html: baseLayout("Réservation · Spectrum For Us", body) });
+}
+
 export async function sendWelcomeEmail(params: { to: string; pseudo: string }) {
   const body = `
     ${h2(`Bienvenue sur Spectrum, ${params.pseudo} ✦`)}

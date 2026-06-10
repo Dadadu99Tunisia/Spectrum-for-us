@@ -11,6 +11,7 @@ import { Heart, ArrowLeft, ShoppingBag, Check, Package, Zap, CalendarDays, Alert
 import Link from "next/link";
 import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { ProductReviews } from "@/components/ProductReviews";
+import { BookingWidget } from "@/components/booking/BookingWidget";
 
 type Product = {
   id: string; name: string; title: string; description: string;
@@ -300,7 +301,11 @@ export default function ProduitPage() {
                   ✦ Cette boutique finalise sa configuration de paiement. Suis-la pour être prévenu·e dès l'ouverture des ventes.
                 </p>
               )}
+              {ptype === "service" && payReady && (
+                <div className="mb-8"><BookingWidget productId={product.id} price={Number(product.price)} /></div>
+              )}
               <div className="flex gap-3 mb-8">
+                {!(ptype === "service" && payReady) && (
                 <button
                   onClick={handleAdd}
                   disabled={isOos || !payReady}
@@ -312,6 +317,7 @@ export default function ProduitPage() {
                 >
                   {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {isOos ? "Épuisé" : !payReady ? "Bientôt en vente" : typeConf.cta}</>}
                 </button>
+                )}
                 <button onClick={toggleLike}
                   className="p-4 border border-[#101014]/15 rounded-full hover:border-[#FF2DA0]/40 transition-colors">
                   <Heart size={18} className={liked ? "fill-[#FF2DA0] text-[#FF2DA0]" : "text-[#101014]/50"} />
@@ -373,8 +379,8 @@ export default function ProduitPage() {
         </div>
       </main>
 
-      {/* ── Mobile sticky CTA bar ── */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-3"
+      {/* ── Mobile sticky CTA bar (masquée pour les services : réservation inline) ── */}
+      <div className={`${ptype === "service" && payReady ? "hidden" : "md:hidden"} fixed bottom-0 left-0 right-0 z-40 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-3`}
         style={{
           background: "rgba(251,249,245,0.95)",
           backdropFilter: "blur(20px)",
