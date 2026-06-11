@@ -116,6 +116,20 @@ export default function CheckoutPage() {
   const [shipSel, setShipSel] = useState<ShipmentSelection[]>([]);
   const [shipTotal, setShipTotal] = useState(0);
   const [shipComplete, setShipComplete] = useState(false);
+  const [promo, setPromo] = useState("");
+  const [promoApplied, setPromoApplied] = useState<{ code: string; discount: number } | null>(null);
+  const [promoErr, setPromoErr] = useState("");
+  const applyPromo = async () => {
+    setPromoErr(""); setPromoApplied(null);
+    if (!promo.trim()) return;
+    const res = await fetch("/api/discount/validate", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: promo.trim(), cart: items.map(i => ({ id: i.id, quantity: i.quantity })) }),
+    });
+    const d = await res.json();
+    if (d.valid) setPromoApplied({ code: d.code, discount: d.discount });
+    else setPromoErr(d.error ?? "Code invalide");
+  };
   const onShipping = useCallback((s: ShipmentSelection[], t: number, c: boolean) => {
     setShipSel(s); setShipTotal(t); setShipComplete(c);
   }, []);
@@ -173,6 +187,7 @@ export default function CheckoutPage() {
             zip: form.zip, country: form.country,
           } : undefined,
           shipping_selections: shipSel.map(s => ({ shop_id: s.shop_id, method_id: s.method_id, relay_point: s.relay_point })),
+          discount_code: promoApplied?.code,
         }),
       });
       const data = await res.json();
@@ -188,7 +203,7 @@ export default function CheckoutPage() {
       setIntentError("Erreur réseau. Réessaie.");
     }
     setLoadingIntent(false);
-  }, [total, user, items, form, shipSel]);
+  }, [total, user, items, form, shipSel, promoApplied]);
 
   const handleGoToPayment = async () => {
     // Recréer le payment intent avec les infos de livraison à jour
@@ -440,10 +455,31 @@ export default function CheckoutPage() {
                     <span>Frais de port</span>
                     <span className="font-mono">{shipComplete ? (shipTotal === 0 ? "Offert" : `${shipTotal.toFixed(2)} €`) : <span className="text-[#2323C4]">À choisir</span>}</span>
                   </div>
+                  {promoApplied && (
+                    <div className="flex justify-between text-sm font-hanken text-green-600">
+                      <span>Code {promoApplied.code}</span><span className="font-mono">−{promoApplied.discount.toFixed(2)} €</span>
+                    </div>
+                  )}
                 </div>
+
+                {/* Code promo */}
+                {!clientSecret && (
+                  <div className="mt-3">
+                    {promoApplied ? (
+                      <button onClick={() => { setPromoApplied(null); setPromo(""); }} className="font-mono text-[10px] text-[#101014]/40 hover:text-[#101014]/70">✕ Retirer le code</button>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input value={promo} onChange={e => setPromo(e.target.value.toUpperCase())} placeholder="Code promo"
+                          className="flex-1 bg-[#101014]/5 border border-[#101014]/12 rounded-lg px-3 py-2 font-mono text-xs uppercase focus:outline-none focus:border-[#FF2DA0]/50" />
+                        <button onClick={applyPromo} className="px-3 rounded-lg bg-[#101014] text-white font-hanken text-xs">Appliquer</button>
+                      </div>
+                    )}
+                    {promoErr && <p className="font-hanken text-[11px] text-red-500 mt-1">{promoErr}</p>}
+                  </div>
+                )}
                 <div className="flex justify-between font-bricolage font-bold text-[#101014] text-lg mt-2">
                   <span>Total</span>
-                  <span>{serverTotal !== null ? serverTotal.toFixed(2) : (total() + shipTotal).toFixed(2)} €</span>
+                  <span>{serverTotal !== null ? serverTotal.toFixed(2) : Math.max(0, total() + shipTotal - (promoApplied?.discount ?? 0)).toFixed(2)} €</span>
                 </div>
                 {serverTotal !== null && Math.abs(serverTotal - total()) > 0.01 && (
                   <p className="font-hanken text-[10px] text-amber-400/70 mt-1 text-right">

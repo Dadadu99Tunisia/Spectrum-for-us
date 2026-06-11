@@ -155,7 +155,8 @@ export async function POST(req: Request) {
       return sum + (p ? Number(p.price) * item.quantity : 0);
     }, 0);
     const shippingTotal = shipments.reduce((sum, s) => sum + (Number(s.cost) || 0) / 100, 0);
-    const serverTotal = productsTotal + shippingTotal;
+    const discountAmount = Number(pi.metadata?.discount_amount || 0);
+    const serverTotal = Math.max(0, productsTotal + shippingTotal - discountAmount);
 
     // Récupérer les shop owner_ids pour les notifications vendeurs
     const shopIds = [...new Set((products ?? []).map(p => p.shop_id).filter(Boolean))];
@@ -201,6 +202,15 @@ export async function POST(req: Request) {
     });
 
     await supabase.from("order_items").insert(orderItems);
+
+    // Incrémente l'usage du code promo utilisé
+    const usedCode = pi.metadata?.discount_code;
+    if (usedCode) {
+      try {
+        const { data: dc } = await supabase.from("discount_codes").select("id, used_count").ilike("code", usedCode).maybeSingle();
+        if (dc) await supabase.from("discount_codes").update({ used_count: (dc.used_count ?? 0) + 1 }).eq("id", dc.id);
+      } catch (e) { console.error("[webhook] incrément code promo", e); }
+    }
 
     // Créer les colis (un par boutique) à partir des frais de port choisis
     if (shipments.length > 0) {

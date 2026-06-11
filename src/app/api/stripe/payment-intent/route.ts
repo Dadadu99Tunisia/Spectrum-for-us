@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getCommissionRate } from "@/lib/commission";
 import { limits, rateLimitResponse } from "@/lib/rate-limit";
 import { shippingPrice } from "@/lib/shipping";
+import { validateDiscount } from "@/lib/discount";
 
 interface CartItemInput {
   id: string;
@@ -30,6 +31,7 @@ export async function POST(req: NextRequest) {
   let body: {
     cart: CartItemInput[]; currency?: string; shipping?: Record<string, string>;
     shipping_selections?: { shop_id: string; method_id: string; relay_point: Record<string, string> | null }[];
+    discount_code?: string;
   };
   try {
     body = await req.json();
@@ -137,19 +139,28 @@ export async function POST(req: NextRequest) {
     };
   }
 
-  // Reversement par vendeur·se Stripe = sous-total − commission.
+  // ── Code promo (re-validé serveur) ──
+  let discountCents = 0;
+  let discountShopId: string | null = null;
+  let discountCode: string | null = null;
+  if (body.discount_code) {
+    const dr = await validateDiscount(admin, body.discount_code, subtotalByShop);
+    if (dr.ok) { discountCents = dr.discount_cents; discountShopId = dr.shop_id; discountCode = dr.code; }
+  }
+
+  // Reversement par vendeur·se Stripe = sous-total − commission − remise éventuelle (le·la vendeur·se absorbe sa promo).
   // Les frais de port restent sur la plateforme (c'est elle qui paie l'étiquette via son compte Sendcloud).
   const transfers: { a: string; c: number; s: string }[] = [];
   for (const sid of shopIds) {
-    // Versement manuel (pays sans Stripe) : pas de transfert Stripe, l'argent reste sur la plateforme
-    // qui reverse à la main (le port leur revient car elles s'expédient elles-mêmes — suivi dans le registre).
+    // Versement manuel (pays sans Stripe) : pas de transfert Stripe, l'argent reste sur la plateforme.
     if (shopMap[sid].payout_mode === "manual") continue;
     const rate = await getCommissionRate(admin, sid);
     const sub = subtotalByShop[sid];
     const commission = Math.round(sub * (rate / 100));
-    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: sub - commission, s: sid });
+    const shopDiscount = discountShopId === sid ? discountCents : 0; // remise boutique : la boutique l'absorbe
+    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: Math.max(0, sub - commission - shopDiscount), s: sid });
   }
-  const grandTotalCents = totalCents + shippingCents;
+  const grandTotalCents = Math.max(50, totalCents + shippingCents - discountCents);
   const transferGroup = `sfu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
   // ── Customer Stripe (cartes enregistrées + réutilisation) ──
@@ -202,6 +213,8 @@ export async function POST(req: NextRequest) {
       transfer_group: transferGroup,
       transfers_json: JSON.stringify(transfers),
       shipments_json: JSON.stringify(shipmentsMeta),
+      discount_code: discountCode ?? "",
+      discount_amount: discountCents ? String(discountCents / 100) : "",
     },
   });
 
