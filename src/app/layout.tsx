@@ -19,6 +19,7 @@ import { Analytics } from "@/components/Analytics";
 import { CookieBanner } from "@/components/ui/CookieBanner";
 import { AccessibilityBar } from "@/components/AccessibilityBar";
 import { BottomNav } from "@/components/mobile/BottomNav";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { IntroSplash } from "@/components/IntroSplash";
 import { FavoritesSync } from "@/components/FavoritesSync";
 
@@ -153,6 +154,7 @@ export default function RootLayout({
               {/* Mobile bottom navigation */}
               <BottomNav />
               <CookieBanner />
+              <InstallPrompt />
               <AccessibilityBar />
             </I18nProvider>
           </AuthProvider>
