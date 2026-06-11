@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
-import { Search, ShoppingBag, Menu, Heart, Truck, RefreshCw, ShieldCheck, ArrowRight } from "lucide-react";
+import { Search, ShoppingBag, Menu, Heart, Truck, RefreshCw, ShieldCheck, ArrowRight, X } from "lucide-react";
 
 // ── Light theme tokens ─────────────────────────────────────────────────────
 const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
@@ -120,6 +120,7 @@ export function MobileHomeView() {
   const [loading, setLoading] = useState(true);
   const [cat, setCat] = useState("Tout");
   const [search, setSearch] = useState("");
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -150,9 +151,48 @@ export function MobileHomeView() {
               <ShoppingBag size={20} style={{ color: T.ink }} />
               {cartCount > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[10px] font-mono font-bold flex items-center justify-center text-white" style={{ background: T.mag }}>{cartCount}</span>}
             </Link>
+            <button onClick={() => setNavOpen(true)} aria-label="Menu" className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}`, color: T.ink }}>
+              <Menu size={20} />
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Menu de navigation mobile */}
+      {navOpen && (
+        <div className="fixed inset-0 z-[70]" onClick={() => setNavOpen(false)}>
+          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute top-0 right-0 h-full w-[78%] max-w-[320px] bg-[#FBFAF8] shadow-2xl p-5 overflow-y-auto" style={{ paddingTop: "max(20px,env(safe-area-inset-top))" }} onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-5">
+              <span className="font-fraunces font-bold text-lg" style={{ color: T.ink }}>Menu</span>
+              <button onClick={() => setNavOpen(false)} aria-label="Fermer" style={{ color: T.soft }}><X size={20} /></button>
+            </div>
+            <nav className="flex flex-col">
+              {[
+                { l: "Shop", h: "/decouvrir" },
+                { l: "Services", h: "/services" },
+                { l: "Associations", h: "/annuaire" },
+                { l: "Événements & Ateliers", h: "/evenements" },
+                { l: "Média", h: "/media" },
+                { l: "Communauté", h: "/communaute" },
+              ].map(n => (
+                <Link key={n.h} href={n.h} onClick={() => setNavOpen(false)}
+                  className="py-3.5 font-bricolage font-semibold text-[16px] border-b" style={{ color: T.ink, borderColor: T.line }}>
+                  {n.l}
+                </Link>
+              ))}
+              <Link href="/vendeur/onboarding" onClick={() => setNavOpen(false)}
+                className="mt-5 text-center font-bold text-[15px] py-3 rounded-full text-white" style={{ background: T.mag }}>
+                Vendre sur Spectrum
+              </Link>
+              <Link href={user ? "/compte" : "/auth"} onClick={() => setNavOpen(false)}
+                className="mt-2 text-center font-semibold text-[14px] py-3 rounded-full" style={{ color: T.soft, border: `1px solid ${T.line}` }}>
+                {user ? "Mon compte" : "Connexion"}
+              </Link>
+            </nav>
+          </div>
+        </div>
+      )}
 
       {/* Hero (editorial, dark) */}
       {showExtras && (
