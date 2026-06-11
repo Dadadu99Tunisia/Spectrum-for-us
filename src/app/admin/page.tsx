@@ -444,8 +444,14 @@ export default function AdminDashboard() {
                     <Package size={12} className="text-[#101014]/30" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-mono text-xs text-[#101014]/60 truncate">#{String(o.id).slice(0, 8)}</p>
-                    <p className="font-mono text-[10px] text-[#101014]/25">{new Date(String(o.created_at)).toLocaleDateString("fr-FR")}</p>
+                    <p className="font-mono text-xs text-[#101014]/60 truncate">
+                      #{String(o.id).slice(0, 8)} ·{" "}
+                      <span className="text-[#101014]/80">{(o.profiles as { full_name?: string } | null)?.full_name || String(o.shipping_name ?? "") || (o.user_id ? "Acheteur·se" : "Sans acheteur")}</span>
+                    </p>
+                    <p className="font-mono text-[10px] text-[#101014]/25">
+                      {new Date(String(o.created_at)).toLocaleString("fr-FR", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      {!o.payment_intent_id && <span className="text-[#F93C2C]/70"> · ⚠ sans paiement</span>}
+                    </p>
                   </div>
                   <span className="font-mono text-sm text-[#101014]/80">{fmtSm(Number(o.total_amount ?? o.total ?? 0))}</span>
                   <span className={`font-mono text-[9px] px-2 py-0.5 rounded-full border ${STATUS_PILL[String(o.status)] ?? "bg-[#101014]/[0.06] text-[#101014]/40 border-[#101014]/[0.13]"}`}>

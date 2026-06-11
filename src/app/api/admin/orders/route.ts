@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   const supabase = createAdminClient();
   let query = supabase
     .from("orders")
-    .select("id, status, total_amount, created_at, tracking_number, carrier, dispute_status, refund_status, refund_amount, user_id", { count: "exact" })
+    .select("id, status, total_amount, created_at, tracking_number, carrier, dispute_status, refund_status, refund_amount, user_id, shipping_name, shipping_email, payment_intent_id", { count: "exact" })
     .range(offset, offset + limit - 1)
     .order("created_at", { ascending: false });
 
