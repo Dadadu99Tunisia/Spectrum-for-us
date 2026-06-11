@@ -93,14 +93,15 @@ export async function POST(req: NextRequest) {
   const admin = createAdminClient();
   const { data: shops } = await admin
     .from("shops")
-    .select("id, name, stripe_account_id, stripe_charges_enabled, shipping_options")
+    .select("id, name, stripe_account_id, stripe_charges_enabled, shipping_options, payout_mode")
     .in("id", shopIds);
   const shopMap = Object.fromEntries((shops ?? []).map(s => [s.id, s]));
 
-  // Tous les vendeurs du panier doivent avoir activé leurs paiements
+  // Tous les vendeurs doivent pouvoir être payés : soit Stripe activé, soit versement manuel
   for (const sid of shopIds) {
     const s = shopMap[sid];
-    if (!s?.stripe_account_id || !s.stripe_charges_enabled) {
+    const manual = s?.payout_mode === "manual";
+    if (!manual && (!s?.stripe_account_id || !s.stripe_charges_enabled)) {
       return NextResponse.json(
         { error: `${s?.name ?? "Un vendeur"} n'a pas encore activé ses paiements. Retire ses articles ou reviens bientôt.` },
         { status: 400 }
@@ -136,6 +137,9 @@ export async function POST(req: NextRequest) {
   // Reversement par vendeur = (sous-total − commission) + frais de port (pas de commission sur le port)
   const transfers: { a: string; c: number; s: string }[] = [];
   for (const sid of shopIds) {
+    // Versement manuel (pays sans Stripe) : pas de transfert Stripe, l'argent reste sur la plateforme
+    // qui reverse à la main (suivi dans le registre admin des versements).
+    if (shopMap[sid].payout_mode === "manual") continue;
     const rate = await getCommissionRate(admin, sid);
     const sub = subtotalByShop[sid];
     const commission = Math.round(sub * (rate / 100));

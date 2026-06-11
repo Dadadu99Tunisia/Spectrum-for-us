@@ -54,7 +54,7 @@ export default function ProduitPage() {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
     supabase
       .from("products")
-      .select("*, shops(name, slug, stripe_charges_enabled)")
+      .select("*, shops(name, slug, stripe_charges_enabled, payout_mode)")
       .or(isUuid ? `slug.eq.${slug},id.eq.${slug}` : `slug.eq.${slug}`)
       .eq("is_active", true)
       .single()
@@ -153,7 +153,8 @@ export default function ProduitPage() {
   );
 
   const shop = getShop();
-  const payReady = !!(shop as { stripe_charges_enabled?: boolean } | null)?.stripe_charges_enabled;
+  const shopAny = shop as { stripe_charges_enabled?: boolean; payout_mode?: string } | null;
+  const payReady = !!shopAny?.stripe_charges_enabled || shopAny?.payout_mode === "manual";
 
   return (
     <>
