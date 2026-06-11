@@ -47,6 +47,18 @@ export function ShipmentsManager({ shopId }: { shopId: string }) {
     else { const j = await res.json().catch(() => ({})); alert("Erreur : " + (j.error ?? res.status)); }
   };
 
+  const genLabel = async (id: string) => {
+    setBusy(id);
+    const res = await fetch("/api/vendor/sendcloud-label", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ shipment_id: id }),
+    });
+    const j = await res.json().catch(() => ({}));
+    setBusy(null);
+    if (res.ok) { if (j.label_url) window.open(j.label_url, "_blank"); load(); }
+    else alert("Erreur : " + (j.error ?? res.status));
+  };
+
   if (items === null) return <div className="flex items-center gap-2 text-[#101014]/40 py-4"><Loader2 size={15} className="animate-spin" /> Chargement des colis…</div>;
   if (items.length === 0) return null;
 
@@ -89,6 +101,10 @@ export function ShipmentsManager({ shopId }: { shopId: string }) {
                   <button onClick={() => markShipped(s, "shipped")} disabled={busy === s.id}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#101014] text-white font-hanken text-xs hover:brightness-125 disabled:opacity-40">
                     {busy === s.id ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />} Marquer expédié
+                  </button>
+                  <button onClick={() => genLabel(s.id)} disabled={busy === s.id}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#FF2DA0]/40 text-[#FF2DA0] font-hanken text-xs hover:bg-[#FF2DA0]/5 disabled:opacity-40">
+                    🏷️ Étiquette Sendcloud
                   </button>
                 </div>
               ) : (
