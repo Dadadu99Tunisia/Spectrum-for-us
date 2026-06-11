@@ -134,17 +134,17 @@ export async function POST(req: NextRequest) {
     };
   }
 
-  // Reversement par vendeur = (sous-total − commission) + frais de port (pas de commission sur le port)
+  // Reversement par vendeur·se Stripe = sous-total − commission.
+  // Les frais de port restent sur la plateforme (c'est elle qui paie l'étiquette via son compte Sendcloud).
   const transfers: { a: string; c: number; s: string }[] = [];
   for (const sid of shopIds) {
     // Versement manuel (pays sans Stripe) : pas de transfert Stripe, l'argent reste sur la plateforme
-    // qui reverse à la main (suivi dans le registre admin des versements).
+    // qui reverse à la main (le port leur revient car elles s'expédient elles-mêmes — suivi dans le registre).
     if (shopMap[sid].payout_mode === "manual") continue;
     const rate = await getCommissionRate(admin, sid);
     const sub = subtotalByShop[sid];
     const commission = Math.round(sub * (rate / 100));
-    const ship = shipmentByShop[sid]?.cost ?? 0;
-    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: sub - commission + ship, s: sid });
+    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: sub - commission, s: sid });
   }
   const grandTotalCents = totalCents + shippingCents;
   const transferGroup = `sfu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
