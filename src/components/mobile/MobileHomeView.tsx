@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
@@ -113,7 +112,6 @@ function ProductCard({ p }: { p: Product }) {
 export function MobileHomeView() {
   const { user } = useAuth();
   const { items } = useCart();
-  const router = useRouter();
   const cartCount = items.reduce((s, i) => s + i.quantity, 0);
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -219,17 +217,13 @@ export function MobileHomeView() {
         </div>
       )}
 
-      {/* Search + menu */}
-      <div className="flex gap-2.5 px-4 pt-2.5 pb-3.5">
-        <div className="flex-1 min-w-0 flex items-center gap-2.5 h-[46px] rounded-[14px] px-3.5" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
+      {/* Search */}
+      <div className="px-4 pt-2.5 pb-3.5">
+        <div className="flex items-center gap-2.5 h-[46px] rounded-[14px] px-3.5" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
           <Search size={18} style={{ color: T.faint }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher une création, une boutique…"
             className="flex-1 min-w-0 bg-transparent outline-none text-[14px]" style={{ color: T.ink }} />
         </div>
-        <button onClick={() => setNavOpen(true)} aria-label="Menu"
-          className="w-[46px] h-[46px] rounded-[14px] flex items-center justify-center shrink-0" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}`, color: T.ink }}>
-          <Menu size={19} />
-        </button>
       </div>
 
       {/* Reassurance */}
