@@ -109,7 +109,7 @@ function PipelineBar({ contacts }: { contacts: Contact[] }) {
   const active = ["identified","qualified","nurturing","contacted","partner"] as Stage[];
 
   return (
-    <div className="bg-[#1c1235] border border-[#101014]/8 rounded-2xl p-5">
+    <div className="bg-white border border-[#101014]/8 rounded-2xl p-5">
       {/* Bar */}
       <div className="flex h-2 rounded-full overflow-hidden gap-px mb-5">
         {active.map(s => {
@@ -263,7 +263,7 @@ function ContactPanel({
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       <div ref={panelRef}
-        className="relative z-10 w-full max-w-[420px] bg-[#1a1030] border-l border-[#101014]/8 flex flex-col h-full shadow-2xl"
+        className="relative z-10 w-full max-w-[420px] bg-white border-l border-[#101014]/8 flex flex-col h-full shadow-2xl"
         style={{ boxShadow: "-20px 0 60px rgba(0,0,0,.6)" }}>
 
         {/* Prism accent bar */}
@@ -876,7 +876,7 @@ export default function CRMPage() {
       </div>
 
       {/* ── Goal progress ── */}
-      <div className="bg-[#1c1235] border border-[#101014]/8 rounded-2xl p-5 space-y-3">
+      <div className="bg-white border border-[#101014]/8 rounded-2xl p-5 space-y-3">
         <p className="font-mono text-[9px] uppercase tracking-widest text-[#101014]/30 mb-1">Progression objectifs</p>
         {SEGMENTS.filter(s => s.id !== "all").map(seg => {
           const count = contacts.filter(c => (seg.types as readonly string[]).includes(c.contact_type) && c.stage !== "rejected" && c.stage !== "closed").length;
@@ -1046,7 +1046,7 @@ export default function CRMPage() {
       {showForm && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={e => e.target === e.currentTarget && setShowForm(false)}>
-          <div className="bg-[#1c1235] border border-[#101014]/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+          <div className="bg-white border border-[#101014]/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-fraunces text-lg text-[#101014]">Nouveau contact</h2>
               <button onClick={() => setShowForm(false)}

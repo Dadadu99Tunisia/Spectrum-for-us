@@ -167,7 +167,7 @@ export default function AmbassadeursPage() {
       {/* Modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={e => e.target === e.currentTarget && setShowForm(false)}>
-          <div className="bg-[#0e061a] border border-[#101014]/10 rounded-2xl p-6 w-full max-w-md space-y-4">
+          <div className="bg-white border border-[#101014]/10 rounded-2xl p-6 w-full max-w-md space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="font-fraunces text-lg text-[#101014]">Nouvel·le ambassadeur·rice</h2>
               <button onClick={() => setShowForm(false)} className="text-[#101014]/30 hover:text-[#101014]"><X size={16} /></button>
