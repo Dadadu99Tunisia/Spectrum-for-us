@@ -55,8 +55,11 @@ export function ShipmentsManager({ shopId }: { shopId: string }) {
     });
     const j = await res.json().catch(() => ({}));
     setBusy(null);
-    if (res.ok) { if (j.label_url) window.open(j.label_url, "_blank"); load(); }
-    else alert("Erreur : " + (j.error ?? res.status));
+    if (res.ok) {
+      if (j.price != null) alert(`Étiquette générée ✓\n${j.method ?? ""}${j.price != null ? ` · ${Number(j.price).toFixed(2)} €` : ""}`);
+      if (j.label_url) window.open(j.label_url, "_blank");
+      load();
+    } else alert("Erreur : " + (j.error ?? res.status));
   };
 
   if (items === null) return <div className="flex items-center gap-2 text-[#101014]/40 py-4"><Loader2 size={15} className="animate-spin" /> Chargement des colis…</div>;

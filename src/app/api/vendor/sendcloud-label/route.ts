@@ -48,10 +48,19 @@ export async function POST(req: NextRequest) {
     const mRes = await fetch(`${API}/shipping_methods?to_country=${encodeURIComponent(toCountry)}`, { headers: { Authorization: auth } });
     const mJson = await mRes.json();
     if (!mRes.ok) return NextResponse.json({ error: "Sendcloud (méthodes) : " + (mJson?.error?.message ?? mRes.status) }, { status: 502 });
-    const methods: Array<{ id: number; name: string }> = mJson?.shipping_methods ?? [];
+    type SCM = { id: number; name: string; countries?: Array<{ iso_2: string; price: number }> };
+    const methods: SCM[] = mJson?.shipping_methods ?? [];
     if (!methods.length) return NextResponse.json({ error: "Aucune méthode d'expédition Sendcloud disponible pour cette destination." }, { status: 400 });
     const relay = ship.method_type === "relay";
-    const chosen = methods.find(m => relay ? /relais|mondial/i.test(m.name) : !/relais/i.test(m.name)) ?? methods[0];
+    const priceFor = (m: SCM) => {
+      const c = m.countries?.find(x => x.iso_2 === toCountry);
+      return c ? Number(c.price) : Infinity;
+    };
+    // Filtre selon point relais vs domicile, puis prend la MOINS CHÈRE
+    const candidates = methods.filter(m => relay ? /relais|mondial|point|service.?point/i.test(m.name) : !/relais|point.?relais/i.test(m.name));
+    const pool = candidates.length ? candidates : methods;
+    const chosen = [...pool].sort((a, b) => priceFor(a) - priceFor(b))[0];
+    const chosenPrice = priceFor(chosen);
 
     // 2) Créer le colis + demander l'étiquette
     const parcel: Record<string, unknown> = {
@@ -86,7 +95,7 @@ export async function POST(req: NextRequest) {
       if (to) await trySend(() => sendShippingNotification({ to, orderRef: ship.order_id, trackingNumber: tracking ?? undefined, carrier: "Sendcloud" }));
     } catch {}
 
-    return NextResponse.json({ ok: true, tracking, label_url: labelUrl });
+    return NextResponse.json({ ok: true, tracking, label_url: labelUrl, method: chosen?.name, price: isFinite(chosenPrice) ? chosenPrice : null });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Erreur Sendcloud";
     return NextResponse.json({ error: msg }, { status: 500 });
