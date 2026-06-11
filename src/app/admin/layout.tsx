@@ -8,7 +8,7 @@ import {
   CalendarDays, Mail, ShieldCheck, ShoppingCart, Users,
   MessageSquare, Settings, Menu, X, ChevronRight,
   TrendingUp, Briefcase, Bot, LogOut, Layout,
-  Bell, ExternalLink, Zap, MapPin, Trophy, CreditCard, Globe,
+  Bell, ExternalLink, Zap, MapPin, Trophy, CreditCard, Globe, Tag,
 } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import { AdminErrorBoundary } from "@/components/ui/AdminErrorBoundary";
@@ -65,6 +65,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { href: "/admin/finance",           label: "Finance",          icon: Coins },
       { href: "/admin/versements",        label: "Versements",       icon: Globe },
+      { href: "/admin/promos",            label: "Codes promo",      icon: Tag },
       { href: "/admin/subscriptions",    label: "Abonnements",      icon: CreditCard },
       { href: "/admin/crm",              label: "CRM Pipeline",     icon: TrendingUp },
       { href: "/admin/founder-program",  label: "Prog. Fondateur",  icon: Trophy, accent: "#FFD700" },
@@ -106,6 +107,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "/admin/outreach":      "Outreach",
   "/admin/finance":       "Finance",
   "/admin/versements":    "Versements",
+  "/admin/promos":        "Codes promo",
   "/admin/crm":           "CRM Pipeline",
   "/admin/support":       "Support",
   "/admin/contenu":       "Site & Contenu",
