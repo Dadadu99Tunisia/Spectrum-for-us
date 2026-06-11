@@ -7,12 +7,12 @@ export type ShipType = "relay" | "home" | "pickup";
 
 export const SHIPPING_TIERS: Record<ShipType, { maxKg: number; price: number }[]> = {
   relay: [
-    { maxKg: 1, price: 4.9 }, { maxKg: 2, price: 6.9 }, { maxKg: 5, price: 9.9 },
-    { maxKg: 10, price: 14.9 }, { maxKg: 30, price: 22.9 },
+    { maxKg: 1, price: 5.9 }, { maxKg: 2, price: 8.9 }, { maxKg: 5, price: 12.9 },
+    { maxKg: 10, price: 18.9 }, { maxKg: 30, price: 27.9 },
   ],
   home: [
-    { maxKg: 1, price: 5.9 }, { maxKg: 2, price: 7.9 }, { maxKg: 5, price: 11.9 },
-    { maxKg: 10, price: 16.9 }, { maxKg: 30, price: 24.9 },
+    { maxKg: 1, price: 6.9 }, { maxKg: 2, price: 9.9 }, { maxKg: 5, price: 14.9 },
+    { maxKg: 10, price: 20.9 }, { maxKg: 30, price: 29.9 },
   ],
   pickup: [{ maxKg: Infinity, price: 0 }],
 };

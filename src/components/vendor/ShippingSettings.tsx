@@ -63,7 +63,7 @@ export function ShippingSettings({ shopId, initial }: { shopId: string; initial:
         </p>
         <div className="mt-3 rounded-xl border border-[#ECE6DB] bg-[#101014]/[0.02] p-3 font-mono text-[11px] text-[#101014]/55 space-y-0.5">
           <p className="text-[#101014]/40 mb-1">Grille point relais (domicile +1 €) :</p>
-          <p>0–1 kg : 4,90 € · 1–2 kg : 6,90 € · 2–5 kg : 9,90 € · 5–10 kg : 14,90 €</p>
+          <p>0–1 kg : 5,90 € · 1–2 kg : 8,90 € · 2–5 kg : 12,90 € · 5–10 kg : 18,90 €</p>
         </div>
       </div>
 
