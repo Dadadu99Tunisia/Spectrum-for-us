@@ -19,9 +19,9 @@ const TYPE_META: Record<ShippingMethod["type"], { icon: React.ElementType; label
 };
 
 const PRESETS: Omit<ShippingMethod, "id">[] = [
-  { type: "relay",  label: "Point relais Mondial Relay", price: 4.9, free_above: null, enabled: true },
-  { type: "home",   label: "Livraison à domicile",       price: 6.9, free_above: null, enabled: true },
-  { type: "pickup", label: "Retrait en main propre",     price: 0,   free_above: null, enabled: true },
+  { type: "relay",  label: "Point relais",           price: 4.9, free_above: null, enabled: true },
+  { type: "home",   label: "Livraison à domicile",   price: 5.9, free_above: null, enabled: true },
+  { type: "pickup", label: "Retrait en main propre", price: 0,   free_above: null, enabled: true },
 ];
 
 const uid = () => `m_${Math.random().toString(36).slice(2, 9)}`;
