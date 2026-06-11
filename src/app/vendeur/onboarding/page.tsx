@@ -24,6 +24,7 @@ export default function OnboardingPage() {
   const [form, setForm] = useState({ name: "", tagline: "", description: "", city: "", category: "", contact_email: "", charter: false });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [shopSlug, setShopSlug] = useState("");
 
   useEffect(() => {
     if (loading) return;
@@ -60,6 +61,7 @@ export default function OnboardingPage() {
 
     if (shopError) { setError(shopError.message); setSubmitting(false); return; }
     await supabase.from("profiles").update({ is_vendor: true }).eq("id", user.id);
+    setShopSlug(slug);
     setStep(4);
     setSubmitting(false);
   };
@@ -246,24 +248,45 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 4 · Confirmation */}
+        {/* Step 4 · Coaching "première vente" */}
         {step === 4 && (
-          <div className="text-center">
-            <div className="w-20 h-20 rounded-full bg-[#2323C4]/10 border border-[#2323C4]/30 flex items-center justify-center mx-auto mb-6">
-              <Check size={36} className="text-[#2323C4]" />
+          <div>
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 rounded-full bg-[#2323C4]/10 border border-[#2323C4]/30 flex items-center justify-center mx-auto mb-5">
+                <Check size={36} className="text-[#2323C4]" />
+              </div>
+              <h1 className="font-fraunces text-3xl text-[#101014] mb-2">Bravo, <strong>{form.name}</strong> est en ligne ! 🎉</h1>
+              <p className="font-hanken text-[#101014]/55 leading-relaxed">
+                Voici tes prochaines étapes pour déclencher ta <strong className="text-[#101014]">première vente</strong>. On t&apos;accompagne — ça prend quelques minutes.
+              </p>
             </div>
-            <h1 className="font-fraunces text-3xl text-[#101014] mb-3">Boutique créée ! ✦</h1>
-            <p className="font-hanken text-[#101014]/55 mb-10 leading-relaxed">
-              <strong className="text-[#101014]">{form.name}</strong> est maintenant dans le spectre.
-              Ajoute tes premières créations pour commencer à vendre.
-            </p>
+
+            <div className="space-y-3 mb-8">
+              {[
+                { n: 1, t: "Ajoute tes 3 premières créations", d: "De belles photos lumineuses = plus de ventes. Vise au moins 3 produits.", href: "/vendeur/nouveau-produit", cta: "Ajouter un produit", done: true },
+                { n: 2, t: "Active ton paiement", d: "Connecte Stripe pour être payé·e (ou le versement manuel si tu es hors zone Stripe, ex. Tunisie).", href: "/vendeur", cta: "Configurer le paiement" },
+                { n: 3, t: "Vérifie ta livraison", d: "Les modes (point relais, domicile…) sont déjà préréglés — ajuste si besoin.", href: "/vendeur", cta: "Voir la livraison" },
+                { n: 4, t: "Partage ta boutique", d: "Le bouche-à-oreille fait tes premières ventes. Envoie ton lien à ta communauté.", href: shopSlug ? `/boutique/${shopSlug}` : "/vendeur", cta: "Voir ma boutique publique" },
+              ].map(s => (
+                <div key={s.n} className="flex items-start gap-3 rounded-2xl border border-[#101014]/12 bg-white p-4">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center font-fraunces font-bold text-sm shrink-0" style={{ background: "#FF2DA0", color: "#fff" }}>{s.n}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bricolage font-semibold text-[15px] text-[#101014]">{s.t}</p>
+                    <p className="font-hanken text-[13px] text-[#101014]/55 mb-2">{s.d}</p>
+                    <a href={s.href} target={s.n === 4 ? "_blank" : undefined} rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#FF2DA0] hover:underline">
+                      {s.cta} <ArrowRight size={11} />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+
             <div className="flex gap-3">
               <Button variant="primary" className="flex-1 py-3.5" href="/vendeur/nouveau-produit">
-                Ajouter un produit <ArrowRight size={16} />
+                Ajouter mon 1ᵉʳ produit <ArrowRight size={16} />
               </Button>
-              <Button variant="secondary" className="py-3.5 px-5" href="/vendeur">
-                Dashboard
-              </Button>
+              <Button variant="secondary" className="py-3.5 px-5" href="/vendeur">Dashboard</Button>
             </div>
           </div>
         )}
