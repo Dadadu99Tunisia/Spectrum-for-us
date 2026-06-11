@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { MapPin, Truck, Hand, ExternalLink, Loader2 } from "lucide-react";
+import { MapPin, Truck, Hand, Loader2 } from "lucide-react";
 import type { CartItem } from "@/store/cart";
 
 type Method = { id: string; type: "relay" | "home" | "pickup"; label: string; price: number; free_above: number | null; enabled: boolean };
 type ShopGroup = { shop_id: string; shop_name: string; subtotal: number; methods: Method[] };
-type RelayPoint = { name: string; address: string; zip: string; city: string };
+type RelayPoint = { id?: string; name: string; address: string; zip: string; city: string };
 export type ShipmentSelection = {
   shop_id: string; shop_name: string;
   method_id: string; method_type: Method["type"]; method_label: string;
@@ -112,33 +112,9 @@ export function ShippingStep({
                       </label>
 
                       {active && m.type === "relay" && (
-                        <div className="mt-2 ml-7 rounded-xl bg-[#101014]/[0.02] border border-[#101014]/8 p-3 space-y-2">
-                          <div className="flex items-center justify-between">
-                            <p className="font-mono text-[10px] text-[#101014]/40">Ton point relais</p>
-                            <a href="https://www.mondialrelay.fr/trouver-le-point-relais-le-plus-proche-de-chez-vous/"
-                              target="_blank" rel="noopener noreferrer"
-                              className="font-mono text-[10px] text-[#2323C4] inline-flex items-center gap-1">
-                              Trouver un point relais <ExternalLink size={9} />
-                            </a>
-                          </div>
-                          <input placeholder="Nom du point relais *"
-                            value={relays[g.shop_id]?.name ?? ""}
-                            onChange={e => setRelays(r => ({ ...r, [g.shop_id]: { ...(r[g.shop_id] ?? { name: "", address: "", zip: "", city: "" }), name: e.target.value } }))}
-                            className="w-full bg-white border border-[#101014]/10 rounded-lg px-3 py-2 font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/50" />
-                          <input placeholder="Adresse"
-                            value={relays[g.shop_id]?.address ?? ""}
-                            onChange={e => setRelays(r => ({ ...r, [g.shop_id]: { ...(r[g.shop_id] ?? { name: "", address: "", zip: "", city: "" }), address: e.target.value } }))}
-                            className="w-full bg-white border border-[#101014]/10 rounded-lg px-3 py-2 font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/50" />
-                          <div className="flex gap-2">
-                            <input placeholder="Code postal *"
-                              value={relays[g.shop_id]?.zip ?? ""}
-                              onChange={e => setRelays(r => ({ ...r, [g.shop_id]: { ...(r[g.shop_id] ?? { name: "", address: "", zip: "", city: "" }), zip: e.target.value } }))}
-                              className="w-1/3 bg-white border border-[#101014]/10 rounded-lg px-3 py-2 font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/50" />
-                            <input placeholder="Ville"
-                              value={relays[g.shop_id]?.city ?? ""}
-                              onChange={e => setRelays(r => ({ ...r, [g.shop_id]: { ...(r[g.shop_id] ?? { name: "", address: "", zip: "", city: "" }), city: e.target.value } }))}
-                              className="flex-1 bg-white border border-[#101014]/10 rounded-lg px-3 py-2 font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/50" />
-                          </div>
+                        <div className="mt-2 ml-7">
+                          <RelayPicker value={relays[g.shop_id] ?? null}
+                            onPick={rp => setRelays(r => ({ ...r, [g.shop_id]: rp }))} />
                         </div>
                       )}
                     </div>
@@ -149,6 +125,61 @@ export function ShippingStep({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+// ── Sélecteur de point relais (alimenté par Sendcloud) ──
+type SP = { id: string; name: string; street: string; postal_code: string; city: string; distance: number | null };
+function RelayPicker({ value, onPick }: { value: RelayPoint | null; onPick: (rp: RelayPoint) => void }) {
+  const [zip, setZip] = useState(value?.zip ?? "");
+  const [list, setList] = useState<SP[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  const search = async () => {
+    if (!zip.trim()) return;
+    setLoading(true); setErr(""); setList([]);
+    try {
+      const res = await fetch(`/api/shipping/service-points?country=fr&postal_code=${encodeURIComponent(zip.trim())}&carrier=mondial_relay`);
+      const j = await res.json();
+      if (!res.ok) { setErr(j.error ?? "Recherche impossible"); }
+      else setList(j.service_points ?? []);
+    } catch { setErr("Erreur réseau"); }
+    setLoading(false);
+  };
+
+  return (
+    <div className="rounded-xl bg-[#101014]/[0.02] border border-[#101014]/8 p-3 space-y-2">
+      <p className="font-mono text-[10px] text-[#101014]/40">Choisis ton point relais</p>
+      {value?.name && (
+        <div className="flex items-start gap-2 rounded-lg bg-[#FF2DA0]/5 border border-[#FF2DA0]/20 px-2.5 py-2">
+          <MapPin size={13} className="text-[#FF2DA0] mt-0.5 shrink-0" />
+          <div className="text-[12px] text-[#101014]"><strong>{value.name}</strong><br /><span className="text-[#101014]/55">{value.address} · {value.zip} {value.city}</span></div>
+        </div>
+      )}
+      <div className="flex gap-2">
+        <input value={zip} onChange={e => setZip(e.target.value)} placeholder="Ton code postal" inputMode="numeric"
+          onKeyDown={e => e.key === "Enter" && (e.preventDefault(), search())}
+          className="flex-1 bg-white border border-[#101014]/10 rounded-lg px-3 py-2 font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/50" />
+        <button type="button" onClick={search} disabled={loading}
+          className="px-3 rounded-lg bg-[#101014] text-white font-hanken text-xs disabled:opacity-50">
+          {loading ? "…" : "Chercher"}
+        </button>
+      </div>
+      {err && <p className="font-hanken text-[11px] text-amber-600">{err}</p>}
+      {list.length > 0 && (
+        <div className="max-h-44 overflow-y-auto divide-y divide-[#101014]/5 rounded-lg border border-[#101014]/8 bg-white">
+          {list.map(sp => (
+            <button key={sp.id} type="button"
+              onClick={() => onPick({ id: sp.id, name: String(sp.name), address: sp.street, zip: sp.postal_code, city: sp.city })}
+              className="w-full text-left px-2.5 py-2 hover:bg-[#FF2DA0]/5 transition-colors">
+              <p className="font-hanken text-[12.5px] text-[#101014]">{sp.name}</p>
+              <p className="font-mono text-[10px] text-[#101014]/45">{sp.street} · {sp.postal_code} {sp.city}{sp.distance ? ` · ${Math.round(sp.distance / 1000 * 10) / 10} km` : ""}</p>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
