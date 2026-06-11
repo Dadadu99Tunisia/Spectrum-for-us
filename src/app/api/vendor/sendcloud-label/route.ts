@@ -23,17 +23,24 @@ export async function POST(req: NextRequest) {
   const { data: shop } = await admin.from("shops").select("owner_id, name").eq("id", ship.shop_id).maybeSingle();
   if (shop?.owner_id !== user.id) return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
 
-  // Identifiants Sendcloud du·de la vendeur·se
+  // Identifiants Sendcloud : compte plateforme (Vercel env) en priorité, sinon compte du·de la vendeur·se
   const { data: cred } = await admin.from("vendor_shipping_credentials").select("*").eq("shop_id", ship.shop_id).maybeSingle();
-  if (!cred?.public_key || !cred?.secret_key)
-    return NextResponse.json({ error: "Connecte d'abord ton compte Sendcloud dans Livraison." }, { status: 400 });
+  const pub = process.env.SENDCLOUD_PUBLIC_KEY || cred?.public_key;
+  const sec = process.env.SENDCLOUD_SECRET_KEY || cred?.secret_key;
+  if (!pub || !sec)
+    return NextResponse.json({ error: "Sendcloud non configuré (clés manquantes)." }, { status: 400 });
 
   // Destinataire (commande)
   const { data: order } = await admin.from("orders")
     .select("shipping_name, shipping_address, shipping_zip, shipping_city, shipping_country, shipping_email").eq("id", ship.order_id).maybeSingle();
   if (!order) return NextResponse.json({ error: "Commande introuvable" }, { status: 404 });
 
-  const auth = "Basic " + Buffer.from(`${cred.public_key}:${cred.secret_key}`).toString("base64");
+  const auth = "Basic " + Buffer.from(`${pub}:${sec}`).toString("base64");
+  const senderName = cred?.sender_name || process.env.SENDCLOUD_SENDER_NAME || shop?.name || "Spectrum";
+  const senderAddr = cred?.sender_address || process.env.SENDCLOUD_SENDER_ADDRESS || "";
+  const senderZip = cred?.sender_zip || process.env.SENDCLOUD_SENDER_ZIP || "";
+  const senderCity = cred?.sender_city || process.env.SENDCLOUD_SENDER_CITY || "";
+  const senderCountry = cred?.sender_country || process.env.SENDCLOUD_SENDER_COUNTRY || "FR";
   const toCountry = (order.shipping_country || "FR").slice(0, 2).toUpperCase() === "FR" ? "FR" : (order.shipping_country || "FR");
 
   try {
@@ -52,8 +59,8 @@ export async function POST(req: NextRequest) {
       city: order.shipping_city || "", postal_code: order.shipping_zip || "", country: toCountry,
       email: order.shipping_email || "", telephone: "", weight: "1.000",
       request_label: true, shipment: { id: chosen.id },
-      from_name: cred.sender_name || shop?.name, from_address_1: cred.sender_address || "",
-      from_city: cred.sender_city || "", from_postal_code: cred.sender_zip || "", from_country: cred.sender_country || "FR",
+      from_name: senderName, from_address_1: senderAddr,
+      from_city: senderCity, from_postal_code: senderZip, from_country: senderCountry,
     };
     if (relay && (ship.relay_point as { id?: string } | null)?.id) parcel.to_service_point = (ship.relay_point as { id?: string }).id;
 
