@@ -17,10 +17,11 @@ import Link from "next/link";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import {
   Home, Package, Boxes, Store, CircleDollarSign, BarChart3, CreditCard,
-  Settings, Search, Bell, Plus, Menu, ExternalLink, Check, ArrowUpRight, Truck, CalendarClock,
+  Settings, Search, Bell, Plus, Menu, ExternalLink, Check, ArrowUpRight, Truck, CalendarClock, Tag,
 } from "lucide-react";
 import { ShippingSettings, type ShippingMethod } from "@/components/vendor/ShippingSettings";
 import { SendcloudConnect } from "@/components/vendor/SendcloudConnect";
+import { PromoCodes } from "@/components/vendor/PromoCodes";
 import { ShipmentsManager } from "@/components/vendor/ShipmentsManager";
 import { ReturnsManager } from "@/components/vendor/ReturnsManager";
 import { ServiceAvailability } from "@/components/vendor/ServiceAvailability";
@@ -55,7 +56,7 @@ type Metrics = {
   amount: (o: VendorOrder) => number;
 };
 
-type View = "overview" | "products" | "orders" | "shop" | "livraison" | "agenda" | "revenue" | "stats" | "subscription" | "settings";
+type View = "overview" | "products" | "orders" | "shop" | "livraison" | "agenda" | "promos" | "revenue" | "stats" | "subscription" | "settings";
 const PAID = ["paid", "shipped", "delivered"];
 const eur = (n: number) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Math.round(n)) + " €";
 
@@ -75,6 +76,7 @@ const NAV: { v: View; label: string; icon: React.ElementType; section?: string }
   { v: "shop", label: "Ma boutique", icon: Store },
   { v: "livraison", label: "Livraison", icon: Truck },
   { v: "agenda", label: "Agenda (services)", icon: CalendarClock },
+  { v: "promos", label: "Codes promo", icon: Tag },
   { v: "revenue", label: "Revenus", icon: CircleDollarSign, section: "Business" },
   { v: "stats", label: "Statistiques", icon: BarChart3 },
   { v: "subscription", label: "Abonnement", icon: CreditCard },
@@ -82,7 +84,7 @@ const NAV: { v: View; label: string; icon: React.ElementType; section?: string }
 ];
 const TITLES: Record<View, string> = {
   overview: "Vue d'ensemble", products: "Produits", orders: "Commandes", shop: "Ma boutique",
-  livraison: "Livraison", agenda: "Agenda", revenue: "Revenus", stats: "Statistiques", subscription: "Abonnement", settings: "Paramètres",
+  livraison: "Livraison", agenda: "Agenda", promos: "Codes promo", revenue: "Revenus", stats: "Statistiques", subscription: "Abonnement", settings: "Paramètres",
 };
 
 export default function VendeurDashboard() {
@@ -245,6 +247,7 @@ export default function VendeurDashboard() {
           {view === "subscription" && <Subscription shop={shop} founderRank={founderRank} />}
           {view === "livraison" && <><ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} /><SendcloudConnect shopId={shop.id} /></>}
           {view === "agenda" && <ServiceAvailability shopId={shop.id} />}
+          {view === "promos" && <PromoCodes shopId={shop.id} />}
           {view === "stats" && <Stats m={m} products={products} orders={orders} commissions={commissions} />}
           {(view === "shop" || view === "settings") && (
             <Placeholder view={view} shopSlug={shop.slug} />
