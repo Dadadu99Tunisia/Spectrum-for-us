@@ -12,6 +12,7 @@ import Link from "next/link";
 import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { ProductReviews } from "@/components/ProductReviews";
 import { BookingWidget } from "@/components/booking/BookingWidget";
+import { TrustBadges } from "@/components/ui/TrustBadges";
 
 type Product = {
   id: string; name: string; title: string; description: string;
@@ -324,6 +325,8 @@ export default function ProduitPage() {
                   <Heart size={18} className={liked ? "fill-[#FF2DA0] text-[#FF2DA0]" : "text-[#101014]/50"} />
                 </button>
               </div>
+
+              {payReady && <TrustBadges className="mb-8" />}
 
               {/* Description */}
               {product.description && (

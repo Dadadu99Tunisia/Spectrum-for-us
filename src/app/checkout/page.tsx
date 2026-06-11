@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import { Lock, Check, ArrowRight, ArrowLeft, MapPin } from "lucide-react";
 import { ShippingStep, type ShipmentSelection } from "@/components/checkout/ShippingStep";
+import { TrustBadges } from "@/components/ui/TrustBadges";
 import Link from "next/link";
 import type { Address } from "@/lib/types/address";
 
@@ -449,10 +450,8 @@ export default function CheckoutPage() {
                     Total ajusté par le serveur
                   </p>
                 )}
-                <div className="mt-3 flex items-center justify-center gap-1.5 text-[#101014]/20">
-                  <Lock size={10} />
-                  <span className="font-mono text-[9px] tracking-wide">Paiement sécurisé · Stripe</span>
-                </div>
+                <TrustBadges variant="list" className="mt-4 pt-3 border-t border-[#101014]/10" />
+                <p className="mt-2 font-mono text-[9px] text-[#101014]/30 text-center">Carte · Apple Pay · Google Pay acceptés</p>
               </div>
             </div>
           </div>
