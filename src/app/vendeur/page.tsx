@@ -420,7 +420,10 @@ function Products({ products }: { products: Product[] }) {
     <Panel className="!p-0">
       <div className="flex items-center justify-between px-5 pt-5">
         <h3 className="font-bricolage font-bold text-[17px]">Tes produits · {products.length}</h3>
-        <Link href="/vendeur/nouveau-produit" className="inline-flex items-center gap-2 rounded-[11px] font-bold text-sm text-white px-3.5 py-2.5" style={{ background: C.mag }}><Plus size={16} /> Ajouter</Link>
+        <div className="flex items-center gap-2">
+          <Link href="/vendeur/import" className="inline-flex items-center gap-2 rounded-[11px] font-bold text-sm px-3.5 py-2.5" style={{ border: `1px solid ${C.line}`, color: C.soft }}>Importer (CSV)</Link>
+          <Link href="/vendeur/nouveau-produit" className="inline-flex items-center gap-2 rounded-[11px] font-bold text-sm text-white px-3.5 py-2.5" style={{ background: C.mag }}><Plus size={16} /> Ajouter</Link>
+        </div>
       </div>
       <div className="p-2">
         {products.length === 0 ? <p className="text-sm py-8 text-center" style={{ color: C.faint }}>Aucun produit. Ajoute ta première création ✦</p> : (
