@@ -160,7 +160,7 @@ export function MobileHomeView() {
 
       {/* Menu de navigation mobile */}
       {navOpen && (
-        <div className="fixed inset-0 z-[70]" onClick={() => setNavOpen(false)}>
+        <div className="fixed inset-0 z-[100]" onClick={() => setNavOpen(false)}>
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute top-0 right-0 h-full w-[78%] max-w-[320px] bg-[#FBFAF8] shadow-2xl p-5 overflow-y-auto" style={{ paddingTop: "max(20px,env(safe-area-inset-top))" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
@@ -226,7 +226,7 @@ export function MobileHomeView() {
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher une création, une boutique…"
             className="flex-1 min-w-0 bg-transparent outline-none text-[14px]" style={{ color: T.ink }} />
         </div>
-        <button onClick={() => router.push("/decouvrir")} aria-label="Catégories"
+        <button onClick={() => setNavOpen(true)} aria-label="Menu"
           className="w-[46px] h-[46px] rounded-[14px] flex items-center justify-center shrink-0" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}`, color: T.ink }}>
           <Menu size={19} />
         </button>
