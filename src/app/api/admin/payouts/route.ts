@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
+import { sendPayoutNotification, trySend } from "@/lib/email";
 
 export async function GET() {
   const auth = await requireAdmin(["super_admin", "ceo", "cfo"]);
@@ -60,5 +61,19 @@ export async function POST(req: NextRequest) {
     created_by: auth.user.id,
   });
   if (error) return apiError(error.message);
+
+  // E-mail au·à la vendeur·se (best-effort)
+  try {
+    const { data: shop } = await admin.from("shops").select("owner_id, payout_method").eq("id", body.shop_id).maybeSingle();
+    if (shop?.owner_id) {
+      const { data: authUser } = await admin.auth.admin.getUserById(shop.owner_id);
+      const email = authUser?.user?.email;
+      if (email) await trySend(() => sendPayoutNotification({
+        to: email, amount: Number(body.amount),
+        method: body.method?.trim() || shop.payout_method || undefined, reference: body.reference?.trim() || undefined,
+      }));
+    }
+  } catch (e) { console.error("[payout] email non bloquant", e); }
+
   return apiResponse({ ok: true });
 }

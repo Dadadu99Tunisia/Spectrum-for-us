@@ -194,6 +194,18 @@ export async function sendBookingVendorAlert(params: { to: string; service: stri
   return getResend().emails.send({ from: FROM, to: params.to, subject: `Nouvelle réservation · ${params.service}`, html: baseLayout("Réservation · Spectrum For Us", body) });
 }
 
+export async function sendPayoutNotification(params: { to: string; amount: number; method?: string; reference?: string }) {
+  const ref = params.reference ? `<p style="font-size:13px;font-family:monospace;color:rgba(243,234,219,0.5);margin:6px 0 0;">Réf. ${params.reference}</p>` : "";
+  const body = `
+    ${h2("Tu as reçu un versement 💸")}
+    ${text(`La plateforme vient de te verser <strong style="color:#F3EADB;">${params.amount.toFixed(2)} €</strong>${params.method ? ` via ${params.method}` : ""}.`)}
+    ${ref}
+    ${text("Selon le moyen utilisé (Payoneer, virement…), la réception peut prendre quelques jours.")}
+    ${cta("Voir mon espace vendeur·se", `${BASE}/vendeur`)}
+  `;
+  return getResend().emails.send({ from: FROM, to: params.to, subject: `Versement de ${params.amount.toFixed(2)} € · Spectrum For Us`, html: baseLayout("Versement · Spectrum For Us", body) });
+}
+
 export async function sendWelcomeEmail(params: { to: string; pseudo: string }) {
   const body = `
     ${h2(`Bienvenue sur Spectrum, ${params.pseudo} ✦`)}

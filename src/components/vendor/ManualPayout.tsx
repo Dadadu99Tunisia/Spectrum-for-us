@@ -19,6 +19,7 @@ export function ManualPayout({ shopId }: { shopId: string }) {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [balance, setBalance] = useState<{ earned: number; paid: number; owed: number } | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -31,8 +32,23 @@ export function ManualPayout({ shopId }: { shopId: string }) {
           if (data.payout_mode === "manual" && !data.payout_details) setEditing(true);
         }
         setLoading(false);
+        if (data?.payout_mode === "manual") computeBalance();
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shopId]);
+
+  const computeBalance = async () => {
+    const supabase = createClient();
+    const [{ data: comm }, { data: ships }, { data: payouts }] = await Promise.all([
+      supabase.from("commissions").select("gross_amount, commission_amount").eq("shop_id", shopId),
+      supabase.from("order_shipments").select("shipping_cost").eq("shop_id", shopId),
+      supabase.from("vendor_payouts").select("amount").eq("shop_id", shopId),
+    ]);
+    const earned = (comm ?? []).reduce((s, c) => s + Number(c.gross_amount || 0) - Number(c.commission_amount || 0), 0)
+      + (ships ?? []).reduce((s, x) => s + Number(x.shipping_cost || 0), 0);
+    const paid = (payouts ?? []).reduce((s, p) => s + Number(p.amount || 0), 0);
+    setBalance({ earned: Math.round(earned * 100) / 100, paid: Math.round(paid * 100) / 100, owed: Math.round((earned - paid) * 100) / 100 });
+  };
 
   const save = async (newMode: string) => {
     setSaving(true);
@@ -66,6 +82,13 @@ export function ManualPayout({ shopId }: { shopId: string }) {
           <button onClick={() => setEditing(true)} className="mt-2 inline-flex items-center gap-1.5 font-mono text-[11px]" style={{ color: C.mag }}>
             <Pencil size={11} /> Modifier
           </button>
+          {balance && (
+            <div className="mt-3 pt-3 border-t flex items-center gap-5" style={{ borderColor: C.line }}>
+              <div><p className="font-mono text-[9px] uppercase" style={{ color: C.soft }}>Gagné</p><p className="font-fraunces text-[15px]" style={{ color: C.ink }}>{balance.earned.toFixed(2)} €</p></div>
+              <div><p className="font-mono text-[9px] uppercase" style={{ color: C.soft }}>Reçu</p><p className="font-fraunces text-[15px]" style={{ color: C.soft }}>{balance.paid.toFixed(2)} €</p></div>
+              <div><p className="font-mono text-[9px] uppercase" style={{ color: C.mag }}>À recevoir</p><p className="font-fraunces text-[17px]" style={{ color: balance.owed > 0 ? C.mag : C.green }}>{balance.owed.toFixed(2)} €</p></div>
+            </div>
+          )}
         </div>
       ) : editing || mode === "manual" ? (
         <div className="space-y-2">
