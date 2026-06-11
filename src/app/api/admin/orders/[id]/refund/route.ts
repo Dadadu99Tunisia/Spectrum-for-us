@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError, logActivity } from "@/lib/admin/rbac";
 import Stripe from "stripe";
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: order, error: orderErr } = await supabase
     .from("orders")
     .select("id, total_amount, status, payment_intent_id, refund_status")

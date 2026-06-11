@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 export async function GET(
@@ -10,7 +10,7 @@ export async function GET(
   if ("error" in auth) return auth.error;
 
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: order, error } = await supabase
     .from("orders")
@@ -75,7 +75,7 @@ export async function PATCH(
   const update: Record<string, unknown> = { updated_at: new Date().toISOString() };
   for (const k of allowed) if (k in body) update[k] = body[k];
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("orders")
     .update(update)

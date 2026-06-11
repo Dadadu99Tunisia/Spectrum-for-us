@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError, logActivity } from "@/lib/admin/rbac";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   if (!["approve","reject"].includes(action)) return apiError("action must be approve or reject");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const kyc_status = action === "approve" ? "verified" : "rejected";
 
   const { data, error } = await supabase

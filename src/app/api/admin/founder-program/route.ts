@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/admin/rbac";
 
 export async function GET(req: NextRequest) {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { searchParams } = new URL(req.url);
   const statusFilter = searchParams.get("status") ?? "";
   const search       = searchParams.get("search") ?? "";

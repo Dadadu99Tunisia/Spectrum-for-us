@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 export async function GET(req: NextRequest) {
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   const dateTo   = searchParams.get("date_to")   ?? "";
   const offset   = (page - 1) * limit;
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   let query = supabase
     .from("orders")
     .select("id, status, total_amount, created_at, tracking_number, carrier, dispute_status, refund_status, refund_amount, user_id", { count: "exact" })
