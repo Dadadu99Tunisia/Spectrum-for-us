@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCommissionRate } from "@/lib/commission";
 import { limits, rateLimitResponse } from "@/lib/rate-limit";
+import { shippingPrice } from "@/lib/shipping";
 
 interface CartItemInput {
   id: string;
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
   const productIds = cart.map(i => i.id);
   const { data: products, error: dbErr } = await supabase
     .from("products")
-    .select("id, price, is_active, quantity, type, name, title, shop_id")
+    .select("id, price, is_active, quantity, type, name, title, shop_id, weight_grams")
     .in("id", productIds);
 
   if (dbErr) return NextResponse.json({ error: "Erreur base de données" }, { status: 500 });
@@ -82,11 +83,13 @@ export async function POST(req: NextRequest) {
   // ── Stripe Connect · multi-vendeur (separate charges & transfers) ──
   // Sous-total (centimes) par boutique
   const subtotalByShop: Record<string, number> = {};
+  const weightByShop: Record<string, number> = {};
   for (const item of cart) {
     const p = productMap[item.id];
     const sid = p.shop_id as string;
     if (!sid) continue;
     subtotalByShop[sid] = (subtotalByShop[sid] ?? 0) + Math.round(Number(p.price) * 100 * item.quantity);
+    weightByShop[sid] = (weightByShop[sid] ?? 0) + (Number(p.weight_grams ?? 500) || 500) * item.quantity;
   }
   const shopIds = Object.keys(subtotalByShop);
 
@@ -124,7 +127,7 @@ export async function POST(req: NextRequest) {
     const sub = subtotalByShop[sid];
     const freeAbove = method.free_above != null ? Math.round(Number(method.free_above) * 100) : null;
     const free = freeAbove != null && sub >= freeAbove;
-    const cost = free ? 0 : Math.round(Math.max(0, Number(method.price) || 0) * 100);
+    const cost = free ? 0 : Math.round(shippingPrice(String(method.type), weightByShop[sid] ?? 0) * 100);
     shippingCents += cost;
     shipmentByShop[sid] = {
       method_type: String(method.type),

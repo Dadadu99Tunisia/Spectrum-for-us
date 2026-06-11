@@ -3,9 +3,10 @@ import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { MapPin, Truck, Hand, Loader2 } from "lucide-react";
 import type { CartItem } from "@/store/cart";
+import { shippingPrice } from "@/lib/shipping";
 
 type Method = { id: string; type: "relay" | "home" | "pickup"; label: string; price: number; free_above: number | null; enabled: boolean };
-type ShopGroup = { shop_id: string; shop_name: string; subtotal: number; methods: Method[] };
+type ShopGroup = { shop_id: string; shop_name: string; subtotal: number; weight: number; methods: Method[] };
 type RelayPoint = { id?: string; name: string; address: string; zip: string; city: string };
 export type ShipmentSelection = {
   shop_id: string; shop_name: string;
@@ -15,9 +16,10 @@ export type ShipmentSelection = {
 
 const ICON: Record<Method["type"], React.ElementType> = { relay: MapPin, home: Truck, pickup: Hand };
 
-function costOf(m: Method, subtotal: number) {
+// Prix = grille plateforme selon le poids du colis ; gratuit si seuil "offert dès X €" atteint.
+function costOf(m: Method, subtotal: number, weightGrams: number) {
   if (m.free_above != null && subtotal >= m.free_above) return 0;
-  return Math.max(0, Number(m.price) || 0);
+  return shippingPrice(m.type, weightGrams);
 }
 
 export function ShippingStep({
@@ -36,20 +38,26 @@ export function ShippingStep({
     (async () => {
       const supabase = createClient();
       const ids = items.map(i => i.id);
-      const { data: products } = await supabase.from("products").select("id, shop_id, price").in("id", ids);
+      const { data: products } = await supabase.from("products").select("id, shop_id, price, weight_grams").in("id", ids);
       const shopOf: Record<string, string> = {};
-      (products ?? []).forEach(p => { shopOf[p.id] = p.shop_id; });
+      const weightOf: Record<string, number> = {};
+      (products ?? []).forEach(p => { shopOf[p.id] = p.shop_id; weightOf[p.id] = Number(p.weight_grams ?? 500) || 500; });
       const shopIds = [...new Set(Object.values(shopOf).filter(Boolean))];
       if (!shopIds.length) { if (!cancel) setGroups([]); return; }
       const { data: shops } = await supabase.from("shops").select("id, name, shipping_options").in("id", shopIds);
 
       const subtotalByShop: Record<string, number> = {};
-      items.forEach(i => { const sid = shopOf[i.id]; if (sid) subtotalByShop[sid] = (subtotalByShop[sid] ?? 0) + i.price * i.quantity; });
+      const weightByShop: Record<string, number> = {};
+      items.forEach(i => {
+        const sid = shopOf[i.id]; if (!sid) return;
+        subtotalByShop[sid] = (subtotalByShop[sid] ?? 0) + i.price * i.quantity;
+        weightByShop[sid] = (weightByShop[sid] ?? 0) + (weightOf[i.id] ?? 500) * i.quantity;
+      });
 
       const g: ShopGroup[] = (shops ?? []).map(s => {
         const all = (Array.isArray(s.shipping_options) ? s.shipping_options : []) as Method[];
         const methods = all.filter(m => m && m.enabled);
-        return { shop_id: s.id, shop_name: s.name, subtotal: subtotalByShop[s.id] ?? 0, methods };
+        return { shop_id: s.id, shop_name: s.name, subtotal: subtotalByShop[s.id] ?? 0, weight: weightByShop[s.id] ?? 0, methods };
       });
       if (!cancel) {
         setGroups(g);
@@ -70,7 +78,7 @@ export function ShippingStep({
       const mid = chosen[g.shop_id];
       const m = g.methods.find(x => x.id === mid);
       if (!m) { complete = false; continue; }
-      const cost = costOf(m, g.subtotal);
+      const cost = costOf(m, g.subtotal, g.weight);
       total += cost;
       const rp = m.type === "relay" ? (relays[g.shop_id] ?? null) : null;
       if (m.type === "relay" && (!rp || !rp.name || !rp.zip)) complete = false;
@@ -98,7 +106,7 @@ export function ShippingStep({
               <div className="space-y-2">
                 {g.methods.map(m => {
                   const Icon = ICON[m.type];
-                  const cost = costOf(m, g.subtotal);
+                  const cost = costOf(m, g.subtotal, g.weight);
                   const active = chosen[g.shop_id] === m.id;
                   return (
                     <div key={m.id}>

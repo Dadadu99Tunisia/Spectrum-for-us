@@ -59,9 +59,12 @@ export function ShippingSettings({ shopId, initial }: { shopId: string; initial:
       <div className="mb-6">
         <h2 className="font-fraunces text-2xl text-[#101014] mb-1">Livraison</h2>
         <p className="font-hanken text-sm text-[#101014]/50">
-          Définis tes modes de livraison et tarifs. Les acheteur·ses les voient au paiement.
-          Tu gères tes envois et tes étiquettes depuis ton propre compte transporteur (ex. Mondial&nbsp;Relay).
+          Choisis les modes que tu proposes. Les <strong>tarifs sont calculés automatiquement selon le poids du colis</strong> (grille plateforme) — tu n&apos;as rien à fixer.
         </p>
+        <div className="mt-3 rounded-xl border border-[#ECE6DB] bg-[#101014]/[0.02] p-3 font-mono text-[11px] text-[#101014]/55 space-y-0.5">
+          <p className="text-[#101014]/40 mb-1">Grille point relais (domicile +1 €) :</p>
+          <p>0–1 kg : 4,90 € · 1–2 kg : 6,90 € · 2–5 kg : 9,90 € · 5–10 kg : 14,90 €</p>
+        </div>
       </div>
 
       <div className="space-y-3">
@@ -82,13 +85,7 @@ export function ShippingSettings({ shopId, initial }: { shopId: string; initial:
                   </div>
                   <p className="font-mono text-[10px] text-[#101014]/30 mb-3">{Meta.label} · {Meta.hint}</p>
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-                    <label className="flex items-center gap-1.5 text-[#101014]/60">
-                      <span className="font-mono text-[11px]">Tarif</span>
-                      <input type="number" min={0} step="0.1" value={m.price}
-                        onChange={e => patch(m.id, { price: Number(e.target.value) })}
-                        className="w-20 bg-[#101014]/5 border border-[#101014]/10 rounded-lg px-2 py-1 font-mono text-xs text-[#101014] focus:outline-none focus:border-[#FF2DA0]/50" />
-                      <span className="font-mono text-[11px]">€</span>
-                    </label>
+                    <span className="font-mono text-[11px] text-[#101014]/45">Tarif auto · selon le poids</span>
                     <label className="flex items-center gap-1.5 text-[#101014]/60">
                       <span className="font-mono text-[11px]">Offert dès</span>
                       <input type="number" min={0} step="1" placeholder="—"
