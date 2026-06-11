@@ -87,7 +87,8 @@ export default function ReceiptPage({ params }: { params: Promise<{ orderId: str
         </div>
 
         {/* Lignes */}
-        <table className="w-full text-sm mb-6">
+        <div className="overflow-x-auto -mx-1 px-1 mb-6">
+        <table className="w-full min-w-[360px] text-sm">
           <thead>
             <tr className="border-b border-[#101014]/15 text-[#101014]/45 font-mono text-[10px] uppercase tracking-wide">
               <th className="text-left py-2 font-normal">Article</th>
@@ -114,6 +115,7 @@ export default function ReceiptPage({ params }: { params: Promise<{ orderId: str
             })}
           </tbody>
         </table>
+        </div>
 
         {/* Totaux */}
         <div className="flex justify-end">
