@@ -30,7 +30,7 @@ export default function NouveauProduitPage() {
   const [form, setForm] = useState({
     name: "", description: "", price: "", type: "product" as "product" | "service" | "event",
     category: "", subcategory: "", quantity: "1", is_active: true, is_adult: false, variants: [] as string[],
-    image_url: "",
+    image_url: "", weight_grams: "500",
     event_date: "", event_end: "", event_location: "", event_city: "", event_capacity: "",
   });
 
@@ -73,6 +73,7 @@ export default function NouveauProduitPage() {
       quantity: parseInt(form.quantity) || 0,
       is_active: form.is_active,
       is_adult: form.is_adult,
+      weight_grams: parseInt(form.weight_grams) || 500,
       type: form.type,
       listing_status: "approved",
       image_url: form.image_url || null,
@@ -218,6 +219,16 @@ export default function NouveauProduitPage() {
                   onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))}
                   placeholder="10"
                   className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
+              </div>
+            )}
+            {form.type === "product" && (
+              <div>
+                <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Poids (grammes)</label>
+                <input type="number" min="1" value={form.weight_grams}
+                  onChange={(e) => setForm((f) => ({ ...f, weight_grams: e.target.value }))}
+                  placeholder="500"
+                  className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
+                <p className="font-mono text-[9px] text-[#101014]/35 mt-1">Sert à calculer le bon tarif d&apos;expédition (ex. bijou ≈ 100 g, vêtement ≈ 400 g).</p>
               </div>
             )}
           </div>

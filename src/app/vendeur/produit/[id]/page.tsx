@@ -22,7 +22,7 @@ export default function EditProduitPage() {
   const [shopId, setShopId] = useState<string | null>(null);
   const [form, setForm]     = useState({
     name: "", description: "", price: "", category: "", subcategory: "",
-    quantity: "1", is_active: true, is_adult: false, images: [] as string[], type: "product" as string,
+    quantity: "1", is_active: true, is_adult: false, weight_grams: "500", images: [] as string[], type: "product" as string,
   });
 
   useEffect(() => {
@@ -46,6 +46,7 @@ export default function EditProduitPage() {
             quantity: String(p.quantity ?? 1),
             is_active: Boolean(p.is_active),
             is_adult: Boolean(p.is_adult),
+            weight_grams: p.weight_grams != null ? String(p.weight_grams) : "500",
             images: (p.images as string[] | null) ?? (p.image_url ? [p.image_url as string] : []),
             type: String(p.type || "product"),
           });
@@ -72,6 +73,7 @@ export default function EditProduitPage() {
       quantity: parseInt(form.quantity) || 0,
       is_active: form.is_active,
       is_adult: form.is_adult,
+      weight_grams: parseInt(form.weight_grams) || 500,
       images: form.images,
       image_url: form.images[0] ?? null,
       type: form.type,
@@ -181,6 +183,10 @@ export default function EditProduitPage() {
             <div>
               <label className="block font-mono text-[9px] tracking-wide text-[#101014]/30 mb-2">Stock</label>
               <input type="number" min="0" value={form.quantity} onChange={f("quantity")} placeholder="0" className={inputCls} />
+            </div>
+            <div>
+              <label className="block font-mono text-[9px] tracking-wide text-[#101014]/30 mb-2">Poids (g)</label>
+              <input type="number" min="1" value={form.weight_grams} onChange={f("weight_grams")} placeholder="500" className={inputCls} />
             </div>
           </div>
 

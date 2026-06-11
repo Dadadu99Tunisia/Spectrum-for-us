@@ -43,6 +43,15 @@ export async function POST(req: NextRequest) {
   const senderCountry = cred?.sender_country || process.env.SENDCLOUD_SENDER_COUNTRY || "FR";
   const toCountry = (order.shipping_country || "FR").slice(0, 2).toUpperCase() === "FR" ? "FR" : (order.shipping_country || "FR");
 
+  // Poids réel du colis = somme des poids produits de cette boutique dans la commande
+  const { data: oitems } = await admin.from("order_items")
+    .select("quantity, products(weight_grams)").eq("order_id", ship.order_id).eq("vendor_id", shop.owner_id);
+  const grams = (oitems ?? []).reduce((s, it) => {
+    const w = Number((it.products as { weight_grams?: number } | null)?.weight_grams ?? 500);
+    return s + (isNaN(w) ? 500 : w) * (it.quantity ?? 1);
+  }, 0);
+  const weightKg = Math.max(0.05, grams / 1000).toFixed(3); // min 50 g
+
   try {
     // 1) Choisir une méthode d'expédition disponible
     const mRes = await fetch(`${API}/shipping_methods?to_country=${encodeURIComponent(toCountry)}`, { headers: { Authorization: auth } });
@@ -66,7 +75,7 @@ export async function POST(req: NextRequest) {
     const parcel: Record<string, unknown> = {
       name: order.shipping_name || "Client", address: order.shipping_address || "", house_number: "",
       city: order.shipping_city || "", postal_code: order.shipping_zip || "", country: toCountry,
-      email: order.shipping_email || "", telephone: "", weight: "1.000",
+      email: order.shipping_email || "", telephone: "", weight: weightKg,
       request_label: true, shipment: { id: chosen.id },
       from_name: senderName, from_address_1: senderAddr,
       from_city: senderCity, from_postal_code: senderZip, from_country: senderCountry,
