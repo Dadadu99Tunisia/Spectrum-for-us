@@ -11,6 +11,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { ConnectPayments } from "@/components/vendor/ConnectPayments";
+import { ManualPayout } from "@/components/vendor/ManualPayout";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
@@ -288,9 +289,10 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go }
         <Kpi tint="#FBEAD3" label="Total encaissé" value={eur(m.totalRevenue)} delta="depuis le début" deltaColor={C.grn} />
       </div>
 
-      {/* Connexion paiements Stripe */}
-      <div className="mb-4" style={{ marginBottom: 18 }}>
+      {/* Connexion paiements Stripe + alternative versement manuel */}
+      <div className="mb-4 grid md:grid-cols-2 gap-3" style={{ marginBottom: 18 }}>
         <ConnectPayments />
+        <ManualPayout shopId={shop.id} />
       </div>
 
       <div className="grid lg:grid-cols-[1.7fr_1fr] gap-4">
