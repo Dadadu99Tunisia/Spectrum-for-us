@@ -5,7 +5,7 @@ import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
 type Row = {
   shop_id: string; name: string; payout_method: string | null; payout_details: string | null;
-  email: string | null; products: number;
+  country: string; email: string | null; products: number;
   earned: number; paid: number; owed: number;
 };
 
@@ -15,6 +15,7 @@ export default function VersementsPage() {
   const [form, setForm] = useState<{ shop_id: string; amount: string; reference: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState("");
+  const [filter, setFilter] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -57,6 +58,11 @@ export default function VersementsPage() {
             <span className="font-mono text-[10px] uppercase text-[#FF2DA0]">Total à verser</span>
             <p className="font-fraunces text-xl text-[#FF2DA0]">{fmt(rows.reduce((s, r) => s + Math.max(0, r.owed), 0))}</p>
           </div>
+          <select value={filter} onChange={e => setFilter(e.target.value)}
+            className="self-center bg-white border border-[#101014]/12 rounded-xl px-3 py-2 font-hanken text-sm">
+            <option value="">Tous les pays</option>
+            {[...new Set(rows.map(r => r.country))].map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
         </div>
       )}
 
@@ -69,11 +75,11 @@ export default function VersementsPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {rows.map(r => (
+          {(filter ? rows.filter(r => r.country === filter) : rows).map(r => (
             <div key={r.shop_id} className="rounded-2xl border border-[#101014]/12 bg-white p-4">
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div>
-                  <p className="font-bricolage font-bold text-[#101014]">{r.name} <span className="font-mono text-[10px] text-[#101014]/35">· {r.products} produit{r.products > 1 ? "s" : ""}</span></p>
+                  <p className="font-bricolage font-bold text-[#101014]">{r.name} <span className="font-mono text-[10px] text-[#101014]/45">· {r.country}</span> <span className="font-mono text-[10px] text-[#101014]/35">· {r.products} produit{r.products > 1 ? "s" : ""}</span></p>
                   <p className="font-mono text-[11px] text-[#101014]/45">💳 {r.payout_method ?? "—"} · {r.payout_details ?? "—"}</p>
                   {r.email && <a href={`mailto:${r.email}`} className="font-mono text-[11px] text-[#2323C4] hover:underline">✉ {r.email}</a>}
                 </div>

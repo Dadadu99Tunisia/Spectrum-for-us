@@ -5,6 +5,8 @@ import { Globe, Check, Loader2, Pencil } from "lucide-react";
 
 const C = { ink: "#101014", soft: "#6B6258", line: "#ECE6DB", mag: "#FF2DA0", green: "#1B8155" };
 
+const COUNTRIES = ["Tunisie 🇹🇳", "Maroc 🇲🇦", "Algérie 🇩🇿", "Sénégal 🇸🇳", "Côte d'Ivoire 🇨🇮", "Cameroun 🇨🇲", "Liban 🇱🇧", "Égypte 🇪🇬", "Autre"];
+
 const METHODS = [
   { v: "payoneer", l: "Payoneer (e-mail du compte)", ph: "ton@email.com" },
   { v: "wise", l: "Wise (e-mail / IBAN)", ph: "ton@email.com ou IBAN" },
@@ -16,6 +18,7 @@ export function ManualPayout({ shopId }: { shopId: string }) {
   const [mode, setMode] = useState<string>("stripe");
   const [method, setMethod] = useState("payoneer");
   const [details, setDetails] = useState("");
+  const [country, setCountry] = useState("Tunisie 🇹🇳");
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -23,12 +26,13 @@ export function ManualPayout({ shopId }: { shopId: string }) {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.from("shops").select("payout_mode, payout_method, payout_details").eq("id", shopId).maybeSingle()
+    supabase.from("shops").select("payout_mode, payout_method, payout_details, country").eq("id", shopId).maybeSingle()
       .then(({ data }) => {
         if (data) {
           setMode(data.payout_mode ?? "stripe");
           setMethod(data.payout_method ?? "payoneer");
           setDetails(data.payout_details ?? "");
+          if (data.country) setCountry(data.country);
           if (data.payout_mode === "manual" && !data.payout_details) setEditing(true);
         }
         setLoading(false);
@@ -57,6 +61,7 @@ export function ManualPayout({ shopId }: { shopId: string }) {
       payout_mode: newMode,
       payout_method: newMode === "manual" ? method : null,
       payout_details: newMode === "manual" ? details.trim() : null,
+      country: newMode === "manual" ? country : null,
     }).eq("id", shopId);
     setMode(newMode); setSaving(false); setEditing(false);
   };
@@ -77,7 +82,7 @@ export function ManualPayout({ shopId }: { shopId: string }) {
             Tu es payé·e par <strong>versement manuel</strong> de la plateforme (hors Stripe).
           </p>
           <p className="font-mono text-[12px]" style={{ color: C.ink }}>
-            {METHODS.find(m => m.v === method)?.l.split(" (")[0]} · {details || "—"}
+            {country} · {METHODS.find(m => m.v === method)?.l.split(" (")[0]} · {details || "—"}
           </p>
           <button onClick={() => setEditing(true)} className="mt-2 inline-flex items-center gap-1.5 font-mono text-[11px]" style={{ color: C.mag }}>
             <Pencil size={11} /> Modifier
@@ -92,7 +97,10 @@ export function ManualPayout({ shopId }: { shopId: string }) {
         </div>
       ) : editing || mode === "manual" ? (
         <div className="space-y-2">
-          <p className="text-[13px]" style={{ color: C.soft }}>Indique comment être payé·e. La plateforme te reversera tes ventes (− commission) à la main, au rythme convenu.</p>
+          <p className="text-[13px]" style={{ color: C.soft }}>Indique ton pays et comment être payé·e. La plateforme te reversera tes ventes (− commission) à la main, au rythme convenu.</p>
+          <select value={country} onChange={e => setCountry(e.target.value)} className="w-full bg-[#101014]/5 border border-[#101014]/12 rounded-xl px-3 py-2.5 font-hanken text-sm">
+            {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
           <select value={method} onChange={e => setMethod(e.target.value)} className="w-full bg-[#101014]/5 border border-[#101014]/12 rounded-xl px-3 py-2.5 font-hanken text-sm">
             {METHODS.map(m => <option key={m.v} value={m.v}>{m.l}</option>)}
           </select>

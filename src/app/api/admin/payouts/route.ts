@@ -10,7 +10,7 @@ export async function GET() {
   const admin = createAdminClient();
 
   const { data: shops } = await admin.from("shops")
-    .select("id, name, owner_id, payout_method, payout_details")
+    .select("id, name, owner_id, payout_method, payout_details, country")
     .eq("payout_mode", "manual");
   if (!shops?.length) return apiResponse([]);
 
@@ -53,6 +53,7 @@ export async function GET() {
     const owed = Math.round((earned - (paid[s.id] ?? 0)) * 100) / 100;
     return {
       shop_id: s.id, name: s.name, payout_method: s.payout_method, payout_details: s.payout_details,
+      country: s.country ?? "—",
       email: emailByShop[s.id] ?? null, products: prodCount[s.id] ?? 0,
       earned: Math.round(earned * 100) / 100, paid: Math.round((paid[s.id] ?? 0) * 100) / 100, owed,
     };
