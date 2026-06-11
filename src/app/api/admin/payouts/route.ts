@@ -15,11 +15,25 @@ export async function GET() {
   if (!shops?.length) return apiResponse([]);
 
   const shopIds = shops.map(s => s.id);
-  const [{ data: comm }, { data: ships }, { data: payouts }] = await Promise.all([
+  const [{ data: comm }, { data: ships }, { data: payouts }, { data: prods }] = await Promise.all([
     admin.from("commissions").select("shop_id, gross_amount, commission_amount").in("shop_id", shopIds),
     admin.from("order_shipments").select("shop_id, shipping_cost").in("shop_id", shopIds),
     admin.from("vendor_payouts").select("shop_id, amount").in("shop_id", shopIds),
+    admin.from("products").select("shop_id, is_active").in("shop_id", shopIds),
   ]);
+
+  // E-mails des propriétaires
+  const emailByShop: Record<string, string | null> = {};
+  await Promise.all(shops.map(async s => {
+    try { const { data } = await admin.auth.admin.getUserById(s.owner_id); emailByShop[s.id] = data?.user?.email ?? null; }
+    catch { emailByShop[s.id] = null; }
+  }));
+
+  // Nb de produits actifs par boutique
+  const prodCount: Record<string, number> = {};
+  for (const p of (prods ?? []) as { shop_id: string; is_active: boolean }[]) {
+    if (p.is_active) prodCount[p.shop_id] = (prodCount[p.shop_id] ?? 0) + 1;
+  }
 
   const agg = (rows: { shop_id: string }[] | null, field: string, sign = 1) => {
     const m: Record<string, number> = {};
@@ -39,6 +53,7 @@ export async function GET() {
     const owed = Math.round((earned - (paid[s.id] ?? 0)) * 100) / 100;
     return {
       shop_id: s.id, name: s.name, payout_method: s.payout_method, payout_details: s.payout_details,
+      email: emailByShop[s.id] ?? null, products: prodCount[s.id] ?? 0,
       earned: Math.round(earned * 100) / 100, paid: Math.round((paid[s.id] ?? 0) * 100) / 100, owed,
     };
   }).sort((a, b) => b.owed - a.owed);

@@ -5,6 +5,7 @@ import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 
 type Row = {
   shop_id: string; name: string; payout_method: string | null; payout_details: string | null;
+  email: string | null; products: number;
   earned: number; paid: number; owed: number;
 };
 
@@ -43,9 +44,21 @@ export default function VersementsPage() {
       {toast && <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#FF2DA0] text-white font-hanken text-sm shadow-xl">{toast}</div>}
 
       <div>
-        <h1 className="font-fraunces text-2xl text-[#101014] flex items-center gap-2"><Globe size={20} /> Versements manuels</h1>
-        <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">Boutiques sans Stripe (ex. Tunisie 🇹🇳). Ce que tu dois reverser à la main (Payoneer, virement…).</p>
+        <h1 className="font-fraunces text-2xl text-[#101014] flex items-center gap-2"><Globe size={20} /> Vendeur·ses hors Stripe 🇹🇳</h1>
+        <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">Boutiques des pays où Stripe n&apos;existe pas (Tunisie & co.). Tu les paies à la main (Payoneer, virement…) — voici qui, combien, et leurs coordonnées.</p>
       </div>
+      {!loading && rows.length > 0 && (
+        <div className="flex gap-3 flex-wrap">
+          <div className="rounded-xl border border-[#101014]/12 bg-white px-4 py-2.5">
+            <span className="font-mono text-[10px] uppercase text-[#101014]/35">Boutiques</span>
+            <p className="font-fraunces text-xl text-[#101014]">{rows.length}</p>
+          </div>
+          <div className="rounded-xl border border-[#FF2DA0]/25 bg-[#FF2DA0]/5 px-4 py-2.5">
+            <span className="font-mono text-[10px] uppercase text-[#FF2DA0]">Total à verser</span>
+            <p className="font-fraunces text-xl text-[#FF2DA0]">{fmt(rows.reduce((s, r) => s + Math.max(0, r.owed), 0))}</p>
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-20"><SpectrumLoader size="sm" /></div>
@@ -60,8 +73,9 @@ export default function VersementsPage() {
             <div key={r.shop_id} className="rounded-2xl border border-[#101014]/12 bg-white p-4">
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div>
-                  <p className="font-bricolage font-bold text-[#101014]">{r.name}</p>
-                  <p className="font-mono text-[11px] text-[#101014]/45">{r.payout_method ?? "—"} · {r.payout_details ?? "—"}</p>
+                  <p className="font-bricolage font-bold text-[#101014]">{r.name} <span className="font-mono text-[10px] text-[#101014]/35">· {r.products} produit{r.products > 1 ? "s" : ""}</span></p>
+                  <p className="font-mono text-[11px] text-[#101014]/45">💳 {r.payout_method ?? "—"} · {r.payout_details ?? "—"}</p>
+                  {r.email && <a href={`mailto:${r.email}`} className="font-mono text-[11px] text-[#2323C4] hover:underline">✉ {r.email}</a>}
                 </div>
                 <div className="flex items-center gap-5 text-right">
                   <div><p className="font-mono text-[9px] uppercase text-[#101014]/35">Gagné</p><p className="font-fraunces text-[#101014]">{fmt(r.earned)}</p></div>
