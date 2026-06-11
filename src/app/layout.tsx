@@ -20,6 +20,7 @@ import { CookieBanner } from "@/components/ui/CookieBanner";
 import { AccessibilityBar } from "@/components/AccessibilityBar";
 import { BottomNav } from "@/components/mobile/BottomNav";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { CartSync } from "@/components/CartSync";
 import { IntroSplash } from "@/components/IntroSplash";
 import { FavoritesSync } from "@/components/FavoritesSync";
 
@@ -153,6 +154,7 @@ export default function RootLayout({
               <PageTransition>{children}</PageTransition>
               {/* Mobile bottom navigation */}
               <BottomNav />
+              <CartSync />
               <CookieBanner />
               <InstallPrompt />
               <AccessibilityBar />

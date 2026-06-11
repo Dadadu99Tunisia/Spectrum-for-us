@@ -206,6 +206,18 @@ export async function sendPayoutNotification(params: { to: string; amount: numbe
   return getResend().emails.send({ from: FROM, to: params.to, subject: `Versement de ${params.amount.toFixed(2)} € · Spectrum For Us`, html: baseLayout("Versement · Spectrum For Us", body) });
 }
 
+export async function sendAbandonedCart(params: { to: string; items: { name: string; price: number; quantity: number }[]; total: number }) {
+  const rows = params.items.slice(0, 6).map(i => itemRow(i.name, i.price, i.quantity)).join("");
+  const body = `
+    ${h2("Tu as oublié quelque chose 🛒")}
+    ${text("Ton panier t'attend sur Spectrum. Les créations partent vite — finalise ta commande avant qu'elles ne s'envolent.")}
+    <table style="width:100%;border-collapse:collapse;margin:8px 0;">${rows}</table>
+    ${text(`<strong style="color:#F3EADB;">Total : ${params.total.toFixed(2)} €</strong>`)}
+    ${cta("Reprendre mon panier", `${BASE}/panier`)}
+  `;
+  return getResend().emails.send({ from: FROM, to: params.to, subject: "Ton panier t'attend sur Spectrum 🛒", html: baseLayout("Ton panier · Spectrum For Us", body) });
+}
+
 export async function sendWelcomeEmail(params: { to: string; pseudo: string }) {
   const body = `
     ${h2(`Bienvenue sur Spectrum, ${params.pseudo} ✦`)}

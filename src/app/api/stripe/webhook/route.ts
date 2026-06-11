@@ -203,6 +203,9 @@ export async function POST(req: Request) {
 
     await supabase.from("order_items").insert(orderItems);
 
+    // Panier récupéré → plus de relance d'abandon
+    try { await supabase.from("abandoned_carts").update({ recovered_at: new Date().toISOString() }).eq("user_id", user_id); } catch {}
+
     // Incrémente l'usage du code promo utilisé
     const usedCode = pi.metadata?.discount_code;
     if (usedCode) {
