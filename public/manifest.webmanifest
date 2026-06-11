@@ -1,0 +1,23 @@
+{
+  "name": "Spectrum For Us",
+  "short_name": "Spectrum",
+  "description": "La marketplace queer · créations, services et événements par et pour la communauté LGBTQIA+.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBFAF8",
+  "theme_color": "#FBFAF8",
+  "lang": "fr",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    { "src": "/icon.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Boutique", "url": "/decouvrir" },
+    { "name": "Événements & Ateliers", "url": "/evenements" },
+    { "name": "Mon compte", "url": "/compte" }
+  ]
+}

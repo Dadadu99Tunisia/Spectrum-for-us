@@ -1,4 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const viewport: Viewport = {
+  themeColor: "#FBFAF8",
+};
 import { Plus_Jakarta_Sans, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { PageTransition } from "@/components/animations/PageTransition";
@@ -34,6 +38,12 @@ const spaceMono = Space_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://spectrumforus.com"),
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Spectrum",
+  },
   title: {
     default: "Spectrum For Us · B(u)y us, for us.",
     template: "%s | Spectrum For Us",
