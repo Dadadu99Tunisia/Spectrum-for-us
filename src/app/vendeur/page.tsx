@@ -20,7 +20,6 @@ import {
   Settings, Search, Bell, Plus, Menu, ExternalLink, Check, ArrowUpRight, Truck, CalendarClock, Tag,
 } from "lucide-react";
 import { ShippingSettings, type ShippingMethod } from "@/components/vendor/ShippingSettings";
-import { SendcloudConnect } from "@/components/vendor/SendcloudConnect";
 import { PromoCodes } from "@/components/vendor/PromoCodes";
 import { ShipmentsManager } from "@/components/vendor/ShipmentsManager";
 import { ReturnsManager } from "@/components/vendor/ReturnsManager";
@@ -245,7 +244,7 @@ export default function VendeurDashboard() {
           {view === "orders" && <><Orders orders={orders} toPrepare={m.toPrepare} /><ShipmentsManager shopId={shop.id} /><ReturnsManager shopId={shop.id} /></>}
           {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} />}
           {view === "subscription" && <Subscription shop={shop} founderRank={founderRank} />}
-          {view === "livraison" && <><ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} /><SendcloudConnect shopId={shop.id} /></>}
+          {view === "livraison" && <ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} />}
           {view === "agenda" && <ServiceAvailability shopId={shop.id} />}
           {view === "promos" && <PromoCodes shopId={shop.id} />}
           {view === "stats" && <Stats m={m} products={products} orders={orders} commissions={commissions} />}

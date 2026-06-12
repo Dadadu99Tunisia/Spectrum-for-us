@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError, logActivity } from "@/lib/admin/rbac";
 
 export async function GET(req: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   const role    = searchParams.get("role") ?? "";
   const offset  = (page - 1) * limit;
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   let query = supabase
     .from("profiles")
     .select("id,full_name,role,is_suspended,country,last_seen_at,created_at", { count: "exact" })
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   const { email, full_name, role } = body;
   if (!email || !role) return apiError("email and role required");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("profiles")
     .insert({ full_name, role })

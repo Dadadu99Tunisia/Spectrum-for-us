@@ -122,6 +122,9 @@ export default function ReceiptPage({ params }: { params: Promise<{ orderId: str
           <div className="w-full max-w-[260px] space-y-1.5">
             <div className="flex justify-between font-hanken text-sm text-[#101014]/70"><span>Sous-total</span><span className="font-mono">{subtotal.toFixed(2)} €</span></div>
             <div className="flex justify-between font-hanken text-sm text-[#101014]/70"><span>Frais de port</span><span className="font-mono">{shipping === 0 ? "Offert" : `${shipping.toFixed(2)} €`}</span></div>
+            {Math.round((subtotal + shipping - total) * 100) > 0 && (
+              <div className="flex justify-between font-hanken text-sm text-green-600"><span>Remise</span><span className="font-mono">−{(subtotal + shipping - total).toFixed(2)} €</span></div>
+            )}
             <div className="flex justify-between font-fraunces font-bold text-base border-t border-[#101014]/15 pt-2 mt-1"><span>Total payé</span><span className="font-mono">{total.toFixed(2)} €</span></div>
           </div>
         </div>

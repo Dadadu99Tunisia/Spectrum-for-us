@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 export async function GET(req: NextRequest) {
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
   const type   = searchParams.get("type")  ?? "";
   const search = searchParams.get("search") ?? "";
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   let query = supabase
     .from("crm_contacts")
     .select(
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   const { name, email, company, contact_type, stage, source, notes, next_followup_at } = body;
   if (!name) return apiError("name required");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase.from("crm_contacts").insert({
     name, email, company,
     contact_type: contact_type ?? "prospect_vendor",

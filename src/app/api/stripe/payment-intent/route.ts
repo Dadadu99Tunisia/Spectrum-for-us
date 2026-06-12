@@ -148,17 +148,31 @@ export async function POST(req: NextRequest) {
     if (dr.ok) { discountCents = dr.discount_cents; discountShopId = dr.shop_id; discountCode = dr.code; }
   }
 
-  // Reversement par vendeur·se Stripe = sous-total − commission − remise éventuelle (le·la vendeur·se absorbe sa promo).
-  // Les frais de port restent sur la plateforme (c'est elle qui paie l'étiquette via son compte Sendcloud).
-  const transfers: { a: string; c: number; s: string }[] = [];
+  // Commissions par boutique Stripe (calculées une fois)
+  const shopCommission: Record<string, number> = {};
+  let totalCommissionStripe = 0;
   for (const sid of shopIds) {
-    // Versement manuel (pays sans Stripe) : pas de transfert Stripe, l'argent reste sur la plateforme.
     if (shopMap[sid].payout_mode === "manual") continue;
     const rate = await getCommissionRate(admin, sid);
+    const commission = Math.round(subtotalByShop[sid] * (rate / 100));
+    shopCommission[sid] = commission;
+    totalCommissionStripe += commission;
+  }
+
+  // Code PLATEFORME : la plateforme finance la remise depuis sa marge (commissions + port).
+  // On plafonne pour que Σtransferts ne dépasse JAMAIS la charge encaissée (sinon Stripe refuse les transferts).
+  if (discountShopId === null && discountCents > 0) {
+    discountCents = Math.min(discountCents, totalCommissionStripe + shippingCents);
+  }
+
+  // Reversement par vendeur·se Stripe = sous-total − commission − (remise boutique éventuelle, absorbée par la boutique).
+  // Port + remise plateforme restent sur la plateforme.
+  const transfers: { a: string; c: number; s: string }[] = [];
+  for (const sid of shopIds) {
+    if (shopMap[sid].payout_mode === "manual") continue;
     const sub = subtotalByShop[sid];
-    const commission = Math.round(sub * (rate / 100));
     const shopDiscount = discountShopId === sid ? discountCents : 0; // remise boutique : la boutique l'absorbe
-    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: Math.max(0, sub - commission - shopDiscount), s: sid });
+    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: Math.max(0, sub - shopCommission[sid] - shopDiscount), s: sid });
   }
   const grandTotalCents = Math.max(50, totalCents + shippingCents - discountCents);
   const transferGroup = `sfu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;

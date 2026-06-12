@@ -31,7 +31,7 @@ export function BottomNav() {
 
   return (
     <>
-      <div className="h-[70px] md:hidden" aria-hidden />
+      <div className="md:hidden" aria-hidden style={{ height: "calc(70px + env(safe-area-inset-bottom))" }} />
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
         style={{ background: "#FBFAF8", borderTop: "1px solid #ECE6DB", paddingTop: 8 }}>

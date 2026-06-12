@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 export async function GET(req: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   const priority = searchParams.get("priority") ?? "";
   const offset   = (page - 1) * limit;
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   let query = supabase
     .from("support_tickets")
     .select(`
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
   const { user_id, subject, category, priority } = body;
   if (!subject) return apiError("subject required");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const ticket_number = `TKT-${Date.now().toString(36).toUpperCase()}`;
   const sla_hours = priority === "urgent" ? 4 : priority === "high" ? 8 : 24;
 

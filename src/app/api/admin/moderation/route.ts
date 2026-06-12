@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 export async function GET(req: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   const type   = searchParams.get("type") ?? "";
   const offset = (page - 1) * limit;
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   let query = supabase
     .from("moderation_queue")
     .select("*, profiles!moderation_queue_assigned_to_fkey(full_name)", { count: "exact" })
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   const { target_type, target_id, reason } = body;
   if (!target_type || !target_id) return apiError("target_type and target_id required");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("moderation_queue")
     .insert({ target_type, target_id, reason, mod_status: "pending" })

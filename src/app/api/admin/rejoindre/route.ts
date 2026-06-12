@@ -1,12 +1,12 @@
 import { NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 export async function GET(_: NextRequest) {
   const auth = await requireAdmin(["super_admin", "ceo", "moderation", "commercial"]);
   if ("error" in auth) return auth.error;
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("join_requests")
     .select("*")
@@ -26,7 +26,7 @@ export async function PATCH(req: NextRequest) {
   const ALLOWED_STATUSES = ["pending", "contacted", "approved", "rejected"];
   if (!ALLOWED_STATUSES.includes(status)) return apiError("Statut invalide", 400);
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("join_requests")
     .update({ status })

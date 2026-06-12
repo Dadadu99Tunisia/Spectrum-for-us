@@ -1,12 +1,12 @@
 import { requireAdmin, apiError } from "@/lib/admin/rbac";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   const auth = await requireAdmin();
   if ("error" in auth) return auth.error;
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("annuaire_overrides")
     .select("*")
@@ -34,7 +34,7 @@ export async function PATCH(req: NextRequest) {
 
   if (!body.org_id) return apiError("org_id requis");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("annuaire_overrides")
     .upsert({
@@ -56,7 +56,7 @@ export async function DELETE(req: NextRequest) {
   const { org_id } = await req.json() as { org_id: string };
   if (!org_id) return apiError("org_id requis");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { error } = await supabase
     .from("annuaire_overrides")
     .delete()
