@@ -152,7 +152,7 @@ export default function VendeurDashboard() {
     { label: "Compléter ta boutique (logo, bannière, contact)", done: !!(shop.logo_url && shop.banner_url && shop.contact_email), href: "/vendeur/boutique" },
     { label: products.length === 0 ? "Ajouter ton premier produit" : "Ajouter plus de produits (boost visibilité)", done: products.length >= 3, href: "/vendeur/nouveau-produit" },
     { label: m.toPrepare.size > 0 ? `Préparer ${m.toPrepare.size} commande${m.toPrepare.size > 1 ? "s" : ""}` : "Aucune commande à préparer", done: m.toPrepare.size === 0, href: "#orders" },
-    { label: "Connecter les paiements (Stripe)", done: shop.subscription_status === "active", href: "/vendeur/abonnement" },
+    { label: "Activer tes paiements (Stripe ou versement manuel)", done: !!(shop as { stripe_charges_enabled?: boolean }).stripe_charges_enabled || (shop as { payout_mode?: string }).payout_mode === "manual", href: "#overview" },
   ] : [];
 
   if (loading || loadingData) return (
@@ -289,7 +289,7 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go }
         <Kpi tint="#DCF0E5" label="Revenus ce mois" value={eur(m.revenueMonth)} delta="ce mois-ci" deltaColor={C.faint} />
         <Kpi tint="#FCEAD2" label="Commandes" value={String(m.orderCount)} delta={`${m.toPrepare.size} à préparer`} deltaColor={m.toPrepare.size ? C.amb : C.faint} />
         <Kpi tint="#EAE0FB" label="Produits actifs" value={`${activeCount}/${products.length}`} delta="en ligne" deltaColor={C.faint} />
-        <Kpi tint="#FBEAD3" label="Total encaissé" value={eur(m.totalRevenue)} delta="depuis le début" deltaColor={C.grn} />
+        <Kpi tint="#FBEAD3" label="CA brut (avant commission)" value={eur(m.totalRevenue)} delta="depuis le début" deltaColor={C.grn} />
       </div>
 
       {/* Connexion paiements Stripe + alternative versement manuel */}

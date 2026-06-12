@@ -191,24 +191,27 @@ export default function CheckoutPage() {
         }),
       });
       const data = await res.json();
-      if (data.error) {
-        setIntentError(data.error);
-      } else {
-        setClientSecret(data.clientSecret);
-        setCustomerSession(data.customerSessionClientSecret ?? null);
-        // Mettre à jour le total avec celui recalculé serveur
-        if (data.serverTotal) setServerTotal(data.serverTotal);
+      if (data.error || !data.clientSecret) {
+        setIntentError(data.error || "Impossible de préparer le paiement.");
+        setLoadingIntent(false);
+        return false;
       }
+      setClientSecret(data.clientSecret);
+      setCustomerSession(data.customerSessionClientSecret ?? null);
+      if (data.serverTotal) setServerTotal(data.serverTotal);
+      setLoadingIntent(false);
+      return true;
     } catch {
       setIntentError("Erreur réseau. Réessaie.");
+      setLoadingIntent(false);
+      return false;
     }
-    setLoadingIntent(false);
   }, [total, user, items, form, shipSel, promoApplied]);
 
   const handleGoToPayment = async () => {
-    // Recréer le payment intent avec les infos de livraison à jour
-    await createPaymentIntent();
-    setStep("Paiement");
+    // N'avance au paiement QUE si le PaymentIntent a bien été créé
+    const ok = await createPaymentIntent();
+    if (ok) setStep("Paiement");
   };
 
   // La commande est créée par le webhook Stripe · on attend juste la confirmation Stripe

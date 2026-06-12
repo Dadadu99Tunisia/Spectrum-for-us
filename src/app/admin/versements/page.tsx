@@ -83,14 +83,14 @@ export default function VersementsPage() {
                   <p className="font-mono text-[11px] text-[#101014]/45">💳 {r.payout_method ?? "—"} · {r.payout_details ?? "—"}</p>
                   {r.email && <a href={`mailto:${r.email}`} className="font-mono text-[11px] text-[#2323C4] hover:underline">✉ {r.email}</a>}
                 </div>
-                <div className="flex items-center gap-5 text-right">
+                <div className="flex items-center gap-4 sm:gap-5 flex-wrap">
                   <div><p className="font-mono text-[9px] uppercase text-[#101014]/35">Gagné</p><p className="font-fraunces text-[#101014]">{fmt(r.earned)}</p></div>
                   <div><p className="font-mono text-[9px] uppercase text-[#101014]/35">Versé</p><p className="font-fraunces text-[#101014]/60">{fmt(r.paid)}</p></div>
                   <div><p className="font-mono text-[9px] uppercase text-[#FF2DA0]">À verser</p><p className="font-fraunces text-lg" style={{ color: r.owed > 0 ? "#FF2DA0" : "#1B8155" }}>{fmt(r.owed)}</p></div>
                   <button onClick={() => setForm({ shop_id: r.shop_id, amount: r.owed > 0 ? String(r.owed) : "", reference: "" })}
                     disabled={r.owed <= 0}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#101014] text-white font-hanken text-xs hover:brightness-125 disabled:opacity-30">
-                    <Plus size={13} /> Enregistrer un versement
+                    className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg bg-[#101014] text-white font-hanken text-xs hover:brightness-125 disabled:opacity-30">
+                    <Plus size={13} /> Verser
                   </button>
                 </div>
               </div>

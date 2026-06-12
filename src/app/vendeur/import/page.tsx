@@ -107,14 +107,22 @@ export default function ImportPage() {
       category: d.category, type: "product", is_active: active,
       listing_status: "approved", image_url: d.image, images: d.image ? [d.image] : null,
     }));
-    // insertion par lots de 50
-    let ok = 0;
+    // insertion par lots de 50 ; si un lot échoue, on réessaie ligne par ligne pour ne pas tout perdre
+    let ok = 0, failed = 0;
     for (let i = 0; i < rows.length; i += 50) {
-      const { error: e, data } = await supabase.from("products").insert(rows.slice(i, i + 50)).select("id");
-      if (e) { setError("Erreur à l'import : " + e.message); setImporting(false); return; }
-      ok += data?.length ?? 0;
+      const batch = rows.slice(i, i + 50);
+      const { error: e, data } = await supabase.from("products").insert(batch).select("id");
+      if (!e) { ok += data?.length ?? 0; continue; }
+      for (const row of batch) {
+        // slug unique au cas où (collision)
+        row.slug = slugify(row.name) + "-" + Math.random().toString(36).slice(2, 7);
+        const { error: re } = await supabase.from("products").insert(row).select("id");
+        if (re) failed++; else ok++;
+      }
     }
-    setImporting(false); setDone(ok);
+    setImporting(false);
+    if (failed > 0) setError(`${failed} produit(s) n'ont pas pu être importés (données invalides). ${ok} importé(s).`);
+    setDone(ok);
   };
 
   const downloadTemplate = () => {
