@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripeServer } from "@/lib/stripe-server";
 import { getCommissionRate } from "@/lib/commission";
 import { generateSlots, type AvailabilityRule } from "@/lib/slots";
+import { sellerForShop } from "@/lib/seller";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -27,8 +28,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
 
   const { data: shop } = await admin.from("shops")
-    .select("id, name, stripe_account_id, stripe_charges_enabled").eq("id", product.shop_id).maybeSingle();
-  if (!shop?.stripe_account_id || !shop.stripe_charges_enabled)
+    .select("id, name").eq("id", product.shop_id).maybeSingle();
+  if (!shop) return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
+  // Compte Stripe destinataire = celui du SELLER de l'activité (partagé)
+  const seller = await sellerForShop(admin, product.shop_id);
+  if (!seller?.stripe_account_id || !seller.stripe_charges_enabled)
     return NextResponse.json({ error: "Ce·tte prestataire n'a pas encore activé les paiements." }, { status: 400 });
 
   // Recalcul des créneaux SERVEUR pour valider start_at
@@ -91,7 +95,7 @@ export async function POST(req: NextRequest) {
       transfer_group: transferGroup,
       metadata: {
         booking_id: booking.id, shop_id: shop.id, user_id: user.id,
-        transfer_account: shop.stripe_account_id, transfer_amount: String(transferAmount), transfer_group: transferGroup,
+        transfer_account: seller.stripe_account_id, transfer_amount: String(transferAmount), transfer_group: transferGroup,
       },
     });
     await admin.from("bookings").update({ payment_intent_id: pi.id }).eq("id", booking.id);

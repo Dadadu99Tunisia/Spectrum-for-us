@@ -201,6 +201,7 @@ export async function POST(req: Request) {
         order_id: order.id,
         product_id: item.id,
         vendor_id: shop?.owner_id ?? null,
+        activity_id: p?.shop_id ?? null, // segmentation par activité
         quantity: item.quantity,
         price_at_purchase: p ? Number(p.price) : item.price,
       };

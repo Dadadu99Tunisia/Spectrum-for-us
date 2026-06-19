@@ -98,17 +98,25 @@ export async function POST(req: NextRequest) {
   const admin = createAdminClient();
   const { data: shops } = await admin
     .from("shops")
-    .select("id, name, stripe_account_id, stripe_charges_enabled, shipping_options, payout_mode")
+    .select("id, name, seller_id, shipping_options")
     .in("id", shopIds);
   const shopMap = Object.fromEntries((shops ?? []).map(s => [s.id, s]));
 
+  // Résoudre l'entité financière (seller) de chaque activité → compte Stripe UNIQUE partagé.
+  const sellerIds = [...new Set((shops ?? []).map(s => s.seller_id).filter(Boolean))] as string[];
+  const { data: sellersData } = sellerIds.length
+    ? await admin.from("sellers").select("id, stripe_account_id, stripe_charges_enabled, payout_mode").in("id", sellerIds)
+    : { data: [] as Array<{ id: string; stripe_account_id: string | null; stripe_charges_enabled: boolean; payout_mode: string | null }> };
+  const sellerById = Object.fromEntries((sellersData ?? []).map(s => [s.id, s]));
+  const sellerOf = (sid: string) => sellerById[shopMap[sid]?.seller_id as string] ?? null;
+  const isManual = (sid: string) => sellerOf(sid)?.payout_mode === "manual";
+
   // Tous les vendeurs doivent pouvoir être payés : soit Stripe activé, soit versement manuel
   for (const sid of shopIds) {
-    const s = shopMap[sid];
-    const manual = s?.payout_mode === "manual";
-    if (!manual && (!s?.stripe_account_id || !s.stripe_charges_enabled)) {
+    const sel = sellerOf(sid);
+    if (!isManual(sid) && (!sel?.stripe_account_id || !sel.stripe_charges_enabled)) {
       return NextResponse.json(
-        { error: `${s?.name ?? "Un vendeur"} n'a pas encore activé ses paiements. Retire ses articles ou reviens bientôt.` },
+        { error: `${shopMap[sid]?.name ?? "Un vendeur"} n'a pas encore activé ses paiements. Retire ses articles ou reviens bientôt.` },
         { status: 400 }
       );
     }
@@ -152,7 +160,7 @@ export async function POST(req: NextRequest) {
   const shopCommission: Record<string, number> = {};
   let totalCommissionStripe = 0;
   for (const sid of shopIds) {
-    if (shopMap[sid].payout_mode === "manual") continue;
+    if (isManual(sid)) continue;
     const rate = await getCommissionRate(admin, sid);
     const commission = Math.round(subtotalByShop[sid] * (rate / 100));
     shopCommission[sid] = commission;
@@ -169,10 +177,11 @@ export async function POST(req: NextRequest) {
   // Port + remise plateforme restent sur la plateforme.
   const transfers: { a: string; c: number; s: string }[] = [];
   for (const sid of shopIds) {
-    if (shopMap[sid].payout_mode === "manual") continue;
+    if (isManual(sid)) continue;
     const sub = subtotalByShop[sid];
     const shopDiscount = discountShopId === sid ? discountCents : 0; // remise boutique : la boutique l'absorbe
-    transfers.push({ a: shopMap[sid].stripe_account_id as string, c: Math.max(0, sub - shopCommission[sid] - shopDiscount), s: sid });
+    // Destination = compte Stripe du SELLER (partagé par toutes ses activités)
+    transfers.push({ a: sellerOf(sid)!.stripe_account_id as string, c: Math.max(0, sub - shopCommission[sid] - shopDiscount), s: sid });
   }
   const grandTotalCents = Math.max(50, totalCents + shippingCents - discountCents);
   const transferGroup = `sfu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
