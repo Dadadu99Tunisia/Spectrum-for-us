@@ -245,6 +245,12 @@ export default function VendrePage() {
             </FadeIn>
           ))}
         </div>
+        <FadeIn className="max-w-4xl mx-auto mt-8 text-center">
+          <p className="font-hanken text-sm text-[#101014]/55">
+            Plusieurs marques ? Le forfait <strong className="text-[#6A44D6]">Studio à 19,90 €/mois</strong> débloque les activités illimitées —
+            <strong className="text-[#101014]"> offert aux fondateur·ices</strong>.
+          </p>
+        </FadeIn>
       </section>
 
       {/* ── PREUVE SOCIALE · rareté fondateur·ice (live) ── */}
