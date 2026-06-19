@@ -156,38 +156,46 @@ export default function AbonnementPage() {
           )}
         </div>
 
-        {/* Forfait Studio · multi-marques */}
-        {shop && (
-          <div className={`rounded-3xl border p-8 mb-6 transition-all ${wantStudio ? "border-[#6A44D6] bg-[#6A44D6]/[0.06] ring-2 ring-[#6A44D6]/30" : "border-[#6A44D6]/30 bg-[#6A44D6]/[0.04]"}`}>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="font-mono text-[10px] tracking-widest uppercase text-[#6A44D6]">Forfait Studio</span>
-              {wantStudio && <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-[#6A44D6]/15 text-[#6A44D6]">requis pour une 2ᵉ activité</span>}
-            </div>
-            <div className="flex items-end gap-2 mb-5">
-              <span className="font-fraunces text-5xl">19,90</span>
-              <div className="pb-1.5"><span className="font-fraunces text-xl text-[#6A44D6]">€</span><span className="font-mono text-xs text-[#101014]/40 block">/mois</span></div>
-            </div>
-            <p className="font-hanken text-sm text-[#101014]/60 mb-5">Gère plusieurs marques sous un seul compte et un seul compte Stripe. Même commission que Solo.</p>
-            <div className="space-y-2.5 mb-7">
-              {STUDIO_FEATURES.map((f, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#6A44D6]/15 flex items-center justify-center flex-shrink-0 text-[#6A44D6] text-[11px]">✦</div>
-                  <span className="font-hanken text-sm text-[#101014]/80">{f}</span>
-                </div>
-              ))}
-            </div>
-            {founderFree ? (
-              <div className="w-full py-3.5 rounded-xl bg-green-500/15 text-green-700 font-hanken font-semibold text-center text-sm">
-                ✦ Multi-activités inclus pendant ta période fondateur·ice
-              </div>
-            ) : (
-              <button onClick={() => handleSubscribe("studio")} disabled={subscribing}
-                className="w-full py-4 rounded-xl bg-[#6A44D6] text-white font-hanken font-semibold hover:bg-[#6A44D6]/85 transition-all disabled:opacity-50">
-                {subscribing ? "Redirection vers Stripe…" : "Passer en Studio · 19,90€/mois"}
-              </button>
-            )}
+        {/* Forfait Studio · multi-marques (toujours visible : info tarifaire) */}
+        <div className={`rounded-3xl border p-8 mb-6 transition-all ${wantStudio ? "border-[#6A44D6] bg-[#6A44D6]/[0.06] ring-2 ring-[#6A44D6]/30" : "border-[#6A44D6]/30 bg-[#6A44D6]/[0.04]"}`}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-mono text-[10px] tracking-widest uppercase text-[#6A44D6]">Forfait Studio</span>
+            {wantStudio && <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-[#6A44D6]/15 text-[#6A44D6]">requis pour une 2ᵉ activité</span>}
           </div>
-        )}
+          <div className="flex items-end gap-2 mb-5">
+            <span className="font-fraunces text-5xl">19,90</span>
+            <div className="pb-1.5"><span className="font-fraunces text-xl text-[#6A44D6]">€</span><span className="font-mono text-xs text-[#101014]/40 block">/mois</span></div>
+          </div>
+          <p className="font-hanken text-sm text-[#101014]/60 mb-5">Gère plusieurs marques sous un seul compte et un seul compte Stripe. Même commission que Solo.</p>
+          <div className="space-y-2.5 mb-7">
+            {STUDIO_FEATURES.map((f, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#6A44D6]/15 flex items-center justify-center flex-shrink-0 text-[#6A44D6] text-[11px]">✦</div>
+                <span className="font-hanken text-sm text-[#101014]/80">{f}</span>
+              </div>
+            ))}
+          </div>
+          {founderFree ? (
+            <div className="w-full py-3.5 rounded-xl bg-green-500/15 text-green-700 font-hanken font-semibold text-center text-sm">
+              ✦ Multi-activités inclus pendant ta période fondateur·ice
+            </div>
+          ) : !user ? (
+            <button onClick={() => router.push("/auth?mode=vendor")}
+              className="w-full py-4 rounded-xl bg-[#6A44D6] text-white font-hanken font-semibold hover:bg-[#6A44D6]/85 transition-all">
+              Créer mon compte vendeur·euse
+            </button>
+          ) : !shop ? (
+            <button onClick={() => router.push("/vendeur/onboarding")}
+              className="w-full py-4 rounded-xl bg-[#6A44D6] text-white font-hanken font-semibold hover:bg-[#6A44D6]/85 transition-all">
+              Créer ma boutique d&apos;abord →
+            </button>
+          ) : (
+            <button onClick={() => handleSubscribe("studio")} disabled={subscribing}
+              className="w-full py-4 rounded-xl bg-[#6A44D6] text-white font-hanken font-semibold hover:bg-[#6A44D6]/85 transition-all disabled:opacity-50">
+              {subscribing ? "Redirection vers Stripe…" : "Passer en Studio · 19,90€/mois"}
+            </button>
+          )}
+        </div>
 
         <p className="text-center font-hanken text-xs text-[#101014]/30">
           {founderFree
