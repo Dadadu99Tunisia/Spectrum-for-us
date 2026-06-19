@@ -176,8 +176,14 @@ export default function AbonnementPage() {
             ))}
           </div>
           {founderFree ? (
-            <div className="w-full py-3.5 rounded-xl bg-green-500/15 text-green-700 font-hanken font-semibold text-center text-sm">
-              ✦ Multi-activités inclus pendant ta période fondateur·ice
+            <div>
+              <div className="w-full py-3 rounded-xl bg-green-500/15 text-green-700 font-hanken font-semibold text-center text-sm mb-2">
+                ✦ Multi-activités inclus gratuitement (fondateur·ice)
+              </div>
+              <button onClick={() => router.push("/vendeur/onboarding?nouvelle=1")}
+                className="w-full py-3.5 rounded-xl bg-[#6A44D6] text-white font-hanken font-semibold hover:bg-[#6A44D6]/85 transition-all">
+                Créer une nouvelle activité
+              </button>
             </div>
           ) : !user ? (
             <button onClick={() => router.push("/auth?mode=vendor")}
