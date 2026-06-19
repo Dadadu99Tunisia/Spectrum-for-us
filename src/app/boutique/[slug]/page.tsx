@@ -9,6 +9,8 @@ import { ShopOwnerBar } from "@/components/ShopOwnerBar";
 import { Price } from "@/components/ui/Price";
 import { FollowButton } from "@/components/FollowButton";
 import { ContactSellerButton } from "@/components/ContactSellerButton";
+import { FounderBadge } from "@/components/founder/FounderBadge";
+import { ShareButton } from "@/components/ui/ShareButton";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -58,7 +60,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
 
   if (!shop) notFound();
 
-  const [{ data: products }, { data: kyc }] = await Promise.all([
+  const [{ data: products }, { data: kyc }, { data: founder }] = await Promise.all([
     supabase.from("products")
       .select("id, name, title, price, images, image_url, category, slug, type, quantity, is_adult")
       .eq("shop_id", shop.id)
@@ -68,9 +70,16 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
       .select("kyc_status")
       .eq("shop_id", shop.id)
       .maybeSingle(),
+    supabase.from("founder_program_members")
+      .select("rank")
+      .eq("user_id", shop.owner_id)
+      .maybeSingle(),
   ]);
 
   const isVerified   = kyc?.kyc_status === "verified";
+  const founderRank  = founder?.rank as number | undefined;
+  const founderStatus: "FOUNDER" | "EARLY_ADOPTER" | "STANDARD" =
+    founderRank == null ? "STANDARD" : founderRank <= 20 ? "FOUNDER" : "EARLY_ADOPTER";
   const productList  = products ?? [];
   const logoUrl      = shop.logo_url as string | null;
   const bannerUrl    = shop.banner_url as string | null;
@@ -158,6 +167,9 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                     🔞 Réservé aux 18+
                   </span>
                 )}
+                {founderStatus !== "STANDARD" && (
+                  <FounderBadge status={founderStatus} rank={founderRank} size="sm" />
+                )}
               </div>
               {shop.tagline && (
                 <p className="font-hanken text-[#101014]/60 text-base mb-2">{shop.tagline as string}</p>
@@ -176,6 +188,9 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
             <div className="self-start md:self-auto flex items-center gap-2">
               <FollowButton shopId={shop.id as string} />
               <ContactSellerButton ownerId={ownerId} shopName={shop.name as string} />
+              <ShareButton title={`${shop.name} · Spectrum For Us`} text={`Découvre la boutique ${shop.name} sur Spectrum For Us`}
+                label="Partager" iconOnly
+                className="w-9 h-9 rounded-full border border-[#101014]/12 text-[#101014]/55 hover:text-[#FF2DA0] transition-colors" />
             </div>
           </div>
 

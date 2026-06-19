@@ -8,6 +8,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tag } from "@/components/ui/Tag";
 import { Heart, ArrowLeft, ShoppingBag, Check, Package, Zap, CalendarDays, AlertCircle } from "lucide-react";
+import { ShareButton } from "@/components/ui/ShareButton";
 import Link from "next/link";
 import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { ProductReviews } from "@/components/ProductReviews";
@@ -247,7 +248,12 @@ export default function ProduitPage() {
                 )}
               </div>
 
-              <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] leading-tight mb-2">{productName}</h1>
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] leading-tight">{productName}</h1>
+                <ShareButton title={`${productName} · Spectrum For Us`} text={`Regarde « ${productName} » sur Spectrum For Us`}
+                  label="Partager" iconOnly size={18}
+                  className="shrink-0 w-10 h-10 rounded-full border border-[#101014]/12 text-[#101014]/50 hover:text-[#FF2DA0] transition-colors" />
+              </div>
 
               {ptype === "event" && (product.event_date || product.event_location || product.event_city) && (
                 <div className="rounded-xl border border-[#7A2BF0]/25 bg-[#7A2BF0]/[0.05] p-3 my-3 space-y-1">
