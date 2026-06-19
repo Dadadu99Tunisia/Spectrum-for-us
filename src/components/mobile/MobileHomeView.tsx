@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
 import { Search, ShoppingBag, Menu, Heart, Truck, RefreshCw, ShieldCheck, ArrowRight, X } from "lucide-react";
+import { FounderBanner } from "@/components/founder/FounderBanner";
 
 // ── Light theme tokens ─────────────────────────────────────────────────────
 const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
@@ -211,9 +212,16 @@ export function MobileHomeView() {
             Découvrir les créations
           </Link>
           <div className="flex gap-2.5 mt-2.5">
-            <Link href="/communaute" className="flex-1 text-center font-semibold text-[13.5px] py-3 rounded-full" style={{ color: "#F1E7D7", border: "1.5px solid rgba(241,231,215,.4)" }}>Rejoindre</Link>
-            <Link href="/vendeur/onboarding" className="flex-1 text-center font-semibold text-[13.5px] py-3 rounded-full" style={{ color: "rgba(241,231,215,.78)", border: "1.5px solid rgba(241,231,215,.22)" }}>Vendre ici</Link>
+            <Link href="/vendre" className="flex-1 text-center font-bold text-[13.5px] py-3 rounded-full" style={{ background: "rgba(241,231,215,.16)", color: "#fff", border: "1.5px solid rgba(241,231,215,.5)" }}>Devenir créateur·ice</Link>
+            <Link href="/communaute" className="flex-1 text-center font-semibold text-[13.5px] py-3 rounded-full" style={{ color: "rgba(241,231,215,.78)", border: "1.5px solid rgba(241,231,215,.22)" }}>Rejoindre</Link>
           </div>
+        </div>
+      )}
+
+      {/* Rareté fondateur·ice (priorité acquisition créateur) */}
+      {showExtras && (
+        <div className="px-4 pt-3">
+          <FounderBanner compact />
         </div>
       )}
 

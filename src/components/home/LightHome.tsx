@@ -13,6 +13,7 @@ import { ArrowRight, ShoppingCart, Briefcase, Heart, CalendarDays, Truck, Refres
 import { Header } from "@/components/Header";
 import { Price } from "@/components/ui/Price";
 import { ScatterText } from "@/components/ui/ScatterText";
+import { FounderBanner } from "@/components/founder/FounderBanner";
 
 const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 const CAT: Record<string, { tint: string; ink: string }> = {
@@ -74,6 +75,14 @@ export function LightHome() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Parcours CRÉATEUR · rareté fondateur·ice (cold-start = priorité acquisition) */}
+        <div className="max-w-2xl mx-auto mt-6">
+          <FounderBanner compact />
+          <p className="text-[12.5px] mt-2" style={{ color: T.faint }}>
+            Tu crées ? <Link href="/vendre" className="font-semibold underline" style={{ color: T.mag }}>Ouvre ta boutique fondateur·ice</Link> — abonnement offert 12 mois, 0 % de commission 6 mois.
+          </p>
         </div>
       </section>
 
