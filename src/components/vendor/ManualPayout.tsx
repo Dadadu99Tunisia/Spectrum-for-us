@@ -64,6 +64,7 @@ export function ManualPayout({ shopId }: { shopId: string }) {
       country: newMode === "manual" ? country : null,
     }).eq("id", shopId);
     setMode(newMode); setSaving(false); setEditing(false);
+    if (newMode === "manual") computeBalance(); else setBalance(null);
   };
 
   if (loading) return null;

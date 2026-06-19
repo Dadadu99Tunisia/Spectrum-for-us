@@ -63,10 +63,15 @@ export async function POST(req: Request) {
     // ── 0. Réservation de service (booking) ──
     const bookingId = pi.metadata?.booking_id;
     if (bookingId) {
-      const { data: bk } = await supabase.from("bookings").select("id, status, start_at, customer_email, product_id, shop_id, amount").eq("id", bookingId).maybeSingle();
-      if (bk && bk.status !== "confirmed") {
-        await supabase.from("bookings").update({ status: "confirmed", updated_at: new Date().toISOString() }).eq("id", bookingId);
-        // Transfert au·à la prestataire (sous-total − commission)
+      // Idempotence atomique : on ne passe à "confirmed" QUE si la ligne était encore "pending".
+      // Si 0 ligne mise à jour, c'est qu'une autre invocation du webhook a déjà tout traité → on sort.
+      const { data: claimed } = await supabase.from("bookings")
+        .update({ status: "confirmed", updated_at: new Date().toISOString() })
+        .eq("id", bookingId).eq("status", "pending")
+        .select("id, start_at, customer_email, product_id, shop_id, amount");
+      const bk = claimed && claimed[0];
+      if (bk) {
+        // Transfert au·à la prestataire (sous-total − commission) · clé d'idempotence = pas de double versement
         try {
           const account = pi.metadata?.transfer_account;
           const amount = parseInt(pi.metadata?.transfer_amount ?? "0");
@@ -77,7 +82,7 @@ export async function POST(req: Request) {
               ...(chargeId ? { source_transaction: chargeId } : {}),
               transfer_group: pi.metadata?.transfer_group ?? `bk_${bookingId}`,
               metadata: { booking_id: bookingId, shop_id: bk.shop_id },
-            });
+            }, { idempotencyKey: `bk_transfer_${bookingId}` });
           }
         } catch (e) { console.error("[webhook] transfert booking (non bloquant)", e); }
         // E-mails (client·e + prestataire)

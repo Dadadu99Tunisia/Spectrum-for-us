@@ -38,14 +38,20 @@ export async function POST(req: NextRequest) {
   if (!email || !role) return apiError("email and role required");
 
   const supabase = createAdminClient();
+  // 1) Créer le compte auth (l'email est obligatoire ; profiles.id = FK vers auth.users)
+  const { data: created, error: authErr } = await supabase.auth.admin.createUser({
+    email, email_confirm: true, user_metadata: { full_name },
+  });
+  if (authErr || !created?.user) return apiError(authErr?.message ?? "Création du compte échouée");
+
+  // 2) Renseigner le profil (un trigger peut déjà l'avoir créé → upsert)
   const { data, error } = await supabase
     .from("profiles")
-    .insert({ full_name, role })
+    .upsert({ id: created.user.id, full_name: full_name ?? null, role })
     .select()
     .single();
-
   if (error) return apiError(error.message);
 
-  await logActivity(auth.user.id, "create_user", "user", data.id, { email, role });
+  await logActivity(auth.user.id, "create_user", "user", created.user.id, { email, role });
   return apiResponse(data, {}, 201);
 }

@@ -45,7 +45,7 @@ export default function ProduitPage() {
   const [liked,    setLiked]    = useState(false);
   const [added,    setAdded]    = useState(false);
   const [activeImg, setActiveImg] = useState(0);
-  const { add } = useCart();
+  const { add, items: cartItems } = useCart();
 
   useEffect(() => {
     if (!slug) return;
@@ -93,6 +93,16 @@ export default function ProduitPage() {
 
   const handleAdd = () => {
     if (!product || isOos) return;
+    // Plafond stock : ne pas dépasser le stock dispo (qty déjà au panier + qty ajoutée)
+    if (ptype === "product" && product.quantity != null) {
+      const inCart = cartItems.find(i => i.id === product.id)?.quantity ?? 0;
+      if (inCart + qty > product.quantity) {
+        alert(product.quantity - inCart <= 0
+          ? "Tu as déjà le stock maximum de cet article dans ton panier."
+          : `Stock limité : il ne reste que ${product.quantity - inCart} exemplaire(s) disponible(s).`);
+        return;
+      }
+    }
     const shop = getShop();
     add({
       id: product.id,
