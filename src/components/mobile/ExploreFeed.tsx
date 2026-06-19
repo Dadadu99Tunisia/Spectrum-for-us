@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { FillImage } from "@/components/ui/FillImage";
+import { writeFavorite } from "@/lib/favorites";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowRight, X, Search, Heart, ShoppingBag } from "lucide-react";
 import { useCart } from "@/store/cart";
@@ -50,9 +51,7 @@ function Card({ p }: { p: Product }) {
   });
   const toggleLike = (e: React.MouseEvent) => {
     e.preventDefault(); e.stopPropagation();
-    const favs: string[] = JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]");
-    const next = liked ? favs.filter(f => f !== p.id) : [...favs, p.id];
-    localStorage.setItem("spectrum_favorites", JSON.stringify(next));
+    writeFavorite(p.id, !liked);
     setLiked(!liked);
   };
   const handleAdd = (e: React.MouseEvent) => {

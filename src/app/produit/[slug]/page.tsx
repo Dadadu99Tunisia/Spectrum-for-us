@@ -10,6 +10,7 @@ import { Tag } from "@/components/ui/Tag";
 import { Heart, ArrowLeft, ShoppingBag, Check, Package, Zap, CalendarDays, AlertCircle } from "lucide-react";
 import { ShareButton } from "@/components/ui/ShareButton";
 import { FillImage } from "@/components/ui/FillImage";
+import { writeFavorite } from "@/lib/favorites";
 import Link from "next/link";
 import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { ProductReviews } from "@/components/ProductReviews";
@@ -85,14 +86,10 @@ export default function ProduitPage() {
 
   const toggleLike = () => {
     if (!product) return;
-    try {
-      const favs: string[] = JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]");
-      const next = liked ? favs.filter(f => f !== product.id) : [...favs, product.id];
-      localStorage.setItem("spectrum_favorites", JSON.stringify(next));
-      // À l'ajout : persiste en base + notifie le·la créateur·ice (best-effort si connecté·e)
-      if (!liked) fetch("/api/notify/favorite", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ productId: product.id }) }).catch(() => {});
-      setLiked(!liked);
-    } catch { setLiked(!liked); }
+    writeFavorite(product.id, !liked); // localStorage + write-through DB (ajout ET retrait)
+    // À l'ajout : notifie le·la créateur·ice (best-effort si connecté·e)
+    if (!liked) fetch("/api/notify/favorite", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ productId: product.id }) }).catch(() => {});
+    setLiked(!liked);
   };
 
   const handleAdd = () => {

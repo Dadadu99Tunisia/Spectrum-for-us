@@ -346,13 +346,7 @@ export default function ComptePage() {
           )}
 
           {/* Favoris */}
-          {tab === "Favoris" && (
-            <div className="text-center py-16">
-              <Heart size={48} className="mx-auto mb-4 text-[#101014]/15" />
-              <p className="font-hanken text-[#101014]/40 mb-6">Tu n&apos;as pas encore de favoris.</p>
-              <Button variant="primary" href="/decouvrir">Découvrir des créations</Button>
-            </div>
-          )}
+          {tab === "Favoris" && <FavoritesTab userId={user?.id} />}
 
           {/* Paramètres */}
           {tab === "Paramètres" && (
@@ -360,16 +354,103 @@ export default function ComptePage() {
           )}
 
           {/* Avis */}
-          {tab === "Avis" && (
-            <div className="text-center py-16">
-              <Star size={48} className="mx-auto mb-4 text-[#101014]/15" />
-              <p className="font-hanken text-[#101014]/40">Tes avis apparaîtront ici après tes achats.</p>
-            </div>
-          )}
+          {tab === "Avis" && <ReviewsTab userId={user?.id} />}
         </div>
       </main>
       <div className="hidden md:block"><Footer /></div>
     </>
+  );
+}
+
+// ── Onglet Favoris (données réelles) ────────────────────────────────────────
+function FavoritesTab({ userId }: { userId?: string }) {
+  const [items, setItems] = useState<{ id: string; name: string; title: string; price: number; images: string[] | null; image_url: string | null; slug: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!userId) { setLoading(false); return; }
+    const supabase = createClient();
+    (async () => {
+      const { data: favs } = await supabase.from("favorites").select("product_id").eq("user_id", userId);
+      const ids = (favs ?? []).map(f => f.product_id as string);
+      if (!ids.length) { setItems([]); setLoading(false); return; }
+      const { data: prods } = await supabase.from("products")
+        .select("id,name,title,price,images,image_url,slug").in("id", ids).eq("is_active", true);
+      setItems((prods ?? []) as typeof items); setLoading(false);
+    })();
+  }, [userId]);
+
+  if (loading) return <div className="py-16 flex justify-center"><SpectrumLoader size="sm" /></div>;
+  if (!items.length) return (
+    <div className="text-center py-16">
+      <Heart size={48} className="mx-auto mb-4 text-[#101014]/15" />
+      <p className="font-hanken text-[#101014]/40 mb-6">Tu n&apos;as pas encore de favoris.</p>
+      <Button variant="primary" href="/decouvrir">Découvrir des créations</Button>
+    </div>
+  );
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <p className="font-mono text-[11px] text-[#101014]/40">{items.length} favori{items.length > 1 ? "s" : ""}</p>
+        <Link href="/favoris" className="font-hanken text-[13px] font-semibold text-[#FF2DA0]">Tout gérer →</Link>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {items.map(p => {
+          const img = p.images?.[0] ?? p.image_url;
+          return (
+            <Link key={p.id} href={`/produit/${p.slug}`} className="rounded-2xl overflow-hidden border border-[#101014]/8 bg-white">
+              <div className="aspect-square bg-[#F1ECE3] overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {img ? <img src={img} alt={p.name || p.title} loading="lazy" className="w-full h-full object-cover" /> : null}
+              </div>
+              <div className="p-2.5">
+                <p className="font-hanken text-[13px] text-[#101014] line-clamp-1">{p.name || p.title}</p>
+                <p className="font-mono text-[12px] text-[#FF2DA0] mt-0.5">{Number(p.price).toFixed(2)} €</p>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Onglet Avis (données réelles) ───────────────────────────────────────────
+function ReviewsTab({ userId }: { userId?: string }) {
+  const [reviews, setReviews] = useState<{ id: string; rating: number; comment: string | null; created_at: string; products: { name: string | null; title: string | null; slug: string } | null }[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!userId) { setLoading(false); return; }
+    const supabase = createClient();
+    supabase.from("reviews")
+      .select("id, rating, comment, created_at, products(name,title,slug)")
+      .eq("user_id", userId).order("created_at", { ascending: false })
+      .then(({ data }) => { setReviews((data ?? []) as unknown as typeof reviews); setLoading(false); });
+  }, [userId]);
+
+  if (loading) return <div className="py-16 flex justify-center"><SpectrumLoader size="sm" /></div>;
+  if (!reviews.length) return (
+    <div className="text-center py-16">
+      <Star size={48} className="mx-auto mb-4 text-[#101014]/15" />
+      <p className="font-hanken text-[#101014]/40">Tes avis apparaîtront ici après tes achats.</p>
+    </div>
+  );
+  return (
+    <div className="space-y-3">
+      {reviews.map(r => {
+        const prod = r.products && !Array.isArray(r.products) ? r.products : null;
+        return (
+          <div key={r.id} className="rounded-2xl border border-[#101014]/8 bg-white p-4">
+            <div className="flex items-center justify-between mb-1">
+              {prod ? <Link href={`/produit/${prod.slug}`} className="font-bricolage font-semibold text-[14px] text-[#101014] hover:text-[#FF2DA0]">{prod.name || prod.title}</Link> : <span className="font-bricolage font-semibold text-[14px]">Création</span>}
+              <span className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={13} className={i < r.rating ? "text-[#F2A03D] fill-[#F2A03D]" : "text-[#101014]/15"} />)}
+              </span>
+            </div>
+            {r.comment && <p className="font-hanken text-[13.5px] text-[#101014]/65 leading-relaxed">{r.comment}</p>}
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

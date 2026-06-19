@@ -10,6 +10,7 @@ import { ArrowLeft, Heart, Store, ShoppingBag } from "lucide-react";
 import { useCart } from "@/store/cart";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { getFavorites, writeFavorite } from "@/lib/favorites";
 
 interface Product {
   id: string;
@@ -22,20 +23,6 @@ interface Product {
   shops: { name: string } | null;
 }
 
-// Favorites are stored client-side in localStorage (no DB table needed yet)
-function getFavorites(): string[] {
-  if (typeof window === "undefined") return [];
-  try { return JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]"); }
-  catch { return []; }
-}
-
-export function toggleFavorite(id: string) {
-  const favs = getFavorites();
-  const next = favs.includes(id) ? favs.filter(f => f !== id) : [...favs, id];
-  localStorage.setItem("spectrum_favorites", JSON.stringify(next));
-  return next;
-}
-
 export default function FavorisPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -45,24 +32,30 @@ export default function FavorisPage() {
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
-    const ids = getFavorites();
-    setFavIds(ids);
-    if (ids.length === 0) { setFetching(false); return; }
-
+    if (loading) return;
     const supabase = createClient();
-    supabase
-      .from("products")
-      .select("id,name,title,price,images,image_url,slug,shops(name)")
-      .in("id", ids)
-      .eq("is_active", true)
-      .then(({ data }) => {
-        setProducts((data ?? []) as unknown as Product[]);
-        setFetching(false);
-      });
-  }, []);
+    (async () => {
+      let ids = getFavorites();
+      // Connecté·e : la DB fait foi → fusion avec le local (favoris cross-device)
+      if (user) {
+        const { data } = await supabase.from("favorites").select("product_id").eq("user_id", user.id);
+        const dbIds = (data ?? []).map(r => r.product_id as string);
+        ids = [...new Set([...ids, ...dbIds])];
+        try { localStorage.setItem("spectrum_favorites", JSON.stringify(ids)); } catch {}
+      }
+      setFavIds(ids);
+      if (ids.length === 0) { setFetching(false); return; }
+      const { data: prods } = await supabase
+        .from("products")
+        .select("id,name,title,price,images,image_url,slug,shops(name)")
+        .in("id", ids).eq("is_active", true);
+      setProducts((prods ?? []) as unknown as Product[]);
+      setFetching(false);
+    })();
+  }, [user, loading]);
 
   const remove = (id: string) => {
-    const next = toggleFavorite(id);
+    const next = writeFavorite(id, false);
     setFavIds(next);
     setProducts(prev => prev.filter(p => p.id !== id));
   };
