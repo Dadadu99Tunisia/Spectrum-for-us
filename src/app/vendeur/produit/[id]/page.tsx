@@ -23,7 +23,15 @@ export default function EditProduitPage() {
   const [form, setForm]     = useState({
     name: "", description: "", price: "", category: "", subcategory: "",
     quantity: "1", is_active: true, is_adult: false, weight_grams: "500", images: [] as string[], type: "product" as string,
+    event_date: "", event_end: "", event_location: "", event_city: "", event_capacity: "",
   });
+
+  const toLocalInput = (iso?: string | null) => {
+    if (!iso) return "";
+    const d = new Date(iso); if (isNaN(d.getTime())) return "";
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+  };
 
   useEffect(() => {
     if (!loading && !user) { router.push("/auth"); return; }
@@ -49,6 +57,11 @@ export default function EditProduitPage() {
             weight_grams: p.weight_grams != null ? String(p.weight_grams) : "500",
             images: (p.images as string[] | null) ?? (p.image_url ? [p.image_url as string] : []),
             type: String(p.type || "product"),
+            event_date: toLocalInput(p.event_date as string | null),
+            event_end: toLocalInput(p.event_end as string | null),
+            event_location: String(p.event_location || ""),
+            event_city: String(p.event_city || ""),
+            event_capacity: p.event_capacity != null ? String(p.event_capacity) : "",
           });
         });
     });
@@ -77,6 +90,13 @@ export default function EditProduitPage() {
       images: form.images,
       image_url: form.images[0] ?? null,
       type: form.type,
+      ...(form.type === "event" ? {
+        event_date: form.event_date ? new Date(form.event_date).toISOString() : null,
+        event_end: form.event_end ? new Date(form.event_end).toISOString() : null,
+        event_location: form.event_location.trim() || null,
+        event_city: form.event_city.trim() || null,
+        event_capacity: form.event_capacity ? parseInt(form.event_capacity) : null,
+      } : {}),
     }).eq("id", id).eq("shop_id", shopId);
     setSaving(false);
     if (err) { setError(err.message); return; }
@@ -189,6 +209,22 @@ export default function EditProduitPage() {
               <input type="number" min="1" value={form.weight_grams} onChange={f("weight_grams")} placeholder="500" className={inputCls} />
             </div>
           </div>
+
+          {form.type === "event" && (
+            <div className="rounded-2xl border border-[#7A2BF0]/30 bg-[#7A2BF0]/[0.04] p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <p className="sm:col-span-2 font-mono text-[10px] tracking-wide text-[#7A2BF0]">🎟️ Détails de l&apos;événement</p>
+              <div><label className="block font-mono text-[9px] text-[#101014]/40 mb-1">Date & heure de début</label>
+                <input type="datetime-local" value={form.event_date} onChange={f("event_date")} className={inputCls} /></div>
+              <div><label className="block font-mono text-[9px] text-[#101014]/40 mb-1">Fin (facultatif)</label>
+                <input type="datetime-local" value={form.event_end} onChange={f("event_end")} className={inputCls} /></div>
+              <div><label className="block font-mono text-[9px] text-[#101014]/40 mb-1">Lieu / salle</label>
+                <input type="text" value={form.event_location} onChange={f("event_location")} placeholder="La Mutinerie" className={inputCls} /></div>
+              <div><label className="block font-mono text-[9px] text-[#101014]/40 mb-1">Ville</label>
+                <input type="text" value={form.event_city} onChange={f("event_city")} placeholder="Paris" className={inputCls} /></div>
+              <div><label className="block font-mono text-[9px] text-[#101014]/40 mb-1">Nombre de places</label>
+                <input type="number" min="1" value={form.event_capacity} onChange={f("event_capacity")} placeholder="50" className={inputCls} /></div>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>

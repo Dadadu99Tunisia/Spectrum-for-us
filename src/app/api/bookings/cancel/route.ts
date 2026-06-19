@@ -28,9 +28,10 @@ export async function POST(req: NextRequest) {
   if (new Date(bk.start_at as string).getTime() <= Date.now())
     return NextResponse.json({ error: "Ce créneau est déjà passé." }, { status: 409 });
 
-  // Remboursement si payé
+  // Remboursement uniquement si la réservation a été PAYÉE (confirmée).
+  // Une résa "pending" (paiement jamais abouti) est juste annulée, sans tentative de remboursement.
   let refunded = false;
-  if (bk.payment_intent_id) {
+  if (bk.payment_intent_id && bk.status === "confirmed") {
     try {
       const stripe = getStripeServer();
       await stripe.refunds.create({ payment_intent: bk.payment_intent_id });
