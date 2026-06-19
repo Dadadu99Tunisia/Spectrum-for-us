@@ -14,6 +14,7 @@ export default function ParametresBoutiquePage() {
   const router = useRouter();
   const [shopId, setShopId] = useState<string | null>(null);
   const [shopSlug, setShopSlug] = useState<string>("");
+  const [activityCount, setActivityCount] = useState(1);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [toast, setToast] = useState("");
@@ -33,6 +34,7 @@ export default function ParametresBoutiquePage() {
     supabase.from("shops").select("*").eq("owner_id", user.id).order("created_at", { ascending: true })
       .then(({ data: list }) => {
         if (!list?.length) { router.push("/vendeur/onboarding"); return; }
+        setActivityCount(list.length);
         let data = list[0];
         try { const saved = localStorage.getItem("sfu_active_activity"); const found = saved && list.find(s => s.id === saved); if (found) data = found; } catch {}
         setShopId(data.id);
@@ -72,14 +74,22 @@ export default function ParametresBoutiquePage() {
     setTimeout(() => setToast(""), 2500);
   };
 
+  const multi = activityCount > 1;
   const handleDelete = async () => {
-    if (!confirm("Supprimer définitivement ta boutique et tous ses produits ? Cette action est irréversible.")) return;
-    if (!confirm("Confirme une dernière fois : tout sera effacé et tu perdras ta place dans le programme fondateur.")) return;
+    const label = multi ? "cette activité et tous ses produits" : "ta boutique et tous ses produits";
+    if (!confirm(`Supprimer définitivement ${label} ? Cette action est irréversible.`)) return;
+    if (!multi && !confirm("Confirme une dernière fois : tout sera effacé et tu perdras ta place dans le programme fondateur.")) return;
     setDeleting(true); setError("");
-    const res = await fetch("/api/vendor/shop", { method: "DELETE" });
+    const res = await fetch("/api/vendor/shop", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ shopId }),
+    });
     const json = await res.json();
     if (json.error) { setError(json.error); setDeleting(false); return; }
-    window.location.assign("/");
+    if (json.full) { window.location.assign("/"); return; }
+    try { localStorage.removeItem("sfu_active_activity"); } catch {}
+    window.location.assign("/vendeur");
   };
 
   if (loading || !shopId) return (
@@ -192,11 +202,13 @@ export default function ParametresBoutiquePage() {
         <div className="mt-10 rounded-2xl border border-red-300/60 bg-red-50 p-6">
           <h2 className="font-bricolage font-semibold text-[#101014] text-sm mb-1">Zone de danger</h2>
           <p className="font-hanken text-[13.5px] text-[#101014]/55 mb-4">
-            Supprimer ta boutique efface définitivement tes produits, ton KYC et ta place dans le programme fondateur. Irréversible.
+            {multi
+              ? "Supprimer cette activité efface définitivement ses produits. Tes autres activités, ton compte vendeur et ta place fondateur·ice sont conservés."
+              : "Supprimer ta boutique efface définitivement tes produits, ton KYC et ta place dans le programme fondateur. Irréversible."}
           </p>
           <button onClick={handleDelete} disabled={deleting}
             className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-hanken font-semibold text-sm text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-50">
-            <Trash2 size={15} /> {deleting ? "Suppression…" : "Supprimer ma boutique"}
+            <Trash2 size={15} /> {deleting ? "Suppression…" : (multi ? "Supprimer cette activité" : "Supprimer ma boutique")}
           </button>
         </div>
       </div>
