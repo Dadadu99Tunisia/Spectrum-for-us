@@ -20,7 +20,7 @@ export default function ParametresBoutiquePage() {
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "", tagline: "", description: "", city: "",
-    contact_email: "", logo_url: "", banner_url: "",
+    contact_email: "", logo_url: "", banner_url: "", is_adult: false,
   });
 
   const inputCls = "w-full bg-[#101014]/5 border border-[#101014]/10 rounded-xl px-4 py-3 font-hanken text-sm text-[#101014] placeholder-[#101014]/20 focus:outline-none focus:border-[#FF2DA0]/50 transition-colors";
@@ -29,9 +29,12 @@ export default function ParametresBoutiquePage() {
     if (!loading && !user) { router.push("/auth"); return; }
     if (!user) return;
     const supabase = createClient();
-    supabase.from("shops").select("*").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle()
-      .then(({ data }) => {
-        if (!data) { router.push("/vendeur/onboarding"); return; }
+    // Édite l'activité ACTIVE du dashboard (parmi toutes les activités du seller).
+    supabase.from("shops").select("*").eq("owner_id", user.id).order("created_at", { ascending: true })
+      .then(({ data: list }) => {
+        if (!list?.length) { router.push("/vendeur/onboarding"); return; }
+        let data = list[0];
+        try { const saved = localStorage.getItem("sfu_active_activity"); const found = saved && list.find(s => s.id === saved); if (found) data = found; } catch {}
         setShopId(data.id);
         setShopSlug(data.slug ?? "");
         setForm({
@@ -42,6 +45,7 @@ export default function ParametresBoutiquePage() {
           contact_email: String(data.contact_email || ""),
           logo_url: String(data.logo_url || ""),
           banner_url: String(data.banner_url || ""),
+          is_adult: Boolean(data.is_adult),
         });
       });
   }, [user, loading, router]);
@@ -60,6 +64,7 @@ export default function ParametresBoutiquePage() {
       contact_email: form.contact_email.trim() || null,
       logo_url: form.logo_url || null,
       banner_url: form.banner_url || null,
+      is_adult: form.is_adult,
     }).eq("id", shopId);
     setSaving(false);
     if (err) { setError(err.message); return; }
@@ -160,6 +165,20 @@ export default function ParametresBoutiquePage() {
                 <input type="email" value={form.contact_email} onChange={e => setForm(p => ({...p, contact_email: e.target.value}))} placeholder="contact@maboutique.fr" className={inputCls} />
               </div>
             </div>
+          </div>
+
+          {/* Univers / contenu sensible */}
+          <div className="rounded-2xl border border-[#101014]/8 p-6">
+            <h2 className="font-bricolage font-semibold text-[#101014] text-sm tracking-wide mb-3">Univers de l&apos;activité</h2>
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" checked={form.is_adult} onChange={e => setForm(p => ({ ...p, is_adult: e.target.checked }))}
+                className="w-4 h-4 mt-0.5 rounded accent-[#FF2DA0]" />
+              <span className="font-hanken text-sm text-[#101014]/70 leading-relaxed">
+                <b className="text-[#101014]">Activité pour adultes 🔞</b><br />
+                Coche si ton univers est explicitement sexuel / BDSM / fétiche. Un badge 🔞 s&apos;affichera sur ta boutique
+                et tes produits hériteront du signalement (chacun reste réglable individuellement).
+              </span>
+            </label>
           </div>
 
           {error && <p className="font-hanken text-sm text-red-400 bg-red-400/8 border border-red-400/20 rounded-xl px-4 py-3">{error}</p>}

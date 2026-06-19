@@ -153,6 +153,11 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
                     <CheckCircle size={10} /> Vérifié·e
                   </span>
                 )}
+                {(shop.is_adult as boolean) && (
+                  <span className="font-mono text-[10px] tracking-wide px-2.5 py-1 border border-[#FF2DA0]/40 text-[#FF2DA0] rounded-full bg-[#FF2DA0]/8">
+                    🔞 Réservé aux 18+
+                  </span>
+                )}
               </div>
               {shop.tagline && (
                 <p className="font-hanken text-[#101014]/60 text-base mb-2">{shop.tagline as string}</p>
