@@ -98,17 +98,25 @@ export async function POST(req: NextRequest) {
   const admin = createAdminClient();
   const { data: shops } = await admin
     .from("shops")
-    .select("id, name, seller_id, shipping_options")
+    .select("id, name, seller_id, owner_id, shipping_options")
     .in("id", shopIds);
   const shopMap = Object.fromEntries((shops ?? []).map(s => [s.id, s]));
 
   // Résoudre l'entité financière (seller) de chaque activité → compte Stripe UNIQUE partagé.
+  // On résout par seller_id ET par owner_id (fallback si une activité n'a pas encore son seller_id).
   const sellerIds = [...new Set((shops ?? []).map(s => s.seller_id).filter(Boolean))] as string[];
-  const { data: sellersData } = sellerIds.length
-    ? await admin.from("sellers").select("id, stripe_account_id, stripe_charges_enabled, payout_mode").in("id", sellerIds)
-    : { data: [] as Array<{ id: string; stripe_account_id: string | null; stripe_charges_enabled: boolean; payout_mode: string | null }> };
+  const ownerIds = [...new Set((shops ?? []).map(s => s.owner_id).filter(Boolean))] as string[];
+  const { data: sellersData } = await admin
+    .from("sellers")
+    .select("id, user_id, stripe_account_id, stripe_charges_enabled, payout_mode")
+    .or([
+      sellerIds.length ? `id.in.(${sellerIds.join(",")})` : "",
+      ownerIds.length ? `user_id.in.(${ownerIds.join(",")})` : "",
+    ].filter(Boolean).join(","));
   const sellerById = Object.fromEntries((sellersData ?? []).map(s => [s.id, s]));
-  const sellerOf = (sid: string) => sellerById[shopMap[sid]?.seller_id as string] ?? null;
+  const sellerByUser = Object.fromEntries((sellersData ?? []).map(s => [s.user_id, s]));
+  const sellerOf = (sid: string) =>
+    sellerById[shopMap[sid]?.seller_id as string] ?? sellerByUser[shopMap[sid]?.owner_id as string] ?? null;
   const isManual = (sid: string) => sellerOf(sid)?.payout_mode === "manual";
 
   // Tous les vendeurs doivent pouvoir être payés : soit Stripe activé, soit versement manuel

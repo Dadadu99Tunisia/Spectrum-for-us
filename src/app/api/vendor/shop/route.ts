@@ -23,11 +23,26 @@ export async function DELETE(req: Request) {
     const ids = (shops ?? []).map((s) => s.id as string);
     if (!ids.length) return NextResponse.json({ ok: true });
 
+    // Un historique de commandes DOIT être conservé (compta/RGPD) et les FK order_items/commissions
+    // (NO ACTION) bloqueraient un hard-delete. → soft-delete (is_active=false) dès qu'il y a un historique.
+    const hasHistory = async (scope: string[]) => {
+      const [{ count: oic }, { count: cc }] = await Promise.all([
+        admin.from("order_items").select("id", { count: "exact", head: true }).in("activity_id", scope),
+        admin.from("commissions").select("id", { count: "exact", head: true }).in("shop_id", scope),
+      ]);
+      return (oic ?? 0) > 0 || (cc ?? 0) > 0;
+    };
+
     // Suppression d'UNE activité s'il en reste d'autres → on préserve le reste du compte.
     if (targetId && ids.includes(targetId) && ids.length > 1) {
       const otherId = ids.find((i) => i !== targetId)!;
-      // La FK founder_program_members.shop_id est ON DELETE RESTRICT : on repointe d'abord
-      // la place fondateur·ice vers une activité conservée pour ne pas la perdre.
+      if (await hasHistory([targetId])) {
+        // Désactivation (historique conservé) : invisible publiquement, produits dépubliés.
+        await admin.from("products").update({ is_active: false }).eq("shop_id", targetId);
+        await admin.from("shops").update({ is_active: false }).eq("id", targetId);
+        return NextResponse.json({ ok: true, deactivated: 1, remaining: ids.length - 1 });
+      }
+      // Repointe la place fondateur·ice avant suppression dure.
       await admin.from("founder_program_members").update({ shop_id: otherId }).eq("shop_id", targetId).eq("user_id", user.id);
       await admin.from("vendor_kyc").delete().eq("shop_id", targetId);
       await admin.from("products").delete().eq("shop_id", targetId);
@@ -37,6 +52,13 @@ export async function DELETE(req: Request) {
     }
 
     // Teardown complet du compte vendeur (dernière activité ou aucun id fourni).
+    if (await hasHistory(ids)) {
+      // On garde l'historique : on dépublie tout et on repasse le profil en non-vendeur.
+      await admin.from("products").update({ is_active: false }).in("shop_id", ids);
+      await admin.from("shops").update({ is_active: false }).in("id", ids);
+      await admin.from("profiles").update({ is_vendor: false }).eq("id", user.id);
+      return NextResponse.json({ ok: true, deactivated: ids.length, full: true });
+    }
     await admin.from("founder_program_members").delete().in("shop_id", ids);
     await admin.from("vendor_kyc").delete().in("shop_id", ids);
     await admin.from("products").delete().in("shop_id", ids);

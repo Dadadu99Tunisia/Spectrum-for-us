@@ -27,7 +27,9 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.from("sellers").select("payout_mode, payout_method, payout_details, country").maybeSingle()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) { setLoading(false); return; }
+      supabase.from("sellers").select("payout_mode, payout_method, payout_details, country").eq("user_id", user.id).maybeSingle()
       .then(({ data }) => {
         if (data) {
           setMode(data.payout_mode ?? "stripe");
@@ -39,6 +41,7 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
         setLoading(false);
         if (data?.payout_mode === "manual") computeBalance();
       });
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

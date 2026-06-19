@@ -272,7 +272,7 @@ export async function POST(req: Request) {
         const { data: setting } = await supabase
           .from("admin_settings").select("value").eq("key", "commission_rate").maybeSingle();
         const cfg = Number(setting?.value);
-        const defaultRate = Number.isFinite(cfg) ? cfg : 8; // % par défaut
+        const defaultRate = Number.isFinite(cfg) ? cfg : 5; // % par défaut (aligné sur lib/commission.ts)
 
         const { data: founders } = await supabase
           .from("founder_program_members")

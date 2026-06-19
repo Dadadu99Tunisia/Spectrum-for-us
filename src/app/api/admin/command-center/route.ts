@@ -18,7 +18,7 @@ export async function GET() {
     supabase.from("orders").select("id", C).eq("status", "paid"),
     supabase.from("orders").select("id", C).eq("status", "failed").gte("created_at", last7),
     supabase.from("moderation_queue").select("id", C).eq("mod_status", "pending"),
-    supabase.from("shops").select("id", C).eq("subscription_status", "active").lt("subscription_current_period_end", now.toISOString()),
+    supabase.from("sellers").select("id", C).eq("subscription_status", "active").lt("subscription_current_period_end", now.toISOString()),
   ]);
 
   const todayRevenue = (todaySales.data ?? []).reduce((s, o) => s + Number(o.total_amount || 0), 0);

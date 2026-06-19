@@ -37,8 +37,9 @@ export async function computeSellerRisk(admin: SupabaseClient, sellerId: string)
   const rows = (orders ?? []) as { status: string; refund_status: string | null; dispute_status: string | null; dispute_opened_at: string | null }[];
   const paid = rows.filter(o => PAIDISH.includes(o.status));
   const total = paid.length;
-  const refunds = rows.filter(o => o.refund_status && o.refund_status !== "none").length;
-  const disputes = rows.filter(o => (o.dispute_status && o.dispute_status !== "none") || o.dispute_opened_at).length;
+  // Numérateur et dénominateur sur le MÊME ensemble (commandes payées) → taux ∈ [0,1].
+  const refunds = paid.filter(o => o.refund_status && o.refund_status !== "none").length;
+  const disputes = paid.filter(o => (o.dispute_status && o.dispute_status !== "none") || o.dispute_opened_at).length;
 
   const refund_rate = total ? refunds / total : 0;
   const dispute_rate = total ? disputes / total : 0;
