@@ -9,17 +9,20 @@ import { sendCreatorActivation, trySend } from "@/lib/email";
  * Idempotence via la table nurture_log. Déclenché par Vercel Cron (quotidien).
  */
 export async function GET(req: NextRequest) {
+  // Route GET publique qui envoie des emails → on EXIGE le secret (pas de bypass si non configuré).
   const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.get("authorization") !== `Bearer ${secret}`)
+  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`)
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 
   const admin = createAdminClient();
   const now = Date.now();
   const DAY = 86400000;
 
+  // Fenêtres LARGES (rattrapage si une run saute) — la dedup nurture_log évite tout doublon.
+  // J+1 : boutiques créées il y a 1 à 4 j ; J+7 : il y a 7 à 10 j.
   const windows = [
-    { kind: "creator_j1", day: 1 as const, from: new Date(now - 2 * DAY).toISOString(), to: new Date(now - 1 * DAY).toISOString() },
-    { kind: "creator_j7", day: 7 as const, from: new Date(now - 8 * DAY).toISOString(), to: new Date(now - 7 * DAY).toISOString() },
+    { kind: "creator_j1", day: 1 as const, from: new Date(now - 4 * DAY).toISOString(), to: new Date(now - 1 * DAY).toISOString() },
+    { kind: "creator_j7", day: 7 as const, from: new Date(now - 10 * DAY).toISOString(), to: new Date(now - 7 * DAY).toISOString() },
   ];
 
   let sent = 0;

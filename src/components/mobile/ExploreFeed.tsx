@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { FillImage } from "@/components/ui/FillImage";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowRight, X, Search, Heart, ShoppingBag } from "lucide-react";
 import { useCart } from "@/store/cart";
@@ -62,8 +62,8 @@ function Card({ p }: { p: Product }) {
   return (
     <Link href={`/produit/${p.slug}`} className="block active:scale-[0.98] transition-transform">
       <div className="relative rounded-2xl overflow-hidden" style={{ height: tall ? 210 : 158 }}>
-        {img ? <Image src={img} alt={p.name || p.title} fill sizes="50vw" className="object-cover" /> : <Ph category={p.category} h={tall ? 210 : 158} />}
-        <button onClick={toggleLike} aria-label="Favori" className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,.85)", backdropFilter: "blur(6px)" }}>
+        {img ? <FillImage src={img} alt={p.name || p.title} sizes="50vw" className="object-cover" /> : <Ph category={p.category} h={tall ? 210 : 158} />}
+        <button onClick={toggleLike} aria-label="Favori" className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,.85)", backdropFilter: "blur(6px)" }}>
           <Heart size={17} style={{ color: liked ? T.mag : T.ink }} fill={liked ? T.mag : "none"} />
         </button>
         {p.type && p.type !== "product" && (

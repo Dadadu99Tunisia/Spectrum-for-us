@@ -6,7 +6,7 @@ import { sendAbandonedCart, trySend } from "@/lib/email";
 export async function GET(req: NextRequest) {
   // Protection : Vercel Cron envoie "Authorization: Bearer <CRON_SECRET>"
   const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.get("authorization") !== `Bearer ${secret}`)
+  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`)
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 
   const admin = createAdminClient();

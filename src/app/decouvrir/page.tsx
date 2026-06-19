@@ -10,7 +10,7 @@ import { Search, ShoppingBag, SlidersHorizontal, X, Layers, ArrowRight } from "l
 import { Price } from "@/components/ui/Price";
 import { ScatterText } from "@/components/ui/ScatterText";
 import Link from "next/link";
-import Image from "next/image";
+import { FillImage } from "@/components/ui/FillImage";
 import { CATEGORIES } from "@/lib/categories";
 import { ExploreFeed } from "@/components/mobile/ExploreFeed";
 
@@ -297,7 +297,7 @@ function DecouvrirContent() {
                     <Link href={`/produit/${p.slug || p.id}`} className="block">
                       <div className="aspect-square rounded-2xl bg-[#F1ECE3] relative overflow-hidden">
                         {img ? (
-                          <Image src={img} alt={p.name || p.title} fill sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw" className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                          <FillImage src={img} alt={p.name || p.title} sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw" className="object-cover group-hover:scale-105 transition-transform duration-300" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center p-8">
                             {/* eslint-disable-next-line @next/next/no-img-element */}

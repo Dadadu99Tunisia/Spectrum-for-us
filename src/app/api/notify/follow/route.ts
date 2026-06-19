@@ -17,6 +17,12 @@ export async function POST(req: NextRequest) {
   const { data: shop } = await admin.from("shops").select("name, owner_id").eq("id", shopId).maybeSingle();
   if (!shop?.owner_id || shop.owner_id === user.id) return NextResponse.json({ ok: true }); // pas d'auto-notif
 
+  // Dédup : on ne notifie qu'au PREMIER follow de cette personne pour cette boutique
+  // (évite le spam unfollow→refollow). Clé = (follower, kind follow:<shopId>).
+  const dedupKind = `follow:${shopId}`;
+  const { error: dupErr } = await admin.from("nurture_log").insert({ user_id: user.id, kind: dedupKind });
+  if (dupErr) return NextResponse.json({ ok: true }); // déjà notifié (conflit de clé primaire)
+
   try {
     const { data: owner } = await admin.auth.admin.getUserById(shop.owner_id as string);
     const email = owner?.user?.email;
