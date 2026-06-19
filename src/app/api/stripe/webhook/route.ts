@@ -368,11 +368,15 @@ export async function POST(req: Request) {
     const shopId = session.metadata?.shop_id;
     if (shopId && session.subscription) {
       const sub = await stripe.subscriptions.retrieve(session.subscription as string);
-      await supabase.from("shops").update({
+      const patch = {
         subscription_status: "active",
         subscription_id: sub.id,
         subscription_current_period_end: subPeriodEndISO(sub),
-      }).eq("id", shopId);
+      };
+      await supabase.from("shops").update(patch).eq("id", shopId);
+      // Canonique : abonnement au niveau du seller (entité financière)
+      const { data: sh } = await supabase.from("shops").select("seller_id, owner_id").eq("id", shopId).maybeSingle();
+      if (sh?.seller_id) await supabase.from("sellers").update(patch).eq("id", sh.seller_id);
     }
   }
 
@@ -382,10 +386,12 @@ export async function POST(req: Request) {
     event.type === "customer.subscription.deleted"
   ) {
     const sub = event.data.object as Stripe.Subscription;
-    await supabase.from("shops").update({
+    const patch = {
       subscription_status: sub.status === "active" ? "active" : "inactive",
       subscription_current_period_end: subPeriodEndISO(sub),
-    }).eq("subscription_id", sub.id);
+    };
+    await supabase.from("shops").update(patch).eq("subscription_id", sub.id);
+    await supabase.from("sellers").update(patch).eq("subscription_id", sub.id);
   }
 
   // ── 4. Paiement échoué ────────────────────────────────────────────────────────
@@ -402,16 +408,16 @@ export async function POST(req: Request) {
     }
   }
 
-  // Connect · synchronise le statut du compte vendeur
+  // Connect · synchronise le statut du compte vendeur (canonique = sellers)
   if (event.type === "account.updated") {
     const account = event.data.object as Stripe.Account;
-    await supabase
-      .from("shops")
-      .update({
-        stripe_charges_enabled: !!account.charges_enabled,
-        stripe_payouts_enabled: !!account.payouts_enabled,
-      })
-      .eq("stripe_account_id", account.id);
+    const flags = {
+      stripe_charges_enabled: !!account.charges_enabled,
+      stripe_payouts_enabled: !!account.payouts_enabled,
+    };
+    await supabase.from("sellers").update(flags).eq("stripe_account_id", account.id);
+    // Legacy : maj de l'activité primaire qui portait encore l'account id (sans effet sinon)
+    await supabase.from("shops").update(flags).eq("stripe_account_id", account.id);
   }
 
   return NextResponse.json({ received: true });

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { ensureSeller } from "@/lib/seller";
 
 export async function POST(req: Request) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -15,17 +17,18 @@ export async function POST(req: Request) {
     const { priceId, shopId } = await req.json();
     if (!priceId) return NextResponse.json({ error: "NEXT_PUBLIC_STRIPE_VENDOR_PRICE_ID non configuré. Ajoute cette variable dans Vercel." }, { status: 503 });
 
-    // Get or create Stripe customer
-    const { data: shop } = await supabase.from("shops").select("stripe_customer_id, name").eq("id", shopId).single();
-    let customerId = shop?.stripe_customer_id;
+    // Client Stripe d'abonnement = au niveau SELLER (partagé par toutes ses activités)
+    const admin = createAdminClient();
+    const seller = await ensureSeller(admin, user.id);
+    let customerId = seller.stripe_customer_id;
 
     if (!customerId) {
       const customer = await stripe.customers.create({
         email: user.email,
-        metadata: { user_id: user.id, shop_id: shopId },
+        metadata: { user_id: user.id, seller_id: seller.id },
       });
       customerId = customer.id;
-      await supabase.from("shops").update({ stripe_customer_id: customerId }).eq("id", shopId);
+      await admin.from("sellers").update({ stripe_customer_id: customerId }).eq("id", seller.id);
     }
 
     // Create checkout session for subscription

@@ -90,6 +90,7 @@ export default function VendeurDashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [shop, setShop] = useState<Shop | null>(null);
+  const [seller, setSeller] = useState<{ stripe_charges_enabled?: boolean; payout_mode?: string } | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<VendorOrder[]>([]);
   const [founderRank, setFounderRank] = useState<number | null>(null);
@@ -107,6 +108,8 @@ export default function VendeurDashboard() {
         const { data: shopData } = await supabase.from("shops").select("*").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle();
         if (!shopData) { router.push("/vendeur/onboarding"); return; }
         setShop(shopData as Shop);
+        supabase.from("sellers").select("stripe_charges_enabled, payout_mode").maybeSingle()
+          .then(({ data }) => { if (data) setSeller(data); });
         supabase.from("founder_program_members").select("rank").eq("user_id", user.id).single()
           .then(({ data }) => { if (data) setFounderRank(data.rank as number); });
         const [prodRes, orderRes, commRes] = await Promise.all([
@@ -152,7 +155,7 @@ export default function VendeurDashboard() {
     { label: "Compléter ta boutique (logo, bannière, contact)", done: !!(shop.logo_url && shop.banner_url && shop.contact_email), href: "/vendeur/boutique" },
     { label: products.length === 0 ? "Ajouter ton premier produit" : "Ajouter plus de produits (boost visibilité)", done: products.length >= 3, href: "/vendeur/nouveau-produit" },
     { label: m.toPrepare.size > 0 ? `Préparer ${m.toPrepare.size} commande${m.toPrepare.size > 1 ? "s" : ""}` : "Aucune commande à préparer", done: m.toPrepare.size === 0, href: "#orders" },
-    { label: "Activer tes paiements (Stripe ou versement manuel)", done: !!(shop as { stripe_charges_enabled?: boolean }).stripe_charges_enabled || (shop as { payout_mode?: string }).payout_mode === "manual", href: "#overview" },
+    { label: "Activer tes paiements (Stripe ou versement manuel)", done: !!seller?.stripe_charges_enabled || seller?.payout_mode === "manual", href: "#overview" },
   ] : [];
 
   if (loading || loadingData) return (

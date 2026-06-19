@@ -2,37 +2,40 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripeServer, PLATFORM_URL } from "@/lib/stripe-server";
+import { ensureSeller } from "@/lib/seller";
 
 /**
- * Stripe Connect (Express) · onboarding du vendeur.
+ * Stripe Connect (Express) · onboarding du SELLER (entité financière unique).
+ * Le compte Stripe est rattaché au seller, partagé par toutes ses activités.
  * POST → crée/récupère le compte Express + renvoie un lien d'onboarding.
  * GET  → statut actuel (rafraîchi depuis Stripe).
  */
 
-async function getShop() {
+async function getCtx() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
   const admin = createAdminClient();
+  const seller = await ensureSeller(admin, user.id);
+  // Nom d'affichage Stripe = activité primaire (la plus ancienne) si dispo.
   const { data: shop } = await admin
     .from("shops")
-    .select("id, name, stripe_account_id, stripe_charges_enabled, stripe_payouts_enabled")
+    .select("name")
     .eq("owner_id", user.id)
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();
-  if (!shop) return { error: NextResponse.json({ error: "Aucune boutique" }, { status: 404 }) };
-  return { user, shop, admin };
+  return { user, seller, admin, displayName: (shop?.name as string) ?? user.email ?? "Spectrum" };
 }
 
 export async function POST() {
   try {
-    const ctx = await getShop();
+    const ctx = await getCtx();
     if ("error" in ctx) return ctx.error;
-    const { user, shop, admin } = ctx;
+    const { user, seller, admin, displayName } = ctx;
     const stripe = getStripeServer();
 
-    let accountId = shop.stripe_account_id as string | null;
+    let accountId = seller.stripe_account_id;
 
     // Crée le compte Express si nécessaire
     if (!accountId) {
@@ -43,11 +46,11 @@ export async function POST() {
           transfers: { requested: true },
           card_payments: { requested: true },
         },
-        business_profile: { name: shop.name as string, url: `${PLATFORM_URL}/boutique` },
-        metadata: { shop_id: shop.id as string, user_id: user.id },
+        business_profile: { name: displayName, url: `${PLATFORM_URL}/boutique` },
+        metadata: { seller_id: seller.id, user_id: user.id },
       });
       accountId = account.id;
-      await admin.from("shops").update({ stripe_account_id: accountId }).eq("id", shop.id);
+      await admin.from("sellers").update({ stripe_account_id: accountId }).eq("id", seller.id);
     }
 
     const link = await stripe.accountLinks.create({
@@ -66,10 +69,10 @@ export async function POST() {
 
 export async function GET() {
   try {
-    const ctx = await getShop();
+    const ctx = await getCtx();
     if ("error" in ctx) return ctx.error;
-    const { shop, admin } = ctx;
-    const accountId = shop.stripe_account_id as string | null;
+    const { seller, admin } = ctx;
+    const accountId = seller.stripe_account_id;
     if (!accountId) {
       return NextResponse.json({ connected: false, charges_enabled: false, payouts_enabled: false });
     }
@@ -78,8 +81,8 @@ export async function GET() {
     const charges = !!account.charges_enabled;
     const payouts = !!account.payouts_enabled;
     // Sync DB si changé
-    if (charges !== shop.stripe_charges_enabled || payouts !== shop.stripe_payouts_enabled) {
-      await admin.from("shops").update({ stripe_charges_enabled: charges, stripe_payouts_enabled: payouts }).eq("id", shop.id);
+    if (charges !== seller.stripe_charges_enabled || payouts !== seller.stripe_payouts_enabled) {
+      await admin.from("sellers").update({ stripe_charges_enabled: charges, stripe_payouts_enabled: payouts }).eq("id", seller.id);
     }
     return NextResponse.json({
       connected: true,

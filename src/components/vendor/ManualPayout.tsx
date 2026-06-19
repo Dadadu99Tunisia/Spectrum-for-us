@@ -14,7 +14,8 @@ const METHODS = [
   { v: "other", l: "Autre (précise)", ph: "Western Union, D17…" },
 ];
 
-export function ManualPayout({ shopId }: { shopId: string }) {
+// `shopId` conservé pour compat d'appel ; le versement manuel est désormais au niveau SELLER.
+export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
   const [mode, setMode] = useState<string>("stripe");
   const [method, setMethod] = useState("payoneer");
   const [details, setDetails] = useState("");
@@ -26,7 +27,7 @@ export function ManualPayout({ shopId }: { shopId: string }) {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.from("shops").select("payout_mode, payout_method, payout_details, country").eq("id", shopId).maybeSingle()
+    supabase.from("sellers").select("payout_mode, payout_method, payout_details, country").maybeSingle()
       .then(({ data }) => {
         if (data) {
           setMode(data.payout_mode ?? "stripe");
@@ -39,14 +40,20 @@ export function ManualPayout({ shopId }: { shopId: string }) {
         if (data?.payout_mode === "manual") computeBalance();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shopId]);
+  }, []);
 
+  // Solde agrégé sur TOUTES les activités du seller (commissions/ports - versements).
   const computeBalance = async () => {
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data: shops } = await supabase.from("shops").select("id").eq("owner_id", user.id);
+    const ids = (shops ?? []).map(s => s.id);
+    if (ids.length === 0) { setBalance({ earned: 0, paid: 0, owed: 0 }); return; }
     const [{ data: comm }, { data: ships }, { data: payouts }] = await Promise.all([
-      supabase.from("commissions").select("gross_amount, commission_amount").eq("shop_id", shopId),
-      supabase.from("order_shipments").select("shipping_cost").eq("shop_id", shopId),
-      supabase.from("vendor_payouts").select("amount").eq("shop_id", shopId),
+      supabase.from("commissions").select("gross_amount, commission_amount").in("shop_id", ids),
+      supabase.from("order_shipments").select("shipping_cost").in("shop_id", ids),
+      supabase.from("vendor_payouts").select("amount").in("shop_id", ids),
     ]);
     const earned = (comm ?? []).reduce((s, c) => s + Number(c.gross_amount || 0) - Number(c.commission_amount || 0), 0)
       + (ships ?? []).reduce((s, x) => s + Number(x.shipping_cost || 0), 0);
@@ -57,12 +64,13 @@ export function ManualPayout({ shopId }: { shopId: string }) {
   const save = async (newMode: string) => {
     setSaving(true);
     const supabase = createClient();
-    await supabase.from("shops").update({
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) await supabase.from("sellers").update({
       payout_mode: newMode,
       payout_method: newMode === "manual" ? method : null,
       payout_details: newMode === "manual" ? details.trim() : null,
       country: newMode === "manual" ? country : null,
-    }).eq("id", shopId);
+    }).eq("user_id", user.id);
     setMode(newMode); setSaving(false); setEditing(false);
     if (newMode === "manual") computeBalance(); else setBalance(null);
   };
