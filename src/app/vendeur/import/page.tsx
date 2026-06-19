@@ -63,8 +63,14 @@ export default function ImportPage() {
   useEffect(() => {
     if (!loading && !user) { router.push("/auth"); return; }
     if (!user) return;
-    createClient().from("shops").select("id").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle()
-      .then(({ data }) => { if (!data) router.push("/vendeur/onboarding"); else setShopId(data.id); });
+    // Import dans l'activité ACTIVE du dashboard.
+    createClient().from("shops").select("id").eq("owner_id", user.id).order("created_at", { ascending: true })
+      .then(({ data }) => {
+        if (!data?.length) { router.push("/vendeur/onboarding"); return; }
+        let id = data[0].id as string;
+        try { const saved = localStorage.getItem("sfu_active_activity"); if (saved && data.some(s => s.id === saved)) id = saved; } catch {}
+        setShopId(id);
+      });
   }, [user, loading, router]);
 
   const onFile = async (file: File) => {

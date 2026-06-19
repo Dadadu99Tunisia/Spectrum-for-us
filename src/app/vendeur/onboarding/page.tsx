@@ -26,10 +26,15 @@ export default function OnboardingPage() {
   const [error, setError] = useState("");
   const [shopSlug, setShopSlug] = useState("");
 
+  const isNewActivity = () =>
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).get("nouvelle") === "1";
+
   useEffect(() => {
     if (loading) return;
     if (!user) { router.push("/auth?mode=vendor"); return; }
-    // Anti-doublon : si une boutique existe déjà, on va au dashboard
+    // Création d'une activité SUPPLÉMENTAIRE → on reste sur l'onboarding.
+    if (isNewActivity()) return;
+    // Sinon anti-doublon : si une boutique existe déjà, on va au dashboard.
     createClient().from("shops").select("id").eq("owner_id", user.id).limit(1)
       .then(({ data }) => { if (data && data.length) router.replace("/vendeur"); });
   }, [user, loading, router]);
@@ -39,15 +44,22 @@ export default function OnboardingPage() {
     setSubmitting(true);
     setError("");
     const supabase = createClient();
+    const newActivity = isNewActivity();
 
-    // Garde-fou : ne pas créer un 2e shop si l'utilisateur en a déjà un
-    const { data: existing } = await supabase.from("shops").select("id").eq("owner_id", user.id).limit(1);
-    if (existing && existing.length) { setSubmitting(false); router.replace("/vendeur"); return; }
+    // Garde-fou (1re boutique uniquement) : ne pas créer un doublon involontaire
+    if (!newActivity) {
+      const { data: existing } = await supabase.from("shops").select("id").eq("owner_id", user.id).limit(1);
+      if (existing && existing.length) { setSubmitting(false); router.replace("/vendeur"); return; }
+    }
+
+    // Rattache l'activité au seller existant (entité financière partagée) si présent.
+    const { data: sellerRow } = await supabase.from("sellers").select("id").eq("user_id", user.id).maybeSingle();
 
     const slug = slugify(form.name) + "-" + Math.random().toString(36).slice(2, 6);
 
-    const { error: shopError } = await supabase.from("shops").insert({
+    const { data: created, error: shopError } = await supabase.from("shops").insert({
       owner_id: user.id,
+      seller_id: sellerRow?.id ?? null,
       name: form.name,
       slug,
       tagline: form.tagline,
@@ -57,10 +69,12 @@ export default function OnboardingPage() {
       tags: [form.category].filter(Boolean),
       charter_accepted_at: new Date().toISOString(),
       is_active: true,
-    });
+    }).select("id").single();
 
     if (shopError) { setError(shopError.message); setSubmitting(false); return; }
     await supabase.from("profiles").update({ is_vendor: true }).eq("id", user.id);
+    // L'activité créée devient l'activité active du dashboard.
+    try { if (created?.id) localStorage.setItem("sfu_active_activity", created.id); } catch {}
     setShopSlug(slug);
     setStep(4);
     setSubmitting(false);

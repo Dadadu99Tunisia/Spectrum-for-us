@@ -37,14 +37,15 @@ export default function EditProduitPage() {
     if (!loading && !user) { router.push("/auth"); return; }
     if (!user) return;
     const supabase = createClient();
-    // Charger la boutique du vendeur
-    supabase.from("shops").select("id").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle().then(({ data: shop }) => {
-      if (!shop) { router.push("/vendeur/onboarding"); return; }
-      setShopId(shop.id);
-      // Charger le produit · vérifier qu'il appartient bien à cette boutique
-      supabase.from("products").select("*").eq("id", id).eq("shop_id", shop.id).single()
+    // Charger TOUTES les activités du vendeur (le produit peut appartenir à n'importe laquelle)
+    supabase.from("shops").select("id").eq("owner_id", user.id).then(({ data: shopsData }) => {
+      const shopIds = (shopsData ?? []).map(s => s.id as string);
+      if (!shopIds.length) { router.push("/vendeur/onboarding"); return; }
+      // Charger le produit · vérifier qu'il appartient à l'une des activités du seller
+      supabase.from("products").select("*").eq("id", id).in("shop_id", shopIds).single()
         .then(({ data: p, error: err }) => {
           if (err || !p) { router.push("/vendeur"); return; }
+          setShopId(String(p.shop_id)); // l'édition reste rattachée à l'activité du produit
           setForm({
             name: String(p.name || p.title || ""),
             description: String(p.description || ""),

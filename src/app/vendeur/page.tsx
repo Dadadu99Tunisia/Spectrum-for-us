@@ -89,7 +89,8 @@ const TITLES: Record<View, string> = {
 export default function VendeurDashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [shop, setShop] = useState<Shop | null>(null);
+  const [shops, setShops] = useState<Shop[]>([]);
+  const [activeShopId, setActiveShopId] = useState<string | null>(null);
   const [seller, setSeller] = useState<{ stripe_charges_enabled?: boolean; payout_mode?: string } | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<VendorOrder[]>([]);
@@ -99,25 +100,46 @@ export default function VendeurDashboard() {
   const [view, setView] = useState<View>("overview");
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Activité active (parmi toutes celles du seller) + persistance.
+  const shop = shops.find(s => s.id === activeShopId) ?? null;
+  const selectActivity = (id: string) => {
+    setActiveShopId(id);
+    try { localStorage.setItem("sfu_active_activity", id); } catch {}
+    setView("overview"); setMenuOpen(false);
+  };
+
+  // 1) Charge TOUTES les activités du seller (+ seller + rang fondateur·ice).
   useEffect(() => {
     if (!loading && !user) { router.push("/auth?redirect=/vendeur"); return; }
     if (!user) return;
     const supabase = createClient();
     (async () => {
+      const { data: shopList } = await supabase.from("shops").select("*").eq("owner_id", user.id).order("created_at", { ascending: true });
+      if (!shopList?.length) { router.push("/vendeur/onboarding"); return; }
+      setShops(shopList as Shop[]);
+      let initial = shopList[0].id as string;
+      try { const saved = localStorage.getItem("sfu_active_activity"); if (saved && shopList.some(s => s.id === saved)) initial = saved; } catch {}
+      setActiveShopId(initial);
+      supabase.from("sellers").select("stripe_charges_enabled, payout_mode").maybeSingle()
+        .then(({ data }) => { if (data) setSeller(data); });
+      supabase.from("founder_program_members").select("rank").eq("user_id", user.id).single()
+        .then(({ data }) => { if (data) setFounderRank(data.rank as number); });
+    })();
+  }, [user, loading, router]);
+
+  // 2) Charge produits/commandes/commissions de l'activité ACTIVE.
+  useEffect(() => {
+    if (!user || !activeShopId) return;
+    const supabase = createClient();
+    setLoading(true);
+    (async () => {
       try {
-        const { data: shopData } = await supabase.from("shops").select("*").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle();
-        if (!shopData) { router.push("/vendeur/onboarding"); return; }
-        setShop(shopData as Shop);
-        supabase.from("sellers").select("stripe_charges_enabled, payout_mode").maybeSingle()
-          .then(({ data }) => { if (data) setSeller(data); });
-        supabase.from("founder_program_members").select("rank").eq("user_id", user.id).single()
-          .then(({ data }) => { if (data) setFounderRank(data.rank as number); });
         const [prodRes, orderRes, commRes] = await Promise.all([
-          supabase.from("products").select("*").eq("shop_id", shopData.id).order("created_at", { ascending: false }),
+          supabase.from("products").select("*").eq("shop_id", activeShopId).order("created_at", { ascending: false }),
           supabase.from("order_items")
             .select("id, order_id, quantity, price_at_purchase, created_at, products(name,title), orders(status, created_at, shipping_name)")
-            .eq("vendor_id", user.id).order("created_at", { ascending: false }),
-          supabase.from("commissions").select("gross_amount, commission_amount, status").eq("shop_id", shopData.id),
+            .eq("vendor_id", user.id).eq("activity_id", activeShopId).order("created_at", { ascending: false }),
+          supabase.from("commissions").select("gross_amount, commission_amount, status").eq("shop_id", activeShopId),
         ]);
         setProducts((prodRes.data ?? []) as Product[]);
         setOrders(((orderRes.data ?? []) as unknown) as VendorOrder[]);
@@ -126,7 +148,7 @@ export default function VendeurDashboard() {
         setLoading(false);
       }
     })();
-  }, [user, loading, router]);
+  }, [user, activeShopId]);
 
   // ── Dérivés ──────────────────────────────────────────────────────────────
   const m = useMemo(() => {
@@ -204,17 +226,34 @@ export default function VendeurDashboard() {
           ))}
         </nav>
 
-        <div className="mt-auto flex items-center gap-2.5 p-2.5 rounded-xl" style={{ border: `1px solid ${C.line}` }}>
-          <span className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-white font-bricolage font-bold text-[15px] shrink-0 overflow-hidden" style={{ background: C.spec }}>
-            {shop.logo_url ? <img src={shop.logo_url} alt="" className="w-full h-full object-cover" /> : shop.name[0]?.toUpperCase()}
-          </span>
-          <div className="min-w-0 flex-1">
-            <b className="font-bricolage text-sm leading-tight block truncate">{shop.name}</b>
-            <a href={`/boutique/${shop.slug}`} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11.5px] hover:underline" style={{ color: C.faint }}>
-              voir ma boutique <ExternalLink size={9} />
-            </a>
+        <div className="mt-auto space-y-2">
+          {shops.length > 1 && (
+            <div>
+              <p className="font-mono text-[10px] tracking-[0.12em] uppercase px-0.5 pb-1" style={{ color: C.faint }}>Activité</p>
+              <select value={activeShopId ?? ""} onChange={e => selectActivity(e.target.value)}
+                className="w-full rounded-xl px-2.5 py-2 text-[13px] font-bricolage font-semibold bg-white outline-none"
+                style={{ border: `1px solid ${C.line}`, color: C.ink }}>
+                {shops.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+          )}
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl" style={{ border: `1px solid ${C.line}` }}>
+            <span className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-white font-bricolage font-bold text-[15px] shrink-0 overflow-hidden" style={{ background: C.spec }}>
+              {shop.logo_url ? <img src={shop.logo_url} alt="" className="w-full h-full object-cover" /> : shop.name[0]?.toUpperCase()}
+            </span>
+            <div className="min-w-0 flex-1">
+              <b className="font-bricolage text-sm leading-tight block truncate">{shop.name}</b>
+              <a href={`/boutique/${shop.slug}`} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[11.5px] hover:underline" style={{ color: C.faint }}>
+                voir ma boutique <ExternalLink size={9} />
+              </a>
+            </div>
           </div>
+          <Link href="/vendeur/onboarding?nouvelle=1"
+            className="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-[12.5px] font-medium transition-colors"
+            style={{ color: C.vio, border: `1px dashed ${C.line2}` }}>
+            <Plus size={15} strokeWidth={2} /> Nouvelle activité
+          </Link>
         </div>
       </aside>
 
