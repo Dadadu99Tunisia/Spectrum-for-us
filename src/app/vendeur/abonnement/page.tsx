@@ -27,8 +27,15 @@ export default function AbonnementPage() {
   useEffect(() => {
     if (!user) return;
     const supabase = createClient();
-    supabase.from("shops").select("id,name,subscription_status").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle()
-      .then(({ data }) => { setShop(data); setLoading(false); });
+    // L'abonnement est au niveau SELLER (couvre toutes les activités). On charge le statut du seller,
+    // et l'activité primaire seulement pour fournir un shopId au checkout.
+    Promise.all([
+      supabase.from("shops").select("id,name").eq("owner_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle(),
+      supabase.from("sellers").select("subscription_status").maybeSingle(),
+    ]).then(([{ data: sh }, { data: sel }]) => {
+      setShop(sh ? { ...sh, subscription_status: sel?.subscription_status ?? "none" } : null);
+      setLoading(false);
+    });
     supabase.from("founder_program_members").select("subscription_free_until").eq("user_id", user.id).maybeSingle()
       .then(({ data }) => setSubFreeUntil(data?.subscription_free_until ?? null));
   }, [user]);

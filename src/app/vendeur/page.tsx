@@ -91,7 +91,7 @@ export default function VendeurDashboard() {
   const router = useRouter();
   const [shops, setShops] = useState<Shop[]>([]);
   const [activeShopId, setActiveShopId] = useState<string | null>(null);
-  const [seller, setSeller] = useState<{ stripe_charges_enabled?: boolean; payout_mode?: string } | null>(null);
+  const [seller, setSeller] = useState<{ stripe_charges_enabled?: boolean; payout_mode?: string; subscription_status?: string | null } | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<VendorOrder[]>([]);
   const [founderRank, setFounderRank] = useState<number | null>(null);
@@ -120,7 +120,7 @@ export default function VendeurDashboard() {
       let initial = shopList[0].id as string;
       try { const saved = localStorage.getItem("sfu_active_activity"); if (saved && shopList.some(s => s.id === saved)) initial = saved; } catch {}
       setActiveShopId(initial);
-      supabase.from("sellers").select("stripe_charges_enabled, payout_mode").maybeSingle()
+      supabase.from("sellers").select("stripe_charges_enabled, payout_mode, subscription_status").maybeSingle()
         .then(({ data }) => { if (data) setSeller(data); });
       supabase.from("founder_program_members").select("rank").eq("user_id", user.id).single()
         .then(({ data }) => { if (data) setFounderRank(data.rank as number); });
@@ -285,7 +285,7 @@ export default function VendeurDashboard() {
           {view === "products" && <Products products={products} />}
           {view === "orders" && <><Orders orders={orders} toPrepare={m.toPrepare} /><ShipmentsManager shopId={shop.id} /><ReturnsManager shopId={shop.id} /></>}
           {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} />}
-          {view === "subscription" && <Subscription shop={shop} founderRank={founderRank} />}
+          {view === "subscription" && <Subscription active={seller?.subscription_status === "active"} founderRank={founderRank} />}
           {view === "livraison" && <ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} />}
           {view === "agenda" && <ServiceAvailability shopId={shop.id} />}
           {view === "promos" && <PromoCodes shopId={shop.id} />}
@@ -572,8 +572,7 @@ function Revenue({ total, commissions }: { total: number; commissions: { gross_a
   );
 }
 
-function Subscription({ shop, founderRank }: { shop: Shop; founderRank: number | null }) {
-  const active = shop.subscription_status === "active";
+function Subscription({ active, founderRank }: { active: boolean; founderRank: number | null }) {
   return (
     <div className="grid lg:grid-cols-2 gap-4">
       <Panel>
