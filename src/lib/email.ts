@@ -292,6 +292,59 @@ export async function sendFollowerNewProduct(params: {
   });
 }
 
+/** Nurturing créateur·ice · relance "publie ta 1re création" (J+1 puis J+7). */
+export async function sendCreatorActivation(params: { to: string; pseudo: string; day: 1 | 7 }) {
+  const isJ1 = params.day === 1;
+  const body = `
+    ${h2(isJ1 ? `${params.pseudo}, ta boutique t'attend ✦` : `${params.pseudo}, on garde ta place au chaud 🏳️‍🌈`)}
+    ${text(isJ1
+      ? "Ta boutique est créée, bravo ! Il ne manque plus que ta première création pour qu'on puisse te mettre en avant auprès de la communauté."
+      : "Tu as ouvert ta boutique il y a une semaine mais elle est encore vide. Ta place de fondateur·ice est précieuse — publie une première création et lance ta visibilité.")}
+    ${text("Ça prend 5 minutes : une belle photo, un prix, et tu es en ligne. On s'occupe du reste (paiement, livraison, mise en avant).")}
+    ${cta("Publier ma première création", `${BASE}/vendeur/nouveau-produit`)}
+    ${text(`<span style="color:rgba(243,234,219,0.4);font-size:13px;">Besoin d'un coup de main ? Réponds à cet email, on est là.</span>`)}
+  `;
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    subject: isJ1 ? "Plus qu'une étape pour lancer ta boutique ✦" : "Ta boutique Spectrum est encore vide 🏳️‍🌈",
+    html: baseLayout("Publie ta première création · Spectrum For Us", body),
+  });
+}
+
+/** Notif créateur·ice · quelqu'un suit ta boutique. */
+export async function sendNewFollower(params: { to: string; shopName: string; followerName?: string }) {
+  const who = params.followerName?.trim() || "Quelqu'un";
+  const body = `
+    ${h2(`${who} suit désormais ${params.shopName} ✦`)}
+    ${text("Ta communauté grandit ! Les personnes qui te suivent sont notifiées à chaque nouvelle création.")}
+    ${text("Profite-en pour publier une nouveauté — c'est le meilleur moment pour transformer un·e abonné·e en client·e.")}
+    ${cta("Voir mon tableau de bord", `${BASE}/vendeur`)}
+  `;
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    subject: `✦ ${who} suit ta boutique sur Spectrum`,
+    html: baseLayout("Nouvel·le abonné·e · Spectrum For Us", body),
+  });
+}
+
+/** Notif créateur·ice · quelqu'un a mis une création en favori. */
+export async function sendNewFavorite(params: { to: string; productName: string; productSlug: string }) {
+  const body = `
+    ${h2(`Une création vient d'être mise en favori ❤️`)}
+    ${text(`<strong style="color:#F3EADB;">${params.productName}</strong> a tapé dans l'œil de quelqu'un.`)}
+    ${text("Les favoris sont un signal d'achat fort. Une promo ou un petit mot peuvent faire la différence.")}
+    ${cta("Voir la création", `${BASE}/produit/${params.productSlug}`)}
+  `;
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    subject: `❤️ « ${params.productName} » a été mise en favori`,
+    html: baseLayout("Nouveau favori · Spectrum For Us", body),
+  });
+}
+
 /** Silently ignore email errors · never block the main flow */
 export async function trySend(fn: () => Promise<unknown>) {
   try { await fn(); } catch (e) { console.error("[email]", e); }

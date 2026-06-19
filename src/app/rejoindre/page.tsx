@@ -70,7 +70,7 @@ export default function RejoindrePage() {
           style={{ background: "radial-gradient(ellipse, #FF2DA0 0%, #7A2BF0 70%, transparent 100%)" }} />
         <div className="relative max-w-3xl mx-auto text-center">
           <span className="inline-block font-mono text-[11px] tracking-wide text-[#FF2DA0] mb-6 px-4 py-1.5 rounded-full border border-[#FF2DA0]/25 bg-[#FF2DA0]/8">
-            🏳️‍🌈 Pride 2026 · Lancement le 28 juin
+            🏳️‍🌈 Pride 2026 · Lancement le samedi 27 juin
           </span>
           <h1 className="font-fraunces text-5xl md:text-6xl font-light leading-[1.1] mb-6">
             Rejoins{" "}
@@ -113,7 +113,7 @@ export default function RejoindrePage() {
               </div>
               <h2 className="font-fraunces text-3xl mb-3">Demande reçue ✦</h2>
               <p className="font-hanken text-[#101014]/55 mb-8 leading-relaxed max-w-sm mx-auto">
-                Merci {form.name.split(" ")[0]} ! On revient vers toi avant le 26 juin.
+                Merci {form.name.split(" ")[0]} ! On revient vers toi avant le 27 juin.
                 Prépare-toi · la communauté t&apos;attend.
               </p>
               <Link href="/"
@@ -203,7 +203,7 @@ export default function RejoindrePage() {
                 </button>
 
                 <p className="font-hanken text-xs text-[#101014]/25 text-center">
-                  On ne partage jamais tes données. Réponse garantie avant le 26 juin.
+                  On ne partage jamais tes données. Réponse garantie avant le 27 juin.
                 </p>
               </form>
             </>

@@ -13,7 +13,7 @@ import { X, Rocket } from "lucide-react";
 import { useBanner } from "@/contexts/BannerContext";
 
 // 🚀 Date du lancement officiel (Europe/Paris)
-const LAUNCH = new Date("2026-06-28T10:00:00+02:00");
+const LAUNCH = new Date("2026-06-27T10:00:00+02:00");
 
 function diff() {
   const ms = LAUNCH.getTime() - Date.now();

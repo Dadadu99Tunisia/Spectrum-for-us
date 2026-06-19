@@ -4,7 +4,7 @@ import Link from "next/link";
 import { X, ArrowRight } from "lucide-react";
 import { useBanner } from "@/contexts/BannerContext";
 
-const PRIDE_DATE = new Date("2026-06-26T00:00:00");
+const PRIDE_DATE = new Date("2026-06-27T00:00:00");
 
 function getTimeLeft() {
   const diff = PRIDE_DATE.getTime() - Date.now();

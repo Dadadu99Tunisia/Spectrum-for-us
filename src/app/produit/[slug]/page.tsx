@@ -88,6 +88,8 @@ export default function ProduitPage() {
       const favs: string[] = JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]");
       const next = liked ? favs.filter(f => f !== product.id) : [...favs, product.id];
       localStorage.setItem("spectrum_favorites", JSON.stringify(next));
+      // À l'ajout : persiste en base + notifie le·la créateur·ice (best-effort si connecté·e)
+      if (!liked) fetch("/api/notify/favorite", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ productId: product.id }) }).catch(() => {});
       setLiked(!liked);
     } catch { setLiked(!liked); }
   };
