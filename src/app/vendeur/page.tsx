@@ -91,6 +91,7 @@ export default function VendeurDashboard() {
   const router = useRouter();
   const [shops, setShops] = useState<Shop[]>([]);
   const [activeShopId, setActiveShopId] = useState<string | null>(null);
+  const [activityStats, setActivityStats] = useState<{ id: string; name: string; revenue: number; orders: number }[]>([]);
   const [seller, setSeller] = useState<{ stripe_charges_enabled?: boolean; payout_mode?: string; subscription_status?: string | null } | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<VendorOrder[]>([]);
@@ -124,6 +125,24 @@ export default function VendeurDashboard() {
         .then(({ data }) => { if (data) setSeller(data); });
       supabase.from("founder_program_members").select("rank").eq("user_id", user.id).single()
         .then(({ data }) => { if (data) setFounderRank(data.rank as number); });
+
+      // Analytics segmentées : CA + commandes par activité (toutes les marques du seller).
+      if (shopList.length > 1) {
+        const ids = shopList.map(s => s.id);
+        const [{ data: comm }, { data: oi }] = await Promise.all([
+          supabase.from("commissions").select("shop_id, gross_amount, commission_amount").in("shop_id", ids),
+          supabase.from("order_items").select("order_id, activity_id, orders(status)").eq("vendor_id", user.id),
+        ]);
+        const rev: Record<string, number> = {};
+        for (const c of (comm ?? []) as { shop_id: string; gross_amount: number; commission_amount: number }[])
+          rev[c.shop_id] = (rev[c.shop_id] ?? 0) + (Number(c.gross_amount || 0) - Number(c.commission_amount || 0));
+        const ordSet: Record<string, Set<string>> = {};
+        for (const r of (oi ?? []) as unknown as { order_id: string; activity_id: string | null; orders: { status: string } | null }[]) {
+          if (!r.activity_id || !r.orders || !PAID.includes(r.orders.status)) continue;
+          (ordSet[r.activity_id] ??= new Set()).add(r.order_id);
+        }
+        setActivityStats(shopList.map(s => ({ id: s.id, name: s.name, revenue: Math.round(rev[s.id] ?? 0), orders: ordSet[s.id]?.size ?? 0 })));
+      }
     })();
   }, [user, loading, router]);
 
@@ -281,7 +300,7 @@ export default function VendeurDashboard() {
         </div>
 
         <div className="px-5 lg:px-8 py-6 pb-16 w-full max-w-[1180px]">
-          {view === "overview" && <Overview m={m} shop={shop} products={products} activeCount={activeCount} founderRank={founderRank} checklist={checklist} go={setView} />}
+          {view === "overview" && <Overview m={m} shop={shop} products={products} activeCount={activeCount} founderRank={founderRank} checklist={checklist} go={setView} activities={activityStats} activeId={activeShopId} onPick={selectActivity} />}
           {view === "products" && <Products products={products} />}
           {view === "orders" && <><Orders orders={orders} toPrepare={m.toPrepare} /><ShipmentsManager shopId={shop.id} /><ReturnsManager shopId={shop.id} /></>}
           {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} />}
@@ -319,11 +338,13 @@ const TH = "font-mono text-[10.5px] tracking-[0.06em] uppercase text-left pb-3 p
 const TD = "px-3 py-3.5 text-sm align-middle";
 
 // ── Overview ───────────────────────────────────────────────────────────────
-function Overview({ m, shop, products, activeCount, founderRank, checklist, go }: {
+function Overview({ m, shop, products, activeCount, founderRank, checklist, go, activities, activeId, onPick }: {
   m: Metrics; shop: Shop; products: Product[]; activeCount: number;
   founderRank: number | null; checklist: { label: string; done: boolean; href: string }[]; go: (v: View) => void;
+  activities: { id: string; name: string; revenue: number; orders: number }[]; activeId: string | null; onPick: (id: string) => void;
 }) {
   void shop;
+  const maxRev = Math.max(1, ...activities.map(a => a.revenue));
   return (
     <>
       {/* KPIs */}
@@ -333,6 +354,31 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go }
         <Kpi tint="#EAE0FB" label="Produits actifs" value={`${activeCount}/${products.length}`} delta="en ligne" deltaColor={C.faint} />
         <Kpi tint="#FBEAD3" label="CA brut (avant commission)" value={eur(m.totalRevenue)} delta="depuis le début" deltaColor={C.grn} />
       </div>
+
+      {/* Comparaison par activité (multi-marques) */}
+      {activities.length > 1 && (
+        <div className="mb-4" style={{ marginBottom: 18 }}>
+          <Panel>
+            <PanelHead title="Tes activités" action={<span className="font-mono text-[11px]" style={{ color: C.faint }}>CA net · clique pour basculer</span>} />
+            <div className="space-y-2.5 pt-1">
+              {activities.map(a => (
+                <button key={a.id} onClick={() => onPick(a.id)} className="w-full text-left group">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bricolage text-[13.5px] font-semibold flex items-center gap-2" style={{ color: a.id === activeId ? C.ink : C.soft }}>
+                      {a.id === activeId && <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.mag }} />}
+                      {a.name}
+                    </span>
+                    <span className="font-mono text-[12px]" style={{ color: C.ink }}>{eur(a.revenue)} · {a.orders} cmd</span>
+                  </div>
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: C.line }}>
+                    <div className="h-full rounded-full" style={{ width: `${Math.max(3, (a.revenue / maxRev) * 100)}%`, background: C.spec }} />
+                  </div>
+                </button>
+              ))}
+            </div>
+          </Panel>
+        </div>
+      )}
 
       {/* Connexion paiements Stripe + alternative versement manuel */}
       <div className="mb-4 grid md:grid-cols-2 gap-3" style={{ marginBottom: 18 }}>
