@@ -100,6 +100,7 @@ export default function VendeurDashboard() {
   const [loadingData, setLoading] = useState(true);
   const [view, setView] = useState<View>("overview");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [query, setQuery] = useState("");
 
   // Activité active (parmi toutes celles du seller) + persistance.
   const shop = shops.find(s => s.id === activeShopId) ?? null;
@@ -288,9 +289,11 @@ export default function VendeurDashboard() {
           <div className="flex-1" />
           <div className="hidden md:flex items-center gap-2 rounded-[11px] px-3 py-2.5 w-[260px]" style={{ background: "#fff", border: `1px solid ${C.line}`, color: C.faint }}>
             <Search size={16} />
-            <input placeholder="Rechercher…" className="bg-transparent outline-none text-sm w-full" style={{ color: C.ink }} />
+            <input value={query} onChange={e => { setQuery(e.target.value); if (e.target.value && view !== "products") setView("products"); }}
+              placeholder="Rechercher un produit…" className="bg-transparent outline-none text-sm w-full" style={{ color: C.ink }} />
           </div>
-          <button className="relative w-[42px] h-[42px] rounded-[11px] flex items-center justify-center" style={{ border: `1px solid ${C.line}`, background: "#fff" }}>
+          <button onClick={() => setView("orders")} aria-label="Commandes à préparer"
+            className="relative w-[42px] h-[42px] rounded-[11px] flex items-center justify-center" style={{ border: `1px solid ${C.line}`, background: "#fff" }}>
             <Bell size={19} strokeWidth={1.7} />
             {m.toPrepare.size > 0 && <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full" style={{ background: C.mag, border: "2px solid #fff" }} />}
           </button>
@@ -301,7 +304,7 @@ export default function VendeurDashboard() {
 
         <div className="px-5 lg:px-8 py-6 pb-16 w-full max-w-[1180px]">
           {view === "overview" && <Overview m={m} shop={shop} products={products} activeCount={activeCount} founderRank={founderRank} checklist={checklist} go={setView} activities={activityStats} activeId={activeShopId} onPick={selectActivity} />}
-          {view === "products" && <Products products={products} />}
+          {view === "products" && <Products products={query ? products.filter(p => `${p.name ?? ""} ${p.title ?? ""}`.toLowerCase().includes(query.toLowerCase())) : products} />}
           {view === "orders" && <><Orders orders={orders} toPrepare={m.toPrepare} /><ShipmentsManager shopId={shop.id} /><ReturnsManager shopId={shop.id} /></>}
           {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} />}
           {view === "subscription" && <Subscription active={seller?.subscription_status === "active"} founderRank={founderRank} />}
@@ -417,12 +420,12 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go, 
                 : "0 % de commission les premiers mois · abonnement offert · badge sur ton profil."}
             </p>
             {founderRank ? (
-              <>
-                <div className="h-[7px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,.2)" }}>
-                  <i className="block h-full rounded-full" style={{ width: "64%", background: "#fff" }} />
-                </div>
-                <small className="block mt-2 font-mono text-[11px]" style={{ color: "rgba(255,255,255,.7)" }}>Commission gratuite · bénéfice fondateur·ice actif</small>
-              </>
+              <div className="flex items-center gap-2.5 mt-1">
+                <span className="font-fraunces font-bold text-[22px] text-white">#{founderRank}</span>
+                <small className="font-mono text-[11px]" style={{ color: "rgba(255,255,255,.7)" }}>
+                  {founderRank <= 20 ? "Fondateur·ice" : "Pionnier·e"} · bénéfice actif
+                </small>
+              </div>
             ) : (
               <Link href="/programme-fondateur" className="inline-flex items-center gap-1.5 font-bold text-[13px] rounded-lg px-3.5 py-2" style={{ background: "#fff", color: "#241038" }}>
                 Rejoindre <ArrowUpRight size={14} />
@@ -441,16 +444,23 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go, 
         {/* To-do */}
         <Panel>
           <PanelHead title="À faire" />
-          {checklist.map((t, i) => (
-            <Link key={i} href={t.href.startsWith("#") ? "#" : t.href}
-              className="flex items-center gap-3 py-3 last:border-0" style={{ borderBottom: `1px solid ${C.line}` }}>
-              <span className="w-[22px] h-[22px] rounded-[7px] shrink-0 flex items-center justify-center"
-                style={t.done ? { background: C.grn, border: `2px solid ${C.grn}` } : { border: `2px solid ${C.line2}` }}>
-                {t.done && <Check size={13} color="#fff" strokeWidth={3} />}
-              </span>
-              <span className="flex-1 text-[13.5px]" style={t.done ? { color: C.faint, textDecoration: "line-through" } : undefined}>{t.label}</span>
-            </Link>
-          ))}
+          {checklist.map((t, i) => {
+            const inner = (
+              <>
+                <span className="w-[22px] h-[22px] rounded-[7px] shrink-0 flex items-center justify-center"
+                  style={t.done ? { background: C.grn, border: `2px solid ${C.grn}` } : { border: `2px solid ${C.line2}` }}>
+                  {t.done && <Check size={13} color="#fff" strokeWidth={3} />}
+                </span>
+                <span className="flex-1 text-[13.5px] text-left" style={t.done ? { color: C.faint, textDecoration: "line-through" } : undefined}>{t.label}</span>
+              </>
+            );
+            const cls = "flex items-center gap-3 py-3 last:border-0 w-full";
+            const style = { borderBottom: `1px solid ${C.line}` };
+            // Lien interne #vue → bascule d'onglet ; sinon vraie navigation.
+            return t.href.startsWith("#")
+              ? <button key={i} onClick={() => go(t.href.slice(1) as View)} className={cls} style={style}>{inner}</button>
+              : <Link key={i} href={t.href} className={cls} style={style}>{inner}</Link>;
+          })}
         </Panel>
       </div>
     </>
