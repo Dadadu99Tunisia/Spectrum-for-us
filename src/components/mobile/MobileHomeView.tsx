@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
@@ -78,8 +79,8 @@ function ProductCard({ p }: { p: Product }) {
 
   return (
     <Link href={`/produit/${p.slug}`} className="block active:scale-[0.98] transition-transform">
-      <div className="relative rounded-2xl overflow-hidden" style={{ boxShadow: "0 1px 0 rgba(0,0,0,.03)" }}>
-        {img ? <img src={img} alt={p.name || p.title} loading="lazy" className="w-full object-cover" style={{ height: tall ? 220 : 160 }} />
+      <div className="relative rounded-2xl overflow-hidden" style={{ height: tall ? 220 : 160, boxShadow: "0 1px 0 rgba(0,0,0,.03)" }}>
+        {img ? <Image src={img} alt={p.name || p.title} fill sizes="50vw" className="object-cover" />
           : <Ph category={p.category} h={tall ? 220 : 160} />}
         {p.is_adult && (
           <span className="absolute top-2 left-2 font-mono text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(16,16,20,.78)", color: "#fff" }}>🔞 18+</span>

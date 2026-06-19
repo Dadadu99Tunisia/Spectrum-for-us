@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer";
 import { Tag } from "@/components/ui/Tag";
 import { Heart, ArrowLeft, ShoppingBag, Check, Package, Zap, CalendarDays, AlertCircle } from "lucide-react";
 import { ShareButton } from "@/components/ui/ShareButton";
+import Image from "next/image";
 import Link from "next/link";
 import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { ProductReviews } from "@/components/ProductReviews";
@@ -208,7 +209,7 @@ export default function ProduitPage() {
             <div className="space-y-3">
               <div className="relative rounded-2xl overflow-hidden aspect-square flex items-center justify-center bg-[#F1ECE3]">
                 {images.length > 0 ? (
-                  <img src={images[activeImg]} alt={productName} className="w-full h-full object-cover" />
+                  <Image src={images[activeImg]} alt={productName} fill priority sizes="(min-width:1024px) 50vw, 100vw" className="object-cover" />
                 ) : (
                   <>
                     <div className="absolute inset-0" style={{ background: `radial-gradient(circle at 40% 40%, ${accent}30, transparent 60%)` }} />
@@ -224,8 +225,8 @@ export default function ProduitPage() {
                 <div className="flex gap-2">
                   {images.map((img, i) => (
                     <button key={i} onClick={() => setActiveImg(i)}
-                      className={`flex-1 aspect-square rounded-xl border-2 overflow-hidden transition-all duration-200 ${activeImg === i ? "border-[#FF2DA0]" : "border-transparent"}`}>
-                      <img src={img} alt="" className="w-full h-full object-cover" />
+                      className={`relative flex-1 aspect-square rounded-xl border-2 overflow-hidden transition-all duration-200 ${activeImg === i ? "border-[#FF2DA0]" : "border-transparent"}`}>
+                      <Image src={img} alt="" fill sizes="120px" className="object-cover" />
                     </button>
                   ))}
                 </div>
