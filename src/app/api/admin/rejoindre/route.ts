@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
+import { sendJoinApproved, trySend } from "@/lib/email";
 
 export async function GET(_: NextRequest) {
   const auth = await requireAdmin(["super_admin", "ceo", "moderation", "commercial"]);
@@ -35,5 +36,11 @@ export async function PATCH(req: NextRequest) {
     .single();
 
   if (error) return apiError(error.message);
+
+  // Action réelle à l'approbation : email d'invitation à ouvrir sa boutique (best-effort)
+  if (status === "approved" && data?.email) {
+    await trySend(() => sendJoinApproved({ to: data.email as string, name: data.name as string | undefined }));
+  }
+
   return apiResponse(data);
 }

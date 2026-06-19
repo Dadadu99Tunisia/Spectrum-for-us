@@ -345,6 +345,24 @@ export async function sendNewFavorite(params: { to: string; productName: string;
   });
 }
 
+/** Candidature "Rejoindre" approuvée · invite à ouvrir sa boutique. */
+export async function sendJoinApproved(params: { to: string; name?: string }) {
+  const who = params.name?.split(" ")[0] || "";
+  const body = `
+    ${h2(`C'est un oui ! Bienvenue${who ? `, ${who}` : ""} 🏳️‍🌈`)}
+    ${text("Ta candidature pour vendre sur Spectrum For Us est <strong style=\"color:#F3EADB;\">acceptée</strong>. On a hâte de découvrir ce que tu crées.")}
+    ${text("Prochaine étape : ouvre ta boutique en 10 minutes (photos, prix, c'est parti). On s'occupe du paiement, de la livraison et de la mise en avant.")}
+    ${cta("Ouvrir ma boutique", `${BASE}/vendeur/onboarding`)}
+    ${text(`<span style="color:rgba(243,234,219,0.4);font-size:13px;">Une question ? Réponds simplement à cet email.</span>`)}
+  `;
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    subject: "Ta candidature Spectrum est acceptée ✦",
+    html: baseLayout("Candidature acceptée · Spectrum For Us", body),
+  });
+}
+
 /** Silently ignore email errors · never block the main flow */
 export async function trySend(fn: () => Promise<unknown>) {
   try { await fn(); } catch (e) { console.error("[email]", e); }
