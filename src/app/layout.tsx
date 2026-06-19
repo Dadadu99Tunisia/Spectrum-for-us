@@ -119,6 +119,7 @@ export default function RootLayout({
     <html
       lang="fr"
       className={`${jakarta.variable} ${spaceMono.variable}`}
+      suppressHydrationWarning
     >
       <body className="bg-[#FBFAF8] text-[#101014] antialiased">
         {/* Gate pré-paint : pose le voile sombre AVANT le premier paint si l'intro
