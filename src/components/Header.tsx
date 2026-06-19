@@ -166,7 +166,7 @@ export function Header() {
             </Link>
 
             {/* Burger mobile */}
-            <button className="lg:hidden w-10 h-10 flex items-center justify-center" style={{ color: T.ink }}
+            <button className="lg:hidden w-11 h-11 flex items-center justify-center -mr-1" style={{ color: T.ink }}
               onClick={() => setMobileOpen(!mobileOpen)} aria-label={mobileOpen ? "Fermer" : "Menu"} aria-expanded={mobileOpen}>
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>

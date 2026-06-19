@@ -41,7 +41,7 @@ export function BottomNav() {
             const Icon = tab.icon;
             return (
               <Link key={tab.href} href={tab.href}
-                className="relative flex flex-col items-center gap-[3px] px-2.5 py-1 active:scale-95 transition-transform">
+                className="relative flex flex-col items-center justify-center gap-[3px] px-2.5 min-h-[44px] active:scale-95 transition-transform">
                 <span className="relative">
                   <Icon size={23} strokeWidth={active ? 2.2 : 1.7}
                     style={{ color: active ? "#FF2DA0" : "#9B9285" }} />

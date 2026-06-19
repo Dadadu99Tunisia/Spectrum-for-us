@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 
 export const viewport: Viewport = {
   themeColor: "#FBFAF8",
+  // Étend le contenu sous l'encoche/Dynamic Island ET active env(safe-area-inset-*)
+  // (sans quoi tous nos calc(env(safe-area-inset-*)) renvoient 0).
+  viewportFit: "cover",
 };
 import { Plus_Jakarta_Sans, Space_Mono } from "next/font/google";
 import "./globals.css";

@@ -79,7 +79,7 @@ function Card({ p }: { p: Product }) {
         )}
         <div className="flex items-center justify-between mt-1">
           <span className="font-mono font-bold text-[15px]" style={{ color: T.ink }}>{p.price.toFixed(2)}&nbsp;€</span>
-          <button onClick={handleAdd} aria-label="Ajouter au panier" className="w-7 h-7 rounded-full flex items-center justify-center active:scale-90" style={{ background: T.ink }}><ShoppingBag size={13} color="#fff" /></button>
+          <button onClick={handleAdd} aria-label="Ajouter au panier" className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90" style={{ background: T.ink }}><ShoppingBag size={15} color="#fff" /></button>
         </div>
       </div>
     </Link>

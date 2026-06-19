@@ -26,7 +26,7 @@ export function MobilePageHeader({ title, backHref, showCart = true, rightSlot }
     >
       <button
         onClick={() => (backHref ? router.push(backHref) : router.back())}
-        className="w-9 h-9 flex items-center justify-center rounded-full active:scale-90 transition-transform"
+        className="w-11 h-11 flex items-center justify-center rounded-full active:scale-90 transition-transform"
         style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}
       >
         <ArrowLeft size={17} style={{ color: T.ink }} />
@@ -37,7 +37,7 @@ export function MobilePageHeader({ title, backHref, showCart = true, rightSlot }
       <div className="ml-auto flex items-center gap-2">
         {rightSlot}
         {showCart && (
-          <Link href="/panier" className="relative w-9 h-9 flex items-center justify-center rounded-full"
+          <Link href="/panier" className="relative w-11 h-11 flex items-center justify-center rounded-full"
             style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
             <ShoppingBag size={16} style={{ color: T.ink }} />
             {cartCount > 0 && (
