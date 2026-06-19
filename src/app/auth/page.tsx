@@ -185,6 +185,7 @@ function AuthForm() {
                 placeholder={mode === "signup" ? "8 caractères minimum" : "••••••••"}
                 className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 pr-12 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               <button type="button" onClick={() => setShowPw(!showPw)}
+                aria-label={showPw ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#101014]/30 hover:text-[#101014]/60 transition-colors">
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>

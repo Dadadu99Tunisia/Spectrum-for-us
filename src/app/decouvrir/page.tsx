@@ -41,6 +41,8 @@ function DecouvrirContent() {
 
   const [products,    setProducts]    = useState<Product[]>([]);
   const [loading,     setLoading]     = useState(true);
+  const [loadError,   setLoadError]   = useState(false);
+  const [reloadKey,   setReloadKey]   = useState(0);
   const [search,      setSearch]      = useState(searchParams.get("q") ?? "");
   const [category,    setCategory]    = useState(searchParams.get("category") ?? "Toutes");
   const [subcategory, setSubcategory] = useState(searchParams.get("subcategory") ?? "");
@@ -66,8 +68,11 @@ function DecouvrirContent() {
     else if (sort === "price_desc")  q = q.order("price", { ascending: false });
     else                             q = q.order("created_at", { ascending: false });
 
-    q.then(({ data }) => { setProducts((data as Product[]) ?? []); setLoading(false); });
-  }, [category, subcategory, sort]);
+    q.then(({ data, error }) => {
+      if (error) { setProducts([]); setLoadError(true); setLoading(false); return; }
+      setLoadError(false); setProducts((data as Product[]) ?? []); setLoading(false);
+    });
+  }, [category, subcategory, sort, reloadKey]);
 
   /* Reset subcategory when category changes */
   const handleCategoryChange = (cat: string) => {
@@ -136,7 +141,7 @@ function DecouvrirContent() {
                 className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-full pl-10 pr-4 py-2.5 text-[#101014] font-hanken text-sm placeholder-[#101014]/30 focus:outline-none focus:border-[#FF2DA0]/50 transition-colors"
               />
               {search && (
-                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#101014]/30 hover:text-[#101014]/60">
+                <button onClick={() => setSearch("")} aria-label="Effacer la recherche" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#101014]/30 hover:text-[#101014]/60">
                   <X size={14} />
                 </button>
               )}
@@ -237,15 +242,25 @@ function DecouvrirContent() {
                 </div>
               ))}
             </div>
+          ) : loadError ? (
+            <div className="flex flex-col items-center text-center py-24 max-w-md mx-auto">
+              <span className="text-4xl mb-4">📡</span>
+              <h2 className="font-fraunces text-2xl text-[#101014] mb-2">Connexion interrompue</h2>
+              <p className="font-hanken text-[#101014]/55 mb-6">Impossible de charger les créations pour le moment. Vérifie ta connexion et réessaie.</p>
+              <button onClick={() => { setLoading(true); setLoadError(false); setReloadKey(k => k + 1); }}
+                className="font-mono text-xs tracking-wide text-white bg-[#101014] px-5 py-2.5 rounded-xl">
+                Réessayer
+              </button>
+            </div>
           ) : filtered.length === 0 ? (
-            (search || category || subcategory) ? (
+            (search || category !== "Toutes" || subcategory) ? (
               <div className="flex flex-col items-center text-center py-24 max-w-md mx-auto">
                 <h2 className="font-fraunces text-2xl text-[#101014] mb-3">Aucun résultat</h2>
                 <p className="font-hanken text-[#101014]/50 mb-6 leading-relaxed">
                   {search ? `Aucune création ne correspond à "${search}".` : "Aucune création dans cette catégorie pour le moment."}
                 </p>
                 <button
-                  onClick={() => { setSearch(""); setCategory(""); setSubcategory(""); }}
+                  onClick={() => { setSearch(""); setCategory("Toutes"); setSubcategory(""); }}
                   className="font-mono text-xs tracking-wide text-[#FF2DA0]/70 hover:text-[#FF2DA0] transition-colors border border-[#FF2DA0]/20 hover:border-[#FF2DA0]/40 px-4 py-2 rounded-xl"
                 >
                   Effacer les filtres

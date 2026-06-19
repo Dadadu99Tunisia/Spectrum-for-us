@@ -70,7 +70,7 @@ export default function RejoindrePage() {
           style={{ background: "radial-gradient(ellipse, #FF2DA0 0%, #7A2BF0 70%, transparent 100%)" }} />
         <div className="relative max-w-3xl mx-auto text-center">
           <span className="inline-block font-mono text-[11px] tracking-wide text-[#FF2DA0] mb-6 px-4 py-1.5 rounded-full border border-[#FF2DA0]/25 bg-[#FF2DA0]/8">
-            🏳️‍🌈 Pride 2025 · Lancement le 26 juin
+            🏳️‍🌈 Pride 2026 · Lancement le 28 juin
           </span>
           <h1 className="font-fraunces text-5xl md:text-6xl font-light leading-[1.1] mb-6">
             Rejoins{" "}
