@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
+import { FounderBanner } from "@/components/founder/FounderBanner";
 import { useInView } from "@/lib/useInView";
 import {
   Users, Shield, Eye, Zap, Check, BarChart3, Package,
@@ -227,6 +228,9 @@ export default function VendrePage() {
                 Voir comment ça marche
               </a>
             </div>
+            <p className="font-hanken text-sm text-[#101014]/45 mt-4">
+              Pas encore prêt·e ? <Link href="/rejoindre" className="font-semibold underline text-[#FF2DA0]">Laisse ton email</Link>, on te recontacte avant le lancement.
+            </p>
           </FadeIn>
         </div>
       </section>
@@ -240,6 +244,13 @@ export default function VendrePage() {
               <div className="font-hanken text-xs text-[#101014]/45 tracking-wide">{s.label}</div>
             </FadeIn>
           ))}
+        </div>
+      </section>
+
+      {/* ── PREUVE SOCIALE · rareté fondateur·ice (live) ── */}
+      <section className="py-12 px-6">
+        <div className="max-w-3xl mx-auto">
+          <FounderBanner />
         </div>
       </section>
 
