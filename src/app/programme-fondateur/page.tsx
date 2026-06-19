@@ -56,6 +56,7 @@ export default function ProgrammeFondateurPage() {
       benefits: [
         { label: "Abonnement offert pendant 12 mois", bold: true },
         { label: "0 % de commission pendant 6 mois", bold: true },
+        { label: "Marques illimitées incluses (forfait Studio offert)", bold: true },
         { label: "Badge exclusif 🏆 à vie sur ton profil" },
         { label: "Mise en avant prioritaire à vie dans la marketplace" },
         { label: "Accès anticipé à toutes les nouvelles fonctionnalités" },
@@ -69,6 +70,7 @@ export default function ProgrammeFondateurPage() {
       benefits: [
         { label: "Abonnement offert pendant 6 mois", bold: true },
         { label: "0 % de commission pendant 3 mois", bold: true },
+        { label: "Marques illimitées incluses pendant la période offerte", bold: true },
         { label: "Badge pionnier ✨ à vie" },
         { label: "Visibilité prioritaire dans la marketplace" },
         { label: "Accès early adopters aux nouveautés" },
