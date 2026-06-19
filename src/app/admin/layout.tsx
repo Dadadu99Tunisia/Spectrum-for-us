@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   LayoutDashboard, Package, Store, Coins, FileText, Star,
-  CalendarDays, Mail, ShieldCheck, ShoppingCart, Users,
+  CalendarDays, Mail, ShieldCheck, ShieldAlert, ShoppingCart, Users,
   MessageSquare, Settings, Menu, X, ChevronRight,
   TrendingUp, Briefcase, Bot, LogOut, Layout,
   Bell, ExternalLink, Zap, MapPin, Trophy, CreditCard, Globe, Tag,
@@ -65,6 +65,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { href: "/admin/finance",           label: "Finance",          icon: Coins },
       { href: "/admin/versements",        label: "Versements",       icon: Globe },
+      { href: "/admin/risque",            label: "Risque & fraude",  icon: ShieldAlert },
       { href: "/admin/promos",            label: "Codes promo",      icon: Tag },
       { href: "/admin/subscriptions",    label: "Abonnements",      icon: CreditCard },
       { href: "/admin/crm",              label: "CRM Pipeline",     icon: TrendingUp },
@@ -107,6 +108,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "/admin/outreach":      "Outreach",
   "/admin/finance":       "Finance",
   "/admin/versements":    "Versements",
+  "/admin/risque":        "Risque & fraude",
   "/admin/promos":        "Codes promo",
   "/admin/crm":           "CRM Pipeline",
   "/admin/support":       "Support",
