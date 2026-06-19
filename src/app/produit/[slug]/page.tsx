@@ -378,9 +378,9 @@ export default function ProduitPage() {
                   return (
                     <Link key={r.id} href={`/produit/${r.slug || r.id}`}
                       className="group rounded-2xl border border-[#101014]/8 overflow-hidden hover:border-[#FF2DA0]/25 transition-all">
-                      <div className="aspect-square bg-[#F1ECE3] overflow-hidden">
+                      <div className="relative aspect-square bg-[#F1ECE3] overflow-hidden">
                         {img
-                          ? <img src={img} alt={r.name || r.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          ? <FillImage src={img} alt={r.name || r.title} sizes="(min-width:640px) 25vw, 50vw" className="object-cover group-hover:scale-105 transition-transform duration-300" />
                           : <div className="w-full h-full flex items-center justify-center"><Package size={24} className="text-[#101014]/10" /></div>
                         }
                       </div>

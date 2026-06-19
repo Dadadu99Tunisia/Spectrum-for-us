@@ -214,7 +214,7 @@ export function MobileHomeView() {
           </Link>
           <div className="flex gap-2.5 mt-2.5">
             <Link href="/vendre" className="flex-1 text-center font-bold text-[13.5px] py-3 rounded-full" style={{ background: "rgba(241,231,215,.16)", color: "#fff", border: "1.5px solid rgba(241,231,215,.5)" }}>Devenir créateur·ice</Link>
-            <Link href="/communaute" className="flex-1 text-center font-semibold text-[13.5px] py-3 rounded-full" style={{ color: "rgba(241,231,215,.78)", border: "1.5px solid rgba(241,231,215,.22)" }}>Rejoindre</Link>
+            <Link href="/communaute" className="flex-1 text-center font-semibold text-[13.5px] py-3 rounded-full" style={{ color: "rgba(241,231,215,.78)", border: "1.5px solid rgba(241,231,215,.22)" }}>La communauté</Link>
           </div>
         </div>
       )}
