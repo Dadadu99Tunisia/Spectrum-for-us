@@ -32,8 +32,18 @@ export default function OnboardingPage() {
   useEffect(() => {
     if (loading) return;
     if (!user) { router.push("/auth?mode=vendor"); return; }
-    // Création d'une activité SUPPLÉMENTAIRE → on reste sur l'onboarding.
-    if (isNewActivity()) return;
+    // Création d'une activité SUPPLÉMENTAIRE → vérifie l'éligibilité (Studio ou fondateur·ice offert).
+    if (isNewActivity()) {
+      const sb = createClient();
+      Promise.all([
+        sb.from("sellers").select("plan").eq("user_id", user.id).maybeSingle(),
+        sb.from("founder_program_members").select("subscription_free_until").eq("user_id", user.id).maybeSingle(),
+      ]).then(([{ data: sel }, { data: f }]) => {
+        const founderFree = !!f?.subscription_free_until && new Date(f.subscription_free_until).getTime() > Date.now();
+        if (sel?.plan !== "studio" && !founderFree) router.replace("/vendeur/abonnement?upgrade=studio");
+      });
+      return;
+    }
     // Sinon anti-doublon : si une boutique existe déjà, on va au dashboard.
     createClient().from("shops").select("id").eq("owner_id", user.id).limit(1)
       .then(({ data }) => { if (data && data.length) router.replace("/vendeur"); });
@@ -71,7 +81,13 @@ export default function OnboardingPage() {
       is_active: true,
     }).select("id").single();
 
-    if (shopError) { setError(shopError.message); setSubmitting(false); return; }
+    if (shopError) {
+      if (shopError.message?.includes("STUDIO_REQUIRED")) {
+        router.replace("/vendeur/abonnement?upgrade=studio");
+        return;
+      }
+      setError(shopError.message); setSubmitting(false); return;
+    }
     await supabase.from("profiles").update({ is_vendor: true }).eq("id", user.id);
     // L'activité créée devient l'activité active du dashboard.
     try { if (created?.id) localStorage.setItem("sfu_active_activity", created.id); } catch {}

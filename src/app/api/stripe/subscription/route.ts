@@ -14,8 +14,14 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
   try {
-    const { priceId, shopId } = await req.json();
-    if (!priceId) return NextResponse.json({ error: "NEXT_PUBLIC_STRIPE_VENDOR_PRICE_ID non configuré. Ajoute cette variable dans Vercel." }, { status: 503 });
+    const body = await req.json();
+    const { shopId } = body;
+    const plan: "solo" | "studio" = body.plan === "studio" ? "studio" : "solo";
+    // Le prix dépend du forfait. Studio = activités illimitées.
+    const priceId = plan === "studio"
+      ? (body.priceId || process.env.NEXT_PUBLIC_STRIPE_STUDIO_PRICE_ID)
+      : (body.priceId || process.env.NEXT_PUBLIC_STRIPE_VENDOR_PRICE_ID);
+    if (!priceId) return NextResponse.json({ error: `Prix ${plan} non configuré (ajoute la variable NEXT_PUBLIC_STRIPE_${plan === "studio" ? "STUDIO" : "VENDOR"}_PRICE_ID dans Vercel).` }, { status: 503 });
 
     // Client Stripe d'abonnement = au niveau SELLER (partagé par toutes ses activités)
     const admin = createAdminClient();
@@ -39,7 +45,7 @@ export async function POST(req: Request) {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://spectrumforus.com"}/vendeur?subscription=success`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://spectrumforus.com"}/vendeur/onboarding?step=abonnement`,
-      metadata: { shop_id: shopId, user_id: user.id },
+      metadata: { shop_id: shopId, user_id: user.id, plan },
     });
 
     return NextResponse.json({ url: session.url });

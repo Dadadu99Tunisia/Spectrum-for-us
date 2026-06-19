@@ -20,6 +20,7 @@ export default function AbonnementPage() {
   const router = useRouter();
   const [shop, setShop] = useState<{ id: string; subscription_status: string; name: string } | null>(null);
   const [subFreeUntil, setSubFreeUntil] = useState<string | null>(null);
+  const [wantStudio, setWantStudio] = useState(false);
   const [, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(false);
   const [error, setError] = useState("");
@@ -43,7 +44,7 @@ export default function AbonnementPage() {
   const founderFree = !!subFreeUntil && new Date(subFreeUntil).getTime() > Date.now();
   const freeDate = subFreeUntil ? new Date(subFreeUntil).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "";
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = async (plan: "solo" | "studio" = "solo") => {
     if (!shop) return;
     setSubscribing(true); setError("");
     try {
@@ -51,7 +52,10 @@ export default function AbonnementPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          priceId: process.env.NEXT_PUBLIC_STRIPE_VENDOR_PRICE_ID,
+          plan,
+          priceId: plan === "studio"
+            ? process.env.NEXT_PUBLIC_STRIPE_STUDIO_PRICE_ID
+            : process.env.NEXT_PUBLIC_STRIPE_VENDOR_PRICE_ID,
           shopId: shop.id,
         }),
       });
@@ -64,7 +68,12 @@ export default function AbonnementPage() {
     setSubscribing(false);
   };
 
+  useEffect(() => {
+    try { setWantStudio(new URLSearchParams(window.location.search).get("upgrade") === "studio"); } catch {}
+  }, []);
+
   const isActive = shop?.subscription_status === "active";
+  const STUDIO_FEATURES = ["Activités / marques illimitées", "Analytics par marque", "Mise en avant éditoriale prioritaire", "Codes promo illimités"];
 
   return (
     <div className="min-h-screen bg-[#FBFAF8] text-[#101014]">
@@ -137,7 +146,7 @@ export default function AbonnementPage() {
             <>
               {error && <p className="text-red-400 font-hanken text-sm mb-3">{error}</p>}
               <button
-                onClick={handleSubscribe}
+                onClick={() => handleSubscribe("solo")}
                 disabled={subscribing}
                 className="w-full py-4 rounded-xl bg-[#FF2DA0] text-white font-hanken font-semibold hover:bg-[#FF2DA0]/80 transition-all disabled:opacity-50"
               >
@@ -146,6 +155,39 @@ export default function AbonnementPage() {
             </>
           )}
         </div>
+
+        {/* Forfait Studio · multi-marques */}
+        {shop && (
+          <div className={`rounded-3xl border p-8 mb-6 transition-all ${wantStudio ? "border-[#6A44D6] bg-[#6A44D6]/[0.06] ring-2 ring-[#6A44D6]/30" : "border-[#6A44D6]/30 bg-[#6A44D6]/[0.04]"}`}>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="font-mono text-[10px] tracking-widest uppercase text-[#6A44D6]">Forfait Studio</span>
+              {wantStudio && <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-[#6A44D6]/15 text-[#6A44D6]">requis pour une 2ᵉ activité</span>}
+            </div>
+            <div className="flex items-end gap-2 mb-5">
+              <span className="font-fraunces text-5xl">19,90</span>
+              <div className="pb-1.5"><span className="font-fraunces text-xl text-[#6A44D6]">€</span><span className="font-mono text-xs text-[#101014]/40 block">/mois</span></div>
+            </div>
+            <p className="font-hanken text-sm text-[#101014]/60 mb-5">Gère plusieurs marques sous un seul compte et un seul compte Stripe. Même commission que Solo.</p>
+            <div className="space-y-2.5 mb-7">
+              {STUDIO_FEATURES.map((f, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#6A44D6]/15 flex items-center justify-center flex-shrink-0 text-[#6A44D6] text-[11px]">✦</div>
+                  <span className="font-hanken text-sm text-[#101014]/80">{f}</span>
+                </div>
+              ))}
+            </div>
+            {founderFree ? (
+              <div className="w-full py-3.5 rounded-xl bg-green-500/15 text-green-700 font-hanken font-semibold text-center text-sm">
+                ✦ Multi-activités inclus pendant ta période fondateur·ice
+              </div>
+            ) : (
+              <button onClick={() => handleSubscribe("studio")} disabled={subscribing}
+                className="w-full py-4 rounded-xl bg-[#6A44D6] text-white font-hanken font-semibold hover:bg-[#6A44D6]/85 transition-all disabled:opacity-50">
+                {subscribing ? "Redirection vers Stripe…" : "Passer en Studio · 19,90€/mois"}
+              </button>
+            )}
+          </div>
+        )}
 
         <p className="text-center font-hanken text-xs text-[#101014]/30">
           {founderFree

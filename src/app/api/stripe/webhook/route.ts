@@ -375,9 +375,10 @@ export async function POST(req: Request) {
         subscription_current_period_end: subPeriodEndISO(sub),
       };
       await supabase.from("shops").update(patch).eq("id", shopId);
-      // Canonique : abonnement au niveau du seller (entité financière)
+      // Canonique : abonnement au niveau du seller (entité financière) + forfait
+      const plan = session.metadata?.plan === "studio" ? "studio" : "solo";
       const { data: sh } = await supabase.from("shops").select("seller_id, owner_id").eq("id", shopId).maybeSingle();
-      if (sh?.seller_id) await supabase.from("sellers").update(patch).eq("id", sh.seller_id);
+      if (sh?.seller_id) await supabase.from("sellers").update({ ...patch, plan }).eq("id", sh.seller_id);
     }
   }
 
@@ -387,12 +388,14 @@ export async function POST(req: Request) {
     event.type === "customer.subscription.deleted"
   ) {
     const sub = event.data.object as Stripe.Subscription;
+    const stillActive = sub.status === "active";
     const patch = {
-      subscription_status: sub.status === "active" ? "active" : "inactive",
+      subscription_status: stillActive ? "active" : "inactive",
       subscription_current_period_end: subPeriodEndISO(sub),
     };
     await supabase.from("shops").update(patch).eq("subscription_id", sub.id);
-    await supabase.from("sellers").update(patch).eq("subscription_id", sub.id);
+    // Abonnement arrêté → on repasse le forfait à Solo (les activités existantes restent, mais plus de création multi).
+    await supabase.from("sellers").update(stillActive ? patch : { ...patch, plan: "solo" }).eq("subscription_id", sub.id);
   }
 
   // ── 4. Paiement échoué ────────────────────────────────────────────────────────
