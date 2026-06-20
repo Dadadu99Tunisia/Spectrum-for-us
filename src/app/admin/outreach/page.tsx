@@ -16,6 +16,8 @@ type Outreach = {
   followers_count: number | null;
   outreach_status: string;
   email_sent_at: string | null;
+  email_count?: number | null;
+  unsubscribed?: boolean | null;
   notes: string | null;
   created_at: string;
 };
@@ -26,6 +28,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.
   replied:   { label: "A répondu",   color: "text-[#7A2BF0] bg-[#7A2BF0]/10 border-[#7A2BF0]/20",    icon: CheckCircle },
   converted: { label: "Converti ✓",  color: "text-green-600 bg-green-400/10 border-green-400/20",    icon: CheckCircle },
   rejected:  { label: "Refusé",      color: "text-red-600 bg-red-400/10 border-red-400/20",           icon: XCircle },
+  unsubscribed: { label: "Désinscrit", color: "text-[#101014]/40 bg-[#101014]/[0.06] border-[#101014]/[0.1]", icon: XCircle },
 };
 
 const STATUSES = Object.keys(STATUS_CONFIG);
@@ -66,6 +69,8 @@ export default function OutreachPage() {
     const supabase = createClient();
     const update: Record<string, unknown> = { outreach_status: status };
     if (status === "contacted") update.email_sent_at = new Date().toISOString();
+    if (status === "replied" || status === "converted") update.replied_at = new Date().toISOString();
+    if (status === "unsubscribed") update.unsubscribed = true;
     await supabase.from("vendor_outreach").update(update).eq("id", id);
     showToast("Statut mis à jour ✓");
     fetch_();
@@ -90,6 +95,36 @@ export default function OutreachPage() {
     fetch_();
   };
 
+  const [sending, setSending] = useState(false);
+
+  // Envoi RÉEL de l'email de prospection (unitaire ou campagne).
+  const sendEmails = async (ids: string[]) => {
+    if (!ids.length) { showToast("Aucun contact avec email à contacter"); return; }
+    setSending(true);
+    try {
+      const res = await fetch("/api/admin/outreach/send", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ids }),
+      });
+      const json = await res.json();
+      if (json?.data) showToast(`${json.data.sent} email(s) envoyé(s)${json.data.skipped ? ` · ${json.data.skipped} ignoré(s)` : ""} ✓`);
+      else showToast(json?.error || "Erreur d'envoi");
+    } catch { showToast("Erreur réseau"); }
+    setSending(false);
+    fetch_();
+  };
+
+  // Assistance Instagram : copie un DM personnalisé + ouvre le profil (envoi manuel = pas de ban).
+  const copyDM = async (item: Outreach) => {
+    const first = item.name?.split(" ")[0] || "";
+    const cat = item.category ? ` dans ${item.category}` : "";
+    const dm = `Hello ${first} ✨\n\nJe lance Spectrum For Us, la marketplace par et pour les communautés queer. Ton univers${cat} a complètement sa place chez nous.\n\nEn tant que fondateur·ice : 12 mois d'abonnement offerts + 0 % de commission — il reste quelques places 🏳️‍🌈\n\nÇa t'intéresse ? Je t'envoie le lien !`;
+    try { await navigator.clipboard.writeText(dm); showToast("DM copié ✓ · ouverture du profil"); } catch { showToast("Copie impossible"); }
+    const url = item.instagram_handle ? `https://instagram.com/${item.instagram_handle}` : item.profile_url;
+    if (url) window.open(url, "_blank");
+  };
+
+  const campaignIds = items.filter(i => i.email && !i.unsubscribed && i.outreach_status === "pending").map(i => i.id);
+
   // Stats by status
   const statsCounts = STATUSES.reduce((acc, s) => {
     acc[s] = items.filter(i => i.outreach_status === s).length;
@@ -105,14 +140,21 @@ export default function OutreachPage() {
           <h1 className="font-fraunces text-2xl text-[#101014]">Outreach Vendeurs</h1>
           <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">{total} contact{total !== 1 ? "s" : ""}</p>
         </div>
-        <button onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FF2DA0] text-white font-hanken text-sm hover:bg-[#FF2DA0]/90 transition-colors">
-          <Plus size={14} /> Ajouter
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => sendEmails(campaignIds)} disabled={sending || campaignIds.length === 0}
+            title="Envoie l'email d'intro à tous les contacts 'À contacter' qui ont un email"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#101014]/15 text-[#101014] font-hanken text-sm hover:bg-[#101014]/[0.04] transition-colors disabled:opacity-40">
+            <Send size={14} /> {sending ? "Envoi…" : `Envoyer la campagne (${campaignIds.length})`}
+          </button>
+          <button onClick={() => setShowForm(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FF2DA0] text-white font-hanken text-sm hover:bg-[#FF2DA0]/90 transition-colors">
+            <Plus size={14} /> Ajouter
+          </button>
+        </div>
       </div>
 
       {/* Stats strip */}
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
         {STATUSES.map(s => {
           const cfg = STATUS_CONFIG[s];
           const Icon = cfg.icon;
@@ -187,10 +229,25 @@ export default function OutreachPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <select value={item.outreach_status} onChange={e => updateStatus(item.id, e.target.value)}
-                        className="bg-white border border-[#101014]/[0.14] rounded px-2 py-1 font-mono text-[9px] text-[#101014]/50 focus:outline-none focus:border-[#FF2DA0]/40 transition-colors">
-                        {STATUSES.map(s => <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>)}
-                      </select>
+                      <div className="flex items-center gap-1.5">
+                        {item.email && !item.unsubscribed && (
+                          <button onClick={() => sendEmails([item.id])} disabled={sending}
+                            title={`Envoyer l'email${item.email_count ? ` (relance #${item.email_count})` : " d'intro"}`}
+                            className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#FF2DA0]/10 text-[#FF2DA0] font-mono text-[9px] hover:bg-[#FF2DA0]/20 transition-colors disabled:opacity-40">
+                            <Send size={10} /> {item.email_count ? `Relancer` : `Email`}{item.email_count ? ` ·${item.email_count}` : ""}
+                          </button>
+                        )}
+                        {(item.instagram_handle || item.profile_url) && (
+                          <button onClick={() => copyDM(item)} title="Copier le DM + ouvrir le profil"
+                            className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#101014]/[0.06] text-[#101014]/55 font-mono text-[9px] hover:bg-[#101014]/10 transition-colors">
+                            <Link2 size={10} /> DM
+                          </button>
+                        )}
+                        <select value={item.outreach_status} onChange={e => updateStatus(item.id, e.target.value)}
+                          className="bg-white border border-[#101014]/[0.14] rounded px-1.5 py-1 font-mono text-[9px] text-[#101014]/50 focus:outline-none focus:border-[#FF2DA0]/40 transition-colors">
+                          {STATUSES.map(s => <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>)}
+                        </select>
+                      </div>
                     </td>
                   </tr>
                 );

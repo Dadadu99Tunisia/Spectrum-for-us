@@ -363,6 +363,44 @@ export async function sendJoinApproved(params: { to: string; name?: string }) {
   });
 }
 
+/**
+ * Prospection vendeur·se (B2B) · email d'introduction + relances.
+ * `step` 0 = intro, 1+ = relance douce. Inclut un lien de désinscription (RGPD).
+ */
+export async function sendOutreachEmail(params: {
+  to: string; name?: string; category?: string; step: number; unsubscribeUrl: string;
+}) {
+  const who = params.name?.split(" ")[0] || "";
+  const cat = params.category ? ` dans ${params.category}` : "";
+  const intro = `
+    ${h2(`${who ? who + ", on" : "On"} a un espace pour ton travail ✦`)}
+    ${text(`Je suis Aicha, je lance <strong style="color:#F3EADB;">Spectrum For Us</strong> — la marketplace par et pour les communautés queer. En découvrant ton travail${cat}, je me suis dit que ta place était parmi nos premier·es créateur·ices.`)}
+    ${text("Concrètement : ta boutique en ligne, une audience qui te cherche déjà, et — pour les fondateur·ices — <strong style=\"color:#F3EADB;\">12 mois d'abonnement offerts et 0 % de commission</strong>. Il reste quelques places.")}
+    ${cta("Voir le programme fondateur", `${BASE}/programme-fondateur`)}
+  `;
+  const followup = `
+    ${h2(`${who ? who + ", " : ""}je reviens vers toi 🌸`)}
+    ${text(`Je ne voulais pas que tu rates les <strong style="color:#F3EADB;">places fondateur·ice</strong> de Spectrum For Us (12 mois offerts, 0 % de commission). On garde une place pour ton univers${cat}, mais plus pour longtemps.`)}
+    ${text("Si ce n'est pas le bon moment, aucun souci — réponds-moi juste un mot et je te recontacterai plus tard.")}
+    ${cta("Réserver ma place", `${BASE}/programme-fondateur`)}
+  `;
+  const body = (params.step <= 0 ? intro : followup) + `
+    <p style="font-size:11px;line-height:1.6;color:rgba(243,234,219,0.3);margin:24px 0 0;border-top:1px solid rgba(243,234,219,0.08);padding-top:14px;">
+      Spectrum For Us · Aicha Chennaoui · 61 rue Lautréamont, 93300 Aubervilliers.
+      Tu reçois cet email car ton activité correspond à notre communauté.
+      <a href="${params.unsubscribeUrl}" style="color:rgba(243,234,219,0.45);">Ne plus recevoir de messages</a>.
+    </p>`;
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    replyTo: process.env.OUTREACH_REPLY_TO || undefined,
+    subject: params.step <= 0
+      ? `${who ? who + ", t" : "T"}a place de fondateur·ice sur Spectrum For Us ✦`
+      : `${who ? who + ", d" : "D"}ernières places fondateur·ice 🌸`,
+    html: baseLayout("Spectrum For Us", body),
+  });
+}
+
 /** Silently ignore email errors · never block the main flow */
 export async function trySend(fn: () => Promise<unknown>) {
   try { await fn(); } catch (e) { console.error("[email]", e); }
