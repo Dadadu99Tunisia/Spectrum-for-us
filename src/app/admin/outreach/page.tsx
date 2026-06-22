@@ -96,6 +96,46 @@ export default function OutreachPage() {
   };
 
   const [sending, setSending] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [importText, setImportText] = useState("");
+  const [importing, setImporting] = useState(false);
+
+  // Import en masse : colle des lignes "nom, email, instagram, catégorie" (ou juste des emails).
+  const importContacts = async () => {
+    const lines = importText.split("\n").map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return;
+    setImporting(true);
+    const supabase = createClient();
+    // Dédup sur les emails déjà présents
+    const { data: existing } = await supabase.from("vendor_outreach").select("email");
+    const known = new Set((existing ?? []).map(e => (e.email as string)?.toLowerCase()).filter(Boolean));
+
+    const rows: Record<string, unknown>[] = [];
+    let skipped = 0;
+    for (const line of lines) {
+      const parts = line.split(/[,;\t]/).map(p => p.trim());
+      const email = parts.find(p => p.includes("@")) ?? null;
+      if (email && known.has(email.toLowerCase())) { skipped++; continue; }
+      // nom = 1er champ non-email/non-@handle ; instagram = champ commençant par @ ou un handle
+      const igRaw = parts.find(p => p.startsWith("@")) ?? null;
+      const name = parts.find(p => p && !p.includes("@") && !p.startsWith("@")) ?? (email ? email.split("@")[0] : "Contact");
+      const category = parts.length > 3 ? parts[3] : null;
+      rows.push({
+        name, email,
+        instagram_handle: igRaw ? igRaw.replace(/^@/, "") : null,
+        platform: igRaw ? "instagram" : "email",
+        category: category || null,
+        outreach_status: "pending",
+      });
+      if (email) known.add(email.toLowerCase());
+    }
+    if (rows.length) await supabase.from("vendor_outreach").insert(rows);
+    setImporting(false);
+    setShowImport(false);
+    setImportText("");
+    showToast(`${rows.length} contact(s) importé(s)${skipped ? ` · ${skipped} doublon(s) ignoré(s)` : ""} ✓`);
+    fetch_();
+  };
 
   // Envoi RÉEL de l'email de prospection (unitaire ou campagne).
   const sendEmails = async (ids: string[]) => {
@@ -145,6 +185,10 @@ export default function OutreachPage() {
             title="Envoie l'email d'intro à tous les contacts 'À contacter' qui ont un email"
             className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#101014]/15 text-[#101014] font-hanken text-sm hover:bg-[#101014]/[0.04] transition-colors disabled:opacity-40">
             <Send size={14} /> {sending ? "Envoi…" : `Envoyer la campagne (${campaignIds.length})`}
+          </button>
+          <button onClick={() => setShowImport(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#101014]/15 text-[#101014] font-hanken text-sm hover:bg-[#101014]/[0.04] transition-colors">
+            <Plus size={14} /> Importer
           </button>
           <button onClick={() => setShowForm(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FF2DA0] text-white font-hanken text-sm hover:bg-[#FF2DA0]/90 transition-colors">
@@ -257,6 +301,31 @@ export default function OutreachPage() {
           {items.length === 0 && (
             <div className="text-center py-12"><p className="font-hanken text-[#101014]/30">Aucun contact</p></div>
           )}
+        </div>
+      )}
+
+      {/* Modal import en masse */}
+      {showImport && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={e => e.target === e.currentTarget && setShowImport(false)}>
+          <div className="bg-white border border-[#101014]/[0.14] rounded-2xl p-6 w-full max-w-lg space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-fraunces text-lg text-[#101014]">Importer des contacts</h2>
+              <button onClick={() => setShowImport(false)} className="text-[#101014]/30 hover:text-[#101014]"><X size={16} /></button>
+            </div>
+            <p className="font-hanken text-[13px] text-[#101014]/55">
+              Une ligne par contact. Format souple : <code className="font-mono text-[11px] bg-[#101014]/[0.06] px-1 rounded">Nom, email, @instagram, catégorie</code> — ou juste un email/handle par ligne. Les doublons d&apos;email sont ignorés.
+            </p>
+            <textarea value={importText} onChange={e => setImportText(e.target.value)} rows={9}
+              placeholder={"Léa Bijoux, lea@exemple.com, @leabijoux, Bijoux\nAtelier Kink, contact@kink.fr, , Intimité\n@tatoueur_queer\nprestataire@exemple.com"}
+              className="w-full bg-[#101014]/[0.05] border border-[#101014]/[0.14] rounded-lg px-3 py-2 font-mono text-[12px] text-[#101014] placeholder-[#101014]/25 focus:outline-none focus:border-[#a78bfa]/50 transition-colors resize-y" />
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[11px] text-[#101014]/35">{importText.split("\n").filter(l => l.trim()).length} ligne(s)</span>
+              <button onClick={importContacts} disabled={importing || !importText.trim()}
+                className="px-5 py-2.5 rounded-xl bg-[#FF2DA0] text-white font-hanken text-sm hover:bg-[#FF2DA0]/90 transition-colors disabled:opacity-40">
+                {importing ? "Import…" : "Importer"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
