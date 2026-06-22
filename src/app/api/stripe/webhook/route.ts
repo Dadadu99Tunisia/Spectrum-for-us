@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendOrderConfirmation, trySend, sendBookingConfirmation, sendBookingVendorAlert } from "@/lib/email";
+import { sendOrderConfirmation, trySend, sendBookingConfirmation, sendBookingVendorAlert, sendVendorNewOrder } from "@/lib/email";
 
 /** current_period_end a migré au niveau de l'item d'abonnement (Stripe API récente). */
 function subPeriodEndISO(sub: Stripe.Subscription): string | null {
@@ -357,10 +357,23 @@ export async function POST(req: Request) {
         });
       }
     }
-    // Note: sans service_role on ne peut pas lire auth.users directement.
-    // En production, configurer un edge function Supabase pour notifier les vendors.
-    // Pour l'instant on log seulement.
-    console.log(`[webhook] Commande ${order.id} créée · ${cart.length} article(s) · ${vendorItems.size} vendeur(s)`);
+    // Notifie chaque vendeur·se de sa commande (service-role → résolution email fiable).
+    for (const [ownerId, entry] of vendorItems) {
+      try {
+        const { data: vu } = await supabase.auth.admin.getUserById(ownerId);
+        const vendorEmail = vu?.user?.email;
+        if (!vendorEmail) continue;
+        const vendorTotal = entry.items.reduce((s, it) => s + it.price * it.quantity, 0);
+        await trySend(() => sendVendorNewOrder({
+          to: vendorEmail,
+          shopName: entry.shopName,
+          orderRef: order.id,
+          items: entry.items,
+          total: vendorTotal,
+        }));
+      } catch (e) { console.error("[webhook] email vendeur", e); }
+    }
+    console.log(`[webhook] Commande ${order.id} créée · ${cart.length} article(s) · ${vendorItems.size} vendeur(s) notifié(s)`);
   }
 
   // ── 2. Abonnement vendeur souscrit ──────────────────────────────────────────
