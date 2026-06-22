@@ -28,22 +28,28 @@ export async function POST(req: NextRequest) {
   if (new Date(bk.start_at as string).getTime() <= Date.now())
     return NextResponse.json({ error: "Ce créneau est déjà passé." }, { status: 409 });
 
-  // Remboursement uniquement si la réservation a été PAYÉE (confirmée).
-  // Une résa "pending" (paiement jamais abouti) est juste annulée, sans tentative de remboursement.
+  // Réclame ATOMIQUEMENT l'annulation d'une résa CONFIRMÉE (un seul gagnant → anti double-remboursement).
   let refunded = false;
-  if (bk.payment_intent_id && bk.status === "confirmed") {
-    try {
-      const stripe = getStripeServer();
-      await stripe.refunds.create({ payment_intent: bk.payment_intent_id });
-      refunded = true;
-      // Reprendre le transfert au·à la prestataire
-      try {
-        const transfers = await stripe.transfers.list({ transfer_group: `bk_${bk.id}`, limit: 5 });
-        for (const t of transfers.data) await stripe.transfers.createReversal(t.id, {});
-      } catch (e) { console.error("[cancel] reversal", e); }
-    } catch (e) { console.error("[cancel] refund", e); }
-  }
+  const { data: claimed } = await admin.from("bookings")
+    .update({ status: "cancelled", updated_at: new Date().toISOString() })
+    .eq("id", booking_id).eq("status", "confirmed").select("id");
 
-  await admin.from("bookings").update({ status: "cancelled", updated_at: new Date().toISOString() }).eq("id", booking_id);
+  if (claimed && claimed.length) {
+    if (bk.payment_intent_id) {
+      try {
+        const stripe = getStripeServer();
+        await stripe.refunds.create({ payment_intent: bk.payment_intent_id }, { idempotencyKey: `bk_refund_${booking_id}` });
+        refunded = true;
+        try {
+          const transfers = await stripe.transfers.list({ transfer_group: `bk_${bk.id}`, limit: 5 });
+          for (const t of transfers.data) await stripe.transfers.createReversal(t.id, {}, { idempotencyKey: `bk_rev_${t.id}` });
+        } catch (e) { console.error("[cancel] reversal", e); }
+      } catch (e) { console.error("[cancel] refund", e); }
+    }
+  } else {
+    // Pas confirmée → annule si encore "pending" (sinon déjà annulée : no-op).
+    await admin.from("bookings").update({ status: "cancelled", updated_at: new Date().toISOString() })
+      .eq("id", booking_id).eq("status", "pending");
+  }
   return NextResponse.json({ ok: true, status: "cancelled", refunded });
 }
