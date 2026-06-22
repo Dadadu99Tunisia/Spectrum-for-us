@@ -220,7 +220,7 @@ export default function CheckoutPage() {
     if (piId) {
       let attempts = 0;
       const poll = async (): Promise<string | null> => {
-        if (attempts++ > 10) return null;
+        if (attempts++ > 15) return null;
         const supabase = createClient();
         const { data } = await supabase
           .from("orders")
@@ -249,10 +249,12 @@ export default function CheckoutPage() {
         <div className="w-20 h-20 rounded-full bg-[#2323C4]/10 border border-[#2323C4]/30 flex items-center justify-center mx-auto mb-6 animate-[pulseWarm_1.5s_ease-in-out]">
           <Check size={32} className="text-[#2323C4]" />
         </div>
-        <h1 className="font-fraunces text-4xl text-[#101014] mb-3">Commande confirmée ✦</h1>
+        <h1 className="font-fraunces text-4xl text-[#101014] mb-3">{orderId ? "Commande confirmée ✦" : "Paiement reçu ✦"}</h1>
         {orderId && <p className="font-mono text-xs text-[#101014]/30 mb-4">#{orderId.slice(0, 8).toUpperCase()}</p>}
         <p className="font-hanken text-[#101014]/55 mb-8 leading-relaxed">
-          Un e-mail de confirmation t&apos;a été envoyé. Merci de faire partie du spectre.
+          {orderId
+            ? <>Un e-mail de confirmation t&apos;a été envoyé. Merci de faire partie du spectre.</>
+            : <>Ton paiement est validé · ta commande s&apos;enregistre à l&apos;instant. Un e-mail de confirmation arrive dans quelques secondes, et tu la retrouveras dans <strong className="text-[#101014]">Mes commandes</strong>.</>}
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
           <Button variant="primary" href="/">Continuer les achats</Button>

@@ -68,12 +68,18 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
     setSaving(true);
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (user) await supabase.from("sellers").update({
-      payout_mode: newMode,
-      payout_method: newMode === "manual" ? method : null,
-      payout_details: newMode === "manual" ? details.trim() : null,
-      country: newMode === "manual" ? country : null,
-    }).eq("user_id", user.id);
+    if (user) {
+      // upsert (crée la ligne seller si absente) + relie les boutiques (dispo paiement côté produit)
+      await supabase.from("sellers").upsert({
+        user_id: user.id,
+        payout_mode: newMode,
+        payout_method: newMode === "manual" ? method : null,
+        payout_details: newMode === "manual" ? details.trim() : null,
+        country: newMode === "manual" ? country : null,
+      }, { onConflict: "user_id" });
+      const { data: sel } = await supabase.from("sellers").select("id").eq("user_id", user.id).maybeSingle();
+      if (sel) await supabase.from("shops").update({ seller_id: sel.id }).eq("owner_id", user.id).is("seller_id", null);
+    }
     setMode(newMode); setSaving(false); setEditing(false);
     if (newMode === "manual") computeBalance(); else setBalance(null);
   };

@@ -189,6 +189,8 @@ export async function POST(req: Request) {
       .single();
 
     if (orderErr || !order) {
+      // 23505 = la commande pour ce PaymentIntent existe déjà (rejeu webhook concurrent) → déjà traité
+      if (orderErr?.code === "23505") return NextResponse.json({ received: true, duplicate: true });
       console.error("[webhook] Erreur création order", orderErr);
       return NextResponse.json({ error: "Order insert failed" }, { status: 500 });
     }
@@ -207,7 +209,14 @@ export async function POST(req: Request) {
       };
     });
 
-    await supabase.from("order_items").insert(orderItems);
+    const { error: itemsErr } = await supabase.from("order_items").insert(orderItems);
+    if (itemsErr) {
+      // Échec partiel : on annule la commande pour que le rejeu Stripe la recrée proprement
+      // (AVANT toute émission de transfert → pas d'argent envoyé sur une commande incomplète).
+      console.error("[webhook] order_items insert échoué, rollback order", itemsErr);
+      await supabase.from("orders").delete().eq("id", order.id);
+      return NextResponse.json({ error: "order_items insert failed" }, { status: 500 });
+    }
 
     // Panier récupéré → plus de relance d'abandon
     try { await supabase.from("abandoned_carts").update({ recovered_at: new Date().toISOString() }).eq("user_id", user_id); } catch {}
@@ -251,7 +260,7 @@ export async function POST(req: Request) {
             ...(chargeId ? { source_transaction: chargeId } : {}),
             ...(group ? { transfer_group: group } : {}),
             metadata: { order_pi: pi.id, shop_id: t.s },
-          });
+          }, { idempotencyKey: `tr_${pi.id}_${t.s}` }); // anti double-payout sur rejeu
         }
       }
     } catch (e) {

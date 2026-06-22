@@ -38,6 +38,9 @@ export async function ensureSeller(admin: SupabaseClient, userId: string): Promi
     .select(SELLER_COLS)
     .single();
   if (error) throw new Error(error.message);
+  // Réconcilie les activités existantes du seller (sinon shops.seller_id reste NULL et
+  // la page produit affiche "Bientôt en vente" à vie + l'abonnement n'est pas relié au seller).
+  await admin.from("shops").update({ seller_id: (created as Seller).id }).eq("owner_id", userId).is("seller_id", null);
   return created as Seller;
 }
 
