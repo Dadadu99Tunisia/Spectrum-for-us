@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendCreatorActivation, trySend } from "@/lib/email";
+import { sendCreatorActivation, sendActivatePayments, trySend } from "@/lib/email";
 
 /**
  * Nurturing créateur·ice · relance les boutiques encore VIDES.
@@ -64,5 +64,35 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, sent });
+  // ── Relance PAIEMENTS : a des produits mais paiements non activés (= invendable) ──
+  // Cible les vendeur·ses ENGAGÉ·ES bloqué·es. Une seule fois (kind creator_payments).
+  let paymentsSent = 0;
+  const { data: sellers } = await admin
+    .from("sellers")
+    .select("user_id, stripe_charges_enabled, payout_mode")
+    .limit(500);
+  for (const s of sellers ?? []) {
+    try {
+      const ready = !!s.stripe_charges_enabled || s.payout_mode === "manual";
+      if (ready) continue;
+      const { data: already } = await admin.from("nurture_log")
+        .select("user_id").eq("user_id", s.user_id).eq("kind", "creator_payments").maybeSingle();
+      if (already) continue;
+      // A-t-il·elle au moins un produit en ligne ? (sinon c'est le drip J+1/J+7 qui gère)
+      const { data: shopRows } = await admin.from("shops").select("id").eq("owner_id", s.user_id);
+      const ids = (shopRows ?? []).map(r => r.id);
+      if (!ids.length) continue;
+      const { count: prodCount } = await admin.from("products")
+        .select("id", { count: "exact", head: true }).in("shop_id", ids);
+      if ((prodCount ?? 0) === 0) continue;
+
+      const { data: u } = await admin.auth.admin.getUserById(s.user_id as string);
+      const email = u?.user?.email;
+      const pseudo = (u?.user?.user_metadata?.full_name as string) || "créateur·ice";
+      if (email) { await trySend(() => sendActivatePayments({ to: email, pseudo })); paymentsSent++; }
+      await admin.from("nurture_log").insert({ user_id: s.user_id, kind: "creator_payments" });
+    } catch (e) { console.error("[cron] creator-nurture payments", e); }
+  }
+
+  return NextResponse.json({ ok: true, sent, paymentsSent });
 }

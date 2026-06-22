@@ -314,6 +314,23 @@ export async function sendCreatorActivation(params: { to: string; pseudo: string
   });
 }
 
+/** Relance critique · le·la créateur·ice a des produits mais n'a pas activé ses paiements (invendable). */
+export async function sendActivatePayments(params: { to: string; pseudo: string }) {
+  const body = `
+    ${h2(`${params.pseudo}, tes produits sont prêts — active tes paiements 💳`)}
+    ${text("Tes créations sont en ligne, bravo ! Mais pour l'instant <strong style=\"color:#101014;\">personne ne peut encore acheter</strong> : il manque l'activation de tes paiements.")}
+    ${text("C'est 2 minutes via Stripe (ou le versement manuel si tu es hors zone Stripe, ex. Tunisie). Une fois fait, ta boutique encaisse pour de vrai.")}
+    ${cta("Activer mes paiements", `${BASE}/vendeur`)}
+    ${text(`<span style="color:rgba(16,16,20,0.4);font-size:13px;">Un blocage ? Réponds à cet email, on te débloque.</span>`)}
+  `;
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    subject: "Tes produits sont en ligne mais non achetables 💳",
+    html: baseLayout("Active tes paiements · Spectrum For Us", body),
+  });
+}
+
 /** Notif créateur·ice · quelqu'un suit ta boutique. */
 export async function sendNewFollower(params: { to: string; shopName: string; followerName?: string }) {
   const who = params.followerName?.trim() || "Quelqu'un";
