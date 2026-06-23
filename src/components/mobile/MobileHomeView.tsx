@@ -25,13 +25,65 @@ const CAT: Record<string, { tint: string; ink: string; dot: string }> = {
 };
 const tintFor = (c: string) => CAT[Object.keys(CAT).find(k => (c || "").toLowerCase().includes(k.toLowerCase())) ?? "Mode"] ?? CAT.Mode;
 
-const COLLECTIONS = [
-  { title: "Fierté toute l'année", sub: "Pièces qui affirment", cat: "Mode", bg: "linear-gradient(135deg,#FF2DA0,#C44CFF)" },
-  { title: "Fait main & local", sub: "Créateur·ices près de toi", cat: "Bijoux", bg: "linear-gradient(135deg,#F2A03D,#FF2DA0)" },
-  { title: "Corps & soin", sub: "Doux, inclusif, naturel", cat: "Corps", bg: "linear-gradient(135deg,#16A06A,#1FB6C9)" },
-  { title: "Zines & édition", sub: "Nos voix, nos histoires", cat: "Zines", bg: "linear-gradient(135deg,#1FB6C9,#6B5CFF)" },
-];
-const CHIPS = ["Tout", "Mode", "Art", "Bijoux", "Zines", "Corps", "Services"];
+// Chips : value = catégorie FR (filtre SQL, ne pas traduire) · label = affiché.
+const CHIPS = [
+  { value: "Tout", fr: "Tout", en: "All" },
+  { value: "Mode", fr: "Mode", en: "Fashion" },
+  { value: "Art", fr: "Art", en: "Art" },
+  { value: "Bijoux", fr: "Bijoux", en: "Jewelry" },
+  { value: "Zines", fr: "Zines", en: "Zines" },
+  { value: "Corps", fr: "Corps", en: "Body" },
+  { value: "Services", fr: "Services", en: "Services" },
+] as const;
+
+const CONTENT = {
+  fr: {
+    login: "Connexion", menu: "Menu", sellOnSpectrum: "Vendre sur Spectrum", account: "Mon compte",
+    nav: [
+      { l: "Shop", h: "/decouvrir" }, { l: "Services", h: "/services" }, { l: "Associations", h: "/annuaire" },
+      { l: "Événements & Ateliers", h: "/evenements" }, { l: "Média", h: "/media" }, { l: "Communauté", h: "/communaute" },
+    ],
+    heroEyebrow: "La première marketplace queer",
+    heroSub: "Parce que nos mains créent, nos voix existent, et nos histoires ont une valeur. Un espace par et pour la communauté queer.",
+    discover: "Découvrir les créations", becomeCreator: "Devenir créateur·ice", community: "La communauté",
+    searchPlaceholder: "Rechercher une création, une boutique…",
+    reassure: ["Livraison suivie", "Retours 14 j", "Paiement sécurisé"],
+    collectionLabel: "Collection",
+    results: "Résultats", forYou: "Pour toi", piece: "pièce", pieces: "pièces",
+    emptySearch: "Aucun résultat", emptyTitle: "Le spectre se remplit",
+    emptySearchSub: "Essaie un autre mot.", emptySub: "Sois parmi les premier·es à créer ici.",
+    openShop: "Ouvrir ma boutique", sellHere: "Vends tes créations ici", sellSub: "0 % de commission les premiers mois",
+    collections: [
+      { title: "Fierté toute l'année", sub: "Pièces qui affirment", cat: "Mode", bg: "linear-gradient(135deg,#FF2DA0,#C44CFF)" },
+      { title: "Fait main & local", sub: "Créateur·ices près de toi", cat: "Bijoux", bg: "linear-gradient(135deg,#F2A03D,#FF2DA0)" },
+      { title: "Corps & soin", sub: "Doux, inclusif, naturel", cat: "Corps", bg: "linear-gradient(135deg,#16A06A,#1FB6C9)" },
+      { title: "Zines & édition", sub: "Nos voix, nos histoires", cat: "Zines", bg: "linear-gradient(135deg,#1FB6C9,#6B5CFF)" },
+    ],
+  },
+  en: {
+    login: "Log in", menu: "Menu", sellOnSpectrum: "Sell on Spectrum", account: "My account",
+    nav: [
+      { l: "Shop", h: "/decouvrir" }, { l: "Services", h: "/services" }, { l: "Associations", h: "/annuaire" },
+      { l: "Events & Workshops", h: "/evenements" }, { l: "Media", h: "/media" }, { l: "Community", h: "/communaute" },
+    ],
+    heroEyebrow: "The first queer marketplace",
+    heroSub: "Because our hands create, our voices exist, and our stories have value. A space by and for the queer community.",
+    discover: "Discover the creations", becomeCreator: "Become a creator", community: "The community",
+    searchPlaceholder: "Search a creation, a shop…",
+    reassure: ["Tracked shipping", "14-day returns", "Secure payment"],
+    collectionLabel: "Collection",
+    results: "Results", forYou: "For you", piece: "item", pieces: "items",
+    emptySearch: "No results", emptyTitle: "The spectrum is filling up",
+    emptySearchSub: "Try another word.", emptySub: "Be among the first to create here.",
+    openShop: "Open my shop", sellHere: "Sell your creations here", sellSub: "0% commission for the first months",
+    collections: [
+      { title: "Pride all year", sub: "Pieces that affirm", cat: "Mode", bg: "linear-gradient(135deg,#FF2DA0,#C44CFF)" },
+      { title: "Handmade & local", sub: "Creators near you", cat: "Bijoux", bg: "linear-gradient(135deg,#F2A03D,#FF2DA0)" },
+      { title: "Body & care", sub: "Gentle, inclusive, natural", cat: "Corps", bg: "linear-gradient(135deg,#16A06A,#1FB6C9)" },
+      { title: "Zines & print", sub: "Our voices, our stories", cat: "Zines", bg: "linear-gradient(135deg,#1FB6C9,#6B5CFF)" },
+    ],
+  },
+} as const;
 
 interface Product {
   id: string; name: string; title: string; price: number;
@@ -114,6 +166,10 @@ function ProductCard({ p }: { p: Product }) {
 
 export function MobileHomeView() {
   const { user } = useAuth();
+  const { locale } = useI18n();
+  const L = locale === "en" ? "en" : "fr";
+  const C = CONTENT[L];
+  const COLLECTIONS = C.collections;
   const { items } = useCart();
   const cartCount = items.reduce((s, i) => s + i.quantity, 0);
 
@@ -146,7 +202,7 @@ export function MobileHomeView() {
           <Link href="/" aria-label="Spectrum For Us"><img src="/logo-dark.png" alt="Spectrum For Us" className="h-8 w-auto" /></Link>
           <div className="flex items-center gap-2">
             {!user && (
-              <Link href="/auth" className="font-mono text-[10px] tracking-wide px-3 py-1.5 rounded-full" style={{ border: `1px solid ${T.line}`, color: T.soft }}>Connexion</Link>
+              <Link href="/auth" className="font-mono text-[10px] tracking-wide px-3 py-1.5 rounded-full" style={{ border: `1px solid ${T.line}`, color: T.soft }}>{C.login}</Link>
             )}
             <Link href="/panier" className="relative w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
               <ShoppingBag size={20} style={{ color: T.ink }} />
@@ -165,18 +221,11 @@ export function MobileHomeView() {
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute top-0 right-0 h-full w-[78%] max-w-[320px] bg-[#FBFAF8] shadow-2xl p-5 overflow-y-auto" style={{ paddingTop: "max(20px,env(safe-area-inset-top))" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
-              <span className="font-fraunces font-bold text-lg" style={{ color: T.ink }}>Menu</span>
+              <span className="font-fraunces font-bold text-lg" style={{ color: T.ink }}>{C.menu}</span>
               <button onClick={() => setNavOpen(false)} aria-label="Fermer" style={{ color: T.soft }}><X size={20} /></button>
             </div>
             <nav className="flex flex-col">
-              {[
-                { l: "Shop", h: "/decouvrir" },
-                { l: "Services", h: "/services" },
-                { l: "Associations", h: "/annuaire" },
-                { l: "Événements & Ateliers", h: "/evenements" },
-                { l: "Média", h: "/media" },
-                { l: "Communauté", h: "/communaute" },
-              ].map(n => (
+              {C.nav.map(n => (
                 <Link key={n.h} href={n.h} onClick={() => setNavOpen(false)}
                   className="py-3.5 font-bricolage font-semibold text-[16px] border-b" style={{ color: T.ink, borderColor: T.line }}>
                   {n.l}
@@ -184,11 +233,11 @@ export function MobileHomeView() {
               ))}
               <Link href="/vendeur/onboarding" onClick={() => setNavOpen(false)}
                 className="mt-5 text-center font-bold text-[15px] py-3 rounded-full text-white" style={{ background: T.mag }}>
-                Vendre sur Spectrum
+                {C.sellOnSpectrum}
               </Link>
               <Link href={user ? "/compte" : "/auth"} onClick={() => setNavOpen(false)}
                 className="mt-2 text-center font-semibold text-[14px] py-3 rounded-full" style={{ color: T.soft, border: `1px solid ${T.line}` }}>
-                {user ? "Mon compte" : "Connexion"}
+                {user ? C.account : C.login}
               </Link>
             </nav>
           </div>
@@ -202,20 +251,20 @@ export function MobileHomeView() {
           background: "radial-gradient(120% 90% at 12% 0%, #4A2A6B 0%, transparent 60%), radial-gradient(120% 110% at 108% 112%, #C9296F 0%, transparent 52%), linear-gradient(180deg,#2C1746,#2A1742)",
         }}>
           <p className="font-mono text-[10.5px] tracking-[0.14em] uppercase flex items-center gap-2 mb-3" style={{ color: "rgba(241,231,215,.6)" }}>
-            <span style={{ color: "#FF6FA3" }}>✦</span> La première marketplace queer
+            <span style={{ color: "#FF6FA3" }}>✦</span> {C.heroEyebrow}
           </p>
           <h1 className="font-fraunces m-0 leading-[0.98] tracking-[-0.01em]" style={{ fontSize: 44, color: "#F1E7D7" }}>
             B<span style={{ color: T.mag }}>(u)</span>y us,<br />for us.
           </h1>
           <p className="mt-3.5 mb-4 text-[14px] leading-snug max-w-[320px]" style={{ color: "rgba(241,231,215,.72)" }}>
-            Parce que nos mains créent, nos voix existent, et nos histoires ont une valeur. Un espace par et pour la communauté queer.
+            {C.heroSub}
           </p>
           <Link href="/decouvrir" className="block text-center font-bold text-[15px] py-3.5 rounded-full" style={{ background: T.mag, color: "#fff" }}>
-            Découvrir les créations
+            {C.discover}
           </Link>
           <div className="flex gap-2.5 mt-2.5">
-            <Link href="/vendre" className="flex-1 text-center font-bold text-[13.5px] py-3 rounded-full" style={{ background: "rgba(241,231,215,.16)", color: "#fff", border: "1.5px solid rgba(241,231,215,.5)" }}>Devenir créateur·ice</Link>
-            <Link href="/communaute" className="flex-1 text-center font-semibold text-[13.5px] py-3 rounded-full" style={{ color: "rgba(241,231,215,.78)", border: "1.5px solid rgba(241,231,215,.22)" }}>La communauté</Link>
+            <Link href="/vendre" className="flex-1 text-center font-bold text-[13.5px] py-3 rounded-full" style={{ background: "rgba(241,231,215,.16)", color: "#fff", border: "1.5px solid rgba(241,231,215,.5)" }}>{C.becomeCreator}</Link>
+            <Link href="/communaute" className="flex-1 text-center font-semibold text-[13.5px] py-3 rounded-full" style={{ color: "rgba(241,231,215,.78)", border: "1.5px solid rgba(241,231,215,.22)" }}>{C.community}</Link>
           </div>
         </div>
       )}
@@ -231,7 +280,7 @@ export function MobileHomeView() {
       <div className="px-4 pt-2.5 pb-3.5">
         <div className="flex items-center gap-2.5 h-[46px] rounded-[14px] px-3.5" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
           <Search size={18} style={{ color: T.faint }} />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher une création, une boutique…"
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder={C.searchPlaceholder}
             className="flex-1 min-w-0 bg-transparent outline-none text-[14px]" style={{ color: T.ink }} />
         </div>
       </div>
@@ -239,7 +288,7 @@ export function MobileHomeView() {
       {/* Reassurance */}
       {showExtras && (
         <div className="flex gap-2 px-4 pb-4">
-          {[[Truck, "Livraison suivie"], [RefreshCw, "Retours 14 j"], [ShieldCheck, "Paiement sécurisé"]].map(([Ic, t], i) => {
+          {[[Truck, C.reassure[0]], [RefreshCw, C.reassure[1]], [ShieldCheck, C.reassure[2]]].map(([Ic, t], i) => {
             const Icon = Ic as typeof Truck;
             return (
               <div key={i} className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-[14px]" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
@@ -260,7 +309,7 @@ export function MobileHomeView() {
               style={{ background: c.bg, color: "#fff" }}>
               <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,transparent,rgba(0,0,0,.28))" }} />
               <div className="relative">
-                <p className="font-mono text-[10px] tracking-[0.1em] uppercase opacity-90">Collection</p>
+                <p className="font-mono text-[10px] tracking-[0.1em] uppercase opacity-90">{C.collectionLabel}</p>
                 <p className="font-bricolage font-bold text-[22px] leading-none">{c.title}</p>
                 <p className="text-[12px] opacity-90 mt-1">{c.sub}</p>
               </div>
@@ -272,18 +321,18 @@ export function MobileHomeView() {
       {/* Category chips */}
       <div className="flex gap-2 overflow-x-auto px-4 pb-3" style={{ scrollbarWidth: "none" }}>
         {CHIPS.map(c => (
-          <button key={c} onClick={() => setCat(c)}
+          <button key={c.value} onClick={() => setCat(c.value)}
             className="shrink-0 whitespace-nowrap font-semibold text-[14px] px-[15px] py-2 rounded-full active:scale-95"
-            style={c === cat ? { background: T.ink, color: "#fff" } : { background: "#fff", color: T.ink, boxShadow: `inset 0 0 0 1px ${T.line}` }}>
-            {c}
+            style={c.value === cat ? { background: T.ink, color: "#fff" } : { background: "#fff", color: T.ink, boxShadow: `inset 0 0 0 1px ${T.line}` }}>
+            {c[L]}
           </button>
         ))}
       </div>
 
       {/* Feed header */}
       <div className="flex items-baseline justify-between px-4 pb-3">
-        <span className="font-bricolage font-bold text-[20px]">{searching ? "Résultats" : cat !== "Tout" ? cat : "Pour toi"}</span>
-        <span className="font-mono text-[12px]" style={{ color: T.soft }}>{products.length} {products.length > 1 ? "pièces" : "pièce"}</span>
+        <span className="font-bricolage font-bold text-[20px]">{searching ? C.results : cat !== "Tout" ? (CHIPS.find(ch => ch.value === cat)?.[L] ?? cat) : C.forYou}</span>
+        <span className="font-mono text-[12px]" style={{ color: T.soft }}>{products.length} {products.length > 1 ? C.pieces : C.piece}</span>
       </div>
 
       {/* Masonry feed */}
@@ -295,11 +344,11 @@ export function MobileHomeView() {
         </div>
       ) : products.length === 0 ? (
         <div className="px-6 py-8 text-center">
-          <p className="font-bricolage font-bold text-[17px] mb-1.5">{searching ? "Aucun résultat" : "Le spectre se remplit"}</p>
-          <p className="text-[13.5px] mb-5" style={{ color: T.soft }}>{searching ? "Essaie un autre mot." : "Sois parmi les premier·es à créer ici."}</p>
+          <p className="font-bricolage font-bold text-[17px] mb-1.5">{searching ? C.emptySearch : C.emptyTitle}</p>
+          <p className="text-[13.5px] mb-5" style={{ color: T.soft }}>{searching ? C.emptySearchSub : C.emptySub}</p>
           {!searching && (
             <Link href="/vendeur/onboarding" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-[14px] text-white" style={{ background: T.mag }}>
-              Ouvrir ma boutique <ArrowRight size={15} />
+              {C.openShop} <ArrowRight size={15} />
             </Link>
           )}
         </div>
@@ -315,8 +364,8 @@ export function MobileHomeView() {
           <Link href="/vendeur/onboarding" className="flex items-center gap-3 p-4 rounded-2xl" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
             <span className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg,#6B5CFF,#FF2DA0)" }}>✦</span>
             <div className="flex-1 min-w-0">
-              <p className="font-bricolage font-bold text-[15px]" style={{ color: T.ink }}>Vends tes créations ici</p>
-              <p className="text-[12px]" style={{ color: T.soft }}>0 % de commission les premiers mois</p>
+              <p className="font-bricolage font-bold text-[15px]" style={{ color: T.ink }}>{C.sellHere}</p>
+              <p className="text-[12px]" style={{ color: T.soft }}>{C.sellSub}</p>
             </div>
             <ArrowRight size={18} style={{ color: T.faint }} />
           </Link>
