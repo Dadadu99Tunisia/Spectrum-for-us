@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FillImage } from "@/components/ui/FillImage";
 import { writeFavorite } from "@/lib/favorites";
+import { useI18n } from "@/contexts/I18nContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
@@ -59,6 +60,7 @@ function ProductCard({ p }: { p: Product }) {
   const img = p.images?.[0] ?? p.image_url;
   const shopName = !Array.isArray(p.shops) ? p.shops?.name : null;
   const { add } = useCart();
+  const { formatPrice } = useI18n();
   const [liked, setLiked] = useState(() => {
     if (typeof window === "undefined") return false;
     try { return JSON.parse(localStorage.getItem("spectrum_favorites") ?? "[]").includes(p.id); } catch { return false; }
@@ -99,7 +101,7 @@ function ProductCard({ p }: { p: Product }) {
           </span>
         )}
         <div className="flex items-center justify-between mt-1">
-          <span className="font-mono font-bold text-[15px]" style={{ color: T.ink }}>{Number(p.price).toFixed(2)}&nbsp;€</span>
+          <span className="font-mono font-bold text-[15px]" style={{ color: T.ink }}>{formatPrice(Number(p.price))}</span>
           <button onClick={handleAdd} aria-label="Ajouter au panier"
             className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90" style={{ background: T.ink }}>
             <ShoppingBag size={13} color="#fff" />

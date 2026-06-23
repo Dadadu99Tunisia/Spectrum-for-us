@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { FillImage } from "@/components/ui/FillImage";
 import { writeFavorite } from "@/lib/favorites";
+import { useI18n } from "@/contexts/I18nContext";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowRight, X, Search, Heart, ShoppingBag } from "lucide-react";
 import { useCart } from "@/store/cart";
@@ -43,6 +44,7 @@ function Card({ p }: { p: Product }) {
   const img = p.images?.[0] ?? p.image_url;
   const shop = !Array.isArray(p.shops) ? p.shops?.name : null;
   const { add } = useCart();
+  const { formatPrice } = useI18n();
   const c = tintFor(p.category);
   const tall = (p.id.charCodeAt(0) + p.id.charCodeAt(p.id.length - 1)) % 2 === 0;
   const [liked, setLiked] = useState(() => {
@@ -78,7 +80,7 @@ function Card({ p }: { p: Product }) {
           </span>
         )}
         <div className="flex items-center justify-between mt-1">
-          <span className="font-mono font-bold text-[15px]" style={{ color: T.ink }}>{p.price.toFixed(2)}&nbsp;€</span>
+          <span className="font-mono font-bold text-[15px]" style={{ color: T.ink }}>{formatPrice(p.price)}</span>
           <button onClick={handleAdd} aria-label="Ajouter au panier" className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90" style={{ background: T.ink }}><ShoppingBag size={15} color="#fff" /></button>
         </div>
       </div>
