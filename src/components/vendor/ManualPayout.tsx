@@ -32,7 +32,14 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [balance, setBalance] = useState<{ earned: number; paid: number; owed: number } | null>(null);
+  const [balance, setBalance] = useState<{ earned: number; paid: number; owed: number; available: number; held: number } | null>(null);
+  const [info, setInfo] = useState<{ manualRate: number; manualFounderRate: number; holdDays: number }>({ manualRate: 12, manualFounderRate: 6, holdDays: 7 });
+
+  useEffect(() => {
+    fetch("/api/commission-info").then(r => r.json()).then(d => {
+      if (d) setInfo({ manualRate: d.manualRate ?? 12, manualFounderRate: d.manualFounderRate ?? 6, holdDays: d.holdDays ?? 7 });
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const supabase = createClient();
@@ -61,16 +68,23 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
     if (!user) return;
     const { data: shops } = await supabase.from("shops").select("id").eq("owner_id", user.id);
     const ids = (shops ?? []).map(s => s.id);
-    if (ids.length === 0) { setBalance({ earned: 0, paid: 0, owed: 0 }); return; }
+    if (ids.length === 0) { setBalance({ earned: 0, paid: 0, owed: 0, available: 0, held: 0 }); return; }
     const [{ data: comm }, { data: ships }, { data: payouts }] = await Promise.all([
-      supabase.from("commissions").select("gross_amount, commission_amount").in("shop_id", ids),
+      supabase.from("commissions").select("gross_amount, commission_amount, created_at").in("shop_id", ids),
       supabase.from("order_shipments").select("shipping_cost").in("shop_id", ids),
       supabase.from("vendor_payouts").select("amount").in("shop_id", ids),
     ]);
-    const earned = (comm ?? []).reduce((s, c) => s + Number(c.gross_amount || 0) - Number(c.commission_amount || 0), 0)
-      + (ships ?? []).reduce((s, x) => s + Number(x.shipping_cost || 0), 0);
+    const net = (comm ?? []).reduce((s, c) => s + Number(c.gross_amount || 0) - Number(c.commission_amount || 0), 0);
+    const shipTot = (ships ?? []).reduce((s, x) => s + Number(x.shipping_cost || 0), 0);
+    const earned = net + shipTot;
     const paid = (payouts ?? []).reduce((s, p) => s + Number(p.amount || 0), 0);
-    setBalance({ earned: Math.round(earned * 100) / 100, paid: Math.round(paid * 100) / 100, owed: Math.round((earned - paid) * 100) / 100 });
+    // Disponible = net des commissions hors fenêtre de rétention + port ; le reste est retenu.
+    const cutoff = new Date(Date.now() - info.holdDays * 86400_000).toISOString();
+    const availNet = (comm ?? []).reduce((s, c) => (c.created_at && c.created_at <= cutoff ? s + Number(c.gross_amount || 0) - Number(c.commission_amount || 0) : s), 0);
+    const r2 = (n: number) => Math.round(n * 100) / 100;
+    const owed = r2(earned - paid);
+    const available = r2(Math.max(0, availNet + shipTot - paid));
+    setBalance({ earned: r2(earned), paid: r2(paid), owed, available, held: r2(Math.max(0, owed - available)) });
   };
 
   const save = async (newMode: string) => {
@@ -107,6 +121,7 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
         <div>
           <p className="text-[13.5px] mb-1" style={{ color: C.soft }}>
             Tu es payé·e par <strong>versement manuel</strong> de la plateforme (hors Stripe).
+            <span style={{ color: C.ink }}> Aucun abonnement</span> — une commission de <strong>{info.manualRate}%</strong> est prélevée sur tes ventes, on te verse le reste.
           </p>
           <p className="font-mono text-[12px]" style={{ color: C.ink }}>
             {country} · {METHODS.find(m => m.v === method)?.l.split(" (")[0]} · {details || "—"}
@@ -115,11 +130,19 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
             <Pencil size={11} /> Modifier
           </button>
           {balance && (
-            <div className="mt-3 pt-3 border-t flex items-center gap-5" style={{ borderColor: C.line }}>
+            <div className="mt-3 pt-3 border-t flex items-center gap-4 flex-wrap" style={{ borderColor: C.line }}>
               <div><p className="font-mono text-[9px] uppercase" style={{ color: C.soft }}>Gagné</p><p className="font-fraunces text-[15px]" style={{ color: C.ink }}>{balance.earned.toFixed(2)} €</p></div>
               <div><p className="font-mono text-[9px] uppercase" style={{ color: C.soft }}>Reçu</p><p className="font-fraunces text-[15px]" style={{ color: C.soft }}>{balance.paid.toFixed(2)} €</p></div>
-              <div><p className="font-mono text-[9px] uppercase" style={{ color: C.mag }}>À recevoir</p><p className="font-fraunces text-[17px]" style={{ color: balance.owed > 0 ? C.mag : C.green }}>{balance.owed.toFixed(2)} €</p></div>
+              <div><p className="font-mono text-[9px] uppercase" style={{ color: C.green }}>Disponible</p><p className="font-fraunces text-[17px]" style={{ color: C.green }}>{balance.available.toFixed(2)} €</p></div>
+              {balance.held > 0 && (
+                <div><p className="font-mono text-[9px] uppercase" style={{ color: C.soft }}>En attente</p><p className="font-fraunces text-[15px]" style={{ color: C.soft }}>{balance.held.toFixed(2)} €</p></div>
+              )}
             </div>
+          )}
+          {balance && balance.held > 0 && (
+            <p className="font-mono text-[10px] mt-1.5" style={{ color: C.soft }}>
+              Les ventes récentes se débloquent {info.holdDays} j après la commande (sécurité expédition & litiges).
+            </p>
           )}
         </div>
       ) : editing || mode === "manual" ? (
@@ -145,6 +168,7 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
         <>
           <p className="text-[13.5px] mb-3" style={{ color: C.soft }}>
             Stripe n'est pas disponible dans tous les pays. Où que tu sois dans le monde, active le <strong>versement manuel</strong> : tu vends normalement, et la plateforme te paie via Payoneer / Wise / virement.
+            <span style={{ color: C.ink }}> Pas d'abonnement</span> — juste une commission de <strong>{info.manualRate}%</strong> sur tes ventes (réduite à {info.manualFounderRate}% pour les fondateur·ices).
           </p>
           <button onClick={() => setEditing(true)}
             className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-semibold text-[14px]" style={{ background: "#101014", color: "#fff" }}>

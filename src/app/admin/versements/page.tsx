@@ -6,7 +6,12 @@ import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 type Row = {
   shop_id: string; name: string; payout_method: string | null; payout_details: string | null;
   country: string; email: string | null; products: number;
-  earned: number; paid: number; owed: number;
+  earned: number; paid: number; owed: number; releasable: number; held: number; flags: string[];
+};
+
+const FLAG_LABEL: Record<string, string> = {
+  no_active_products: "Aucun produit actif",
+  new_seller_high_owed: "Compte récent · montant élevé",
 };
 
 export default function VersementsPage() {
@@ -54,9 +59,13 @@ export default function VersementsPage() {
             <span className="font-mono text-[10px] uppercase text-[#101014]/35">Boutiques</span>
             <p className="font-fraunces text-xl text-[#101014]">{rows.length}</p>
           </div>
-          <div className="rounded-xl border border-[#FF2DA0]/25 bg-[#FF2DA0]/5 px-4 py-2.5">
-            <span className="font-mono text-[10px] uppercase text-[#FF2DA0]">Total à verser</span>
-            <p className="font-fraunces text-xl text-[#FF2DA0]">{fmt(rows.reduce((s, r) => s + Math.max(0, r.owed), 0))}</p>
+          <div className="rounded-xl border border-[#1B8155]/25 bg-[#1B8155]/5 px-4 py-2.5">
+            <span className="font-mono text-[10px] uppercase text-[#1B8155]">Disponible à verser</span>
+            <p className="font-fraunces text-xl text-[#1B8155]">{fmt(rows.reduce((s, r) => s + Math.max(0, r.releasable), 0))}</p>
+          </div>
+          <div className="rounded-xl border border-[#101014]/12 bg-white px-4 py-2.5">
+            <span className="font-mono text-[10px] uppercase text-[#101014]/35">En attente (rétention)</span>
+            <p className="font-fraunces text-xl text-[#101014]/55">{fmt(rows.reduce((s, r) => s + Math.max(0, r.held), 0))}</p>
           </div>
           <select value={filter} onChange={e => setFilter(e.target.value)}
             className="self-center bg-white border border-[#101014]/12 rounded-xl px-3 py-2 font-hanken text-sm">
@@ -82,13 +91,21 @@ export default function VersementsPage() {
                   <p className="font-bricolage font-bold text-[#101014]">{r.name} <span className="font-mono text-[10px] text-[#101014]/45">· {r.country}</span> <span className="font-mono text-[10px] text-[#101014]/35">· {r.products} produit{r.products > 1 ? "s" : ""}</span></p>
                   <p className="font-mono text-[11px] text-[#101014]/45">💳 {r.payout_method ?? "—"} · {r.payout_details ?? "—"}</p>
                   {r.email && <a href={`mailto:${r.email}`} className="font-mono text-[11px] text-[#2323C4] hover:underline">✉ {r.email}</a>}
+                  {r.flags?.length > 0 && (
+                    <div className="flex gap-1.5 mt-1 flex-wrap">
+                      {r.flags.map(f => (
+                        <span key={f} className="inline-flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300">⚠ {FLAG_LABEL[f] ?? f}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center gap-4 sm:gap-5 flex-wrap">
                   <div><p className="font-mono text-[9px] uppercase text-[#101014]/35">Gagné</p><p className="font-fraunces text-[#101014]">{fmt(r.earned)}</p></div>
                   <div><p className="font-mono text-[9px] uppercase text-[#101014]/35">Versé</p><p className="font-fraunces text-[#101014]/60">{fmt(r.paid)}</p></div>
-                  <div><p className="font-mono text-[9px] uppercase text-[#FF2DA0]">À verser</p><p className="font-fraunces text-lg" style={{ color: r.owed > 0 ? "#FF2DA0" : "#1B8155" }}>{fmt(r.owed)}</p></div>
-                  <button onClick={() => setForm({ shop_id: r.shop_id, amount: r.owed > 0 ? String(r.owed) : "", reference: "" })}
-                    disabled={r.owed <= 0}
+                  {r.held > 0 && <div><p className="font-mono text-[9px] uppercase text-[#101014]/35">Retenu</p><p className="font-fraunces text-[#101014]/55">{fmt(r.held)}</p></div>}
+                  <div><p className="font-mono text-[9px] uppercase text-[#1B8155]">Disponible</p><p className="font-fraunces text-lg" style={{ color: r.releasable > 0 ? "#1B8155" : "#101014" }}>{fmt(r.releasable)}</p></div>
+                  <button onClick={() => setForm({ shop_id: r.shop_id, amount: r.releasable > 0 ? String(r.releasable) : "", reference: "" })}
+                    disabled={r.releasable <= 0}
                     className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg bg-[#101014] text-white font-hanken text-xs hover:brightness-125 disabled:opacity-30">
                     <Plus size={13} /> Verser
                   </button>

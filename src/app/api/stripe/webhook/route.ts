@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendOrderConfirmation, trySend, sendBookingConfirmation, sendBookingVendorAlert, sendVendorNewOrder } from "@/lib/email";
+import { getCommissionRates, resolveCommissionRate } from "@/lib/commission";
 
 /** current_period_end a migré au niveau de l'item d'abonnement (Stripe API récente). */
 function subPeriodEndISO(sub: Stripe.Subscription): string | null {
@@ -268,7 +269,8 @@ export async function POST(req: Request) {
     }
 
     // ── Commissions (par boutique) · traçables, non bloquant ────────────────
-    // Taux : 0 % si avantage fondateur·ice actif · sinon override · sinon défaut.
+    // Taux selon le rail de versement : Stripe (5 %, 0 % fondateur) vs manuel
+    // (12 %, 6 % fondateur). Cf. lib/commission.ts · resolveCommissionRate.
     try {
       const grossByShop: Record<string, number> = {};
       for (const item of cart) {
@@ -278,26 +280,31 @@ export async function POST(req: Request) {
       }
       const shopIdList = Object.keys(grossByShop);
       if (shopIdList.length > 0) {
-        const { data: setting } = await supabase
-          .from("admin_settings").select("value").eq("key", "commission_rate").maybeSingle();
-        const cfg = Number(setting?.value);
-        const defaultRate = Number.isFinite(cfg) ? cfg : 5; // % par défaut (aligné sur lib/commission.ts)
+        const rates = await getCommissionRates(supabase);
+
+        // Rail de versement par boutique (shop → seller.payout_mode)
+        const { data: shopSellers } = await supabase
+          .from("shops").select("id, sellers(payout_mode)").in("id", shopIdList);
+        const payoutModeByShop: Record<string, string | null> = {};
+        for (const s of (shopSellers ?? []) as { id: string; sellers?: { payout_mode?: string | null } | { payout_mode?: string | null }[] | null }[]) {
+          const rel = s.sellers ?? null;
+          payoutModeByShop[s.id] = (Array.isArray(rel) ? rel[0]?.payout_mode : rel?.payout_mode) ?? null;
+        }
 
         const { data: founders } = await supabase
           .from("founder_program_members")
           .select("shop_id, commission_free_until, commission_rate_override")
           .in("shop_id", shopIdList);
         const founderByShop = Object.fromEntries((founders ?? []).map(f => [f.shop_id, f]));
-        const nowMs = Date.now();
 
         const commissionRows = shopIdList.map(shopId => {
           const f = founderByShop[shopId] as { commission_free_until: string | null; commission_rate_override: number | null } | undefined;
-          let rate = defaultRate;
-          if (f?.commission_free_until && new Date(f.commission_free_until).getTime() > nowMs) {
-            rate = 0; // avantage fondateur·ice actif
-          } else if (f?.commission_rate_override != null) {
-            rate = Number(f.commission_rate_override);
-          }
+          const rate = resolveCommissionRate({
+            payoutMode: payoutModeByShop[shopId] ?? null,
+            founderFreeUntil: f?.commission_free_until ?? null,
+            founderOverride: f?.commission_rate_override ?? null,
+            rates,
+          });
           const gross = Math.round(grossByShop[shopId] * 100) / 100;
           const amount = Math.round(gross * (rate / 100) * 100) / 100;
           return {
