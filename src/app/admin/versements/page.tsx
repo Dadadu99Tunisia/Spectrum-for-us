@@ -46,7 +46,7 @@ export default function VersementsPage() {
 
       <div>
         <h1 className="font-fraunces text-2xl text-[#101014] flex items-center gap-2"><Globe size={20} /> Vendeur·ses hors Stripe 🇹🇳</h1>
-        <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">Boutiques des pays où Stripe n&apos;existe pas (Tunisie & co.). Tu les paies à la main (Payoneer, virement…) — voici qui, combien, et leurs coordonnées.</p>
+        <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">Boutiques des pays où Stripe n&apos;existe pas (monde entier). Tu les paies à la main (Payoneer, Wise, virement…) — voici qui, combien, et leurs coordonnées.</p>
       </div>
       {!loading && rows.length > 0 && (
         <div className="flex gap-3 flex-wrap">

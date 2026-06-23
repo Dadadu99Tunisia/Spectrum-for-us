@@ -294,7 +294,7 @@ export default function OnboardingPage() {
             <div className="space-y-3 mb-8">
               {[
                 { n: 1, t: "Ajoute tes 3 premières créations", d: "De belles photos lumineuses = plus de ventes. Vise au moins 3 produits.", href: "/vendeur/nouveau-produit", cta: "Ajouter un produit", done: true },
-                { n: 2, t: "Active ton paiement", d: "Connecte Stripe pour être payé·e (ou le versement manuel si tu es hors zone Stripe, ex. Tunisie).", href: "/vendeur", cta: "Configurer le paiement" },
+                { n: 2, t: "Active ton paiement", d: "Connecte Stripe pour être payé·e — ou le versement manuel (Payoneer/Wise/virement) où que tu sois dans le monde.", href: "/vendeur", cta: "Configurer le paiement" },
                 { n: 3, t: "Vérifie ta livraison", d: "Les modes (point relais, domicile…) sont déjà préréglés — ajuste si besoin.", href: "/vendeur", cta: "Voir la livraison" },
                 { n: 4, t: "Partage ta boutique", d: "Le bouche-à-oreille fait tes premières ventes. Envoie ton lien à ta communauté.", href: shopSlug ? `/boutique/${shopSlug}` : "/vendeur", cta: "Voir ma boutique publique" },
               ].map(s => (

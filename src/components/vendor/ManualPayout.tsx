@@ -5,7 +5,16 @@ import { Globe, Check, Loader2, Pencil } from "lucide-react";
 
 const C = { ink: "#101014", soft: "#6B6258", line: "#ECE6DB", mag: "#FF2DA0", green: "#1B8155" };
 
-const COUNTRIES = ["Tunisie 🇹🇳", "Maroc 🇲🇦", "Algérie 🇩🇿", "Sénégal 🇸🇳", "Côte d'Ivoire 🇨🇮", "Cameroun 🇨🇲", "Liban 🇱🇧", "Égypte 🇪🇬", "Autre"];
+// Versement manuel = ouvert au MONDE ENTIER (pour les pays où Stripe Connect n'est pas dispo).
+const COUNTRIES = [
+  "Tunisie 🇹🇳","Maroc 🇲🇦","Algérie 🇩🇿","Sénégal 🇸🇳","Côte d'Ivoire 🇨🇮","Cameroun 🇨🇲","Mali 🇲🇱","Bénin 🇧🇯","Togo 🇹🇬","RD Congo 🇨🇩","Madagascar 🇲🇬","Égypte 🇪🇬","Nigeria 🇳🇬","Kenya 🇰🇪","Afrique du Sud 🇿🇦","Ghana 🇬🇭",
+  "Liban 🇱🇧","Turquie 🇹🇷","Émirats 🇦🇪","Arabie saoudite 🇸🇦","Israël 🇮🇱",
+  "Inde 🇮🇳","Pakistan 🇵🇰","Bangladesh 🇧🇩","Indonésie 🇮🇩","Philippines 🇵🇭","Vietnam 🇻🇳","Thaïlande 🇹🇭","Chine 🇨🇳","Japon 🇯🇵","Corée du Sud 🇰🇷",
+  "Brésil 🇧🇷","Argentine 🇦🇷","Mexique 🇲🇽","Colombie 🇨🇴","Chili 🇨🇱","Pérou 🇵🇪",
+  "États-Unis 🇺🇸","Canada 🇨🇦","Royaume-Uni 🇬🇧","France 🇫🇷","Belgique 🇧🇪","Suisse 🇨🇭","Allemagne 🇩🇪","Espagne 🇪🇸","Italie 🇮🇹","Portugal 🇵🇹","Pays-Bas 🇳🇱",
+  "Ukraine 🇺🇦","Russie 🇷🇺","Australie 🇦🇺","Nouvelle-Zélande 🇳🇿",
+  "Autre pays 🌍",
+];
 
 const METHODS = [
   { v: "payoneer", l: "Payoneer (e-mail du compte)", ph: "ton@email.com" },
@@ -19,7 +28,7 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
   const [mode, setMode] = useState<string>("stripe");
   const [method, setMethod] = useState("payoneer");
   const [details, setDetails] = useState("");
-  const [country, setCountry] = useState("Tunisie 🇹🇳");
+  const [country, setCountry] = useState("Autre pays 🌍");
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -90,7 +99,7 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
     <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${C.line}` }}>
       <div className="flex items-center gap-2 mb-1">
         <Globe size={17} style={{ color: C.mag }} />
-        <h3 className="font-bricolage font-semibold text-[15px]" style={{ color: C.ink }}>Pays sans Stripe (ex. Tunisie 🇹🇳)</h3>
+        <h3 className="font-bricolage font-semibold text-[15px]" style={{ color: C.ink }}>Vendre depuis le monde entier 🌍</h3>
         {mode === "manual" && <span className="ml-auto inline-flex items-center gap-1 font-mono text-[10px] rounded-full px-2 py-0.5" style={{ background: `${C.green}1A`, color: C.green }}><Check size={11} /> Versement manuel</span>}
       </div>
 
@@ -135,7 +144,7 @@ export function ManualPayout({ shopId: _shopId }: { shopId: string }) {
       ) : (
         <>
           <p className="text-[13.5px] mb-3" style={{ color: C.soft }}>
-            Stripe n'est pas disponible dans certains pays (Tunisie, etc.). Si c'est ton cas, active le <strong>versement manuel</strong> : tu vends normalement, et la plateforme te paie via Payoneer / virement.
+            Stripe n'est pas disponible dans tous les pays. Où que tu sois dans le monde, active le <strong>versement manuel</strong> : tu vends normalement, et la plateforme te paie via Payoneer / Wise / virement.
           </p>
           <button onClick={() => setEditing(true)}
             className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-semibold text-[14px]" style={{ background: "#101014", color: "#fff" }}>
