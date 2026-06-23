@@ -90,7 +90,15 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [locale,       setLocaleState]   = useState<Locale>("fr");
   const [currency,     setCurrencyState] = useState<Currency>("EUR");
   const [geoDetected,  setGeoDetected]   = useState(false);
+  const [rates,        setRates]         = useState<Record<Currency, number>>(RATES);
   const [,             forceRender]      = useState(0);
+
+  // Taux de change LIVE (remplace les taux statiques) · repli silencieux si indispo.
+  useEffect(() => {
+    fetch("/api/fx").then(r => r.json()).then(d => {
+      if (d?.rates) setRates(prev => ({ ...prev, ...d.rates }));
+    }).catch(() => {});
+  }, []);
 
   // On mount: restore saved prefs OR geolocate
   useEffect(() => {
@@ -183,7 +191,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, [locale]);
 
   const formatPrice = useCallback((eurAmount: number): string => {
-    const converted = eurAmount * RATES[currency];
+    const converted = eurAmount * (rates[currency] ?? RATES[currency]);
     const symbol    = CURRENCY_SYMBOLS[currency];
     // Format nicely
     const formatted = new Intl.NumberFormat(locale === "ar" ? "ar-TN" : locale === "en" ? "en-US" : "fr-FR", {
@@ -193,7 +201,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     // Symbol placement
     const rightSymbols: Currency[] = ["TND","MAD","DZD","SAR","AED","EGP","XOF","CHF","CAD","AUD"];
     return rightSymbols.includes(currency) ? `${formatted} ${symbol}` : `${symbol}${formatted}`;
-  }, [currency, locale]);
+  }, [currency, locale, rates]);
 
   return (
     <I18nContext.Provider value={{
