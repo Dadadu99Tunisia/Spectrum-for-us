@@ -3,6 +3,22 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 import { CRM_STAGES, CRM_CONTACT_TYPES, CRM_CONVERTED_STAGES } from "@/lib/crm/enums";
 
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await requireAdmin(["super_admin","ceo","cfo","marketing","commercial"]);
+  if ("error" in auth) return auth.error;
+
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("crm_interactions")
+    .select("id, type, subject, content, created_at")
+    .eq("contact_id", id)
+    .order("created_at", { ascending: false })
+    .limit(100);
+  if (error) return apiError(error.message);
+  return apiResponse(data);
+}
+
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireAdmin(["super_admin","ceo","marketing","commercial"]);
   if ("error" in auth) return auth.error;

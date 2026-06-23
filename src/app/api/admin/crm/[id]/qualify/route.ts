@@ -94,5 +94,12 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     .eq("id", id).select().single();
 
   if (updateErr) return apiError(updateErr.message);
+
+  // Journalise dans la timeline (non bloquant).
+  await supabase.from("crm_interactions").insert({
+    contact_id: id, user_id: auth.user.id, type: "qualify",
+    subject: `Score ${result.score}/5 → ${newStage}`, content: result.reason,
+  });
+
   return apiResponse({ ...result, newStage, contact: updated });
 }

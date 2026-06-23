@@ -27,6 +27,14 @@ type Contact = {
   updated_at: string;
 };
 
+type Interaction = {
+  id: string;
+  type: string | null;
+  subject: string | null;
+  content: string | null;
+  created_at: string;
+};
+
 // ─── Stage config · aligned with DB enum ─────────────────────────────────────
 const STAGES = ["identified","qualified","nurturing","contacted","partner","vendor","rejected","closed"] as const;
 type Stage = typeof STAGES[number];
@@ -191,10 +199,19 @@ function ContactPanel({
   const [qualifyStatus, setQualifyStatus] = useState<AgentStatus>("idle");
   const [outreachStatus, setOutreachStatus] = useState<AgentStatus>("idle");
   const [copiedMsg, setCopiedMsg] = useState(false);
+  const [timeline, setTimeline] = useState<Interaction[]>([]);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Sync local state when parent contact changes
-  useEffect(() => { setLocal(contact); }, [contact]);
+  const loadTimeline = useCallback(async (id: string) => {
+    try {
+      const res = await fetch(`/api/admin/crm/${id}`, { method: "GET" });
+      const json = await res.json();
+      setTimeline(json.data ?? []);
+    } catch { setTimeline([]); }
+  }, []);
+
+  // Sync local state + timeline when parent contact changes
+  useEffect(() => { setLocal(contact); loadTimeline(contact.id); }, [contact, loadTimeline]);
 
   const cfg    = STAGE_CFG[local.stage as Stage] ?? STAGE_CFG.identified;
   const parsed = parseNotes(local.notes);
@@ -251,13 +268,22 @@ function ContactPanel({
 
   const addNote = async () => {
     if (!note.trim()) return;
-    const dateStr = new Date().toLocaleDateString("fr-FR");
-    const entry   = `[${dateStr}] ${note.trim()}`;
-    const newNotes = local.notes ? `${local.notes}\n\n${entry}` : entry;
-    await onUpdate(local.id, { notes: newNotes });
-    setLocal(prev => ({ ...prev, notes: newNotes }));
-    setNote("");
     setAddingNote(false);
+    const res = await fetch(`/api/admin/crm/${local.id}`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "note", content: note.trim() }),
+    });
+    setNote("");
+    if (res.ok) loadTimeline(local.id);
+    else { const j = await res.json().catch(() => ({})); alert("Note non enregistrée : " + (j.error ?? res.status)); }
+  };
+
+  const INTERACTION_META: Record<string, { icon: string; label: string }> = {
+    note:         { icon: "📝", label: "Note" },
+    stage_change: { icon: "🔀", label: "Étape" },
+    qualify:      { icon: "🤖", label: "Qualification IA" },
+    outreach:     { icon: "✉️", label: "Message généré" },
+    email:        { icon: "✉️", label: "Email" },
   };
 
   const updatedParsed = parseNotes(local.notes);
@@ -469,19 +495,19 @@ function ContactPanel({
             </div>
           </div>
 
-          {/* Notes */}
+          {/* Activité · timeline d'interactions */}
           <div className="px-5 pb-4">
             <div className="flex items-center justify-between mb-2">
-              <SectionTitle>Notes</SectionTitle>
+              <SectionTitle>Activité</SectionTitle>
               <button onClick={() => setAddingNote(!addingNote)}
                 className="font-mono text-[9px] text-[#a78bfa]/50 hover:text-[#a78bfa] transition-colors">
-                {addingNote ? "Annuler" : "+ Ajouter"}
+                {addingNote ? "Annuler" : "+ Note"}
               </button>
             </div>
 
             {addingNote && (
               <div className="mb-3 space-y-2">
-                <textarea value={note} onChange={e => setNote(e.target.value)} rows={3}
+                <textarea value={note} onChange={e => setNote(e.target.value)} rows={3} autoFocus
                   placeholder="Ajouter une note…"
                   className="w-full bg-[#101014]/4 border border-[#101014]/10 rounded-xl px-3 py-2.5 font-hanken text-sm text-[#101014] placeholder-[#101014]/20 focus:outline-none focus:border-[#a78bfa]/40 resize-none transition-colors" />
                 <div className="flex gap-2">
@@ -497,14 +523,39 @@ function ContactPanel({
               </div>
             )}
 
-            {local.notes ? (
-              <div className="bg-[#101014]/[0.025] border border-[#101014]/6 rounded-xl p-3.5 max-h-48 overflow-y-auto">
-                <p className="font-hanken text-xs text-[#101014]/50 leading-relaxed whitespace-pre-wrap">
-                  {local.notes}
-                </p>
+            {timeline.length > 0 ? (
+              <div className="relative pl-4 max-h-72 overflow-y-auto">
+                <div className="absolute left-[5px] top-1.5 bottom-1.5 w-px bg-[#101014]/8" />
+                <div className="space-y-3">
+                  {timeline.map(it => {
+                    const meta = INTERACTION_META[it.type ?? "note"] ?? INTERACTION_META.note;
+                    return (
+                      <div key={it.id} className="relative">
+                        <span className="absolute -left-4 top-1 text-[10px]">{meta.icon}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[9px] uppercase tracking-wider text-[#101014]/35">{meta.label}</span>
+                          <span className="font-mono text-[9px] text-[#101014]/25">
+                            {new Date(it.created_at).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        </div>
+                        {it.content && <p className="font-hanken text-xs text-[#101014]/60 leading-relaxed whitespace-pre-wrap mt-0.5">{it.content}</p>}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ) : (
-              <p className="font-hanken text-xs text-[#101014]/20 italic">Aucune note</p>
+              <p className="font-hanken text-xs text-[#101014]/20 italic">Aucune activité pour l&apos;instant</p>
+            )}
+
+            {/* Notes importées (legacy, métadonnées prospection) */}
+            {local.notes && (
+              <details className="mt-3">
+                <summary className="font-mono text-[9px] uppercase tracking-wider text-[#101014]/30 cursor-pointer hover:text-[#101014]/50">Notes importées</summary>
+                <div className="bg-[#101014]/[0.025] border border-[#101014]/6 rounded-xl p-3 mt-1.5 max-h-40 overflow-y-auto">
+                  <p className="font-hanken text-xs text-[#101014]/45 leading-relaxed whitespace-pre-wrap">{local.notes}</p>
+                </div>
+              </details>
             )}
           </div>
 
@@ -616,7 +667,7 @@ function InfoRow({
 }
 
 // ─── Kanban Card ──────────────────────────────────────────────────────────────
-function KanbanCard({ c, onClick }: { c: Contact; onClick: () => void }) {
+function KanbanCard({ c, onClick, onDragStart, dragging }: { c: Contact; onClick: () => void; onDragStart?: () => void; dragging?: boolean }) {
   const cfg    = STAGE_CFG[c.stage as Stage] ?? STAGE_CFG.identified;
   const parsed = parseNotes(c.notes);
   const score  = getAiScore(c.tags);
@@ -624,7 +675,10 @@ function KanbanCard({ c, onClick }: { c: Contact; onClick: () => void }) {
 
   return (
     <button onClick={onClick}
-      className="w-full text-left p-3.5 rounded-xl border border-[#101014]/8 bg-[#101014]/[0.015] hover:border-[#101014]/18 hover:bg-[#101014]/[0.035] transition-all group cursor-pointer">
+      draggable={!!onDragStart}
+      onDragStart={(e) => { e.dataTransfer.effectAllowed = "move"; onDragStart?.(); }}
+      className="w-full text-left p-3.5 rounded-xl border border-[#101014]/8 bg-[#101014]/[0.015] hover:border-[#101014]/18 hover:bg-[#101014]/[0.035] transition-all group cursor-grab active:cursor-grabbing"
+      style={dragging ? { opacity: 0.4 } : undefined}>
       <div className="flex items-start gap-2.5 mb-2">
         {/* Avatar */}
         <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-mono text-[10px] font-bold"
@@ -773,6 +827,8 @@ export default function CRMPage() {
   const [savingNew, setSavingNew]   = useState(false);
   const [selected, setSelected]     = useState<Contact | null>(null);
   const [view, setView]             = useState<"kanban" | "list">("kanban");
+  const [dragId, setDragId]         = useState<string | null>(null);
+  const [dragOverStage, setDragOverStage] = useState<Stage | null>(null);
   const [newContact, setNewContact] = useState({
     name: "", email: "", company: "", contact_type: "prospect_vendor",
     stage: "identified", source: "", notes: "",
@@ -834,6 +890,14 @@ export default function CRMPage() {
       const j = await res.json().catch(() => ({}));
       alert("Mise à jour échouée : " + (j.error ?? res.status));
       fetchContacts(); // resynchronise depuis la DB
+      return;
+    }
+    // Journalise les changements de stage dans la timeline (non bloquant).
+    if (patch.stage) {
+      fetch(`/api/admin/crm/${id}`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "stage_change", subject: patch.stage, content: `Déplacé vers « ${STAGE_CFG[patch.stage as Stage]?.label ?? patch.stage} »` }),
+      }).catch(() => {});
     }
   };
 
@@ -860,6 +924,18 @@ export default function CRMPage() {
     : contacts.filter(c => (segCfg.types as readonly string[]).includes(c.contact_type));
 
   const byStage = (stage: Stage) => filteredBySegment.filter(c => c.stage === stage);
+
+  // Drag & drop kanban : déposer une carte dans une colonne change son stage (persisté).
+  const dropOnStage = (stage: Stage) => {
+    const id = dragId;
+    setDragId(null);
+    setDragOverStage(null);
+    if (!id) return;
+    const c = contacts.find(x => x.id === id);
+    if (!c || c.stage === stage) return;
+    updateContact(id, { stage });
+    if (selected?.id === id) setSelected({ ...selected, stage });
+  };
 
   const KANBAN_STAGES: Stage[] = ["identified","qualified","nurturing","contacted","partner","vendor"];
   const SIDE_STAGES:   Stage[] = ["rejected","closed"];
@@ -947,8 +1023,12 @@ export default function CRMPage() {
           {KANBAN_STAGES.map(stage => {
             const cfg  = STAGE_CFG[stage];
             const cols = byStage(stage);
+            const isOver = dragOverStage === stage;
             return (
-              <div key={stage} className="flex-shrink-0 w-[220px]">
+              <div key={stage} className="flex-shrink-0 w-[220px]"
+                onDragOver={(e) => { if (dragId) { e.preventDefault(); setDragOverStage(stage); } }}
+                onDragLeave={() => setDragOverStage(prev => prev === stage ? null : prev)}
+                onDrop={(e) => { e.preventDefault(); dropOnStage(stage); }}>
                 {/* Column header */}
                 <div className="flex items-center justify-between mb-2.5 px-0.5">
                   <div className="flex items-center gap-1.5">
@@ -959,12 +1039,14 @@ export default function CRMPage() {
                     {cols.length}
                   </span>
                 </div>
-                {/* Cards */}
-                <div className="space-y-2 min-h-[60px]">
-                  {cols.map(c => <KanbanCard key={c.id} c={c} onClick={() => setSelected(c)} />)}
+                {/* Cards (drop zone) */}
+                <div className="space-y-2 min-h-[60px] rounded-xl transition-colors"
+                  style={isOver ? { background: cfg.bg, boxShadow: `inset 0 0 0 1.5px ${cfg.dot}` } : undefined}>
+                  {cols.map(c => <KanbanCard key={c.id} c={c} onClick={() => setSelected(c)}
+                    onDragStart={() => setDragId(c.id)} dragging={dragId === c.id} />)}
                   {cols.length === 0 && (
                     <div className="border border-dashed border-[#101014]/6 rounded-xl h-16 flex items-center justify-center">
-                      <p className="font-mono text-[9px] text-[#101014]/15">vide</p>
+                      <p className="font-mono text-[9px] text-[#101014]/15">{isOver ? "déposer ici" : "vide"}</p>
                     </div>
                   )}
                 </div>
@@ -978,7 +1060,11 @@ export default function CRMPage() {
               const cfg  = STAGE_CFG[stage];
               const cols = byStage(stage);
               return (
-                <div key={stage} className="mb-4">
+                <div key={stage} className="mb-4 rounded-xl transition-colors"
+                  onDragOver={(e) => { if (dragId) { e.preventDefault(); setDragOverStage(stage); } }}
+                  onDragLeave={() => setDragOverStage(prev => prev === stage ? null : prev)}
+                  onDrop={(e) => { e.preventDefault(); dropOnStage(stage); }}
+                  style={dragOverStage === stage ? { background: cfg.bg, boxShadow: `inset 0 0 0 1.5px ${cfg.dot}` } : undefined}>
                   <div className="flex items-center justify-between mb-2 px-0.5">
                     <span className="font-mono text-[10px] text-[#101014]/40">{cfg.label}</span>
                     <span className="font-mono text-[9px] text-[#101014]/25">{cols.length}</span>
