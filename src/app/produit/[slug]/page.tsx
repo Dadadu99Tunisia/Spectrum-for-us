@@ -16,6 +16,7 @@ import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { ProductReviews } from "@/components/ProductReviews";
 import { BookingWidget } from "@/components/booking/BookingWidget";
 import { TrustBadges } from "@/components/ui/TrustBadges";
+import { useI18n } from "@/contexts/I18nContext";
 
 type Product = {
   id: string; name: string; title: string; description: string;
@@ -32,11 +33,50 @@ type RelatedProduct = {
   slug: string; images: string[] | null; image_url: string | null;
 };
 
-const TYPE_CONFIG: Record<string, { label: string; icon: React.ElementType; color: string; cta: string; ctaAdding: string }> = {
-  product: { label: "Produit",    icon: Package,      color: "#FF2DA0", cta: "Ajouter au panier",   ctaAdding: "Ajouté ✓" },
-  service: { label: "Service",    icon: Zap,          color: "#FFD400", cta: "Réserver ce service", ctaAdding: "Réservé ✓" },
-  event:   { label: "Événement",  icon: CalendarDays, color: "#7A2BF0", cta: "S'inscrire",          ctaAdding: "Inscrit·e ✓" },
+const TYPE_BASE: Record<string, { icon: React.ElementType; color: string }> = {
+  product: { icon: Package, color: "#FF2DA0" },
+  service: { icon: Zap, color: "#FFD400" },
+  event:   { icon: CalendarDays, color: "#7A2BF0" },
 };
+const TYPE_TX = {
+  fr: {
+    product: { label: "Produit", cta: "Ajouter au panier", ctaAdding: "Ajouté ✓" },
+    service: { label: "Service", cta: "Réserver ce service", ctaAdding: "Réservé ✓" },
+    event:   { label: "Événement", cta: "S'inscrire", ctaAdding: "Inscrit·e ✓" },
+  },
+  en: {
+    product: { label: "Product", cta: "Add to cart", ctaAdding: "Added ✓" },
+    service: { label: "Service", cta: "Book this service", ctaAdding: "Booked ✓" },
+    event:   { label: "Event", cta: "Register", ctaAdding: "Registered ✓" },
+  },
+} as const;
+
+const PRODUCT_TX = {
+  fr: {
+    maxStock: "Tu as déjà le stock maximum de cet article dans ton panier.",
+    limitedStock: (n: number) => `Stock limité : il ne reste que ${n} exemplaire(s) disponible(s).`,
+    notFound: "Produit introuvable", backToMarket: "← Retour à la marketplace",
+    discover: "Découvrir", adultOnly: "🔞 Réservé aux adultes", by: "par",
+    oos: "Ce produit est actuellement épuisé.", qty: "Qté",
+    payNotReady: "✦ Cette boutique finalise sa configuration de paiement. Suis-la pour être prévenu·e dès l'ouverture des ventes.",
+    soldOut: "Épuisé", comingSoon: "Bientôt en vente",
+    stockLow: (n: number) => `⚠ Plus que ${n} en stock`, stockOk: (n: number) => `${n} en stock`,
+    otherFrom: (name: string) => `Autres créations de ${name}`, seeAll: "Voir tout →",
+    shareText: (n: string) => `Regarde « ${n} » sur Spectrum For Us`, share: "Partager",
+  },
+  en: {
+    maxStock: "You already have the maximum stock of this item in your cart.",
+    limitedStock: (n: number) => `Limited stock: only ${n} item(s) left available.`,
+    notFound: "Product not found", backToMarket: "← Back to the marketplace",
+    discover: "Discover", adultOnly: "🔞 Adults only", by: "by",
+    oos: "This product is currently sold out.", qty: "Qty",
+    payNotReady: "✦ This shop is finalizing its payment setup. Follow it to be notified as soon as sales open.",
+    soldOut: "Sold out", comingSoon: "Coming soon",
+    stockLow: (n: number) => `⚠ Only ${n} left in stock`, stockOk: (n: number) => `${n} in stock`,
+    otherFrom: (name: string) => `More from ${name}`, seeAll: "See all →",
+    shareText: (n: string) => `Check out "${n}" on Spectrum For Us`, share: "Share",
+  },
+} as const;
 
 export default function ProduitPage() {
   const params = useParams();
@@ -49,6 +89,9 @@ export default function ProduitPage() {
   const [added,    setAdded]    = useState(false);
   const [activeImg, setActiveImg] = useState(0);
   const { add, items: cartItems } = useCart();
+  const { locale } = useI18n();
+  const L = locale === "en" ? "en" : "fr";
+  const TX = PRODUCT_TX[L];
 
   useEffect(() => {
     if (!slug) return;
@@ -99,8 +142,8 @@ export default function ProduitPage() {
       const inCart = cartItems.find(i => i.id === product.id)?.quantity ?? 0;
       if (inCart + qty > product.quantity) {
         alert(product.quantity - inCart <= 0
-          ? "Tu as déjà le stock maximum de cet article dans ton panier."
-          : `Stock limité : il ne reste que ${product.quantity - inCart} exemplaire(s) disponible(s).`);
+          ? TX.maxStock
+          : TX.limitedStock(product.quantity - inCart));
         return;
       }
     }
@@ -126,7 +169,8 @@ export default function ProduitPage() {
   const productName = product?.name || product?.title || "";
   const images      = product?.images?.length ? product.images : product?.image_url ? [product.image_url] : [];
   const ptype       = product?.type ?? "product";
-  const typeConf    = TYPE_CONFIG[ptype] ?? TYPE_CONFIG.product;
+  const typeTx      = (TYPE_TX[L] as Record<string, { label: string; cta: string; ctaAdding: string }>)[ptype] ?? TYPE_TX[L].product;
+  const typeConf    = { ...(TYPE_BASE[ptype] ?? TYPE_BASE.product), ...typeTx };
   const TypeIcon    = typeConf.icon;
   const isOos       = ptype === "product" && product?.quantity !== undefined && product.quantity !== null && product.quantity <= 0;
 
@@ -157,8 +201,8 @@ export default function ProduitPage() {
     <>
       <Header />
       <main className="min-h-screen pt-24 pb-20 px-6 flex flex-col items-center justify-center">
-        <p className="font-fraunces text-3xl text-[#101014]/30 mb-4">Produit introuvable</p>
-        <Link href="/decouvrir" className="font-mono text-sm text-[#FF2DA0] hover:underline">← Retour à la marketplace</Link>
+        <p className="font-fraunces text-3xl text-[#101014]/30 mb-4">{TX.notFound}</p>
+        <Link href="/decouvrir" className="font-mono text-sm text-[#FF2DA0] hover:underline">{TX.backToMarket}</Link>
       </main>
       <Footer />
     </>
@@ -181,7 +225,7 @@ export default function ProduitPage() {
           {/* Breadcrumb · desktop only */}
           <div className="hidden md:flex items-center gap-2 mb-8 flex-wrap">
             <Link href="/decouvrir" className="flex items-center gap-1.5 text-[#101014]/40 hover:text-[#FF2DA0] text-sm font-hanken transition-colors">
-              <ArrowLeft size={14} /> Découvrir
+              <ArrowLeft size={14} /> {TX.discover}
             </Link>
             {product.category && (
               <>
@@ -243,15 +287,15 @@ export default function ProduitPage() {
                 </span>
                 {product.is_adult && (
                   <span className="inline-flex items-center gap-1 font-mono text-[10px] tracking-wide px-2 py-1 rounded-full border border-[#101014]/15 bg-[#101014]/5 text-[#101014]/70">
-                    🔞 Réservé aux adultes
+                    {TX.adultOnly}
                   </span>
                 )}
               </div>
 
               <div className="flex items-start justify-between gap-3 mb-2">
                 <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] leading-tight">{productName}</h1>
-                <ShareButton title={`${productName} · Spectrum For Us`} text={`Regarde « ${productName} » sur Spectrum For Us`}
-                  label="Partager" iconOnly size={18}
+                <ShareButton title={`${productName} · Spectrum For Us`} text={TX.shareText(productName)}
+                  label={TX.share} iconOnly size={18}
                   className="shrink-0 w-10 h-10 rounded-full border border-[#101014]/12 text-[#101014]/50 hover:text-[#FF2DA0] transition-colors" />
               </div>
 
@@ -260,7 +304,7 @@ export default function ProduitPage() {
                   {product.event_date && (
                     <p className="flex items-center gap-2 font-hanken text-sm text-[#101014]">
                       <CalendarDays size={14} className="text-[#7A2BF0]" />
-                      <span className="capitalize">{new Date(product.event_date).toLocaleString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}</span>
+                      <span className="capitalize">{new Date(product.event_date).toLocaleString(L === "en" ? "en-US" : "fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}</span>
                     </p>
                   )}
                   {(product.event_location || product.event_city) && (
@@ -275,7 +319,7 @@ export default function ProduitPage() {
               {shop && (
                 <Link href={`/boutique/${shop.slug || product.shop_id}`}
                   className="font-mono text-sm text-[#101014]/40 hover:text-[#FF2DA0] transition-colors block mb-8">
-                  par {shop.name}
+                  {TX.by} {shop.name}
                 </Link>
               )}
 
@@ -287,7 +331,7 @@ export default function ProduitPage() {
               {isOos && (
                 <div className="flex items-center gap-2 mb-6 px-4 py-3 rounded-xl bg-[#101014]/5 border border-[#101014]/15">
                   <AlertCircle size={14} className="text-[#101014]/40 shrink-0" />
-                  <span className="font-hanken text-sm text-[#101014]/50">Ce produit est actuellement épuisé.</span>
+                  <span className="font-hanken text-sm text-[#101014]/50">{TX.oos}</span>
                 </div>
               )}
 
@@ -303,7 +347,7 @@ export default function ProduitPage() {
               {/* Qty · only for physical products in stock */}
               {ptype === "product" && !isOos && (
                 <div className="flex items-center gap-4 mb-8">
-                  <p className="font-mono text-[10px] tracking-wide text-[#101014]/40">Qté</p>
+                  <p className="font-mono text-[10px] tracking-wide text-[#101014]/40">{TX.qty}</p>
                   <div className="flex items-center border border-[#101014]/15 rounded-xl overflow-hidden">
                     <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-11 h-11 text-[#101014]/60 hover:text-[#101014] text-xl transition-colors">-</button>
                     <span className="w-10 text-center font-mono text-sm text-[#101014]">{qty}</span>
@@ -316,7 +360,7 @@ export default function ProduitPage() {
               {/* CTAs */}
               {!payReady && (
                 <p className="mb-3 text-[13px] font-hanken px-4 py-3 rounded-xl" style={{ background: "#FFF4D6", color: "#8A6D1A" }}>
-                  ✦ Cette boutique finalise sa configuration de paiement. Suis-la pour être prévenu·e dès l'ouverture des ventes.
+                  {TX.payNotReady}
                 </p>
               )}
               {ptype === "service" && payReady && (
@@ -333,7 +377,7 @@ export default function ProduitPage() {
                     color: (isOos || !payReady) ? "#10101480" : "#fff",
                   }}
                 >
-                  {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {isOos ? "Épuisé" : !payReady ? "Bientôt en vente" : typeConf.cta}</>}
+                  {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {isOos ? TX.soldOut : !payReady ? TX.comingSoon : typeConf.cta}</>}
                 </button>
                 )}
                 <button onClick={toggleLike}
@@ -354,7 +398,7 @@ export default function ProduitPage() {
               {/* Stock info */}
               {ptype === "product" && product.quantity !== null && product.quantity > 0 && (
                 <p className="mt-4 font-mono text-xs text-[#101014]/25">
-                  {product.quantity <= 5 ? `⚠ Plus que ${product.quantity} en stock` : `${product.quantity} en stock`}
+                  {product.quantity <= 5 ? TX.stockLow(product.quantity) : TX.stockOk(product.quantity)}
                 </p>
               )}
             </div>
@@ -364,9 +408,9 @@ export default function ProduitPage() {
           {related.length > 0 && shop && (
             <div className="mt-20 border-t border-[#101014]/8 pt-12">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="font-fraunces text-2xl text-[#101014]">Autres créations de {shop.name}</h2>
+                <h2 className="font-fraunces text-2xl text-[#101014]">{TX.otherFrom(shop.name)}</h2>
                 <Link href={`/boutique/${shop.slug}`} className="font-mono text-xs text-[#FF2DA0] hover:text-[#FF2DA0]/70 transition-colors tracking-wide">
-                  Voir tout →
+                  {TX.seeAll}
                 </Link>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -429,7 +473,7 @@ export default function ProduitPage() {
               background: added ? "#2323C4" : !payReady ? "#10101430" : `linear-gradient(135deg,${typeConf.color}dd,${typeConf.color})`,
               boxShadow: payReady ? `0 4px 20px ${typeConf.color}40` : "none",
             }}>
-            {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {!payReady ? "Bientôt en vente" : typeConf.cta}</>}
+            {added ? <><Check size={16} /> {typeConf.ctaAdding}</> : <><ShoppingBag size={16} /> {!payReady ? TX.comingSoon : typeConf.cta}</>}
           </button>
           <button onClick={toggleLike}
             className="w-12 h-12 flex items-center justify-center rounded-2xl shrink-0"
