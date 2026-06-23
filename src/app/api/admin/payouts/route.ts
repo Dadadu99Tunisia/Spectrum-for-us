@@ -29,12 +29,15 @@ export async function GET() {
   if (!shops?.length) return apiResponse([]);
 
   const shopIds = shops.map(s => s.id);
-  const [{ data: comm }, { data: ships }, { data: payouts }, { data: prods }] = await Promise.all([
-    admin.from("commissions").select("shop_id, gross_amount, commission_amount, created_at").in("shop_id", shopIds),
+  const [{ data: comm }, { data: ships }, { data: payouts }, { data: prods }, { data: disputed }] = await Promise.all([
+    admin.from("commissions").select("shop_id, order_id, gross_amount, commission_amount, created_at").in("shop_id", shopIds),
     admin.from("order_shipments").select("shop_id, shipping_cost").in("shop_id", shopIds),
     admin.from("vendor_payouts").select("shop_id, amount").in("shop_id", shopIds),
     admin.from("products").select("shop_id, is_active").in("shop_id", shopIds),
+    // Commandes en litige carte (chargeback) ouvert → leurs fonds restent gelés.
+    admin.from("orders").select("id").not("dispute_status", "is", null).neq("dispute_status", "won"),
   ]);
+  const disputedOrders = new Set((disputed ?? []).map((o: { id: string }) => o.id));
 
   // E-mails des propriétaires
   const emailByShop: Record<string, string | null> = {};
@@ -65,7 +68,8 @@ export async function GET() {
   // Net produit (gross − commission) LIBÉRABLE = commissions plus vieilles que la
   // fenêtre de rétention. Le port (remboursement d'affranchissement) est libéré tout de suite.
   const availableNet: Record<string, number> = {};
-  for (const c of (comm ?? []) as { shop_id: string; gross_amount: number; commission_amount: number; created_at: string | null }[]) {
+  for (const c of (comm ?? []) as { shop_id: string; order_id: string | null; gross_amount: number; commission_amount: number; created_at: string | null }[]) {
+    if (c.order_id && disputedOrders.has(c.order_id)) continue;   // litige ouvert → gelé
     if (c.created_at && c.created_at <= holdCutoff) {
       availableNet[c.shop_id] = (availableNet[c.shop_id] ?? 0) + (Number(c.gross_amount || 0) - Number(c.commission_amount || 0));
     }
@@ -114,13 +118,15 @@ export async function POST(req: NextRequest) {
     const { data: holdSetting } = await admin.from("admin_settings").select("value").eq("key", "manual_payout_hold_days").maybeSingle();
     const holdDays = Number.isFinite(Number(holdSetting?.value)) ? Number(holdSetting?.value) : 7;
     const holdCutoff = new Date(Date.now() - holdDays * 86400_000).toISOString();
-    const [{ data: comm }, { data: ships }, { data: payouts }] = await Promise.all([
-      admin.from("commissions").select("gross_amount, commission_amount, created_at").eq("shop_id", body.shop_id),
+    const [{ data: comm }, { data: ships }, { data: payouts }, { data: disputed }] = await Promise.all([
+      admin.from("commissions").select("order_id, gross_amount, commission_amount, created_at").eq("shop_id", body.shop_id),
       admin.from("order_shipments").select("shipping_cost").eq("shop_id", body.shop_id),
       admin.from("vendor_payouts").select("amount").eq("shop_id", body.shop_id),
+      admin.from("orders").select("id").not("dispute_status", "is", null).neq("dispute_status", "won"),
     ]);
-    const availableNet = (comm ?? []).reduce((s, c: { gross_amount: number; commission_amount: number; created_at: string | null }) =>
-      c.created_at && c.created_at <= holdCutoff ? s + (Number(c.gross_amount || 0) - Number(c.commission_amount || 0)) : s, 0);
+    const disputedOrders = new Set((disputed ?? []).map((o: { id: string }) => o.id));
+    const availableNet = (comm ?? []).reduce((s, c: { order_id: string | null; gross_amount: number; commission_amount: number; created_at: string | null }) =>
+      (!(c.order_id && disputedOrders.has(c.order_id)) && c.created_at && c.created_at <= holdCutoff) ? s + (Number(c.gross_amount || 0) - Number(c.commission_amount || 0)) : s, 0);
     const shippingTot = (ships ?? []).reduce((s, x: { shipping_cost: number }) => s + Number(x.shipping_cost || 0), 0);
     const paidTot = (payouts ?? []).reduce((s, p: { amount: number }) => s + Number(p.amount || 0), 0);
     const releasable = Math.round(Math.max(0, availableNet + shippingTot - paidTot) * 100) / 100;

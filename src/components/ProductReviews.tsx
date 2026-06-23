@@ -9,7 +9,7 @@ const T = { ink: "#101014", soft: "#6B6258", line: "#ECE6DB", mag: "#FF2DA0", am
 
 type Review = {
   id: string; rating: number; comment: string | null; created_at: string;
-  user_id: string; profiles?: { full_name: string | null } | null;
+  user_id: string; verified?: boolean; profiles?: { full_name: string | null } | null;
 };
 
 function Stars({ value, size = 14, onPick }: { value: number; size?: number; onPick?: (n: number) => void }) {
@@ -34,11 +34,12 @@ export function ProductReviews({ productId }: { productId: string }) {
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [err, setErr] = useState("");
 
   const load = () => {
     const supabase = createClient();
     supabase.from("reviews")
-      .select("id, rating, comment, created_at, user_id, profiles(full_name)")
+      .select("id, rating, comment, created_at, user_id, verified, profiles(full_name)")
       .eq("product_id", productId).order("created_at", { ascending: false })
       .then(({ data }) => { setReviews((data ?? []) as unknown as Review[]); setLoading(false); });
   };
@@ -51,10 +52,13 @@ export function ProductReviews({ productId }: { productId: string }) {
     e.preventDefault();
     if (!user) return;
     setSubmitting(true);
+    setErr("");
     const supabase = createClient();
     const { error } = await supabase.from("reviews").insert({ product_id: productId, user_id: user.id, rating, comment: comment.trim() || null });
     setSubmitting(false);
     if (!error) { setDone(true); setComment(""); load(); }
+    else if (error.message?.includes("REVIEW_NOT_PURCHASED")) setErr("Seul·e un·e acheteur·se de ce produit peut laisser un avis.");
+    else setErr("Avis non publié. Réessaie.");
   };
 
   return (
@@ -87,6 +91,8 @@ export function ProductReviews({ productId }: { productId: string }) {
                 className="mt-3 px-5 py-2.5 rounded-full font-hanken font-semibold text-sm text-white disabled:opacity-50" style={{ background: T.mag }}>
                 {submitting ? "Envoi…" : "Publier mon avis"}
               </button>
+              {err && <p className="font-hanken text-xs mt-2" style={{ color: "#C0392B" }}>{err}</p>}
+              <p className="font-mono text-[10px] mt-2" style={{ color: T.soft }}>🔒 Seul·es les acheteur·ses peuvent laisser un avis.</p>
             </>
           )}
         </form>
@@ -107,7 +113,12 @@ export function ProductReviews({ productId }: { productId: string }) {
           {reviews.map(r => (
             <div key={r.id} className="rounded-2xl p-4" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="font-bricolage font-semibold text-sm" style={{ color: T.ink }}>{r.profiles?.full_name || "Client·e"}</span>
+                <span className="flex items-center gap-1.5">
+                  <span className="font-bricolage font-semibold text-sm" style={{ color: T.ink }}>{r.profiles?.full_name || "Client·e"}</span>
+                  {r.verified && (
+                    <span className="inline-flex items-center gap-0.5 font-mono text-[9px] px-1.5 py-0.5 rounded-full" style={{ background: "#1B815515", color: "#1B8155" }}>✓ Achat vérifié</span>
+                  )}
+                </span>
                 <Stars value={r.rating} size={13} />
               </div>
               {r.comment && <p className="font-hanken text-sm leading-relaxed" style={{ color: T.soft }}>{r.comment}</p>}

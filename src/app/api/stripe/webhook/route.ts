@@ -453,5 +453,29 @@ export async function POST(req: Request) {
     await supabase.from("shops").update(flags).eq("stripe_account_id", account.id);
   }
 
+  // ── Litiges carte (chargebacks) · protège le cash ──────────────────────────
+  // À l'ouverture d'un litige, on marque la commande : ses fonds vendeur sont
+  // alors gelés (exclus du « disponible » dans /api/admin/payouts) jusqu'à clôture.
+  if (event.type === "charge.dispute.created") {
+    const dispute = event.data.object as Stripe.Dispute;
+    const piId = typeof dispute.payment_intent === "string" ? dispute.payment_intent : dispute.payment_intent?.id;
+    if (piId) {
+      await supabase.from("orders")
+        .update({ dispute_status: "needs_response", dispute_opened_at: new Date().toISOString() })
+        .eq("payment_intent_id", piId);
+    }
+  }
+
+  if (event.type === "charge.dispute.closed") {
+    const dispute = event.data.object as Stripe.Dispute;
+    const piId = typeof dispute.payment_intent === "string" ? dispute.payment_intent : dispute.payment_intent?.id;
+    if (piId) {
+      // dispute.status : "won" (gagné) / "lost" (perdu) → dégèle ou acte la perte.
+      await supabase.from("orders")
+        .update({ dispute_status: dispute.status === "won" ? "won" : "lost" })
+        .eq("payment_intent_id", piId);
+    }
+  }
+
   return NextResponse.json({ received: true });
 }

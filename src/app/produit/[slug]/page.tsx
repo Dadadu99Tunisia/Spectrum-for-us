@@ -16,6 +16,7 @@ import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { ProductReviews } from "@/components/ProductReviews";
 import { BookingWidget } from "@/components/booking/BookingWidget";
 import { TrustBadges } from "@/components/ui/TrustBadges";
+import { ReportButton } from "@/components/ui/ReportButton";
 import { useI18n } from "@/contexts/I18nContext";
 
 type Product = {
@@ -401,6 +402,11 @@ export default function ProduitPage() {
                   {product.quantity <= 5 ? TX.stockLow(product.quantity) : TX.stockOk(product.quantity)}
                 </p>
               )}
+
+              {/* Signalement (DSA · notice-and-action) */}
+              <div className="mt-5 pt-4 border-t border-[#101014]/6">
+                <ReportButton targetType="product" targetId={product.id} />
+              </div>
             </div>
           </div>
 
