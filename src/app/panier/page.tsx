@@ -6,29 +6,51 @@ import { Button } from "@/components/ui/Button";
 import { MobilePageHeader } from "@/components/mobile/MobilePageHeader";
 import { Trash2, ShoppingBag, ArrowRight, Package } from "lucide-react";
 import Link from "next/link";
+import { useI18n } from "@/contexts/I18nContext";
+
+const CART_TX = {
+  fr: {
+    myCart: "Mon panier", empty: "Ton panier est vide", emptyShort: "Panier vide",
+    items: (n: number) => `${n} article${n > 1 ? "s" : ""}`,
+    emptyTitle: "Ton panier t'attend", emptyDesc: "Des créateur·ices queer talentueux·ses ont des choses à te montrer.",
+    explore: "Explorer", clearCart: "Vider le panier", keepShopping: "← Continuer",
+    summary: "Récapitulatif", subtotal: "Sous-total", shipping: "Livraison", shippingCalc: "Calculée ensuite",
+    estTotal: "Total estimé", checkout: "Commander", total: "Total", securePay: "Paiement sécurisé · Stripe",
+  },
+  en: {
+    myCart: "My cart", empty: "Your cart is empty", emptyShort: "Empty cart",
+    items: (n: number) => `${n} item${n > 1 ? "s" : ""}`,
+    emptyTitle: "Your cart is waiting", emptyDesc: "Talented queer creators have things to show you.",
+    explore: "Explore", clearCart: "Clear cart", keepShopping: "← Keep shopping",
+    summary: "Summary", subtotal: "Subtotal", shipping: "Shipping", shippingCalc: "Calculated next",
+    estTotal: "Estimated total", checkout: "Checkout", total: "Total", securePay: "Secure payment · Stripe",
+  },
+} as const;
 
 export default function PanierPage() {
   const { items, remove, update, total, clear } = useCart();
+  const { locale, formatPrice } = useI18n();
+  const TX = CART_TX[locale === "en" ? "en" : "fr"];
 
   return (
     <>
       <div className="hidden md:block"><Header /></div>
-      <MobilePageHeader title="Mon panier" backHref="/decouvrir" showCart={false} />
+      <MobilePageHeader title={TX.myCart} backHref="/decouvrir" showCart={false} />
 
       <main className="min-h-screen md:pt-24 pb-32 md:pb-20 px-4 md:px-6 bg-[#FBFAF8] text-[#101014]">
         <div className="max-w-4xl mx-auto">
           {/* Title · desktop only */}
           <div className="hidden md:block mb-10">
-            <span className="font-mono text-[11px] tracking-wide text-[#FF2DA0] block mb-2">Mon panier</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#FF2DA0] block mb-2">{TX.myCart}</span>
             <h1 className="font-fraunces text-4xl text-[#101014]">
-              {items.length === 0 ? "Ton panier est vide" : `${items.length} article${items.length > 1 ? "s" : ""}`}
+              {items.length === 0 ? TX.empty : TX.items(items.length)}
             </h1>
           </div>
 
           {/* Mobile title */}
           <div className="md:hidden pt-4 pb-3">
             <p className="font-fraunces text-[26px] text-[#101014]">
-              {items.length === 0 ? "Panier vide" : `${items.length} article${items.length > 1 ? "s" : ""}`}
+              {items.length === 0 ? TX.emptyShort : TX.items(items.length)}
             </p>
           </div>
 
@@ -41,14 +63,14 @@ export default function PanierPage() {
                 </div>
                 <span className="absolute -top-2 -right-2 text-2xl">✦</span>
               </div>
-              <h2 className="font-fraunces text-2xl text-[#101014] mb-3">Ton panier t&apos;attend</h2>
+              <h2 className="font-fraunces text-2xl text-[#101014] mb-3">{TX.emptyTitle}</h2>
               <p className="font-hanken text-[#101014]/50 mb-8 leading-relaxed text-sm">
-                Des créateur·ices queer talentueux·ses ont des choses à te montrer.
+                {TX.emptyDesc}
               </p>
               <div className="h-px w-16 mx-auto mb-8 rounded-full"
                 style={{ background: "linear-gradient(90deg,#F93C2C,#FF2DA0,#7A2BF0,#2323C4)" }} />
               <Button variant="primary" href="/decouvrir">
-                Explorer <ArrowRight size={14} />
+                {TX.explore} <ArrowRight size={14} />
               </Button>
             </div>
           ) : (
@@ -78,7 +100,7 @@ export default function PanierPage() {
                             className="w-9 h-9 text-[#101014]/55 text-base active:bg-black/5 transition-colors">+</button>
                         </div>
                         <span className="font-fraunces text-[14px] text-[#101014]">
-                          {(item.price * item.quantity).toFixed(2)} €
+                          {formatPrice(item.price * item.quantity)}
                         </span>
                       </div>
                     </div>
@@ -91,10 +113,10 @@ export default function PanierPage() {
 
                 <div className="flex items-center justify-between pt-1">
                   <button onClick={clear} className="font-mono text-[10px] text-[#101014]/20 tracking-wide active:text-red-400 transition-colors">
-                    Vider le panier
+                    {TX.clearCart}
                   </button>
                   <Link href="/decouvrir" className="font-mono text-[10px] text-[#101014]/30 tracking-wide hover:text-[#FF2DA0] transition-colors">
-                    ← Continuer
+                    {TX.keepShopping}
                   </Link>
                 </div>
               </div>
@@ -103,27 +125,27 @@ export default function PanierPage() {
               <div className="lg:col-span-1 hidden md:block">
                 <div className="sticky top-24 rounded-2xl border border-[#101014]/10 bg-[#101014]/[0.03] p-6">
                   <div className="prism-line mb-6" />
-                  <h2 className="font-fraunces text-xl text-[#101014] mb-5">Récapitulatif</h2>
+                  <h2 className="font-fraunces text-xl text-[#101014] mb-5">{TX.summary}</h2>
                   <div className="space-y-3 mb-6 text-sm font-hanken">
                     <div className="flex justify-between text-[#101014]/60">
-                      <span>Sous-total</span><span>{total().toFixed(2)} €</span>
+                      <span>{TX.subtotal}</span><span>{formatPrice(total())}</span>
                     </div>
                     <div className="flex justify-between text-[#101014]/60">
-                      <span>Livraison</span>
-                      <span className="text-[#2323C4] text-[11px]">Calculée ensuite</span>
+                      <span>{TX.shipping}</span>
+                      <span className="text-[#2323C4] text-[11px]">{TX.shippingCalc}</span>
                     </div>
                     <div className="border-t border-[#101014]/10 pt-3 flex justify-between text-[#101014] font-semibold">
-                      <span>Total estimé</span><span>{total().toFixed(2)} €</span>
+                      <span>{TX.estTotal}</span><span>{formatPrice(total())}</span>
                     </div>
                   </div>
                   <Link href="/checkout">
                     <button className="w-full flex items-center justify-center gap-2 py-4 rounded-full text-white font-hanken font-semibold hover:brightness-110 transition-all active:scale-95"
                       style={{ background: "linear-gradient(135deg,#7A2BF0,#FF2DA0)", boxShadow: "0 6px 24px rgba(255,61,127,.3)" }}>
-                      Commander <ArrowRight size={16} />
+                      {TX.checkout} <ArrowRight size={16} />
                     </button>
                   </Link>
                   <p className="text-center mt-3 font-mono text-[10px] text-[#101014]/22 tracking-wide">
-                    Paiement sécurisé · Stripe
+                    {TX.securePay}
                   </p>
                 </div>
               </div>
@@ -142,18 +164,18 @@ export default function PanierPage() {
           }}>
           <div className="flex items-center gap-3">
             <div className="shrink-0">
-              <p className="font-mono text-[9px] text-[#101014]/35 tracking-wide">Total</p>
-              <p className="font-fraunces text-[22px] leading-tight text-[#101014]">{total().toFixed(2)} €</p>
+              <p className="font-mono text-[9px] text-[#101014]/35 tracking-wide">{TX.total}</p>
+              <p className="font-fraunces text-[22px] leading-tight text-[#101014]">{formatPrice(total())}</p>
             </div>
             <Link href="/checkout" className="flex-1">
               <button className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-fraunces text-[16px] text-white active:scale-[0.97] transition-transform"
                 style={{ background: "linear-gradient(135deg,#7A2BF0,#FF2DA0)", boxShadow: "0 4px 20px rgba(109,45,181,.4)" }}>
-                Commander <ArrowRight size={16} />
+                {TX.checkout} <ArrowRight size={16} />
               </button>
             </Link>
           </div>
           <p className="text-center mt-2 font-mono text-[9px] text-[#101014]/20 tracking-wide">
-            🔒 Paiement sécurisé · Stripe
+            🔒 {TX.securePay}
           </p>
         </div>
       )}

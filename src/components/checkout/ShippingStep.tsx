@@ -4,6 +4,22 @@ import { createClient } from "@/lib/supabase/client";
 import { MapPin, Truck, Hand, Loader2 } from "lucide-react";
 import type { CartItem } from "@/store/cart";
 import { shippingPrice } from "@/lib/shipping";
+import { useI18n } from "@/contexts/I18nContext";
+
+const SHIP_TX = {
+  fr: {
+    loading: "Chargement des modes de livraison…", shippingFor: (s: string) => `Livraison · ${s}`,
+    noMethods: "Cette boutique n'a pas encore configuré ses modes de livraison. Contacte-la ou réessaie plus tard.",
+    free: "Offert", choosePickup: "Choisis ton point relais", yourZip: "Ton code postal",
+    search: "Chercher", searchFailed: "Recherche impossible", netError: "Erreur réseau",
+  },
+  en: {
+    loading: "Loading shipping options…", shippingFor: (s: string) => `Shipping · ${s}`,
+    noMethods: "This shop hasn't set up its shipping options yet. Contact it or try again later.",
+    free: "Free", choosePickup: "Choose your pickup point", yourZip: "Your postal code",
+    search: "Search", searchFailed: "Search failed", netError: "Network error",
+  },
+} as const;
 
 type Method = { id: string; type: "relay" | "home" | "pickup"; label: string; price: number; free_above: number | null; enabled: boolean };
 type ShopGroup = { shop_id: string; shop_name: string; subtotal: number; weight: number; methods: Method[] };
@@ -28,6 +44,8 @@ export function ShippingStep({
   items: CartItem[];
   onChange: (sel: ShipmentSelection[], shippingTotal: number, complete: boolean) => void;
 }) {
+  const { locale } = useI18n();
+  const TX = SHIP_TX[locale === "en" ? "en" : "fr"];
   const [groups, setGroups] = useState<ShopGroup[] | null>(null);
   const [chosen, setChosen] = useState<Record<string, string>>({});       // shop_id -> method_id
   const [relays, setRelays] = useState<Record<string, RelayPoint>>({});    // shop_id -> relay point
@@ -90,7 +108,7 @@ export function ShippingStep({
 
   useEffect(() => { emit(); }, [emit]);
 
-  if (groups === null) return <div className="flex items-center gap-2 text-[#101014]/40 py-6"><Loader2 size={15} className="animate-spin" /> Chargement des modes de livraison…</div>;
+  if (groups === null) return <div className="flex items-center gap-2 text-[#101014]/40 py-6"><Loader2 size={15} className="animate-spin" /> {TX.loading}</div>;
   if (groups.length === 0) return null;
 
   return (
@@ -99,9 +117,9 @@ export function ShippingStep({
         const noMethod = g.methods.length === 0;
         return (
           <div key={g.shop_id} className="rounded-2xl border border-[#ECE6DB] bg-white p-4">
-            <p className="font-bricolage font-semibold text-[13.5px] text-[#101014] mb-3">Livraison · {g.shop_name}</p>
+            <p className="font-bricolage font-semibold text-[13.5px] text-[#101014] mb-3">{TX.shippingFor(g.shop_name)}</p>
             {noMethod ? (
-              <p className="font-hanken text-xs text-[#101014]/40">Cette boutique n'a pas encore configuré ses modes de livraison. Contacte-la ou réessaie plus tard.</p>
+              <p className="font-hanken text-xs text-[#101014]/40">{TX.noMethods}</p>
             ) : (
               <div className="space-y-2">
                 {g.methods.map(m => {
@@ -116,7 +134,7 @@ export function ShippingStep({
                           className="accent-[#FF2DA0]" />
                         <Icon size={15} className="text-[#101014]/45 shrink-0" />
                         <span className="font-hanken text-sm text-[#101014] flex-1">{m.label}</span>
-                        <span className="font-mono text-xs text-[#101014]/70">{cost === 0 ? "Offert" : `${cost.toFixed(2)} €`}</span>
+                        <span className="font-mono text-xs text-[#101014]/70">{cost === 0 ? TX.free : `${cost.toFixed(2)} €`}</span>
                       </label>
 
                       {active && m.type === "relay" && (
@@ -140,6 +158,8 @@ export function ShippingStep({
 // ── Sélecteur de point relais (alimenté par Sendcloud) ──
 type SP = { id: string; name: string; street: string; postal_code: string; city: string; distance: number | null };
 function RelayPicker({ value, onPick }: { value: RelayPoint | null; onPick: (rp: RelayPoint) => void }) {
+  const { locale } = useI18n();
+  const TX = SHIP_TX[locale === "en" ? "en" : "fr"];
   const [zip, setZip] = useState(value?.zip ?? "");
   const [list, setList] = useState<SP[]>([]);
   const [loading, setLoading] = useState(false);
@@ -151,15 +171,15 @@ function RelayPicker({ value, onPick }: { value: RelayPoint | null; onPick: (rp:
     try {
       const res = await fetch(`/api/shipping/service-points?country=fr&postal_code=${encodeURIComponent(zip.trim())}&carrier=mondial_relay`);
       const j = await res.json();
-      if (!res.ok) { setErr(j.error ?? "Recherche impossible"); }
+      if (!res.ok) { setErr(j.error ?? TX.searchFailed); }
       else setList(j.service_points ?? []);
-    } catch { setErr("Erreur réseau"); }
+    } catch { setErr(TX.netError); }
     setLoading(false);
   };
 
   return (
     <div className="rounded-xl bg-[#101014]/[0.02] border border-[#101014]/8 p-3 space-y-2">
-      <p className="font-mono text-[10px] text-[#101014]/40">Choisis ton point relais</p>
+      <p className="font-mono text-[10px] text-[#101014]/40">{TX.choosePickup}</p>
       {value?.name && (
         <div className="flex items-start gap-2 rounded-lg bg-[#FF2DA0]/5 border border-[#FF2DA0]/20 px-2.5 py-2">
           <MapPin size={13} className="text-[#FF2DA0] mt-0.5 shrink-0" />
@@ -167,12 +187,12 @@ function RelayPicker({ value, onPick }: { value: RelayPoint | null; onPick: (rp:
         </div>
       )}
       <div className="flex gap-2">
-        <input value={zip} onChange={e => setZip(e.target.value)} placeholder="Ton code postal" inputMode="numeric"
+        <input value={zip} onChange={e => setZip(e.target.value)} placeholder={TX.yourZip} inputMode="numeric"
           onKeyDown={e => e.key === "Enter" && (e.preventDefault(), search())}
           className="flex-1 bg-white border border-[#101014]/10 rounded-lg px-3 py-2 font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/50" />
         <button type="button" onClick={search} disabled={loading}
           className="px-3 rounded-lg bg-[#101014] text-white font-hanken text-xs disabled:opacity-50">
-          {loading ? "…" : "Chercher"}
+          {loading ? "…" : TX.search}
         </button>
       </div>
       {err && <p className="font-hanken text-[11px] text-amber-600">{err}</p>}

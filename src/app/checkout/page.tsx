@@ -13,11 +13,69 @@ import { ShippingStep, type ShipmentSelection } from "@/components/checkout/Ship
 import { TrustBadges } from "@/components/ui/TrustBadges";
 import Link from "next/link";
 import type { Address } from "@/lib/types/address";
+import { useI18n } from "@/contexts/I18nContext";
 
 const COUNTRY_NAME: Record<string, string> = { FR: "France", BE: "Belgique", CH: "Suisse", CA: "Canada", LU: "Luxembourg" };
 
+// STEPS = identifiants d'état (ne pas traduire) · STEP_LABELS = affichage localisé.
 const STEPS = ["Livraison", "Paiement", "Confirmation"] as const;
 type Step = typeof STEPS[number];
+const STEP_LABELS: Record<Step, { fr: string; en: string }> = {
+  Livraison: { fr: "Livraison", en: "Shipping" },
+  Paiement: { fr: "Paiement", en: "Payment" },
+  Confirmation: { fr: "Confirmation", en: "Confirmation" },
+};
+
+const CHECKOUT_TX = {
+  fr: {
+    error: "Erreur", payRefused: "Paiement refusé. Vérifie tes informations.", unexpected: "Statut inattendu. Contacte le support.",
+    secureNotice: ["Paiement sécurisé via ", "Stripe", ". Tes données bancaires sont chiffrées et ne nous parviennent jamais."],
+    processing: "Traitement en cours…", pay: (s: string) => `Payer ${s}`,
+    cgv: ["En validant ta commande, tu acceptes les ", "Conditions Générales de Vente", ". Droit de rétractation 14 jours (hors exceptions légales)."],
+    editShipping: "← Modifier la livraison",
+    checkout: "Commander", checkoutEyebrow: "Checkout",
+    savedAddresses: "Adresses enregistrées", manage: "Gérer",
+    fName: "Nom / Pseudo", phName: "Ton nom ou pseudo", fEmail: "E-mail", fAddress: "Adresse", phAddress: "1 rue de la Lumière",
+    fCity: "Ville", phCity: "Paris", fZip: "Code postal", phZip: "75001", fCountry: "Pays",
+    discrete: "Colis discret · aucune mention Spectrum à l'extérieur",
+    loginToPay: "Connecte-toi pour payer.", cantPrepare: "Impossible de préparer le paiement.", netError: "Erreur réseau. Réessaie.",
+    preparing: "Préparation…", continueToPay: "Continuer vers le paiement",
+    deliverTo: "Livrer à", edit: "Modifier", payUnavailable: "Paiement indisponible", back: "Retour",
+    summary: "Récapitulatif", subtotal: "Sous-total", shippingFees: "Frais de port", free: "Offert", toChoose: "À choisir",
+    code: (c: string) => `Code ${c}`, total: "Total", serverAdjusted: "Total ajusté par le serveur",
+    paymentsAccepted: "Carte · Apple Pay · Google Pay acceptés",
+    removeCode: "✕ Retirer le code", promoPlaceholder: "Code promo", apply: "Appliquer", invalidCode: "Code invalide",
+    orderConfirmed: "Commande confirmée ✦", paymentReceived: "Paiement reçu ✦",
+    confirmEmail: "Un e-mail de confirmation t'a été envoyé. Merci de faire partie du spectre.",
+    confirmPending: ["Ton paiement est validé · ta commande s'enregistre à l'instant. Un e-mail de confirmation arrive dans quelques secondes, et tu la retrouveras dans ", "Mes commandes", "."],
+    keepShopping: "Continuer les achats", myOrders: "Mes commandes",
+    emptyCart: "Ton panier est vide", exploreMarket: "Explorer la marketplace",
+  },
+  en: {
+    error: "Error", payRefused: "Payment declined. Check your details.", unexpected: "Unexpected status. Contact support.",
+    secureNotice: ["Secure payment via ", "Stripe", ". Your card details are encrypted and never reach us."],
+    processing: "Processing…", pay: (s: string) => `Pay ${s}`,
+    cgv: ["By placing your order, you accept the ", "Terms of Sale", ". 14-day right of withdrawal (legal exceptions apply)."],
+    editShipping: "← Edit shipping",
+    checkout: "Checkout", checkoutEyebrow: "Checkout",
+    savedAddresses: "Saved addresses", manage: "Manage",
+    fName: "Name / Username", phName: "Your name or username", fEmail: "Email", fAddress: "Address", phAddress: "1 Light Street",
+    fCity: "City", phCity: "Paris", fZip: "Postal code", phZip: "75001", fCountry: "Country",
+    discrete: "Discreet parcel · no Spectrum mention on the outside",
+    loginToPay: "Log in to pay.", cantPrepare: "Could not prepare the payment.", netError: "Network error. Try again.",
+    preparing: "Preparing…", continueToPay: "Continue to payment",
+    deliverTo: "Deliver to", edit: "Edit", payUnavailable: "Payment unavailable", back: "Back",
+    summary: "Summary", subtotal: "Subtotal", shippingFees: "Shipping", free: "Free", toChoose: "To choose",
+    code: (c: string) => `Code ${c}`, total: "Total", serverAdjusted: "Total adjusted by the server",
+    paymentsAccepted: "Card · Apple Pay · Google Pay accepted",
+    removeCode: "✕ Remove code", promoPlaceholder: "Promo code", apply: "Apply", invalidCode: "Invalid code",
+    orderConfirmed: "Order confirmed ✦", paymentReceived: "Payment received ✦",
+    confirmEmail: "A confirmation email has been sent to you. Thanks for being part of the spectrum.",
+    confirmPending: ["Your payment is validated · your order is being recorded right now. A confirmation email arrives in a few seconds, and you'll find it in ", "My orders", "."],
+    keepShopping: "Keep shopping", myOrders: "My orders",
+    emptyCart: "Your cart is empty", exploreMarket: "Explore the marketplace",
+  },
+} as const;
 
 // ─── Stripe Payment Form ──────────────────────────────────────
 function StripeForm({ totalCents, onSuccess, onBack }: {
@@ -27,6 +85,8 @@ function StripeForm({ totalCents, onSuccess, onBack }: {
 }) {
   const stripe = useStripe();
   const elements = useElements();
+  const { locale } = useI18n();
+  const TX = CHECKOUT_TX[locale === "en" ? "en" : "fr"];
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
 
@@ -36,7 +96,7 @@ function StripeForm({ totalCents, onSuccess, onBack }: {
     setProcessing(true); setError("");
 
     const { error: submitErr } = await elements.submit();
-    if (submitErr) { setError(submitErr.message ?? "Erreur"); setProcessing(false); return; }
+    if (submitErr) { setError(submitErr.message ?? TX.error); setProcessing(false); return; }
 
     const { error: confirmErr, paymentIntent } = await stripe.confirmPayment({
       elements,
@@ -45,12 +105,12 @@ function StripeForm({ totalCents, onSuccess, onBack }: {
     });
 
     if (confirmErr) {
-      setError(confirmErr.message ?? "Paiement refusé. Vérifie tes informations.");
+      setError(confirmErr.message ?? TX.payRefused);
       setProcessing(false);
     } else if (paymentIntent?.status === "succeeded") {
       onSuccess(paymentIntent.id);
     } else {
-      setError("Statut inattendu. Contacte le support.");
+      setError(TX.unexpected);
       setProcessing(false);
     }
   };
@@ -60,7 +120,7 @@ function StripeForm({ totalCents, onSuccess, onBack }: {
       <div className="p-4 rounded-xl border border-[#101014]/10 bg-[#101014]/[0.02] flex items-start gap-3">
         <Lock size={14} className="text-[#2323C4] mt-0.5 shrink-0" />
         <p className="font-hanken text-xs text-[#101014]/50 leading-relaxed">
-          Paiement sécurisé via <strong className="text-[#101014]/70">Stripe</strong>. Tes données bancaires sont chiffrées et ne nous parviennent jamais.
+          {TX.secureNotice[0]}<strong className="text-[#101014]/70">{TX.secureNotice[1]}</strong>{TX.secureNotice[2]}
         </p>
       </div>
 
@@ -80,18 +140,17 @@ function StripeForm({ totalCents, onSuccess, onBack }: {
         className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-[#FF2DA0] text-white font-hanken font-semibold text-base hover:brightness-110 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed sticky bottom-3 md:static z-30 shadow-lg shadow-[#FF2DA0]/20 md:shadow-none"
       >
         <Lock size={14} />
-        {processing ? "Traitement en cours…" : `Payer ${(totalCents / 100).toFixed(2)} €`}
+        {processing ? TX.processing : TX.pay(`${(totalCents / 100).toFixed(2)} €`)}
       </button>
 
       <p className="text-center font-hanken text-[11px] text-[#101014]/35 leading-relaxed px-2">
-        En validant ta commande, tu acceptes les{" "}
-        <a href="/legal/cgv" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#101014]/60">Conditions Générales de Vente</a>.
-        Droit de rétractation 14 jours (hors exceptions légales).
+        {TX.cgv[0]}
+        <a href="/legal/cgv" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#101014]/60">{TX.cgv[1]}</a>{TX.cgv[2]}
       </p>
 
       <button type="button" onClick={onBack}
         className="w-full text-center font-mono text-xs text-[#101014]/25 hover:text-[#101014]/50 transition-colors">
-        ← Modifier la livraison
+        {TX.editShipping}
       </button>
     </form>
   );
@@ -101,6 +160,9 @@ function StripeForm({ totalCents, onSuccess, onBack }: {
 export default function CheckoutPage() {
   const { items, total, clear } = useCart();
   const { user } = useAuth();
+  const { locale } = useI18n();
+  const L = locale === "en" ? "en" : "fr";
+  const TX = CHECKOUT_TX[L];
   const [step, setStep] = useState<Step>("Livraison");
   const [form, setForm] = useState({
     name: "", email: "", address: "", city: "", zip: "", country: "France", discrete: false,
@@ -128,7 +190,7 @@ export default function CheckoutPage() {
     });
     const d = await res.json();
     if (d.valid) setPromoApplied({ code: d.code, discount: d.discount });
-    else setPromoErr(d.error ?? "Code invalide");
+    else setPromoErr(d.error ?? TX.invalidCode);
   };
   const onShipping = useCallback((s: ShipmentSelection[], t: number, c: boolean) => {
     setShipSel(s); setShipTotal(t); setShipComplete(c);
@@ -172,7 +234,7 @@ export default function CheckoutPage() {
   // Payment intent créé AVEC le panier et les infos de livraison · total recalculé côté serveur
   const createPaymentIntent = useCallback(async () => {
     if (total() <= 0) return;
-    if (!user) { setIntentError("Connecte-toi pour payer."); return; }
+    if (!user) { setIntentError(TX.loginToPay); return; }
     setLoadingIntent(true); setIntentError("");
     try {
       const res = await fetch("/api/stripe/payment-intent", {
@@ -192,7 +254,7 @@ export default function CheckoutPage() {
       });
       const data = await res.json();
       if (data.error || !data.clientSecret) {
-        setIntentError(data.error || "Impossible de préparer le paiement.");
+        setIntentError(data.error || TX.cantPrepare);
         setLoadingIntent(false);
         return false;
       }
@@ -202,11 +264,11 @@ export default function CheckoutPage() {
       setLoadingIntent(false);
       return true;
     } catch {
-      setIntentError("Erreur réseau. Réessaie.");
+      setIntentError(TX.netError);
       setLoadingIntent(false);
       return false;
     }
-  }, [total, user, items, form, shipSel, promoApplied]);
+  }, [total, user, items, form, shipSel, promoApplied, TX]);
 
   const handleGoToPayment = async () => {
     // N'avance au paiement QUE si le PaymentIntent a bien été créé
@@ -249,16 +311,16 @@ export default function CheckoutPage() {
         <div className="w-20 h-20 rounded-full bg-[#2323C4]/10 border border-[#2323C4]/30 flex items-center justify-center mx-auto mb-6 animate-[pulseWarm_1.5s_ease-in-out]">
           <Check size={32} className="text-[#2323C4]" />
         </div>
-        <h1 className="font-fraunces text-4xl text-[#101014] mb-3">{orderId ? "Commande confirmée ✦" : "Paiement reçu ✦"}</h1>
+        <h1 className="font-fraunces text-4xl text-[#101014] mb-3">{orderId ? TX.orderConfirmed : TX.paymentReceived}</h1>
         {orderId && <p className="font-mono text-xs text-[#101014]/30 mb-4">#{orderId.slice(0, 8).toUpperCase()}</p>}
         <p className="font-hanken text-[#101014]/55 mb-8 leading-relaxed">
           {orderId
-            ? <>Un e-mail de confirmation t&apos;a été envoyé. Merci de faire partie du spectre.</>
-            : <>Ton paiement est validé · ta commande s&apos;enregistre à l&apos;instant. Un e-mail de confirmation arrive dans quelques secondes, et tu la retrouveras dans <strong className="text-[#101014]">Mes commandes</strong>.</>}
+            ? TX.confirmEmail
+            : <>{TX.confirmPending[0]}<strong className="text-[#101014]">{TX.confirmPending[1]}</strong>{TX.confirmPending[2]}</>}
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
-          <Button variant="primary" href="/">Continuer les achats</Button>
-          {user && <Button variant="secondary" href="/compte">Mes commandes</Button>}
+          <Button variant="primary" href="/">{TX.keepShopping}</Button>
+          {user && <Button variant="secondary" href="/compte">{TX.myOrders}</Button>}
         </div>
       </div>
     </div>
@@ -268,8 +330,8 @@ export default function CheckoutPage() {
   if (items.length === 0 && !confirmed) return (
     <div className="min-h-screen bg-[#FBFAF8] flex items-center justify-center px-6">
       <div className="text-center">
-        <h2 className="font-fraunces text-2xl text-[#101014] mb-4">Ton panier est vide</h2>
-        <Button variant="primary" href="/decouvrir">Explorer la marketplace</Button>
+        <h2 className="font-fraunces text-2xl text-[#101014] mb-4">{TX.emptyCart}</h2>
+        <Button variant="primary" href="/decouvrir">{TX.exploreMarket}</Button>
       </div>
     </div>
   );
@@ -280,14 +342,14 @@ export default function CheckoutPage() {
       {/* Barre mobile */}
       <div className="md:hidden sticky top-0 z-40 flex items-center gap-3 px-4 h-14 border-b" style={{ background: "rgba(251,250,248,0.95)", backdropFilter: "blur(10px)", borderColor: "#ECE6DB" }}>
         <Link href="/panier" aria-label="Retour au panier" className="w-9 h-9 -ml-1 flex items-center justify-center rounded-full"><ArrowLeft size={20} /></Link>
-        <span className="font-bricolage font-bold text-[17px]">Commander</span>
+        <span className="font-bricolage font-bold text-[17px]">{TX.checkout}</span>
       </div>
       <main className="min-h-screen pt-6 md:pt-24 pb-28 md:pb-20 px-4 md:px-6 bg-[#FBFAF8] text-[#101014]">
         <div className="max-w-4xl mx-auto">
           <div className="mb-2 hidden md:block">
-            <span className="font-mono text-[11px] tracking-wide text-[#FF2DA0]">Checkout</span>
+            <span className="font-mono text-[11px] tracking-wide text-[#FF2DA0]">{TX.checkoutEyebrow}</span>
           </div>
-          <h1 className="font-fraunces text-2xl md:text-4xl text-[#101014] mb-6 md:mb-8 hidden md:block">Commander</h1>
+          <h1 className="font-fraunces text-2xl md:text-4xl text-[#101014] mb-6 md:mb-8 hidden md:block">{TX.checkout}</h1>
 
           {/* Step indicator */}
           <div className="flex items-center gap-2 mb-6 md:mb-10 flex-wrap">
@@ -300,7 +362,7 @@ export default function CheckoutPage() {
                     : "border-[#101014]/15"}`}>
                     {STEPS.indexOf(step) > i ? "✓" : i + 1}
                   </span>
-                  <span className="font-hanken text-sm">{s}</span>
+                  <span className="font-hanken text-sm">{STEP_LABELS[s][L]}</span>
                 </div>
                 {i < STEPS.length - 1 && <div className={`w-8 h-px ${STEPS.indexOf(step) > i ? "bg-[#2323C4]" : "bg-[#101014]/15"}`} />}
               </div>
@@ -315,8 +377,8 @@ export default function CheckoutPage() {
                   {addresses.length > 0 && (
                     <div className="mb-2">
                       <div className="flex items-center justify-between mb-2">
-                        <label className="font-mono text-[10px] tracking-wide text-[#101014]/40">Adresses enregistrées</label>
-                        <Link href="/compte/adresses" className="font-mono text-[10px] text-[#FF2DA0]">Gérer</Link>
+                        <label className="font-mono text-[10px] tracking-wide text-[#101014]/40">{TX.savedAddresses}</label>
+                        <Link href="/compte/adresses" className="font-mono text-[10px] text-[#FF2DA0]">{TX.manage}</Link>
                       </div>
                       <div className="flex gap-2 overflow-x-auto pb-1">
                         {addresses.map((a) => (
@@ -331,9 +393,9 @@ export default function CheckoutPage() {
                     </div>
                   )}
                   {[
-                    { k: "name" as const, label: "Nom / Pseudo", ph: "Ton nom ou pseudo", type: "text" },
-                    { k: "email" as const, label: "E-mail", ph: "ton@email.com", type: "email" },
-                    { k: "address" as const, label: "Adresse", ph: "1 rue de la Lumière", type: "text" },
+                    { k: "name" as const, label: TX.fName, ph: TX.phName, type: "text" },
+                    { k: "email" as const, label: TX.fEmail, ph: "ton@email.com", type: "email" },
+                    { k: "address" as const, label: TX.fAddress, ph: TX.phAddress, type: "text" },
                   ].map(({ k, label, ph, type }) => (
                     <div key={k}>
                       <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{label} *</label>
@@ -342,7 +404,7 @@ export default function CheckoutPage() {
                     </div>
                   ))}
                   <div className="grid grid-cols-2 gap-4">
-                    {[{ k: "city" as const, label: "Ville", ph: "Paris" }, { k: "zip" as const, label: "Code postal", ph: "75001" }].map(({ k, label, ph }) => (
+                    {[{ k: "city" as const, label: TX.fCity, ph: TX.phCity }, { k: "zip" as const, label: TX.fZip, ph: TX.phZip }].map(({ k, label, ph }) => (
                       <div key={k}>
                         <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{label} *</label>
                         <input type="text" required value={form[k]} onChange={(e) => set(k, e.target.value)} placeholder={ph}
@@ -351,7 +413,7 @@ export default function CheckoutPage() {
                     ))}
                   </div>
                   <div>
-                    <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Pays</label>
+                    <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{TX.fCountry}</label>
                     <select value={form.country} onChange={(e) => set("country", e.target.value)}
                       className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/60 transition-colors">
                       {["France", "Belgique", "Suisse", "Canada", "Luxembourg", "Autre"].map((c) => (
@@ -362,7 +424,7 @@ export default function CheckoutPage() {
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" checked={form.discrete} onChange={(e) => set("discrete", e.target.checked)} className="w-4 h-4 rounded accent-[#FF2DA0]" />
                     <span className="font-hanken text-sm text-[#101014]/60 group-hover:text-[#101014]/80 leading-relaxed">
-                      Colis discret · aucune mention Spectrum à l&apos;extérieur
+                      {TX.discrete}
                     </span>
                   </label>
 
@@ -380,7 +442,7 @@ export default function CheckoutPage() {
                     disabled={!deliveryComplete || !shipComplete || loadingIntent}
                     className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-[#FF2DA0] text-white font-hanken font-semibold hover:brightness-110 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loadingIntent ? "Préparation…" : <><span>Continuer vers le paiement</span><ArrowRight size={14} /></>}
+                    {loadingIntent ? TX.preparing : <><span>{TX.continueToPay}</span><ArrowRight size={14} /></>}
                   </button>
                 </>
               )}
@@ -390,10 +452,10 @@ export default function CheckoutPage() {
                   {/* Adresse repliée · même page */}
                   <div className="flex items-start justify-between gap-3 rounded-xl p-4 mb-1" style={{ background: "#fff", boxShadow: "inset 0 0 0 1px #ECE6DB" }}>
                     <div className="min-w-0">
-                      <p className="font-mono text-[10px] tracking-wide text-[#101014]/40 mb-0.5">Livrer à</p>
+                      <p className="font-mono text-[10px] tracking-wide text-[#101014]/40 mb-0.5">{TX.deliverTo}</p>
                       <p className="font-hanken text-[14px] text-[#101014] truncate">{form.name} · {form.address}, {form.zip} {form.city}</p>
                     </div>
-                    <button onClick={() => { setClientSecret(null); setStep("Livraison"); }} className="shrink-0 font-mono text-[11px] text-[#FF2DA0]">Modifier</button>
+                    <button onClick={() => { setClientSecret(null); setStep("Livraison"); }} className="shrink-0 font-mono text-[11px] text-[#FF2DA0]">{TX.edit}</button>
                   </div>
                   {clientSecret && stripeReady ? (
                     <Elements
@@ -423,11 +485,11 @@ export default function CheckoutPage() {
                   ) : intentError ? (
                     <div className="space-y-4">
                       <div className="p-5 rounded-xl border border-amber-400/30 bg-amber-400/5">
-                        <p className="font-bricolage font-bold text-[#101014] mb-2">Paiement indisponible</p>
+                        <p className="font-bricolage font-bold text-[#101014] mb-2">{TX.payUnavailable}</p>
                         <p className="font-hanken text-sm text-[#101014]/65 leading-relaxed">{intentError}</p>
                       </div>
                       <button onClick={() => setStep("Livraison")} className="flex items-center gap-2 font-mono text-xs text-[#101014]/30 hover:text-[#101014]/60 transition-colors">
-                        <ArrowLeft size={12} /> Retour
+                        <ArrowLeft size={12} /> {TX.back}
                       </button>
                     </div>
                   ) : (
@@ -443,7 +505,7 @@ export default function CheckoutPage() {
             <div className="lg:col-span-2">
               <div className="sticky top-24 rounded-2xl border border-[#101014]/10 bg-[#101014]/[0.025] p-5">
                 <div className="prism-line mb-4" />
-                <h2 className="font-bricolage font-bold text-[#101014] mb-4">Récapitulatif</h2>
+                <h2 className="font-bricolage font-bold text-[#101014] mb-4">{TX.summary}</h2>
                 <div className="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1">
                   {items.map((item) => (
                     <div key={item.id} className="flex justify-between gap-2 text-sm">
@@ -454,15 +516,15 @@ export default function CheckoutPage() {
                 </div>
                 <div className="border-t border-[#101014]/10 pt-3 mb-1 space-y-1.5">
                   <div className="flex justify-between text-sm font-hanken text-[#101014]/60">
-                    <span>Sous-total</span><span className="font-mono">{total().toFixed(2)} €</span>
+                    <span>{TX.subtotal}</span><span className="font-mono">{total().toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between text-sm font-hanken text-[#101014]/60">
-                    <span>Frais de port</span>
-                    <span className="font-mono">{shipComplete ? (shipTotal === 0 ? "Offert" : `${shipTotal.toFixed(2)} €`) : <span className="text-[#2323C4]">À choisir</span>}</span>
+                    <span>{TX.shippingFees}</span>
+                    <span className="font-mono">{shipComplete ? (shipTotal === 0 ? TX.free : `${shipTotal.toFixed(2)} €`) : <span className="text-[#2323C4]">{TX.toChoose}</span>}</span>
                   </div>
                   {promoApplied && (
                     <div className="flex justify-between text-sm font-hanken text-green-600">
-                      <span>Code {promoApplied.code}</span><span className="font-mono">−{promoApplied.discount.toFixed(2)} €</span>
+                      <span>{TX.code(promoApplied.code)}</span><span className="font-mono">−{promoApplied.discount.toFixed(2)} €</span>
                     </div>
                   )}
                 </div>
@@ -471,28 +533,28 @@ export default function CheckoutPage() {
                 {!clientSecret && (
                   <div className="mt-3">
                     {promoApplied ? (
-                      <button onClick={() => { setPromoApplied(null); setPromo(""); }} className="font-mono text-[10px] text-[#101014]/40 hover:text-[#101014]/70">✕ Retirer le code</button>
+                      <button onClick={() => { setPromoApplied(null); setPromo(""); }} className="font-mono text-[10px] text-[#101014]/40 hover:text-[#101014]/70">{TX.removeCode}</button>
                     ) : (
                       <div className="flex gap-2">
-                        <input value={promo} onChange={e => setPromo(e.target.value.toUpperCase())} placeholder="Code promo"
+                        <input value={promo} onChange={e => setPromo(e.target.value.toUpperCase())} placeholder={TX.promoPlaceholder}
                           className="flex-1 bg-[#101014]/5 border border-[#101014]/12 rounded-lg px-3 py-2 font-mono text-xs uppercase focus:outline-none focus:border-[#FF2DA0]/50" />
-                        <button onClick={applyPromo} className="px-3 rounded-lg bg-[#101014] text-white font-hanken text-xs">Appliquer</button>
+                        <button onClick={applyPromo} className="px-3 rounded-lg bg-[#101014] text-white font-hanken text-xs">{TX.apply}</button>
                       </div>
                     )}
                     {promoErr && <p className="font-hanken text-[11px] text-red-500 mt-1">{promoErr}</p>}
                   </div>
                 )}
                 <div className="flex justify-between font-bricolage font-bold text-[#101014] text-lg mt-2">
-                  <span>Total</span>
+                  <span>{TX.total}</span>
                   <span>{serverTotal !== null ? serverTotal.toFixed(2) : Math.max(0, total() + shipTotal - (promoApplied?.discount ?? 0)).toFixed(2)} €</span>
                 </div>
                 {serverTotal !== null && Math.abs(serverTotal - total()) > 0.01 && (
                   <p className="font-hanken text-[10px] text-amber-400/70 mt-1 text-right">
-                    Total ajusté par le serveur
+                    {TX.serverAdjusted}
                   </p>
                 )}
                 <TrustBadges variant="list" className="mt-4 pt-3 border-t border-[#101014]/10" />
-                <p className="mt-2 font-mono text-[9px] text-[#101014]/30 text-center">Carte · Apple Pay · Google Pay acceptés</p>
+                <p className="mt-2 font-mono text-[9px] text-[#101014]/30 text-center">{TX.paymentsAccepted}</p>
               </div>
             </div>
           </div>
