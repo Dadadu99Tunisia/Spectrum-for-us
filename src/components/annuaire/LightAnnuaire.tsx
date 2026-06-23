@@ -11,14 +11,71 @@ import Link from "next/link";
 import { ORGS, COUNTRIES, CATEGORIES, type OrgEntry } from "@/data/annuaire-orgs";
 import { slugify, countryFlag } from "@/lib/annuaire";
 import { ScatterText } from "@/components/ui/ScatterText";
+import { useI18n } from "@/contexts/I18nContext";
 import { Search, ChevronDown, MapPin, ArrowUpRight, Check, Globe } from "lucide-react";
 
 const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 
+// "Tous les pays" reste la valeur de filtre (comparée à o.country) → on traduit seulement l'affichage.
+const ALL_COUNTRIES = "Tous les pays";
+
+// Traductions des libellés de catégories, indexées par `value` (qui sert de filtre).
+const CAT_LABELS_EN: Record<string, string> = {
+  association: "Association",
+  centre: "Community center",
+  sante: "Health",
+  juridique: "Law & legal",
+  culture: "Culture & art",
+  jeunesse: "Youth",
+  pride: "Pride & events",
+  refuge: "Housing & shelter",
+};
+
+const CONTENT = {
+  fr: {
+    eyebrow: "Annuaire LGBTQIA+",
+    h1Lead: "Les associations ",
+    scatter: "près de toi.",
+    allCountries: ALL_COUNTRIES,
+    countryLabel: "Pays",
+    searchPlaceholder: "Rechercher une association, une ville…",
+    allCats: "Toutes",
+    emptyFilter: "Aucune organisation pour ce filtre.",
+    browseTitle: "Parcourir par pays",
+    viewCard: "Voir la fiche",
+    since: "depuis",
+    intro: (orgs: number, countries: number) =>
+      `${orgs} organisations vérifiées dans ${countries} pays · associations, centres, santé, droit, refuges. Accès libre et gratuit.`,
+    orgCount: (n: number) => `${n} organisation${n > 1 ? "s" : ""}`,
+  },
+  en: {
+    eyebrow: "LGBTQIA+ directory",
+    h1Lead: "Associations ",
+    scatter: "near you.",
+    allCountries: "All countries",
+    countryLabel: "Country",
+    searchPlaceholder: "Search an association, a city…",
+    allCats: "All",
+    emptyFilter: "No organisation for this filter.",
+    browseTitle: "Browse by country",
+    viewCard: "View profile",
+    since: "since",
+    intro: (orgs: number, countries: number) =>
+      `${orgs} verified organisations across ${countries} countries · associations, centers, health, law, shelters. Free and open access.`,
+    orgCount: (n: number) => `${n} organisation${n > 1 ? "s" : ""}`,
+  },
+} as const;
+
+const catLabel = (value: string, en: boolean) =>
+  en ? (CAT_LABELS_EN[value] ?? value) : (CATEGORIES.find((x) => x.value === value)?.label ?? value);
+
 const flagFor = (country: string) => countryFlag(country);
 
 export function LightAnnuaire() {
-  const [country, setCountry] = useState<string>("Tous les pays");
+  const { locale } = useI18n();
+  const isEn = locale === "en";
+  const C = CONTENT[isEn ? "en" : "fr"];
+  const [country, setCountry] = useState<string>(ALL_COUNTRIES);
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<string>("");
   const [open, setOpen] = useState(false);
@@ -39,7 +96,7 @@ export function LightAnnuaire() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return ORGS.filter((o) => {
-      if (country !== "Tous les pays" && o.country !== country) return false;
+      if (country !== ALL_COUNTRIES && o.country !== country) return false;
       if (cat && !o.categories.includes(cat as OrgEntry["categories"][number])) return false;
       if (q && !(`${o.name} ${o.city} ${o.country} ${o.description}`.toLowerCase().includes(q))) return false;
       return true;
@@ -50,13 +107,12 @@ export function LightAnnuaire() {
     <div style={{ background: T.bg, color: T.ink }}>
       {/* ── Hero ── */}
       <section className="max-w-6xl mx-auto px-6 md:px-8 pt-28 pb-8">
-        <p className="text-[13px] mb-3" style={{ color: T.faint }}>Annuaire LGBTQIA+</p>
+        <p className="text-[13px] mb-3" style={{ color: T.faint }}>{C.eyebrow}</p>
         <h1 className="font-fraunces font-extrabold tracking-[-0.02em]" style={{ fontSize: "clamp(34px,5vw,58px)", lineHeight: 1.15 }}>
-          Les associations <ScatterText text="près de toi." intensity={0.8} className="align-baseline" style={{ color: T.mag }} />
+          {C.h1Lead}<ScatterText text={C.scatter} intensity={0.8} className="align-baseline" style={{ color: T.mag }} />
         </h1>
         <p className="max-w-xl mt-4 text-[15.5px] leading-relaxed" style={{ color: T.soft }}>
-          {ORGS.length} organisations vérifiées dans {COUNTRIES.length} pays · associations, centres,
-          santé, droit, refuges. Accès libre et gratuit.
+          {C.intro(ORGS.length, COUNTRIES.length)}
         </p>
       </section>
 
@@ -71,10 +127,10 @@ export function LightAnnuaire() {
               className="w-full flex items-center gap-3 rounded-2xl px-5 py-4 text-left transition-all"
               style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}
             >
-              <span className="text-2xl leading-none">{country === "Tous les pays" ? "🌍" : flagFor(country)}</span>
+              <span className="text-2xl leading-none">{country === ALL_COUNTRIES ? "🌍" : flagFor(country)}</span>
               <span className="flex-1 min-w-0">
-                <span className="block text-[11px]" style={{ color: T.faint }}>Pays</span>
-                <span className="block font-bricolage font-semibold text-[16px] truncate">{country}</span>
+                <span className="block text-[11px]" style={{ color: T.faint }}>{C.countryLabel}</span>
+                <span className="block font-bricolage font-semibold text-[16px] truncate">{country === ALL_COUNTRIES ? C.allCountries : country}</span>
               </span>
               <ChevronDown size={20} style={{ color: T.soft }} className={open ? "rotate-180 transition-transform" : "transition-transform"} />
             </button>
@@ -83,17 +139,17 @@ export function LightAnnuaire() {
               <div role="listbox"
                 className="absolute z-30 mt-2 w-full rounded-2xl overflow-hidden max-h-[340px] overflow-y-auto"
                 style={{ background: "#fff", boxShadow: "0 12px 40px rgba(26,22,18,.14), inset 0 0 0 1px " + T.line }}>
-                {["Tous les pays", ...COUNTRIES].map((c) => {
+                {[ALL_COUNTRIES, ...COUNTRIES].map((c) => {
                   const active = c === country;
                   return (
                     <button key={c} role="option" aria-selected={active}
                       onClick={() => { setCountry(c); setOpen(false); }}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-[#FBFAF8]"
                       style={active ? { background: "#FBFAF8" } : undefined}>
-                      <span className="text-lg leading-none">{c === "Tous les pays" ? "🌍" : flagFor(c)}</span>
-                      <span className="flex-1 font-hanken text-[15px]">{c}</span>
+                      <span className="text-lg leading-none">{c === ALL_COUNTRIES ? "🌍" : flagFor(c)}</span>
+                      <span className="flex-1 font-hanken text-[15px]">{c === ALL_COUNTRIES ? C.allCountries : c}</span>
                       <span className="font-mono text-[12px]" style={{ color: T.faint }}>
-                        {c === "Tous les pays" ? ORGS.length : counts[c]}
+                        {c === ALL_COUNTRIES ? ORGS.length : counts[c]}
                       </span>
                       {active && <Check size={16} style={{ color: T.mag }} />}
                     </button>
@@ -108,7 +164,7 @@ export function LightAnnuaire() {
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: T.faint }} />
             <input
               value={query} onChange={(e) => setQuery(e.target.value)}
-              placeholder="Rechercher une association, une ville…"
+              placeholder={C.searchPlaceholder}
               className="w-full rounded-2xl pl-11 pr-4 py-4 text-[15px] outline-none"
               style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}`, color: T.ink }}
             />
@@ -117,16 +173,16 @@ export function LightAnnuaire() {
 
         {/* Filtres catégories */}
         <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-3 pb-1">
-          <Chip active={cat === ""} onClick={() => setCat("")}>Toutes</Chip>
+          <Chip active={cat === ""} onClick={() => setCat("")}>{C.allCats}</Chip>
           {CATEGORIES.map((c) => (
             <Chip key={c.value} active={cat === c.value} onClick={() => setCat(cat === c.value ? "" : c.value)}>
-              {c.emoji} {c.label}
+              {c.emoji} {catLabel(c.value, isEn)}
             </Chip>
           ))}
         </div>
 
         <p className="font-hanken text-[13px] mt-4" style={{ color: T.faint }}>
-          {filtered.length} organisation{filtered.length > 1 ? "s" : ""}
+          {C.orgCount(filtered.length)}
         </p>
       </section>
 
@@ -135,12 +191,12 @@ export function LightAnnuaire() {
         {filtered.length === 0 ? (
           <div className="text-center py-20" style={{ color: T.soft }}>
             <Globe size={32} className="mx-auto mb-3" style={{ color: T.faint }} />
-            Aucune organisation pour ce filtre.
+            {C.emptyFilter}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((o) => (
-              <OrgCard key={o.id} o={o} />
+              <OrgCard key={o.id} o={o} isEn={isEn} viewLabel={C.viewCard} sinceLabel={C.since} />
             ))}
           </div>
         )}
@@ -148,7 +204,7 @@ export function LightAnnuaire() {
 
       {/* ── Parcourir par pays (SEO interne) ── */}
       <section className="max-w-6xl mx-auto px-6 md:px-8 pb-20">
-        <h2 className="font-fraunces text-[22px] mb-4">Parcourir par pays</h2>
+        <h2 className="font-fraunces text-[22px] mb-4">{C.browseTitle}</h2>
         <div className="flex flex-wrap gap-2">
           {[...new Set(ORGS.map((o) => o.country))].sort().map((c) => (
             <Link key={c} href={`/annuaire/pays/${slugify(c)}`}
@@ -175,9 +231,9 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
   );
 }
 
-function OrgCard({ o }: { o: OrgEntry }) {
+function OrgCard({ o, isEn, viewLabel, sinceLabel }: { o: OrgEntry; isEn: boolean; viewLabel: string; sinceLabel: string }) {
   const catLabels = o.categories
-    .map((c) => CATEGORIES.find((x) => x.value === c)?.label)
+    .map((c) => catLabel(c, isEn))
     .filter(Boolean)
     .slice(0, 2);
   return (
@@ -210,7 +266,7 @@ function OrgCard({ o }: { o: OrgEntry }) {
         ))}
         {o.founded && (
           <span className="rounded-full px-2.5 py-1 font-mono text-[10.5px]" style={{ background: T.bg, color: T.faint }}>
-            depuis {o.founded}
+            {sinceLabel} {o.founded}
           </span>
         )}
       </div>
@@ -218,7 +274,7 @@ function OrgCard({ o }: { o: OrgEntry }) {
       <Link href={`/annuaire/orga/${o.id}`}
         className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-full py-2.5 font-hanken font-semibold text-[14px] transition-all hover:brightness-95"
         style={{ background: T.ink, color: "#fff" }}>
-        Voir la fiche <ArrowUpRight size={15} />
+        {viewLabel} <ArrowUpRight size={15} />
       </Link>
     </div>
   );

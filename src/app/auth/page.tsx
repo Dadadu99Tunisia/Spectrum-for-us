@@ -5,8 +5,94 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
+
+const CONTENT = {
+  fr: {
+    resetSuccess: "Vérifie ton e-mail · un lien de réinitialisation t'a été envoyé ✦",
+    invalidCredentials: "E-mail ou mot de passe incorrect.",
+    passwordTooShort: "Le mot de passe doit faire 8 caractères minimum.",
+    signupSuccess: "Compte créé ! Connecte-toi pour continuer. ✦",
+    backHome: "Retour à l'accueil",
+    vendorSub: "Devenir créateur·rice sur Spectrum",
+    tabLogin: "Se connecter",
+    tabSignup: "Créer un compte",
+    backToLogin: "Retour à la connexion",
+    forgotTitle: "Mot de passe oublié",
+    forgotSub: "Entre ton e-mail, on t'envoie un lien de réinitialisation.",
+    emailLabel: "E-mail *",
+    emailPlaceholder: "ton@email.com",
+    pseudoLabel: "Pseudo *",
+    pseudoPlaceholder: "ton_pseudo",
+    pronounsLabel: "Pronoms",
+    pronounsOptional: "(facultatif)",
+    pronounsPlaceholder: "il/lui, elle, iel…",
+    passwordLabel: "Mot de passe *",
+    forgotLink: "Mot de passe oublié ?",
+    passwordSignupPlaceholder: "8 caractères minimum",
+    passwordLoginPlaceholder: "••••••••",
+    hidePassword: "Masquer le mot de passe",
+    showPassword: "Afficher le mot de passe",
+    loading: "Chargement…",
+    sendLink: "Envoyer le lien",
+    submitLogin: "Se connecter",
+    submitVendor: "Créer mon compte créateur·rice",
+    submitSignup: "Créer mon compte",
+    or: "ou",
+    google: "Continuer avec Google",
+    noAccount: "Pas encore de compte ?",
+    signUpInline: "S'inscrire",
+    termsPrefix: "En créant un compte, tu acceptes notre ",
+    termsCharter: "charte communautaire",
+    termsMiddle: " et nos ",
+    termsCgu: "CGU",
+    termsSuffix: ". Tes données sensibles sont protégées (RGPD).",
+  },
+  en: {
+    resetSuccess: "Check your e-mail · a reset link is on its way to you ✦",
+    invalidCredentials: "Incorrect e-mail or password.",
+    passwordTooShort: "Your password must be at least 8 characters.",
+    signupSuccess: "Account created! Log in to continue. ✦",
+    backHome: "Back to home",
+    vendorSub: "Become a creator on Spectrum",
+    tabLogin: "Log in",
+    tabSignup: "Sign up",
+    backToLogin: "Back to login",
+    forgotTitle: "Forgot your password",
+    forgotSub: "Enter your e-mail and we'll send you a reset link.",
+    emailLabel: "E-mail *",
+    emailPlaceholder: "you@email.com",
+    pseudoLabel: "Username *",
+    pseudoPlaceholder: "your_username",
+    pronounsLabel: "Pronouns",
+    pronounsOptional: "(optional)",
+    pronounsPlaceholder: "he/him, she/her, they…",
+    passwordLabel: "Password *",
+    forgotLink: "Forgot your password?",
+    passwordSignupPlaceholder: "8 characters minimum",
+    passwordLoginPlaceholder: "••••••••",
+    hidePassword: "Hide password",
+    showPassword: "Show password",
+    loading: "Loading…",
+    sendLink: "Send the link",
+    submitLogin: "Log in",
+    submitVendor: "Create my creator account",
+    submitSignup: "Create my account",
+    or: "or",
+    google: "Continue with Google",
+    noAccount: "Don't have an account yet?",
+    signUpInline: "Sign up",
+    termsPrefix: "By creating an account, you agree to our ",
+    termsCharter: "community charter",
+    termsMiddle: " and our ",
+    termsCgu: "Terms",
+    termsSuffix: ". Your sensitive data is protected (GDPR).",
+  },
+} as const;
 
 function AuthForm() {
+  const { locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
   const searchParams = useSearchParams();
   const initialMode = searchParams.get("mode") === "vendor" ? "signup" : (searchParams.get("mode") as "login" | "signup") ?? "login";
   const redirect = searchParams.get("redirect") ?? "/";
@@ -34,7 +120,7 @@ function AuthForm() {
         redirectTo: `${window.location.origin}/auth/callback?next=/compte`,
       });
       if (error) setError(error.message);
-      else setSuccess("Vérifie ton e-mail · un lien de réinitialisation t'a été envoyé ✦");
+      else setSuccess(C.resetSuccess);
       setLoading(false);
       return;
     }
@@ -43,13 +129,13 @@ function AuthForm() {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
         setError(error.message === "Invalid login credentials"
-          ? "E-mail ou mot de passe incorrect."
+          ? C.invalidCredentials
           : error.message);
       } else {
         window.location.assign(redirect || "/");
       }
     } else {
-      if (password.length < 8) { setError("Le mot de passe doit faire 8 caractères minimum."); setLoading(false); return; }
+      if (password.length < 8) { setError(C.passwordTooShort); setLoading(false); return; }
       const { data, error } = await supabase.auth.signUp({
         email, password,
         options: {
@@ -80,7 +166,7 @@ function AuthForm() {
           // Navigation complète (pas router.push) → la session est relue, pas de rebond du garde
           window.location.assign(asVendor ? "/vendeur/onboarding" : (redirect || "/"));
         } else {
-          setSuccess("Compte créé ! Connecte-toi pour continuer. ✦");
+          setSuccess(C.signupSuccess);
         }
       }
     }
@@ -95,13 +181,13 @@ function AuthForm() {
 
       <div className="relative z-10 w-full max-w-md">
         <Link href="/" className="inline-flex items-center gap-2 text-[#101014]/40 hover:text-[#101014] text-sm font-hanken mb-8 transition-colors">
-          <ArrowLeft size={14} /> Retour à l&apos;accueil
+          <ArrowLeft size={14} /> {C.backHome}
         </Link>
 
         <div className="text-center mb-8">
           <span className="font-fraunces text-3xl text-[#101014]">B<span className="text-[#FF2DA0]">(u)</span>y us</span>
           {asVendor && (
-            <p className="font-hanken text-sm text-[#FF2DA0] mt-2">Devenir créateur·rice sur Spectrum</p>
+            <p className="font-hanken text-sm text-[#FF2DA0] mt-2">{C.vendorSub}</p>
           )}
         </div>
 
@@ -118,7 +204,7 @@ function AuthForm() {
                   mode === m ? "bg-[#FF2DA0] text-[#101014]" : "text-[#101014]/50 hover:text-[#101014]"
                 }`}
               >
-                {m === "login" ? "Se connecter" : "Créer un compte"}
+                {m === "login" ? C.tabLogin : C.tabSignup}
               </button>
             ))}
           </div>
@@ -127,65 +213,65 @@ function AuthForm() {
           <div className="mb-8">
             <button onClick={() => { setMode("login"); setError(""); setSuccess(""); }}
               className="flex items-center gap-2 text-[#101014]/40 hover:text-[#101014] text-sm font-hanken transition-colors">
-              <ArrowLeft size={14} /> Retour à la connexion
+              <ArrowLeft size={14} /> {C.backToLogin}
             </button>
-            <h2 className="font-fraunces text-xl text-[#101014] mt-4">Mot de passe oublié</h2>
-            <p className="font-hanken text-sm text-[#101014]/50 mt-1">Entre ton e-mail, on t&apos;envoie un lien de réinitialisation.</p>
+            <h2 className="font-fraunces text-xl text-[#101014] mt-4">{C.forgotTitle}</h2>
+            <p className="font-hanken text-sm text-[#101014]/50 mt-1">{C.forgotSub}</p>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           {mode === "reset" && (
             <div>
-              <label htmlFor="email-reset" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">E-mail *</label>
+              <label htmlFor="email-reset" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{C.emailLabel}</label>
               <input id="email-reset" type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                placeholder="ton@email.com"
+                placeholder={C.emailPlaceholder}
                 className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
             </div>
           )}
           {mode === "signup" && (
             <>
               <div>
-                <label htmlFor="pseudo" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">Pseudo *</label>
+                <label htmlFor="pseudo" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{C.pseudoLabel}</label>
                 <input id="pseudo" type="text" value={pseudo} onChange={(e) => setPseudo(e.target.value)}
-                  placeholder="ton_pseudo"
+                  placeholder={C.pseudoPlaceholder}
                   className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               </div>
               <div>
                 <label htmlFor="pronouns" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">
-                  Pronoms <span className="normal-case tracking-normal text-[#101014]/20">(facultatif)</span>
+                  {C.pronounsLabel} <span className="normal-case tracking-normal text-[#101014]/20">{C.pronounsOptional}</span>
                 </label>
                 <input id="pronouns" type="text" value={pronouns} onChange={(e) => setPronouns(e.target.value)}
-                  placeholder="il/lui, elle, iel…"
+                  placeholder={C.pronounsPlaceholder}
                   className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               </div>
             </>
           )}
 
           {mode !== "reset" && <div>
-            <label htmlFor="email" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">E-mail *</label>
+            <label htmlFor="email" className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{C.emailLabel}</label>
             <input id="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder="ton@email.com"
+              placeholder={C.emailPlaceholder}
               className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
           </div>}
 
           {mode !== "reset" && <div>
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="password" className="block font-mono text-[10px] tracking-wide text-[#101014]/40">Mot de passe *</label>
+              <label htmlFor="password" className="block font-mono text-[10px] tracking-wide text-[#101014]/40">{C.passwordLabel}</label>
               {mode === "login" && (
                 <button type="button" onClick={() => { setMode("reset"); setError(""); setSuccess(""); }}
                   className="font-hanken text-[10px] text-[#101014]/30 hover:text-[#FF2DA0] transition-colors">
-                  Mot de passe oublié ?
+                  {C.forgotLink}
                 </button>
               )}
             </div>
             <div className="relative">
               <input id="password" type={showPw ? "text" : "password"} required autoComplete={mode === "login" ? "current-password" : "new-password"}
                 value={password} onChange={(e) => setPassword(e.target.value)}
-                placeholder={mode === "signup" ? "8 caractères minimum" : "••••••••"}
+                placeholder={mode === "signup" ? C.passwordSignupPlaceholder : C.passwordLoginPlaceholder}
                 className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-xl px-4 py-3 pr-12 text-[#101014] font-hanken text-sm placeholder-[#101014]/25 focus:outline-none focus:border-[#FF2DA0]/60 transition-colors" />
               <button type="button" onClick={() => setShowPw(!showPw)}
-                aria-label={showPw ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                aria-label={showPw ? C.hidePassword : C.showPassword}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#101014]/30 hover:text-[#101014]/60 transition-colors">
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -205,12 +291,12 @@ function AuthForm() {
 
           <Button variant="primary" className="w-full py-3.5 text-base mt-2" disabled={loading} type="submit">
             {loading
-              ? "Chargement…"
+              ? C.loading
               : mode === "reset"
-              ? "Envoyer le lien"
+              ? C.sendLink
               : mode === "login"
-              ? "Se connecter"
-              : asVendor ? "Créer mon compte créateur·rice" : "Créer mon compte"}
+              ? C.submitLogin
+              : asVendor ? C.submitVendor : C.submitSignup}
           </Button>
         </form>
 
@@ -218,7 +304,7 @@ function AuthForm() {
         {mode !== "reset" && <div className="mt-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-[#101014]/10" />
-            <span className="font-mono text-[10px] text-[#101014]/30 tracking-wide">ou</span>
+            <span className="font-mono text-[10px] text-[#101014]/30 tracking-wide">{C.or}</span>
             <div className="flex-1 h-px bg-[#101014]/10" />
           </div>
           <button
@@ -238,23 +324,22 @@ function AuthForm() {
               <path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332Z" fill="#FBBC05"/>
               <path d="M9 3.583c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.163 6.656 3.583 9 3.583Z" fill="#EA4335"/>
             </svg>
-            Continuer avec Google
+            {C.google}
           </button>
         </div>}
 
         {mode === "login" && (
           <p className="text-center mt-4 font-hanken text-sm text-[#101014]/40">
-            Pas encore de compte ?{" "}
-            <button onClick={() => setMode("signup")} className="text-[#FF2DA0] hover:underline">S&apos;inscrire</button>
+            {C.noAccount}{" "}
+            <button onClick={() => setMode("signup")} className="text-[#FF2DA0] hover:underline">{C.signUpInline}</button>
           </p>
         )}
 
         {mode === "signup" && (
           <p className="text-center mt-5 text-xs font-hanken text-[#101014]/25 leading-relaxed max-w-sm mx-auto">
-            En créant un compte, tu acceptes notre{" "}
-            <a href="/legal/cgu" className="text-[#101014]/40 hover:text-[#FF2DA0] transition-colors">charte communautaire</a>{" "}
-            et nos <a href="/legal/cgu" className="text-[#101014]/40 hover:text-[#FF2DA0] transition-colors">CGU</a>.
-            Tes données sensibles sont protégées (RGPD).
+            {C.termsPrefix}
+            <a href="/legal/cgu" className="text-[#101014]/40 hover:text-[#FF2DA0] transition-colors">{C.termsCharter}</a>
+            {C.termsMiddle}<a href="/legal/cgu" className="text-[#101014]/40 hover:text-[#FF2DA0] transition-colors">{C.termsCgu}</a>{C.termsSuffix}
           </p>
         )}
       </div>

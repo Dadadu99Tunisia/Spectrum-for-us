@@ -1,11 +1,23 @@
+"use client";
+
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import Link from "next/link";
-import { LucideIcon } from "lucide-react";
+import { Palette, Sparkles, Users, BookOpen } from "lucide-react";
 import { ScatterText } from "@/components/ui/ScatterText";
+import { useI18n } from "@/contexts/I18nContext";
+
+const CONTENT = {
+  fr: { building: "En construction", backHome: "← Retour à l'accueil" },
+  en: { building: "Under construction", backHome: "← Back to home" },
+} as const;
+
+// Icône passée par NOM (string sérialisable) : ComingSoon est un client component
+// rendu par des server components (art/emploi/ressources) qui ne peuvent pas passer de fonction.
+const ICONS = { Palette, Sparkles, Users, BookOpen } as const;
 
 interface ComingSoonProps {
-  icon: LucideIcon;
+  icon: keyof typeof ICONS;
   label: string;
   title: string;
   subtitle: string;
@@ -16,7 +28,10 @@ interface ComingSoonProps {
   scatterWord?: string;
 }
 
-export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#FF2DA0", features, ctaLabel, ctaHref, scatterWord }: ComingSoonProps) {
+export function ComingSoon({ icon, label, title, subtitle, accent = "#FF2DA0", features, ctaLabel, ctaHref, scatterWord }: ComingSoonProps) {
+  const { locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
+  const Icon = ICONS[icon] ?? Sparkles;
   return (
     <>
       <Header />
@@ -65,7 +80,7 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#FF2D
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#101014]/15 bg-[#101014]/[0.03] mb-8">
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: accent }} />
-            <span className="font-mono text-xs text-[#101014]/50 tracking-wide">En construction</span>
+            <span className="font-mono text-xs text-[#101014]/50 tracking-wide">{C.building}</span>
           </div>
 
           {/* CTA */}
@@ -79,7 +94,7 @@ export function ComingSoon({ icon: Icon, label, title, subtitle, accent = "#FF2D
             )}
             <Link href="/"
               className="px-6 py-3 rounded-full border border-[#101014]/15 font-hanken text-sm text-[#101014]/60 hover:text-[#101014] hover:border-[#101014]/30 transition-all duration-200">
-              ← Retour à l&apos;accueil
+              {C.backHome}
             </Link>
           </div>
         </div>

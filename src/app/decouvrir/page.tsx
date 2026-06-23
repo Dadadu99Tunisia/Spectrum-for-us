@@ -13,20 +13,98 @@ import Link from "next/link";
 import { FillImage } from "@/components/ui/FillImage";
 import { CATEGORIES } from "@/lib/categories";
 import { ExploreFeed } from "@/components/mobile/ExploreFeed";
+import { useI18n } from "@/contexts/I18nContext";
 
 const ALL_CATEGORIES = ["Toutes", ...Object.keys(CATEGORIES)];
 
-const SORT_OPTIONS = [
-  { value: "recent",     label: "Plus récents" },
-  { value: "price_asc",  label: "Prix croissant" },
-  { value: "price_desc", label: "Prix décroissant" },
-];
-
-const TYPE_LABELS: Record<string, string> = {
-  product: "Produit",
-  service: "Service",
-  event:   "Événement",
+// EN display labels for category FILTER values (value stays FR for Supabase .eq("category"))
+const CATEGORY_EN: Record<string, string> = {
+  "Toutes": "All",
+  "Mode non-genrée": "Genderless Fashion",
+  "Art & Culture": "Art & Culture",
+  "Bijoux": "Jewelry",
+  "Zines & Édition": "Zines & Print",
+  "Corps & Soin": "Body & Care",
+  "Intimité": "Intimacy",
+  "Maison": "Home",
+  "Services": "Services",
+  "Expériences": "Experiences",
 };
+
+const CONTENT = {
+  fr: {
+    title: "Découvrir",
+    searchPlaceholder: "Rechercher une création, un atelier, un zine…",
+    clearSearch: "Effacer la recherche",
+    filters: "Filtres",
+    maxPrice: "Prix max",
+    subAll: "Toutes",
+    loading: "Chargement…",
+    result: (n: number) => `${n} résultat${n > 1 ? "s" : ""}`,
+    connLostTitle: "Connexion interrompue",
+    connLostBody: "Impossible de charger les créations pour le moment. Vérifie ta connexion et réessaie.",
+    retry: "Réessayer",
+    noResultsTitle: "Aucun résultat",
+    noMatch: (q: string) => `Aucune création ne correspond à "${q}".`,
+    noneInCategory: "Aucune création dans cette catégorie pour le moment.",
+    clearFilters: "Effacer les filtres",
+    openingTitle: "La marketplace ouvre ses portes",
+    openingBody1: "Spectrum se construit avec ses premier·es créateur·ices. Sois parmi les ",
+    openingFounders: "120 fondateur·ices",
+    openingBody2: " et prends une place avant tout le monde — abonnement offert et 0 % de commission.",
+    becomeFounder: "Devenir fondateur·ice",
+    openShop: "Ouvrir ma boutique",
+    supportPrefix: "Tu cherches plutôt à soutenir ? ",
+    discoverAssos: "Découvre les associations",
+    by: "par",
+    book: "Réserver",
+    signup: "S'inscrire",
+    addToCart: "Ajouter",
+    soon: "Bientôt",
+    typeLabels: { product: "Produit", service: "Service", event: "Événement" } as Record<string, string>,
+    sortOptions: [
+      { value: "recent",     label: "Plus récents" },
+      { value: "price_asc",  label: "Prix croissant" },
+      { value: "price_desc", label: "Prix décroissant" },
+    ],
+  },
+  en: {
+    title: "Discover",
+    searchPlaceholder: "Search a creation, a workshop, a zine…",
+    clearSearch: "Clear search",
+    filters: "Filters",
+    maxPrice: "Max price",
+    subAll: "All",
+    loading: "Loading…",
+    result: (n: number) => `${n} result${n > 1 ? "s" : ""}`,
+    connLostTitle: "Connection lost",
+    connLostBody: "We can't load the creations right now. Check your connection and try again.",
+    retry: "Try again",
+    noResultsTitle: "No results",
+    noMatch: (q: string) => `No creation matches "${q}".`,
+    noneInCategory: "Nothing in this category yet.",
+    clearFilters: "Clear filters",
+    openingTitle: "The marketplace is opening its doors",
+    openingBody1: "Spectrum is being built with its first creators. Be one of the ",
+    openingFounders: "120 founders",
+    openingBody2: " and claim your spot before everyone else — free membership and 0% commission.",
+    becomeFounder: "Become a founder",
+    openShop: "Open my shop",
+    supportPrefix: "Looking to support instead? ",
+    discoverAssos: "Discover the nonprofits",
+    by: "by",
+    book: "Book",
+    signup: "Sign up",
+    addToCart: "Add",
+    soon: "Soon",
+    typeLabels: { product: "Product", service: "Service", event: "Event" } as Record<string, string>,
+    sortOptions: [
+      { value: "recent",     label: "Most recent" },
+      { value: "price_asc",  label: "Price: low to high" },
+      { value: "price_desc", label: "Price: high to low" },
+    ],
+  },
+} as const;
 
 type Product = {
   id: string; name: string; title: string; description: string;
@@ -39,6 +117,10 @@ type Product = {
 
 function DecouvrirContent() {
   const searchParams = useSearchParams();
+  const { locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
+  const L = locale === "en" ? "en" : "fr";
+  const catLabel = (c: string) => (L === "en" ? (CATEGORY_EN[c] ?? c) : c);
 
   const [products,    setProducts]    = useState<Product[]>([]);
   const [loading,     setLoading]     = useState(true);
@@ -126,7 +208,7 @@ function DecouvrirContent() {
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="font-fraunces font-extrabold text-4xl md:text-5xl text-[#101014] leading-[1.15]"><ScatterText text="Découvrir" intensity={0.7} /></h1>
+            <h1 className="font-fraunces font-extrabold text-4xl md:text-5xl text-[#101014] leading-[1.15]"><ScatterText text={C.title} intensity={0.7} /></h1>
           </div>
 
           {/* Search + sort + filters */}
@@ -138,11 +220,11 @@ function DecouvrirContent() {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Rechercher une création, un atelier, un zine…"
+                placeholder={C.searchPlaceholder}
                 className="w-full bg-[#101014]/5 border border-[#101014]/15 rounded-full pl-10 pr-4 py-2.5 text-[#101014] font-hanken text-sm placeholder-[#101014]/30 focus:outline-none focus:border-[#FF2DA0]/50 transition-colors"
               />
               {search && (
-                <button onClick={() => setSearch("")} aria-label="Effacer la recherche" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#101014]/30 hover:text-[#101014]/60">
+                <button onClick={() => setSearch("")} aria-label={C.clearSearch} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#101014]/30 hover:text-[#101014]/60">
                   <X size={14} />
                 </button>
               )}
@@ -152,7 +234,7 @@ function DecouvrirContent() {
               onChange={(e) => setSort(e.target.value)}
               className="bg-[#101014]/5 border border-[#101014]/15 rounded-full px-4 py-2.5 text-[#101014]/70 font-hanken text-sm focus:outline-none focus:border-[#FF2DA0]/50 transition-colors"
             >
-              {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value} className="bg-[#FBFAF8]">{o.label}</option>)}
+              {C.sortOptions.map((o) => <option key={o.value} value={o.value} className="bg-[#FBFAF8]">{o.label}</option>)}
             </select>
             <button
               onClick={() => setFiltersOpen(!filtersOpen)}
@@ -160,7 +242,7 @@ function DecouvrirContent() {
                 filtersOpen ? "border-[#FF2DA0] text-[#FF2DA0] bg-[#FF2DA0]/10" : "border-[#101014]/15 text-[#101014]/60 hover:border-[#101014]/30"
               }`}
             >
-              <SlidersHorizontal size={14} /> Filtres
+              <SlidersHorizontal size={14} /> {C.filters}
             </button>
           </div>
 
@@ -168,7 +250,7 @@ function DecouvrirContent() {
           {filtersOpen && (
             <div className="mb-4 p-5 rounded-2xl border border-[#101014]/10 bg-[#101014]/[0.02]">
               <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-3">
-                Prix max : {maxPrice} €
+                {C.maxPrice} : {maxPrice} €
               </label>
               <input
                 type="range" min={5} max={500} step={5} value={maxPrice}
@@ -190,7 +272,7 @@ function DecouvrirContent() {
                     : "border-[#101014]/15 text-[#101014]/50 hover:border-[#101014]/30 hover:text-[#101014]/70"
                 }`}
               >
-                {c}
+                {catLabel(c)}
               </button>
             ))}
           </div>
@@ -206,7 +288,7 @@ function DecouvrirContent() {
                     : "border-[#101014]/10 text-[#101014]/35 hover:border-[#101014]/25"
                 }`}
               >
-                <Layers size={10} /> Toutes
+                <Layers size={10} /> {C.subAll}
               </button>
               {subcats.map((s) => (
                 <button
@@ -226,7 +308,7 @@ function DecouvrirContent() {
 
           {/* Results count */}
           <p className="font-mono text-xs text-[#101014]/30 mb-6">
-            {loading ? "Chargement…" : `${filtered.length} résultat${filtered.length > 1 ? "s" : ""}`}
+            {loading ? C.loading : C.result(filtered.length)}
             {subcategory && <span className="ml-2 text-[#9B6DD5]">· {subcategory}</span>}
           </p>
 
@@ -246,43 +328,43 @@ function DecouvrirContent() {
           ) : loadError ? (
             <div className="flex flex-col items-center text-center py-24 max-w-md mx-auto">
               <span className="text-4xl mb-4">📡</span>
-              <h2 className="font-fraunces text-2xl text-[#101014] mb-2">Connexion interrompue</h2>
-              <p className="font-hanken text-[#101014]/55 mb-6">Impossible de charger les créations pour le moment. Vérifie ta connexion et réessaie.</p>
+              <h2 className="font-fraunces text-2xl text-[#101014] mb-2">{C.connLostTitle}</h2>
+              <p className="font-hanken text-[#101014]/55 mb-6">{C.connLostBody}</p>
               <button onClick={() => { setLoading(true); setLoadError(false); setReloadKey(k => k + 1); }}
                 className="font-mono text-xs tracking-wide text-white bg-[#101014] px-5 py-2.5 rounded-xl">
-                Réessayer
+                {C.retry}
               </button>
             </div>
           ) : filtered.length === 0 ? (
             (search || category !== "Toutes" || subcategory) ? (
               <div className="flex flex-col items-center text-center py-24 max-w-md mx-auto">
-                <h2 className="font-fraunces text-2xl text-[#101014] mb-3">Aucun résultat</h2>
+                <h2 className="font-fraunces text-2xl text-[#101014] mb-3">{C.noResultsTitle}</h2>
                 <p className="font-hanken text-[#101014]/50 mb-6 leading-relaxed">
-                  {search ? `Aucune création ne correspond à "${search}".` : "Aucune création dans cette catégorie pour le moment."}
+                  {search ? C.noMatch(search) : C.noneInCategory}
                 </p>
                 <button
                   onClick={() => { setSearch(""); setCategory("Toutes"); setSubcategory(""); }}
                   className="font-mono text-xs tracking-wide text-[#FF2DA0]/70 hover:text-[#FF2DA0] transition-colors border border-[#FF2DA0]/20 hover:border-[#FF2DA0]/40 px-4 py-2 rounded-xl"
                 >
-                  Effacer les filtres
+                  {C.clearFilters}
                 </button>
               </div>
             ) : (
               <div className="flex flex-col items-center text-center py-20 max-w-lg mx-auto">
                 <span className="text-4xl mb-5">🚀</span>
-                <h2 className="font-fraunces text-3xl text-[#101014] mb-3 leading-tight">La marketplace ouvre ses portes</h2>
+                <h2 className="font-fraunces text-3xl text-[#101014] mb-3 leading-tight">{C.openingTitle}</h2>
                 <p className="font-hanken text-[15.5px] text-[#101014]/55 mb-8 leading-relaxed">
-                  Spectrum se construit avec ses premier·es créateur·ices. Sois parmi les <strong className="text-[#101014]">120 fondateur·ices</strong> et prends une place avant tout le monde — abonnement offert et 0 % de commission.
+                  {C.openingBody1}<strong className="text-[#101014]">{C.openingFounders}</strong>{C.openingBody2}
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <a href="/programme-fondateur" className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-[15px] text-white" style={{ background: "#101014" }}>
-                    Devenir fondateur·ice <ArrowRight size={16} />
+                    {C.becomeFounder} <ArrowRight size={16} />
                   </a>
                   <a href="/vendeur/onboarding" className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-[15px]" style={{ color: "#101014", boxShadow: "inset 0 0 0 1.5px #ECE6DB" }}>
-                    Ouvrir ma boutique
+                    {C.openShop}
                   </a>
                 </div>
-                <p className="font-hanken text-[13px] text-[#101014]/40 mt-6">Tu cherches plutôt à soutenir ? <a href="/annuaire" className="text-[#FF2DA0] font-semibold">Découvre les associations</a></p>
+                <p className="font-hanken text-[13px] text-[#101014]/40 mt-6">{C.supportPrefix}<a href="/annuaire" className="text-[#FF2DA0] font-semibold">{C.discoverAssos}</a></p>
               </div>
             )
           ) : (
@@ -312,7 +394,7 @@ function DecouvrirContent() {
                         {ptype !== "product" && (
                           <div className="absolute top-2 left-2">
                             <span className="font-mono text-[9px] tracking-wide px-2 py-0.5 rounded-full bg-[#FBFAF8]/80 backdrop-blur-sm text-[#FFD400] border border-[#FFD400]/30">
-                              {TYPE_LABELS[ptype]}
+                              {C.typeLabels[ptype]}
                             </span>
                           </div>
                         )}
@@ -321,7 +403,7 @@ function DecouvrirContent() {
                         {p.category && <Tag variant="magenta" className="mb-2 text-[10px]">{p.category}</Tag>}
                         <h3 className="font-bricolage font-semibold text-[#101014] text-sm leading-tight mb-1 line-clamp-2">{p.name || p.title}</h3>
                         {shop && (
-                          <p className="font-hanken text-xs text-[#101014]/40 truncate">par {shop.name}</p>
+                          <p className="font-hanken text-xs text-[#101014]/40 truncate">{C.by} {shop.name}</p>
                         )}
                       </div>
                     </Link>
@@ -337,10 +419,10 @@ function DecouvrirContent() {
                           }`}
                         >
                           <ShoppingBag size={11} />
-                          {added === p.id ? "✓" : ptype === "service" ? "Réserver" : ptype === "event" ? "S'inscrire" : "Ajouter"}
+                          {added === p.id ? "✓" : ptype === "service" ? C.book : ptype === "event" ? C.signup : C.addToCart}
                         </button>
                       ) : (
-                        <span className="px-3 py-1.5 rounded-full text-xs font-hanken font-medium text-[#101014]/35 bg-[#101014]/5">Bientôt</span>
+                        <span className="px-3 py-1.5 rounded-full text-xs font-hanken font-medium text-[#101014]/35 bg-[#101014]/5">{C.soon}</span>
                       )}
                     </div>
                   </div>

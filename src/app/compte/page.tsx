@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useI18n } from "@/contexts/I18nContext";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/store/cart";
 import { ReturnRequestButton } from "@/components/account/ReturnRequestButton";
@@ -24,8 +25,129 @@ const TAB_ICONS = {
   "Paramètres": Settings,
 };
 
+const CONTENT = {
+  fr: {
+    dateLocale: "fr-FR",
+    headerTitle: "Mon compte",
+    tabs: { "Commandes": "Commandes", "Favoris": "Favoris", "Avis": "Avis", "Paramètres": "Paramètres" } as Record<Tab, string>,
+    statusLabel: { pending: "En attente", paid: "Payé", shipped: "Expédié", delivered: "Livré", cancelled: "Annulé" } as Record<string, string>,
+    qFavoris: "Favoris",
+    qCommandes: "Commandes",
+    qAdresses: "Adresses",
+    administration: "Administration",
+    espaceVendeur: "Espace vendeur·rice",
+    publierCreation: "Publier une création",
+    vendsTesCreations: "Vends tes créations ici",
+    admin: "Admin",
+    espaceVendeurShort: "Espace vendeur",
+    devenirVendeur: "Devenir vendeur·rice",
+    mesReservations: "🗓️ Mes réservations",
+    service: "Service",
+    confirme: "Confirmé",
+    annule: "Annulé",
+    enAttente: "En attente",
+    annuler: "Annuler",
+    confirmCancelBooking: "Annuler cette réservation ? Tu seras remboursé·e.",
+    errorPrefix: "Erreur : ",
+    noOrders: "Aucune commande pour l'instant.",
+    explorerMarketplace: "Explorer la marketplace",
+    colis: "Colis",
+    livre: "Livré",
+    expedie: "Expédié",
+    enPreparation: "En préparation",
+    suivi: "Suivi",
+    recu: "🧾 Reçu",
+    racheter: "↻ Racheter",
+    // FavoritesTab
+    aucunFavori: "Tu n'as pas encore de favoris.",
+    decouvrirCreations: "Découvrir des créations",
+    favori: "favori",
+    favoriPlural: "s",
+    toutGerer: "Tout gérer →",
+    // ReviewsTab
+    avisIci: "Tes avis apparaîtront ici après tes achats.",
+    creation: "Création",
+    // SettingsTab
+    pseudoLabel: "Pseudo / Nom affiché",
+    pseudoPlaceholder: "ton_pseudo",
+    pronounsLabel: "Pronoms (public)",
+    pronounsPlaceholder: "iel, elle, il…",
+    emailLabel: "E-mail (non modifiable)",
+    colisDiscrets: "Colis discrets (aucune mention Spectrum à l'extérieur)",
+    enregistrement: "Enregistrement…",
+    enregistre: "✓ Enregistré !",
+    enregistrer: "Enregistrer",
+    rgpdTitle: "Données personnelles (RGPD)",
+    exporter: "Exporter mes données (Art. 20)",
+    // DeleteAccountButton
+    deleteWarning: "⚠️ Cette action est irréversible. Ton compte sera supprimé définitivement.",
+    suppression: "Suppression…",
+    confirmerSuppression: "Confirmer la suppression",
+    annulerBtn: "Annuler",
+    supprimerCompte: "Supprimer mon compte (Art. 17)",
+  },
+  en: {
+    dateLocale: "en-US",
+    headerTitle: "My account",
+    tabs: { "Commandes": "Orders", "Favoris": "Favorites", "Avis": "Reviews", "Paramètres": "Settings" } as Record<Tab, string>,
+    statusLabel: { pending: "Pending", paid: "Paid", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled" } as Record<string, string>,
+    qFavoris: "Favorites",
+    qCommandes: "Orders",
+    qAdresses: "Addresses",
+    administration: "Administration",
+    espaceVendeur: "Seller space",
+    publierCreation: "Publish a creation",
+    vendsTesCreations: "Sell your creations here",
+    admin: "Admin",
+    espaceVendeurShort: "Seller space",
+    devenirVendeur: "Become a seller",
+    mesReservations: "🗓️ My bookings",
+    service: "Service",
+    confirme: "Confirmed",
+    annule: "Cancelled",
+    enAttente: "Pending",
+    annuler: "Cancel",
+    confirmCancelBooking: "Cancel this booking? You'll be refunded.",
+    errorPrefix: "Error: ",
+    noOrders: "No orders yet.",
+    explorerMarketplace: "Explore the marketplace",
+    colis: "Parcel",
+    livre: "Delivered",
+    expedie: "Shipped",
+    enPreparation: "In preparation",
+    suivi: "Tracking",
+    recu: "🧾 Receipt",
+    racheter: "↻ Buy again",
+    aucunFavori: "You don't have any favorites yet.",
+    decouvrirCreations: "Discover creations",
+    favori: "favorite",
+    favoriPlural: "s",
+    toutGerer: "Manage all →",
+    avisIci: "Your reviews will appear here after your purchases.",
+    creation: "Creation",
+    pseudoLabel: "Username / Display name",
+    pseudoPlaceholder: "your_username",
+    pronounsLabel: "Pronouns (public)",
+    pronounsPlaceholder: "they, she, he…",
+    emailLabel: "E-mail (not editable)",
+    colisDiscrets: "Discreet parcels (no Spectrum mention on the outside)",
+    enregistrement: "Saving…",
+    enregistre: "✓ Saved!",
+    enregistrer: "Save",
+    rgpdTitle: "Personal data (GDPR)",
+    exporter: "Export my data (Art. 20)",
+    deleteWarning: "⚠️ This action is irreversible. Your account will be permanently deleted.",
+    suppression: "Deleting…",
+    confirmerSuppression: "Confirm deletion",
+    annulerBtn: "Cancel",
+    supprimerCompte: "Delete my account (Art. 17)",
+  },
+} as const;
+
 export default function ComptePage() {
   const { user, isAdmin, loading, signOut } = useAuth();
+  const { locale, formatPrice } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
   const router = useRouter();
   const { add } = useCart();
   const [rebuying, setRebuying] = useState<string | null>(null);
@@ -119,14 +241,12 @@ export default function ComptePage() {
     delivered: "text-[#2323C4] border-[#2323C4]/40",
     cancelled: "text-red-400 border-red-400/40",
   };
-  const STATUS_LABEL: Record<string, string> = {
-    pending: "En attente", paid: "Payé", shipped: "Expédié", delivered: "Livré", cancelled: "Annulé",
-  };
+  const STATUS_LABEL = C.statusLabel;
 
   return (
     <>
       <div className="hidden md:block"><Header /></div>
-      <MobilePageHeader title="Mon compte" backHref="/" />
+      <MobilePageHeader title={C.headerTitle} backHref="/" />
 
       <main className="min-h-screen md:pt-24 pb-24 md:pb-20 px-4 md:px-6 bg-[#FBFAF8] text-[#101014]">
         <div className="max-w-5xl mx-auto">
@@ -161,17 +281,17 @@ export default function ComptePage() {
                     <span className="absolute -top-1.5 -right-2 min-w-[15px] h-[15px] px-0.5 rounded-full text-[8px] font-mono flex items-center justify-center text-white" style={{ background: "#FF2DA0" }}>{favCount}</span>
                   )}
                 </span>
-                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">Favoris</span>
+                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">{C.qFavoris}</span>
               </Link>
               <button onClick={() => setTab("Commandes")} className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
                 style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
                 <Package size={20} className="text-[#7A2BF0]" />
-                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">Commandes</span>
+                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">{C.qCommandes}</span>
               </button>
               <Link href="/compte/adresses" className="flex flex-col items-center gap-1.5 py-4 rounded-2xl active:scale-95 transition-transform"
                 style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
                 <MapPin size={20} className="text-[#2323C4]" />
-                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">Adresses</span>
+                <span className="font-mono text-[9px] tracking-wide text-[#101014]/55">{C.qAdresses}</span>
               </Link>
             </div>
 
@@ -180,7 +300,7 @@ export default function ComptePage() {
               <Link href="/admin" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-2 active:scale-[0.98] transition-transform"
                 style={{ background: "linear-gradient(135deg,rgba(255,61,127,0.14),rgba(109,45,181,0.14))", border: "1px solid rgba(255,61,127,0.25)" }}>
                 <LayoutDashboard size={17} className="text-[#FF2DA0]" />
-                <span className="flex-1 font-hanken text-[14px] text-[#101014]">Administration</span>
+                <span className="flex-1 font-hanken text-[14px] text-[#101014]">{C.administration}</span>
                 <ChevronRight size={16} className="text-[#101014]/30" />
               </Link>
             )}
@@ -189,13 +309,13 @@ export default function ComptePage() {
                 <Link href="/vendeur" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-2 active:scale-[0.98] transition-transform"
                   style={{ background: "rgba(26,22,18,0.04)", border: "1px solid rgba(26,22,18,0.08)" }}>
                   <Store size={17} className="text-[#2323C4]" />
-                  <span className="flex-1 font-hanken text-[14px] text-[#101014]">Espace vendeur·rice</span>
+                  <span className="flex-1 font-hanken text-[14px] text-[#101014]">{C.espaceVendeur}</span>
                   <ChevronRight size={16} className="text-[#101014]/30" />
                 </Link>
                 <Link href="/publier" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-4 active:scale-[0.98] transition-transform"
                   style={{ background: "linear-gradient(135deg,#7A2BF0,#FF2DA0)", boxShadow: "0 4px 18px rgba(109,45,181,.35)" }}>
                   <PlusCircle size={17} className="text-white" />
-                  <span className="flex-1 font-hanken font-semibold text-[14px] text-white">Publier une création</span>
+                  <span className="flex-1 font-hanken font-semibold text-[14px] text-white">{C.publierCreation}</span>
                   <ChevronRight size={16} className="text-white/60" />
                 </Link>
               </>
@@ -203,7 +323,7 @@ export default function ComptePage() {
               <Link href="/vendeur/onboarding" className="flex items-center gap-3 px-4 py-3.5 rounded-2xl mb-4 active:scale-[0.98] transition-transform"
                 style={{ background: "linear-gradient(135deg,rgba(109,45,181,0.16),rgba(255,61,127,0.16))", border: "1px solid rgba(109,45,181,0.3)" }}>
                 <Store size={17} className="text-[#FF2DA0]" />
-                <span className="flex-1 font-hanken text-[14px] text-[#101014]">Vends tes créations ici</span>
+                <span className="flex-1 font-hanken text-[14px] text-[#101014]">{C.vendsTesCreations}</span>
                 <ChevronRight size={16} className="text-[#101014]/30" />
               </Link>
             )}
@@ -224,16 +344,16 @@ export default function ComptePage() {
             <div className="flex gap-2 flex-wrap">
               {isAdmin && (
                 <Button variant="primary" href="/admin" className="text-sm py-2 px-4 bg-[#FF2DA0]">
-                  <LayoutDashboard size={14} /> Admin
+                  <LayoutDashboard size={14} /> {C.admin}
                 </Button>
               )}
               {profile?.is_vendor ? (
                 <Button variant="secondary" href="/vendeur" className="text-sm py-2 px-4">
-                  <Store size={14} /> Espace vendeur
+                  <Store size={14} /> {C.espaceVendeurShort}
                 </Button>
               ) : (
                 <Button variant="secondary" href="/vendeur/onboarding" className="text-sm py-2 px-4">
-                  <Store size={14} /> Devenir vendeur·rice
+                  <Store size={14} /> {C.devenirVendeur}
                 </Button>
               )}
               <button onClick={signOut}
@@ -254,7 +374,7 @@ export default function ComptePage() {
                       ? "border-[#FF2DA0] text-[#FF2DA0]"
                       : "border-transparent text-[#101014]/40 hover:text-[#101014]/70"
                   }`}>
-                  <Icon size={14} /> {t}
+                  <Icon size={14} /> {C.tabs[t]}
                 </button>
               );
             })}
@@ -263,25 +383,25 @@ export default function ComptePage() {
           {/* Réservations */}
           {tab === "Commandes" && bookings.length > 0 && (
             <div className="mb-6">
-              <p className="font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">🗓️ Mes réservations</p>
+              <p className="font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{C.mesReservations}</p>
               <div className="space-y-2">
                 {bookings.map(b => (
                   <div key={b.id} className="flex items-center justify-between rounded-2xl border border-[#101014]/10 bg-white px-4 py-3">
                     <div>
-                      <p className="font-hanken text-sm text-[#101014]">{b.products?.name || b.products?.title || "Service"}</p>
-                      <p className="font-mono text-[11px] text-[#101014]/45">{new Date(b.start_at).toLocaleString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}</p>
+                      <p className="font-hanken text-sm text-[#101014]">{b.products?.name || b.products?.title || C.service}</p>
+                      <p className="font-mono text-[11px] text-[#101014]/45">{new Date(b.start_at).toLocaleString(C.dateLocale, { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full border ${b.status === "confirmed" ? "text-green-600 border-green-400/30 bg-green-400/10" : b.status === "cancelled" ? "text-red-500 border-red-400/30" : "text-[#101014]/40 border-[#101014]/20"}`}>
-                        {b.status === "confirmed" ? "Confirmé" : b.status === "cancelled" ? "Annulé" : "En attente"}
+                        {b.status === "confirmed" ? C.confirme : b.status === "cancelled" ? C.annule : C.enAttente}
                       </span>
                       {b.status !== "cancelled" && new Date(b.start_at).getTime() > Date.now() && (
                         <button onClick={async () => {
-                          if (!confirm("Annuler cette réservation ? Tu seras remboursé·e.")) return;
+                          if (!confirm(C.confirmCancelBooking)) return;
                           const res = await fetch("/api/bookings/cancel", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ booking_id: b.id }) });
                           if (res.ok) setBookings(bs => bs.map(x => x.id === b.id ? { ...x, status: "cancelled" } : x));
-                          else { const j = await res.json().catch(() => ({})); alert("Erreur : " + (j.error ?? res.status)); }
-                        }} className="font-mono text-[10px] text-[#101014]/40 hover:text-red-500 transition-colors">Annuler</button>
+                          else { const j = await res.json().catch(() => ({})); alert(C.errorPrefix + (j.error ?? res.status)); }
+                        }} className="font-mono text-[10px] text-[#101014]/40 hover:text-red-500 transition-colors">{C.annuler}</button>
                       )}
                     </div>
                   </div>
@@ -295,8 +415,8 @@ export default function ComptePage() {
             orders.length === 0 ? (
               <div className="text-center py-16">
                 <Package size={48} className="mx-auto mb-4 text-[#101014]/15" />
-                <p className="font-hanken text-[#101014]/40 mb-6">Aucune commande pour l&apos;instant.</p>
-                <Button variant="primary" href="/decouvrir">Explorer la marketplace</Button>
+                <p className="font-hanken text-[#101014]/40 mb-6">{C.noOrders}</p>
+                <Button variant="primary" href="/decouvrir">{C.explorerMarketplace}</Button>
               </div>
             ) : (
               <div className="space-y-3">
@@ -310,14 +430,14 @@ export default function ComptePage() {
                         </span>
                       </div>
                       <p className="font-hanken text-xs text-[#101014]/35 mt-1">
-                        {new Date(order.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                        {new Date(order.created_at).toLocaleDateString(C.dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                       {(shipments[order.id] ?? []).map((s, i) => (
                         <div key={i} className="mt-1.5">
                           <p className="font-mono text-[10px] text-[#101014]/45">
-                            📦 {s.method_label ?? "Colis"} ·{" "}
-                            {s.status === "delivered" ? "Livré" : s.status === "shipped" ? "Expédié" : "En préparation"}
-                            {s.tracking_number ? <> · {s.carrier ?? "Suivi"} <strong className="text-[#101014]/70">{s.tracking_number}</strong></> : null}
+                            📦 {s.method_label ?? C.colis} ·{" "}
+                            {s.status === "delivered" ? C.livre : s.status === "shipped" ? C.expedie : C.enPreparation}
+                            {s.tracking_number ? <> · {s.carrier ?? C.suivi} <strong className="text-[#101014]/70">{s.tracking_number}</strong></> : null}
                           </p>
                           {user && (
                             <ReturnRequestButton orderId={order.id} shopId={s.shop_id} userId={user.id}
@@ -327,15 +447,15 @@ export default function ComptePage() {
                       ))}
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <span className="font-fraunces text-lg text-[#101014]">{Number(order.total_amount).toFixed(2)} €</span>
+                      <span className="font-fraunces text-lg text-[#101014]">{formatPrice(Number(order.total_amount))}</span>
                       <div className="flex items-center gap-2">
                         <Link href={`/compte/recu/${order.id}`}
                           className="rounded-full px-3.5 py-1.5 font-mono text-[10px] tracking-wide border border-[#101014]/15 text-[#101014]/55 hover:text-[#101014] hover:border-[#101014]/30 transition-colors">
-                          🧾 Reçu
+                          {C.recu}
                         </Link>
                         <button onClick={() => rebuy(order.id)} disabled={rebuying === order.id}
                           className="rounded-full px-3.5 py-1.5 font-mono text-[10px] tracking-wide text-white disabled:opacity-50" style={{ background: "#101014" }}>
-                          {rebuying === order.id ? "…" : "↻ Racheter"}
+                          {rebuying === order.id ? "…" : C.racheter}
                         </button>
                       </div>
                     </div>
@@ -364,6 +484,8 @@ export default function ComptePage() {
 
 // ── Onglet Favoris (données réelles) ────────────────────────────────────────
 function FavoritesTab({ userId }: { userId?: string }) {
+  const { locale, formatPrice } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
   const [items, setItems] = useState<{ id: string; name: string; title: string; price: number; images: string[] | null; image_url: string | null; slug: string }[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -383,15 +505,15 @@ function FavoritesTab({ userId }: { userId?: string }) {
   if (!items.length) return (
     <div className="text-center py-16">
       <Heart size={48} className="mx-auto mb-4 text-[#101014]/15" />
-      <p className="font-hanken text-[#101014]/40 mb-6">Tu n&apos;as pas encore de favoris.</p>
-      <Button variant="primary" href="/decouvrir">Découvrir des créations</Button>
+      <p className="font-hanken text-[#101014]/40 mb-6">{C.aucunFavori}</p>
+      <Button variant="primary" href="/decouvrir">{C.decouvrirCreations}</Button>
     </div>
   );
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <p className="font-mono text-[11px] text-[#101014]/40">{items.length} favori{items.length > 1 ? "s" : ""}</p>
-        <Link href="/favoris" className="font-hanken text-[13px] font-semibold text-[#FF2DA0]">Tout gérer →</Link>
+        <p className="font-mono text-[11px] text-[#101014]/40">{items.length} {C.favori}{items.length > 1 ? C.favoriPlural : ""}</p>
+        <Link href="/favoris" className="font-hanken text-[13px] font-semibold text-[#FF2DA0]">{C.toutGerer}</Link>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {items.map(p => {
@@ -404,7 +526,7 @@ function FavoritesTab({ userId }: { userId?: string }) {
               </div>
               <div className="p-2.5">
                 <p className="font-hanken text-[13px] text-[#101014] line-clamp-1">{p.name || p.title}</p>
-                <p className="font-mono text-[12px] text-[#FF2DA0] mt-0.5">{Number(p.price).toFixed(2)} €</p>
+                <p className="font-mono text-[12px] text-[#FF2DA0] mt-0.5">{formatPrice(Number(p.price))}</p>
               </div>
             </Link>
           );
@@ -416,6 +538,8 @@ function FavoritesTab({ userId }: { userId?: string }) {
 
 // ── Onglet Avis (données réelles) ───────────────────────────────────────────
 function ReviewsTab({ userId }: { userId?: string }) {
+  const { locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
   const [reviews, setReviews] = useState<{ id: string; rating: number; comment: string | null; created_at: string; products: { name: string | null; title: string | null; slug: string } | null }[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -431,7 +555,7 @@ function ReviewsTab({ userId }: { userId?: string }) {
   if (!reviews.length) return (
     <div className="text-center py-16">
       <Star size={48} className="mx-auto mb-4 text-[#101014]/15" />
-      <p className="font-hanken text-[#101014]/40">Tes avis apparaîtront ici après tes achats.</p>
+      <p className="font-hanken text-[#101014]/40">{C.avisIci}</p>
     </div>
   );
   return (
@@ -441,7 +565,7 @@ function ReviewsTab({ userId }: { userId?: string }) {
         return (
           <div key={r.id} className="rounded-2xl border border-[#101014]/8 bg-white p-4">
             <div className="flex items-center justify-between mb-1">
-              {prod ? <Link href={`/produit/${prod.slug}`} className="font-bricolage font-semibold text-[14px] text-[#101014] hover:text-[#FF2DA0]">{prod.name || prod.title}</Link> : <span className="font-bricolage font-semibold text-[14px]">Création</span>}
+              {prod ? <Link href={`/produit/${prod.slug}`} className="font-bricolage font-semibold text-[14px] text-[#101014] hover:text-[#FF2DA0]">{prod.name || prod.title}</Link> : <span className="font-bricolage font-semibold text-[14px]">{C.creation}</span>}
               <span className="flex items-center gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={13} className={i < r.rating ? "text-[#F2A03D] fill-[#F2A03D]" : "text-[#101014]/15"} />)}
               </span>
@@ -455,6 +579,8 @@ function ReviewsTab({ userId }: { userId?: string }) {
 }
 
 function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: string }; pseudo: string; pronouns: string }) {
+  const { locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
   const [form, setForm] = useState({ pseudo, pronouns, discrete: false });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -473,8 +599,8 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
   return (
     <form onSubmit={handleSave} className="max-w-md space-y-5">
       {[
-        { key: "pseudo", label: "Pseudo / Nom affiché", placeholder: "ton_pseudo", type: "text" },
-        { key: "pronouns", label: "Pronoms (public)", placeholder: "iel, elle, il…", type: "text" },
+        { key: "pseudo", label: C.pseudoLabel, placeholder: C.pseudoPlaceholder, type: "text" },
+        { key: "pronouns", label: C.pronounsLabel, placeholder: C.pronounsPlaceholder, type: "text" },
       ].map(({ key, label, placeholder, type }) => (
         <div key={key}>
           <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{label}</label>
@@ -486,23 +612,23 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
       ))}
 
       <div>
-        <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">E-mail (non modifiable)</label>
+        <label className="block font-mono text-[10px] tracking-wide text-[#101014]/40 mb-2">{C.emailLabel}</label>
         <input type="email" value={user.email ?? ""} disabled
           className="w-full bg-[#101014]/5 border border-[#101014]/10 rounded-xl px-4 py-3 text-[#101014]/40 font-hanken text-sm cursor-not-allowed" />
       </div>
 
       <label className="flex items-center gap-3 cursor-pointer group">
         <input type="checkbox" checked={form.discrete} onChange={(e) => setForm({ ...form, discrete: e.target.checked })} className="w-4 h-4 rounded accent-[#FF2DA0]" />
-        <span className="font-hanken text-sm text-[#101014]/60 group-hover:text-[#101014]/80">Colis discrets (aucune mention Spectrum à l&apos;extérieur)</span>
+        <span className="font-hanken text-sm text-[#101014]/60 group-hover:text-[#101014]/80">{C.colisDiscrets}</span>
       </label>
 
       <Button variant="primary" type="submit" disabled={saving} className="py-3">
-        {saving ? "Enregistrement…" : saved ? "✓ Enregistré !" : "Enregistrer"}
+        {saving ? C.enregistrement : saved ? C.enregistre : C.enregistrer}
       </Button>
 
       {/* ── RGPD ── */}
       <div className="pt-8 mt-8 border-t border-[#101014]/8 space-y-3">
-        <p className="font-mono text-[10px] tracking-wide text-[#101014]/30 mb-4">Données personnelles (RGPD)</p>
+        <p className="font-mono text-[10px] tracking-wide text-[#101014]/30 mb-4">{C.rgpdTitle}</p>
 
         <a
           href="/api/account/export"
@@ -510,7 +636,7 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
           className="flex items-center gap-3 w-full px-4 py-3 rounded-xl border border-[#101014]/12 text-[#101014]/60 font-hanken text-sm hover:border-[#2323C4]/40 hover:text-[#2323C4] transition-all"
         >
           <Download size={14} />
-          Exporter mes données (Art. 20)
+          {C.exporter}
         </a>
 
         <DeleteAccountButton />
@@ -520,6 +646,8 @@ function SettingsTab({ user, pseudo, pronouns }: { user: { id: string; email?: s
 }
 
 function DeleteAccountButton() {
+  const { locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
   const [confirm, setConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -532,15 +660,15 @@ function DeleteAccountButton() {
 
   return confirm ? (
     <div className="p-4 rounded-xl border border-red-400/30 bg-red-400/5 space-y-3">
-      <p className="font-hanken text-sm text-red-400">⚠️ Cette action est irréversible. Ton compte sera supprimé définitivement.</p>
+      <p className="font-hanken text-sm text-red-400">{C.deleteWarning}</p>
       <div className="flex gap-2">
         <button onClick={handleDelete} disabled={deleting}
           className="flex-1 py-2 rounded-xl bg-red-500/20 text-red-400 font-hanken text-sm border border-red-400/30 hover:bg-red-500/30 transition-colors disabled:opacity-50">
-          {deleting ? "Suppression…" : "Confirmer la suppression"}
+          {deleting ? C.suppression : C.confirmerSuppression}
         </button>
         <button onClick={() => setConfirm(false)}
           className="flex-1 py-2 rounded-xl border border-[#101014]/12 text-[#101014]/50 font-hanken text-sm hover:border-[#101014]/25 transition-colors">
-          Annuler
+          {C.annulerBtn}
         </button>
       </div>
     </div>
@@ -548,7 +676,7 @@ function DeleteAccountButton() {
     <button onClick={() => setConfirm(true)}
       className="flex items-center gap-3 w-full px-4 py-3 rounded-xl border border-[#101014]/12 text-[#101014]/40 font-hanken text-sm hover:border-red-400/30 hover:text-red-400 transition-all">
       <Trash2 size={14} />
-      Supprimer mon compte (Art. 17)
+      {C.supprimerCompte}
     </button>
   );
 }

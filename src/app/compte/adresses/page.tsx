@@ -9,11 +9,51 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AddressForm } from "@/components/account/AddressForm";
 import { EMPTY_ADDRESS, type Address } from "@/lib/types/address";
 import { MapPin, Plus, Pencil, Trash2, Star, ArrowLeft } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
 
 const T = { bg: "#FBFAF8", ink: "#101014", soft: "#6B6258", faint: "#9B9285", line: "#ECE6DB", mag: "#FF2DA0" };
 
+const CONTENT = {
+  fr: {
+    back: "Mon compte",
+    title: "Mes adresses",
+    add: "Ajouter",
+    newAddress: "Nouvelle adresse",
+    editAddress: "Modifier l'adresse",
+    confirmDelete: "Supprimer cette adresse ?",
+    default: "Par défaut",
+    makeDefault: "Par défaut",
+    edit: "Modifier",
+    remove: "Supprimer",
+    notLoggedIn: "Connecte-toi pour gérer tes adresses.",
+    login: "Se connecter",
+    loading: "Chargement…",
+    emptyText: "Aucune adresse enregistrée. Ajoute-en une pour payer plus vite.",
+    emptyCta: "Ajouter une adresse",
+  },
+  en: {
+    back: "My account",
+    title: "My addresses",
+    add: "Add",
+    newAddress: "New address",
+    editAddress: "Edit address",
+    confirmDelete: "Delete this address?",
+    default: "Default",
+    makeDefault: "Set as default",
+    edit: "Edit",
+    remove: "Delete",
+    notLoggedIn: "Log in to manage your addresses.",
+    login: "Log in",
+    loading: "Loading…",
+    emptyText: "No saved address yet. Add one to check out faster.",
+    emptyCta: "Add an address",
+  },
+} as const;
+
 export default function AddressesPage() {
   const { user, loading: authLoading } = useAuth();
+  const { locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
   const supabase = createClient();
   const [list, setList] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +80,7 @@ export default function AddressesPage() {
   };
 
   const remove = async (id: string) => {
-    if (!confirm("Supprimer cette adresse ?")) return;
+    if (!confirm(C.confirmDelete)) return;
     await supabase.from("addresses").delete().eq("id", id); load();
   };
 
@@ -55,15 +95,15 @@ export default function AddressesPage() {
       <Header />
       <main className="min-h-screen" style={{ background: T.bg, color: T.ink }}>
         <div className="max-w-2xl mx-auto px-5 md:px-8 pt-28 pb-24">
-          <Link href="/compte" className="inline-flex items-center gap-1.5 text-[13px] mb-4" style={{ color: T.soft }}><ArrowLeft size={14} /> Mon compte</Link>
+          <Link href="/compte" className="inline-flex items-center gap-1.5 text-[13px] mb-4" style={{ color: T.soft }}><ArrowLeft size={14} /> {C.back}</Link>
           <div className="flex items-center justify-between mb-6">
-            <h1 className="font-fraunces text-[30px]">Mes adresses</h1>
-            {!editing && <button onClick={() => setEditing("new")} className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 font-semibold text-[14px] text-white" style={{ background: T.ink }}><Plus size={15} /> Ajouter</button>}
+            <h1 className="font-fraunces text-[30px]">{C.title}</h1>
+            {!editing && <button onClick={() => setEditing("new")} className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 font-semibold text-[14px] text-white" style={{ background: T.ink }}><Plus size={15} /> {C.add}</button>}
           </div>
 
           {editing ? (
             <div className="rounded-2xl p-6" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
-              <h2 className="font-bricolage font-semibold text-[16px] mb-4">{editing === "new" ? "Nouvelle adresse" : "Modifier l'adresse"}</h2>
+              <h2 className="font-bricolage font-semibold text-[16px] mb-4">{editing === "new" ? C.newAddress : C.editAddress}</h2>
               <AddressForm
                 initial={editing === "new" ? EMPTY_ADDRESS : { ...(editing as Address) }}
                 onSubmit={save}
@@ -72,11 +112,11 @@ export default function AddressesPage() {
               />
             </div>
           ) : !user && !authLoading ? (
-            <Empty text="Connecte-toi pour gérer tes adresses." cta="Se connecter" href="/auth" />
+            <Empty text={C.notLoggedIn} cta={C.login} href="/auth" />
           ) : loading ? (
-            <p style={{ color: T.faint }}>Chargement…</p>
+            <p style={{ color: T.faint }}>{C.loading}</p>
           ) : list.length === 0 ? (
-            <Empty text="Aucune adresse enregistrée. Ajoute-en une pour payer plus vite." cta="Ajouter une adresse" onClick={() => setEditing("new")} />
+            <Empty text={C.emptyText} cta={C.emptyCta} onClick={() => setEditing("new")} />
           ) : (
             <div className="space-y-3">
               {list.map((a) => (
@@ -85,14 +125,14 @@ export default function AddressesPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bricolage font-semibold text-[15px]">{a.label || a.full_name}</span>
-                      {a.is_default && <span className="font-mono text-[10px] rounded-full px-2 py-0.5" style={{ background: `${T.mag}1A`, color: T.mag }}>Par défaut</span>}
+                      {a.is_default && <span className="font-mono text-[10px] rounded-full px-2 py-0.5" style={{ background: `${T.mag}1A`, color: T.mag }}>{C.default}</span>}
                     </div>
                     <p className="text-[14px] mt-0.5" style={{ color: T.soft }}>{a.full_name} · {a.line1}{a.line2 ? `, ${a.line2}` : ""}, {a.zip} {a.city}, {a.country}</p>
                     {a.phone && <p className="text-[13px]" style={{ color: T.faint }}>{a.phone}</p>}
                     <div className="flex gap-3 mt-2 text-[13px]">
-                      {!a.is_default && <button onClick={() => makeDefault(a.id)} className="inline-flex items-center gap-1" style={{ color: T.soft }}><Star size={13} /> Par défaut</button>}
-                      <button onClick={() => setEditing(a)} className="inline-flex items-center gap-1" style={{ color: T.soft }}><Pencil size={13} /> Modifier</button>
-                      <button onClick={() => remove(a.id)} className="inline-flex items-center gap-1" style={{ color: "#c0392b" }}><Trash2 size={13} /> Supprimer</button>
+                      {!a.is_default && <button onClick={() => makeDefault(a.id)} className="inline-flex items-center gap-1" style={{ color: T.soft }}><Star size={13} /> {C.makeDefault}</button>}
+                      <button onClick={() => setEditing(a)} className="inline-flex items-center gap-1" style={{ color: T.soft }}><Pencil size={13} /> {C.edit}</button>
+                      <button onClick={() => remove(a.id)} className="inline-flex items-center gap-1" style={{ color: "#c0392b" }}><Trash2 size={13} /> {C.remove}</button>
                     </div>
                   </div>
                 </div>

@@ -5,6 +5,40 @@ import { Header } from "@/components/Header";
 import { ScatterText } from "@/components/ui/ScatterText";
 import Link from "next/link";
 import Image from "next/image";
+import { useI18n } from "@/contexts/I18nContext";
+
+const CONTENT = {
+  fr: {
+    eyebrow: "Média Spectrum",
+    titleA: "Histoires, ",
+    titleB: "modes de vie",
+    titleC: ",",
+    titleD: "actualités ",
+    subtitle: "Des récits authentiques, des guides pratiques, une culture qui nous ressemble.",
+    all: "Tous",
+    empty: "Aucun article pour le moment. Revenez bientôt ✨",
+    read: "Lire →",
+    catLabels: {
+      editorial: "Éditorial", lifestyle: "Lifestyle", culture: "Culture", news: "Actualités", guide: "Guide",
+    } as Record<string, string>,
+    dateLocale: "fr-FR",
+  },
+  en: {
+    eyebrow: "Spectrum Media",
+    titleA: "Stories, ",
+    titleB: "ways of life",
+    titleC: ",",
+    titleD: "news ",
+    subtitle: "Authentic narratives, practical guides, a culture that looks like us.",
+    all: "All",
+    empty: "No articles yet. Come back soon ✨",
+    read: "Read →",
+    catLabels: {
+      editorial: "Editorial", lifestyle: "Lifestyle", culture: "Culture", news: "News", guide: "Guide",
+    } as Record<string, string>,
+    dateLocale: "en-US",
+  },
+} as const;
 
 type Article = {
   id: string; slug: string; title_fr: string; title_en: string; title_ar: string;
@@ -13,11 +47,10 @@ type Article = {
 };
 
 const CATEGORIES = ["Tous", "editorial", "lifestyle", "culture", "news", "guide"];
-const CAT_LABELS: Record<string, string> = {
-  editorial: "Éditorial", lifestyle: "Lifestyle", culture: "Culture", news: "Actualités", guide: "Guide"
-};
 
 export default function MediaPage() {
+  const { locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("Tous");
@@ -34,12 +67,12 @@ export default function MediaPage() {
       <Header />
       {/* Hero */}
       <section className="pt-32 pb-16 px-6 text-center">
-        <p className="font-mono text-xs tracking-widest text-[#FF2DA0] uppercase mb-4">Média Spectrum</p>
+        <p className="font-mono text-xs tracking-widest text-[#FF2DA0] uppercase mb-4">{C.eyebrow}</p>
         <h1 className="font-fraunces text-5xl md:text-7xl font-light mb-4">
-          Histoires, <span className="text-[#FF2DA0]">modes de vie</span>,<br />actualités <ScatterText text="queer" intensity={0.7} className="font-extrabold align-baseline" />.
+          {C.titleA}<span className="text-[#FF2DA0]">{C.titleB}</span>{C.titleC}<br />{C.titleD}<ScatterText text="queer" intensity={0.7} className="font-extrabold align-baseline" />.
         </h1>
         <p className="font-hanken text-[#101014]/60 max-w-xl mx-auto">
-          Des récits authentiques, des guides pratiques, une culture qui nous ressemble.
+          {C.subtitle}
         </p>
       </section>
 
@@ -55,7 +88,7 @@ export default function MediaPage() {
                 : "border-[#101014]/15 text-[#101014]/50 hover:border-[#FF2DA0]/40"
             }`}
           >
-            {cat === "Tous" ? "Tous" : CAT_LABELS[cat]}
+            {cat === "Tous" ? C.all : C.catLabels[cat]}
           </button>
         ))}
       </div>
@@ -70,7 +103,7 @@ export default function MediaPage() {
           </div>
         ) : articles.length === 0 ? (
           <div className="text-center py-24 text-[#101014]/30 font-hanken">
-            Aucun article pour le moment. Revenez bientôt ✨
+            {C.empty}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -86,7 +119,7 @@ export default function MediaPage() {
                       </div>
                     )}
                     <span className="absolute top-3 left-3 bg-[#FBFAF8]/80 backdrop-blur px-2 py-1 rounded-full font-mono text-[10px] text-[#FF2DA0] tracking-wide">
-                      {CAT_LABELS[article.category] ?? article.category}
+                      {C.catLabels[article.category] ?? article.category}
                     </span>
                   </div>
                   <div className="p-5">
@@ -98,9 +131,9 @@ export default function MediaPage() {
                     )}
                     <div className="flex items-center justify-between">
                       <span className="font-mono text-[10px] text-[#101014]/30">
-                        {new Date(article.published_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                        {new Date(article.published_at).toLocaleDateString(C.dateLocale, { day: "numeric", month: "long", year: "numeric" })}
                       </span>
-                      <span className="font-hanken text-xs text-[#FF2DA0] group-hover:underline">Lire →</span>
+                      <span className="font-hanken text-xs text-[#FF2DA0] group-hover:underline">{C.read}</span>
                     </div>
                   </div>
                 </article>

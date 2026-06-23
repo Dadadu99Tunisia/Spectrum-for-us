@@ -3,6 +3,34 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Sparkles, X } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
+
+const FB_TX = {
+  fr: {
+    founderSpotsLeft: (n: number) => `${n} place${n > 1 ? "s" : ""}`, founderLeftSuffix: (n: number) => ` de Fondateur·ice restante${n > 1 ? "s" : ""}`,
+    earlySpotsLeft: (n: number) => `${n} place${n > 1 ? "s" : ""}`, earlyLeftSuffix: (n: number) => ` Pionnier·e restante${n > 1 ? "s" : ""}`,
+    join: "Rejoindre", joinProgram: "Rejoindre le programme",
+    progTitle: "Programme Fondateur Spectrum", progSub: "Rejoins les premier·es à bâtir cette communauté · des avantages exclusifs à vie.",
+    founder: "Fondateur·ice", pioneer: "Pionnier·e", full: "complet",
+    rankFounder: (s: string) => `Rang 1-20 · ${s}`, rankPioneer: (s: string) => `Rang 21-120 · ${s}`,
+    remaining: (n: number) => `${n} restante${n > 1 ? "s" : ""}`,
+    founderPerks: ["Abonnement offert 12 mois", "0 % de commission 6 mois", "Mise en avant prioritaire à vie", "Badge exclusif à vie"],
+    earlyPerks: ["Abonnement offert 6 mois", "0 % de commission 3 mois", "Priorité dans la recherche", "Badge Pionnier·e à vie"],
+    enrolled: (n: number) => `${n} vendeur·ses déjà inscrit·es · Places non transférables`,
+  },
+  en: {
+    founderSpotsLeft: (n: number) => `${n}`, founderLeftSuffix: (n: number) => ` Founder spot${n > 1 ? "s" : ""} left`,
+    earlySpotsLeft: (n: number) => `${n}`, earlyLeftSuffix: (n: number) => ` Pioneer spot${n > 1 ? "s" : ""} left`,
+    join: "Join", joinProgram: "Join the program",
+    progTitle: "Spectrum Founder Program", progSub: "Join the first to build this community · exclusive lifetime perks.",
+    founder: "Founder", pioneer: "Pioneer", full: "full",
+    rankFounder: (s: string) => `Rank 1-20 · ${s}`, rankPioneer: (s: string) => `Rank 21-120 · ${s}`,
+    remaining: (n: number) => `${n} left`,
+    founderPerks: ["12 months subscription free", "0% commission for 6 months", "Priority spotlight for life", "Exclusive lifetime badge"],
+    earlyPerks: ["6 months subscription free", "0% commission for 3 months", "Search priority", "Lifetime Pioneer badge"],
+    enrolled: (n: number) => `${n} sellers already enrolled · Spots non-transferable`,
+  },
+} as const;
 
 interface Counts {
   founder_count: number;
@@ -25,6 +53,8 @@ interface FounderBannerProps {
 export function FounderBanner({ compact = false, dismissible = false, hideCta = false }: FounderBannerProps) {
   const [counts, setCounts]       = useState<Counts | null>(null);
   const [dismissed, setDismissed] = useState(false);
+  const { locale } = useI18n();
+  const C = FB_TX[locale === "en" ? "en" : "fr"];
 
   useEffect(() => {
     if (dismissible && sessionStorage.getItem("founder_banner_dismissed")) {
@@ -64,19 +94,19 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
         <div className="flex-1 min-w-0">
           {!founderFull ? (
             <p className="font-hanken text-sm text-[#101014]">
-              🏆 <span className="text-[#FFD700] font-semibold">{counts.founder_remaining} place{counts.founder_remaining > 1 ? "s" : ""}</span>
-              {" "}de Fondateur·ice restante{counts.founder_remaining > 1 ? "s" : ""}
+              🏆 <span className="text-[#FFD700] font-semibold">{C.founderSpotsLeft(counts.founder_remaining)}</span>
+              {C.founderLeftSuffix(counts.founder_remaining)}
             </p>
           ) : (
             <p className="font-hanken text-sm text-[#101014]">
-              🚀 <span className="text-[#a78bfa] font-semibold">{counts.early_remaining} place{counts.early_remaining > 1 ? "s" : ""}</span>
-              {" "}Pionnier·e restante{counts.early_remaining > 1 ? "s" : ""}
+              🚀 <span className="text-[#a78bfa] font-semibold">{C.earlySpotsLeft(counts.early_remaining)}</span>
+              {C.earlyLeftSuffix(counts.early_remaining)}
             </p>
           )}
         </div>
         <Link href="/vendeur/onboarding"
           className="flex items-center gap-1 font-mono text-[10px] text-[#a78bfa] hover:text-[#101014] transition-colors shrink-0 whitespace-nowrap">
-          Rejoindre <ArrowRight size={10} />
+          {C.join} <ArrowRight size={10} />
         </Link>
       </div>
     );
@@ -115,10 +145,10 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
           <div className="text-4xl leading-none">🚀</div>
           <div>
             <h2 className="font-fraunces text-2xl md:text-3xl text-[#101014] leading-tight">
-              Programme Fondateur Spectrum
+              {C.progTitle}
             </h2>
             <p className="font-hanken text-sm text-[#101014]/45 mt-1">
-              Rejoins les premier·es à bâtir cette communauté · des avantages exclusifs à vie.
+              {C.progSub}
             </p>
           </div>
         </div>
@@ -137,9 +167,9 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xl shrink-0">🥇</span>
               <div className="min-w-0">
-                <p className="font-fraunces text-base text-[#FFD700] truncate">Fondateur·ice</p>
+                <p className="font-fraunces text-base text-[#FFD700] truncate">{C.founder}</p>
                 <p className="font-mono text-[9px] text-[#101014]/30">
-                  Rang 1-20 · {founderFull ? "complet" : `${counts.founder_remaining} restante${counts.founder_remaining > 1 ? "s" : ""}`}
+                  {C.rankFounder(founderFull ? C.full : C.remaining(counts.founder_remaining))}
                 </p>
               </div>
             </div>
@@ -154,12 +184,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
                 }} />
             </div>
             <div className="space-y-1">
-              {[
-                "Abonnement offert 12 mois",
-                "0 % de commission 6 mois",
-                "Mise en avant prioritaire à vie",
-                "Badge exclusif à vie",
-              ].map(a => (
+              {C.founderPerks.map(a => (
                 <p key={a} className="font-hanken text-xs flex items-center gap-1.5"
                   style={{ color: founderFull ? "rgba(243,234,219,.25)" : "rgba(243,234,219,.6)" }}>
                   <span style={{ color: founderFull ? "rgba(107,114,128,.4)" : "#FFD700" }}>✓</span>
@@ -180,9 +205,9 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xl shrink-0">🏆</span>
               <div className="min-w-0">
-                <p className="font-fraunces text-base text-[#a78bfa] truncate">Pionnier·e</p>
+                <p className="font-fraunces text-base text-[#a78bfa] truncate">{C.pioneer}</p>
                 <p className="font-mono text-[9px] text-[#101014]/30">
-                  Rang 21-120 · {earlyFull ? "complet" : `${counts.early_remaining} restante${counts.early_remaining > 1 ? "s" : ""}`}
+                  {C.rankPioneer(earlyFull ? C.full : C.remaining(counts.early_remaining))}
                 </p>
               </div>
             </div>
@@ -196,12 +221,7 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
                 }} />
             </div>
             <div className="space-y-1">
-              {[
-                "Abonnement offert 6 mois",
-                "0 % de commission 3 mois",
-                "Priorité dans la recherche",
-                "Badge Pionnier·e à vie",
-              ].map(a => (
+              {C.earlyPerks.map(a => (
                 <p key={a} className="font-hanken text-xs flex items-center gap-1.5"
                   style={{ color: earlyFull ? "rgba(243,234,219,.25)" : "rgba(243,234,219,.6)" }}>
                   <span style={{ color: earlyFull ? "rgba(107,114,128,.4)" : "#a78bfa" }}>✓</span>
@@ -221,12 +241,12 @@ export function FounderBanner({ compact = false, dismissible = false, hideCta = 
                 background: "linear-gradient(135deg,#7A2BF0,#FF2DA0)",
                 boxShadow: "0 8px 30px rgba(109,45,181,.4)",
               }}>
-              <span>Rejoindre le programme</span>
+              <span>{C.joinProgram}</span>
               <ArrowRight size={15} />
             </Link>
           )}
           <p className="font-mono text-[10px] text-[#101014]/30 text-center">
-            {counts.founder_count + counts.early_adopter_count} vendeur·ses déjà inscrit·es · Places non transférables
+            {C.enrolled(counts.founder_count + counts.early_adopter_count)}
           </p>
         </div>
       </div>

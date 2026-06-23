@@ -146,9 +146,9 @@ export default function RootLayout({
         </div>
         <SiteBanner />
         <BannerProvider>
-          <LaunchBanner />
           <AuthProvider>
             <I18nProvider>
+              <LaunchBanner />
               <AutoTranslate />
               <Analytics />
               <Suspense fallback={null}>

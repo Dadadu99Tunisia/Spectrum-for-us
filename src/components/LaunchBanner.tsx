@@ -11,6 +11,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, Rocket } from "lucide-react";
 import { useBanner } from "@/contexts/BannerContext";
+import { useI18n } from "@/contexts/I18nContext";
+
+const BANNER_TX = {
+  fr: { launched: "C'est lancé ! Bienvenue sur Spectrum For Us 🎉", countdown: "Lancement officiel dans", short: "J-",
+    becomeFounder: "Devenir fondateur·ice", close: "Fermer la bannière", d: "j", h: "h", m: "m", s: "s" },
+  en: { launched: "We're live! Welcome to Spectrum For Us 🎉", countdown: "Official launch in", short: "D-",
+    becomeFounder: "Become a founder", close: "Close banner", d: "d", h: "h", m: "m", s: "s" },
+} as const;
 
 // 🚀 Date du lancement officiel (Europe/Paris)
 const LAUNCH = new Date("2026-06-27T10:00:00+02:00");
@@ -29,6 +37,8 @@ function diff() {
 
 export function LaunchBanner() {
   const { visible, hide } = useBanner();
+  const { locale } = useI18n();
+  const C = BANNER_TX[locale === "en" ? "en" : "fr"];
   const pathname = usePathname();
   const [t, setT] = useState<ReturnType<typeof diff>>(null);
   const [mounted, setMounted] = useState(false);
@@ -53,29 +63,29 @@ export function LaunchBanner() {
       <div className="flex items-center gap-2.5 text-[13px] font-hanken">
         <Rocket size={14} className="text-[#FF2DA0] shrink-0" />
         {launched ? (
-          <span className="font-semibold">C&apos;est lancé&nbsp;! Bienvenue sur Spectrum For Us 🎉</span>
+          <span className="font-semibold">{C.launched}</span>
         ) : (
           <>
-            <span className="hidden sm:inline">Lancement officiel dans</span>
-            <span className="sm:hidden">J-</span>
+            <span className="hidden sm:inline">{C.countdown}</span>
+            <span className="sm:hidden">{C.short}</span>
             <span className="flex items-center gap-1 font-mono font-semibold tabular-nums">
-              <Seg v={t!.d} l="j" />
+              <Seg v={t!.d} l={C.d} />
               <span className="opacity-40">:</span>
-              <Seg v={pad(t!.h)} l="h" />
+              <Seg v={pad(t!.h)} l={C.h} />
               <span className="opacity-40">:</span>
-              <Seg v={pad(t!.m)} l="m" />
+              <Seg v={pad(t!.m)} l={C.m} />
               <span className="opacity-40">:</span>
-              <Seg v={pad(t!.s)} l="s" />
+              <Seg v={pad(t!.s)} l={C.s} />
             </span>
           </>
         )}
         <Link href="/vendeur/onboarding"
           className="ml-1 hidden sm:inline-flex items-center rounded-full px-3 py-0.5 text-[12px] font-semibold transition-opacity hover:opacity-90"
           style={{ background: "#FF2DA0" }}>
-          Devenir fondateur·ice
+          {C.becomeFounder}
         </Link>
       </div>
-      <button onClick={hide} aria-label="Fermer la bannière"
+      <button onClick={hide} aria-label={C.close}
         className="absolute right-3 top-1/2 -translate-y-1/2 opacity-70 hover:opacity-100 transition-opacity">
         <X size={15} />
       </button>

@@ -20,8 +20,50 @@ const CAT: Record<string, { tint: string; ink: string; dot: string }> = {
 };
 const tintFor = (c: string) => CAT[Object.keys(CAT).find(k => (c || "").toLowerCase().includes(k.toLowerCase())) ?? "Mode"] ?? CAT.Mode;
 
-const CHIPS = ["Tout", "Mode", "Art & Culture", "Bijoux", "Zines", "Corps & Soin", "Services", "Expériences"];
+// value = FR string used for the Supabase .ilike("category", %value%) filter — DO NOT translate.
+// fr/en = display label only.
+const CHIPS = [
+  { value: "Tout",         fr: "Tout",         en: "All" },
+  { value: "Mode",         fr: "Mode",         en: "Fashion" },
+  { value: "Art & Culture", fr: "Art & Culture", en: "Art & Culture" },
+  { value: "Bijoux",       fr: "Bijoux",       en: "Jewelry" },
+  { value: "Zines",        fr: "Zines",        en: "Zines" },
+  { value: "Corps & Soin", fr: "Corps & Soin", en: "Body & Care" },
+  { value: "Services",     fr: "Services",     en: "Services" },
+  { value: "Expériences",  fr: "Expériences",  en: "Experiences" },
+] as const;
 const PAGE_SIZE = 12;
+
+const CONTENT = {
+  fr: {
+    explore: "Explorer",
+    searchPlaceholder: "Rechercher une création…",
+    favorite: "Favori",
+    addToCart: "Ajouter au panier",
+    service: "Service",
+    event: "Événement",
+    emptyTitle: "Aucune création trouvée",
+    fillingTitle: "Le spectre se remplit",
+    emptyBody: "Essaie une autre catégorie ou efface ta recherche.",
+    fillingBody: "Sois parmi les premier·es à rejoindre la marketplace queer.",
+    openShop: "Ouvrir ma boutique",
+    endOfSpectrum: "✦ Fin du spectre ✦",
+  },
+  en: {
+    explore: "Explore",
+    searchPlaceholder: "Search a creation…",
+    favorite: "Favorite",
+    addToCart: "Add to cart",
+    service: "Service",
+    event: "Event",
+    emptyTitle: "No creations found",
+    fillingTitle: "The spectrum is filling up",
+    emptyBody: "Try another category or clear your search.",
+    fillingBody: "Be one of the first to join the queer marketplace.",
+    openShop: "Open my shop",
+    endOfSpectrum: "✦ End of the spectrum ✦",
+  },
+} as const;
 
 interface Product {
   id: string; name: string; title: string; price: number;
@@ -44,7 +86,8 @@ function Card({ p }: { p: Product }) {
   const img = p.images?.[0] ?? p.image_url;
   const shop = !Array.isArray(p.shops) ? p.shops?.name : null;
   const { add } = useCart();
-  const { formatPrice } = useI18n();
+  const { formatPrice, locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
   const c = tintFor(p.category);
   const tall = (p.id.charCodeAt(0) + p.id.charCodeAt(p.id.length - 1)) % 2 === 0;
   const [liked, setLiked] = useState(() => {
@@ -64,11 +107,11 @@ function Card({ p }: { p: Product }) {
     <Link href={`/produit/${p.slug}`} className="block active:scale-[0.98] transition-transform">
       <div className="relative rounded-2xl overflow-hidden" style={{ height: tall ? 210 : 158 }}>
         {img ? <FillImage src={img} alt={p.name || p.title} sizes="50vw" className="object-cover" /> : <Ph category={p.category} h={tall ? 210 : 158} />}
-        <button onClick={toggleLike} aria-label="Favori" className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,.85)", backdropFilter: "blur(6px)" }}>
+        <button onClick={toggleLike} aria-label={C.favorite} className="absolute top-2 right-2 w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,.85)", backdropFilter: "blur(6px)" }}>
           <Heart size={17} style={{ color: liked ? T.mag : T.ink }} fill={liked ? T.mag : "none"} />
         </button>
         {p.type && p.type !== "product" && (
-          <span className="absolute left-2 bottom-2 font-mono text-[10px] uppercase px-2 py-0.5 rounded-full text-white" style={{ background: T.ink }}>{p.type === "service" ? "Service" : "Événement"}</span>
+          <span className="absolute left-2 bottom-2 font-mono text-[10px] uppercase px-2 py-0.5 rounded-full text-white" style={{ background: T.ink }}>{p.type === "service" ? C.service : C.event}</span>
         )}
       </div>
       <div className="px-0.5 pt-2">
@@ -81,7 +124,7 @@ function Card({ p }: { p: Product }) {
         )}
         <div className="flex items-center justify-between mt-1">
           <span className="font-mono font-bold text-[15px]" style={{ color: T.ink }}>{formatPrice(p.price)}</span>
-          <button onClick={handleAdd} aria-label="Ajouter au panier" className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90" style={{ background: T.ink }}><ShoppingBag size={15} color="#fff" /></button>
+          <button onClick={handleAdd} aria-label={C.addToCart} className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90" style={{ background: T.ink }}><ShoppingBag size={15} color="#fff" /></button>
         </div>
       </div>
     </Link>
@@ -89,6 +132,9 @@ function Card({ p }: { p: Product }) {
 }
 
 export function ExploreFeed() {
+  const { locale } = useI18n();
+  const C = CONTENT[locale === "en" ? "en" : "fr"];
+  const L = locale === "en" ? "en" : "fr";
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -134,19 +180,19 @@ export function ExploreFeed() {
     <div className="md:hidden min-h-screen" style={{ background: T.bg, color: T.ink, fontFamily: "var(--font-hanken),sans-serif" }}>
       {/* Sticky header */}
       <div className="sticky top-0 z-40 px-4 pb-3" style={{ background: T.bg, paddingTop: "max(14px,env(safe-area-inset-top))" }}>
-        <h1 className="font-bricolage font-extrabold text-[26px] mb-3">Explorer</h1>
+        <h1 className="font-bricolage font-extrabold text-[26px] mb-3">{C.explore}</h1>
         <div className="relative mb-3 flex items-center gap-2.5 h-[46px] rounded-[14px] px-3.5" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
           <Search size={18} style={{ color: T.faint }} />
-          <input type="search" placeholder="Rechercher une création…" value={search} onChange={e => setSearch(e.target.value)}
+          <input type="search" placeholder={C.searchPlaceholder} value={search} onChange={e => setSearch(e.target.value)}
             className="flex-1 min-w-0 bg-transparent outline-none text-[14px]" style={{ color: T.ink }} />
           {search && <button onClick={() => setSearch("")}><X size={15} style={{ color: T.faint }} /></button>}
         </div>
         <div className="flex gap-2 overflow-x-auto -mx-4 px-4" style={{ scrollbarWidth: "none" }}>
           {CHIPS.map(c => (
-            <button key={c} onClick={() => setChip(c)}
+            <button key={c.value} onClick={() => setChip(c.value)}
               className="shrink-0 whitespace-nowrap font-semibold text-[13.5px] px-3.5 py-2 rounded-full active:scale-95"
-              style={chip === c ? { background: T.ink, color: "#fff" } : { background: "#fff", color: T.ink, boxShadow: `inset 0 0 0 1px ${T.line}` }}>
-              {c}
+              style={chip === c.value ? { background: T.ink, color: "#fff" } : { background: "#fff", color: T.ink, boxShadow: `inset 0 0 0 1px ${T.line}` }}>
+              {c[L]}
             </button>
           ))}
         </div>
@@ -160,13 +206,13 @@ export function ExploreFeed() {
           </div>
         ) : products.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="font-bricolage font-bold text-[20px] mb-2">{search || chip !== "Tout" ? "Aucune création trouvée" : "Le spectre se remplit"}</p>
+            <p className="font-bricolage font-bold text-[20px] mb-2">{search || chip !== "Tout" ? C.emptyTitle : C.fillingTitle}</p>
             <p className="text-[13px] mb-8 max-w-xs mx-auto leading-relaxed" style={{ color: T.soft }}>
-              {search || chip !== "Tout" ? "Essaie une autre catégorie ou efface ta recherche." : "Sois parmi les premier·es à rejoindre la marketplace queer."}
+              {search || chip !== "Tout" ? C.emptyBody : C.fillingBody}
             </p>
             {(!search && chip === "Tout") && (
               <Link href="/vendeur/onboarding" className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-[15px] text-white" style={{ background: T.mag }}>
-                Ouvrir ma boutique <ArrowRight size={15} />
+                {C.openShop} <ArrowRight size={15} />
               </Link>
             )}
           </div>
@@ -177,7 +223,7 @@ export function ExploreFeed() {
             </div>
             {loadingMore && <div style={{ columnCount: 2, columnGap: 12 }} className="mt-1"><div className="mb-[18px] rounded-2xl animate-pulse" style={{ height: 158, background: "#fff" }} /><div className="mb-[18px] rounded-2xl animate-pulse" style={{ height: 210, background: "#fff" }} /></div>}
             <div ref={loaderRef} className="h-10" />
-            {!hasMore && products.length > 0 && <p className="text-center font-mono text-[10px] py-4 tracking-widest" style={{ color: T.faint }}>✦ Fin du spectre ✦</p>}
+            {!hasMore && products.length > 0 && <p className="text-center font-mono text-[10px] py-4 tracking-widest" style={{ color: T.faint }}>{C.endOfSpectrum}</p>}
           </>
         )}
       </div>

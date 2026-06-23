@@ -1,10 +1,9 @@
 import { ComingSoon } from "@/components/ComingSoon";
-import { Sparkles } from "lucide-react";
 export const metadata = { title: "Emploi & Opportunités · Spectrum For Us" };
 export default function EmploiPage() {
   return (
     <ComingSoon
-      icon={Sparkles}
+      icon="Sparkles"
       label="Emploi & Opportunités"
       title="Travaille avec des gens qui te respectent"
       subtitle="Offres d'emploi, missions freelance, appels à projets... Dans des structures inclusives et des entreprises LGBTQIA+ friendly."
