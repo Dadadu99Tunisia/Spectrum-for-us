@@ -28,7 +28,7 @@ type Contact = {
 };
 
 // ─── Stage config · aligned with DB enum ─────────────────────────────────────
-const STAGES = ["identified","qualified","nurturing","contacted","partner","rejected","closed"] as const;
+const STAGES = ["identified","qualified","nurturing","contacted","partner","vendor","rejected","closed"] as const;
 type Stage = typeof STAGES[number];
 
 const STAGE_CFG: Record<Stage, { label: string; color: string; bg: string; dot: string }> = {
@@ -37,6 +37,7 @@ const STAGE_CFG: Record<Stage, { label: string; color: string; bg: string; dot: 
   nurturing:  { label: "Nurturing",   color: "#fbbf24", bg: "rgba(251,191,36,.08)",  dot: "#fbbf24" },
   contacted:  { label: "Contacté",    color: "#60a5fa", bg: "rgba(96,165,250,.08)",  dot: "#60a5fa" },
   partner:    { label: "Partenaire ✓",color: "#2323C4", bg: "rgba(28,156,149,.08)", dot: "#2323C4" },
+  vendor:     { label: "Vendeur·se ✦",color: "#16A06A", bg: "rgba(22,160,106,.10)", dot: "#16A06A" },
   rejected:   { label: "Rejeté",      color: "#f87171", bg: "rgba(248,113,113,.08)", dot: "#f87171" },
   closed:     { label: "Fermé",       color: "#6b7280", bg: "rgba(107,114,128,.08)", dot: "#6b7280" },
 };
@@ -842,7 +843,7 @@ export default function CRMPage() {
 
   const byStage = (stage: Stage) => filteredBySegment.filter(c => c.stage === stage);
 
-  const KANBAN_STAGES: Stage[] = ["identified","qualified","nurturing","contacted","partner"];
+  const KANBAN_STAGES: Stage[] = ["identified","qualified","nurturing","contacted","partner","vendor"];
   const SIDE_STAGES:   Stage[] = ["rejected","closed"];
 
   return (

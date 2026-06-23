@@ -59,6 +59,29 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   if (error) return apiError(error.message);
 
+  // Sync CRM : passer quelqu'un en rôle "vendor" le place dans la phase "vendor" du pipeline
+  // (crée le contact s'il n'existe pas) → suivi des vendeur·ses qui n'ont pas encore monté leur boutique.
+  if (update.role === "vendor") {
+    try {
+      const { data: au } = await supabase.auth.admin.getUserById(id);
+      const email = au?.user?.email ?? null;
+      const name = (data.full_name as string)
+        || (au?.user?.user_metadata?.full_name as string)
+        || email || "Vendeur·se";
+      if (email) {
+        const { data: rows } = await supabase.from("crm_contacts").select("id").eq("email", email).limit(1);
+        if (rows && rows.length) {
+          await supabase.from("crm_contacts").update({ stage: "vendor" }).eq("id", rows[0].id);
+        } else {
+          await supabase.from("crm_contacts").insert({
+            name, email, contact_type: "prospect_vendor", stage: "vendor",
+            source: "role_assignment", assigned_to: auth.user.id,
+          });
+        }
+      }
+    } catch (e) { console.error("[users] sync CRM vendor", e); }
+  }
+
   const action = body.is_suspended === true ? "suspend_user"
     : body.is_suspended === false ? "unsuspend_user"
     : body.role ? "change_role" : "update_user";
