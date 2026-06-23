@@ -13,6 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ConnectPayments } from "@/components/vendor/ConnectPayments";
 import { ManualPayout } from "@/components/vendor/ManualPayout";
 import { VendorKyc } from "@/components/vendor/VendorKyc";
+import { VendorAccounting } from "@/components/vendor/VendorAccounting";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
@@ -389,6 +390,7 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go, 
         <ConnectPayments />
         <ManualPayout shopId={shop.id} />
         <VendorKyc />
+        <VendorAccounting />
       </div>
 
       <div className="grid lg:grid-cols-[1.7fr_1fr] gap-4">
