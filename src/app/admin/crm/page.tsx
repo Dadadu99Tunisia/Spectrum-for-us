@@ -42,20 +42,23 @@ const STAGE_CFG: Record<Stage, { label: string; color: string; bg: string; dot: 
   closed:     { label: "Fermé",       color: "#6b7280", bg: "rgba(107,114,128,.08)", dot: "#6b7280" },
 };
 
+// Aligné sur l'enum DB `crm_type` (colonne crm_contacts.contact_type) :
+// prospect_vendor, prospect_creator, prospect_association, prospect_buyer,
+// partner, investor, grant, foundation, media, ambassador.
 const TYPE_LABELS: Record<string, string> = {
-  prospect_association: "Association",
   prospect_vendor:      "Vendeur·se",
   prospect_creator:     "Créateur·ice",
+  prospect_association: "Association",
+  prospect_buyer:       "Acheteur·se",
   partner:              "Partenaire",
   investor:             "Investisseur·se",
   grant:                "Subvention",
   foundation:           "Fondation",
   media:                "Média",
   ambassador:           "Ambassadeur·rice",
-  prospect_buyer:       "Acheteur·se",
 };
 
-// Segment definitions · each tab filters by these contact_types
+// Segment definitions · each tab filters by these contact_types (tous valides en enum)
 const SEGMENTS = [
   { id: "all",          label: "Tout le pipeline",  icon: "◈",  types: [] as string[], color: "#101014", goal: 500, goalLabel: "contacts" },
   { id: "associations", label: "Associations",       icon: "🏳️‍🌈", types: ["prospect_association","foundation","grant"], color: "#a78bfa", goal: 500, goalLabel: "organisations" },
@@ -771,7 +774,7 @@ export default function CRMPage() {
   const [selected, setSelected]     = useState<Contact | null>(null);
   const [view, setView]             = useState<"kanban" | "list">("kanban");
   const [newContact, setNewContact] = useState({
-    name: "", email: "", company: "", contact_type: "prospect_association",
+    name: "", email: "", company: "", contact_type: "prospect_vendor",
     stage: "identified", source: "", notes: "",
   });
 
@@ -803,10 +806,15 @@ export default function CRMPage() {
     if (!newContact.name) return;
     setSavingNew(true);
     try {
-      await fetch("/api/admin/crm", {
+      const res = await fetch("/api/admin/crm", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newContact),
       });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        alert("Création échouée : " + (j.error ?? res.status));
+        return; // garde la modale ouverte avec les valeurs saisies
+      }
       setShowForm(false);
       setNewContact({ name:"",email:"",company:"",contact_type:"prospect_vendor",stage:"identified",source:"",notes:"" });
       fetchContacts();
@@ -816,16 +824,26 @@ export default function CRMPage() {
   };
 
   const updateContact = async (id: string, patch: Partial<Contact>) => {
-    await fetch(`/api/admin/crm/${id}`, {
+    // Optimistic, avec rollback si le serveur refuse (ex: valeur d'enum invalide).
+    setContacts(prev => prev.map(c => c.id === id ? { ...c, ...patch } : c));
+    const res = await fetch(`/api/admin/crm/${id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     });
-    // Optimistically update local list
-    setContacts(prev => prev.map(c => c.id === id ? { ...c, ...patch } : c));
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      alert("Mise à jour échouée : " + (j.error ?? res.status));
+      fetchContacts(); // resynchronise depuis la DB
+    }
   };
 
   const deleteContact = async (id: string) => {
-    await fetch(`/api/admin/crm/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/admin/crm/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      alert("Suppression échouée : " + (j.error ?? res.status));
+      return;
+    }
     setSelected(null);
     setContacts(prev => prev.filter(c => c.id !== id));
   };

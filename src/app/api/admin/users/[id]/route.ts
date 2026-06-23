@@ -68,16 +68,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       const name = (data.full_name as string)
         || (au?.user?.user_metadata?.full_name as string)
         || email || "Vendeur·se";
+      const nowIso = new Date().toISOString();
       if (email) {
         const { data: rows } = await supabase.from("crm_contacts").select("id").eq("email", email).limit(1);
         if (rows && rows.length) {
-          await supabase.from("crm_contacts").update({ stage: "vendor" }).eq("id", rows[0].id);
+          // Contact existant : aligne stage ET type, et horodate la conversion.
+          await supabase.from("crm_contacts")
+            .update({ stage: "vendor", contact_type: "prospect_vendor", converted_at: nowIso, updated_at: nowIso })
+            .eq("id", rows[0].id);
         } else {
           await supabase.from("crm_contacts").insert({
             name, email, contact_type: "prospect_vendor", stage: "vendor",
-            source: "role_assignment", assigned_to: auth.user.id,
+            converted_at: nowIso, source: "role_assignment", assigned_to: auth.user.id,
           });
         }
+      } else {
+        console.warn(`[users] sync CRM vendor: pas d'email pour user ${id}, contact CRM non créé`);
       }
     } catch (e) { console.error("[users] sync CRM vendor", e); }
   }

@@ -63,7 +63,7 @@ export async function GET() {
     supabase.from("annuaire_overrides").select("org_id", { count: "exact", head: true }).eq("is_featured", true),
     // CRM
     supabase.from("crm_contacts").select("id", { count: "exact", head: true }),
-    supabase.from("crm_contacts").select("id", { count: "exact", head: true }).eq("stage", "won"),
+    supabase.from("crm_contacts").select("id", { count: "exact", head: true }).in("stage", ["converted", "vendor"]),
     supabase.from("crm_contacts").select("id", { count: "exact", head: true }).eq("stage", "contacted"),
     // Membres par jour (30j)
     supabase.from("profiles").select("created_at").gte("created_at", last30Days).order("created_at"),
