@@ -17,6 +17,7 @@ import { ProductReviews } from "@/components/ProductReviews";
 import { BookingWidget } from "@/components/booking/BookingWidget";
 import { TrustBadges } from "@/components/ui/TrustBadges";
 import { ReportButton } from "@/components/ui/ReportButton";
+import { AgeGate } from "@/components/ui/AgeGate";
 import { useI18n } from "@/contexts/I18nContext";
 
 type Product = {
@@ -215,6 +216,7 @@ export default function ProduitPage() {
 
   return (
     <>
+      {product.is_adult && <AgeGate />}
       {/* Desktop header */}
       <div className="hidden md:block"><Header /></div>
       {/* Mobile header */}

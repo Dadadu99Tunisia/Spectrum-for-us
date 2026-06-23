@@ -39,6 +39,11 @@ export async function GET() {
   ]);
   const disputedOrders = new Set((disputed ?? []).map((o: { id: string }) => o.id));
 
+  // Statut KYC par boutique.
+  const { data: kycRows } = await admin.from("vendor_kyc").select("shop_id, kyc_status").in("shop_id", shopIds);
+  const kycByShop: Record<string, string> = {};
+  for (const k of (kycRows ?? []) as { shop_id: string; kyc_status: string }[]) kycByShop[k.shop_id] = k.kyc_status;
+
   // E-mails des propriétaires
   const emailByShop: Record<string, string | null> = {};
   await Promise.all(shops.map(async s => {
@@ -96,10 +101,32 @@ export async function GET() {
       country: sel.country ?? "—",
       email: emailByShop[s.id] ?? null, products: prodCount[s.id] ?? 0,
       earned: r2(earned), paid: r2(paidAmt), owed, releasable, held, flags,
+      kyc_status: kycByShop[s.id] ?? "none",
     };
   }).sort((a, b) => b.owed - a.owed);
 
   return apiResponse(result);
+}
+
+// Vérifie / rejette le KYC d'une boutique (action admin, anti-AML).
+export async function PATCH(req: NextRequest) {
+  const auth = await requireAdmin(["super_admin", "ceo", "cfo"]);
+  if ("error" in auth) return auth.error;
+  let body: { shop_id?: string; action?: string };
+  try { body = await req.json(); } catch { return apiError("Requête invalide"); }
+  if (!body.shop_id || !["verify", "reject"].includes(body.action ?? "")) return apiError("shop_id et action (verify|reject) requis");
+
+  const admin = createAdminClient();
+  const status = body.action === "verify" ? "verified" : "rejected";
+  // upsert : permet de marquer vérifié même si le·la vendeur·se n'a pas soumis via le formulaire
+  // (l'admin a collecté les pièces hors ligne).
+  const { error } = await admin.from("vendor_kyc").upsert({
+    shop_id: body.shop_id, kyc_status: status,
+    kyc_verified_at: status === "verified" ? new Date().toISOString() : null,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: "shop_id" });
+  if (error) return apiError(error.message);
+  return apiResponse({ ok: true, kyc_status: status });
 }
 
 export async function POST(req: NextRequest) {
@@ -111,6 +138,18 @@ export async function POST(req: NextRequest) {
   if (!body.shop_id || !body.amount || body.amount <= 0) return apiError("shop_id et montant requis");
 
   const admin = createAdminClient();
+
+  // Gate KYC (anti-blanchiment) : aucun versement manuel tant que l'identité du·de
+  // la vendeur·se n'est pas vérifiée (au moins une boutique du même propriétaire).
+  {
+    const { data: shopRow } = await admin.from("shops").select("owner_id").eq("id", body.shop_id).maybeSingle();
+    if (shopRow?.owner_id) {
+      const { data: sib } = await admin.from("shops").select("id").eq("owner_id", shopRow.owner_id);
+      const ids = (sib ?? []).map(s => s.id);
+      const { data: kyc } = await admin.from("vendor_kyc").select("shop_id").in("shop_id", ids).eq("kyc_status", "verified").limit(1);
+      if (!kyc?.length) return apiError("KYC non vérifié : vérifie l'identité du·de la vendeur·se avant tout versement (conformité anti-blanchiment).");
+    }
+  }
 
   // Garde-fou rétention : on ne verse pas au-delà du montant LIBÉRÉ (net produit
   // hors fenêtre de rétention + port − déjà versé). Protège le cash cross-border.

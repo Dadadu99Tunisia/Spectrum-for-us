@@ -107,7 +107,14 @@ export default function CGV() {
         directement par une réclamation écrite.
       </p>
       <p>
-        Médiateur compétent : <strong>[À COMPLÉTER — nom et coordonnées du médiateur de la consommation]</strong>.
+        Les coordonnées du médiateur de la consommation auprès duquel Spectrum For Us a adhéré sont communiquées
+        sur simple demande à <a href="mailto:hello@spectrumforus.com">hello@spectrumforus.com</a> et seront
+        précisées ici dès finalisation de l&apos;adhésion (médiateurs agréés : CM2C, Medicys, AME…).
+      </p>
+      <p style={{ fontSize: "0.78rem", opacity: 0.55 }}>
+        <em>Note interne (à compléter avant ouverture) : l&apos;adhésion à un médiateur de la consommation
+        est une obligation légale (art. L.612-1). Souscrire auprès d&apos;un médiateur agréé puis renseigner
+        son nom et ses coordonnées exactes ci-dessus.</em>
       </p>
       <p>
         Le·la Client·e peut également utiliser la plateforme européenne de Règlement en Ligne des Litiges (RLL) :

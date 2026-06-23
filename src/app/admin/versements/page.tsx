@@ -7,6 +7,7 @@ type Row = {
   shop_id: string; name: string; payout_method: string | null; payout_details: string | null;
   country: string; email: string | null; products: number;
   earned: number; paid: number; owed: number; releasable: number; held: number; flags: string[];
+  kyc_status: string;
 };
 
 const FLAG_LABEL: Record<string, string> = {
@@ -41,6 +42,22 @@ export default function VersementsPage() {
     setSaving(false);
     if (res.ok) { setToast("Versement enregistré ✓"); setTimeout(() => setToast(""), 2500); setForm(null); load(); }
     else { const j = await res.json().catch(() => ({})); alert("Erreur : " + (j.error ?? res.status)); }
+  };
+
+  const verifyKyc = async (shop_id: string, action: "verify" | "reject") => {
+    const res = await fetch("/api/admin/payouts", {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ shop_id, action }),
+    });
+    if (res.ok) { setToast(action === "verify" ? "KYC vérifié ✓" : "KYC rejeté"); setTimeout(() => setToast(""), 2500); load(); }
+    else { const j = await res.json().catch(() => ({})); alert("Erreur : " + (j.error ?? res.status)); }
+  };
+  const KYC_BADGE: Record<string, { label: string; bg: string; fg: string }> = {
+    verified: { label: "KYC vérifié ✓", bg: "#1B815515", fg: "#1B8155" },
+    submitted: { label: "KYC à valider", bg: "#B5742A18", fg: "#B5742A" },
+    rejected: { label: "KYC rejeté", bg: "#f8717118", fg: "#c0392b" },
+    pending: { label: "KYC en attente", bg: "#6B62581a", fg: "#6B6258" },
+    none: { label: "KYC non soumis", bg: "#6B62581a", fg: "#6B6258" },
   };
 
   const fmt = (n: number) => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n);
@@ -91,13 +108,22 @@ export default function VersementsPage() {
                   <p className="font-bricolage font-bold text-[#101014]">{r.name} <span className="font-mono text-[10px] text-[#101014]/45">· {r.country}</span> <span className="font-mono text-[10px] text-[#101014]/35">· {r.products} produit{r.products > 1 ? "s" : ""}</span></p>
                   <p className="font-mono text-[11px] text-[#101014]/45">💳 {r.payout_method ?? "—"} · {r.payout_details ?? "—"}</p>
                   {r.email && <a href={`mailto:${r.email}`} className="font-mono text-[11px] text-[#2323C4] hover:underline">✉ {r.email}</a>}
-                  {r.flags?.length > 0 && (
-                    <div className="flex gap-1.5 mt-1 flex-wrap">
-                      {r.flags.map(f => (
-                        <span key={f} className="inline-flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300">⚠ {FLAG_LABEL[f] ?? f}</span>
-                      ))}
-                    </div>
-                  )}
+                  <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                    {(() => { const k = KYC_BADGE[r.kyc_status] ?? KYC_BADGE.none; return (
+                      <span className="inline-flex items-center font-mono text-[10px] px-2 py-0.5 rounded-full" style={{ background: k.bg, color: k.fg }}>{k.label}</span>
+                    ); })()}
+                    {r.kyc_status !== "verified" && (
+                      <button onClick={() => verifyKyc(r.shop_id, "verify")}
+                        className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-[#1B8155] text-white hover:brightness-110">Vérifier KYC</button>
+                    )}
+                    {r.kyc_status === "verified" && (
+                      <button onClick={() => verifyKyc(r.shop_id, "reject")}
+                        className="font-mono text-[10px] text-[#101014]/30 hover:text-[#c0392b]">révoquer</button>
+                    )}
+                    {r.flags?.map(f => (
+                      <span key={f} className="inline-flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300">⚠ {FLAG_LABEL[f] ?? f}</span>
+                    ))}
+                  </div>
                 </div>
                 <div className="flex items-center gap-4 sm:gap-5 flex-wrap">
                   <div><p className="font-mono text-[9px] uppercase text-[#101014]/35">Gagné</p><p className="font-fraunces text-[#101014]">{fmt(r.earned)}</p></div>

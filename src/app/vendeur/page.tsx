@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { ConnectPayments } from "@/components/vendor/ConnectPayments";
 import { ManualPayout } from "@/components/vendor/ManualPayout";
+import { VendorKyc } from "@/components/vendor/VendorKyc";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
@@ -387,6 +388,7 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go, 
       <div className="mb-4 grid md:grid-cols-2 gap-3" style={{ marginBottom: 18 }}>
         <ConnectPayments />
         <ManualPayout shopId={shop.id} />
+        <VendorKyc />
       </div>
 
       <div className="grid lg:grid-cols-[1.7fr_1fr] gap-4">
