@@ -18,7 +18,7 @@ export async function GET() {
   const shopId = await primaryShop(supabase, auth.user.id);
   if (!shopId) return NextResponse.json({ kyc: null });
   const { data } = await supabase.from("vendor_kyc")
-    .select("legal_name, legal_type, vat_number, address_line1, address_city, address_zip, address_country, id_document_url, kyc_status, kyc_submitted_at, kyc_verified_at, kyc_notes")
+    .select("legal_name, legal_type, vat_number, tax_id, address_line1, address_city, address_zip, address_country, id_document_url, kyc_status, kyc_submitted_at, kyc_verified_at, kyc_notes")
     .eq("shop_id", shopId).maybeSingle();
   return NextResponse.json({ kyc: data ?? null });
 }
@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
     legal_name: b.legal_name.trim(),
     legal_type: b.legal_type ?? null,
     vat_number: b.vat_number?.trim() || null,
+    tax_id: b.tax_id?.trim() || null,
     address_line1: b.address_line1?.trim() || null,
     address_city: b.address_city?.trim() || null,
     address_zip: b.address_zip?.trim() || null,

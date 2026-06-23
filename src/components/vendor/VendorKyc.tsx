@@ -13,7 +13,7 @@ export function VendorKyc() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ legal_name: "", legal_type: "Particulier", vat_number: "", address_country: "", id_document_url: "" });
+  const [form, setForm] = useState({ legal_name: "", legal_type: "Particulier", vat_number: "", tax_id: "", address_country: "", id_document_url: "" });
 
   useEffect(() => {
     fetch("/api/vendor/kyc").then(r => r.json()).then(d => {
@@ -61,7 +61,9 @@ export function VendorKyc() {
             className="w-full bg-[#101014]/5 border border-[#101014]/12 rounded-xl px-3 py-2.5 font-hanken text-sm">
             {LEGAL_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
-          <input value={form.address_country} onChange={e => setForm(f => ({ ...f, address_country: e.target.value }))} placeholder="Pays de résidence"
+          <input value={form.address_country} onChange={e => setForm(f => ({ ...f, address_country: e.target.value }))} placeholder="Pays de résidence fiscale"
+            className="w-full bg-[#101014]/5 border border-[#101014]/12 rounded-xl px-3 py-2.5 font-hanken text-sm" />
+          <input value={form.tax_id} onChange={e => setForm(f => ({ ...f, tax_id: e.target.value }))} placeholder="Identifiant fiscal / N° fiscal (DAC7)"
             className="w-full bg-[#101014]/5 border border-[#101014]/12 rounded-xl px-3 py-2.5 font-hanken text-sm" />
           <input value={form.vat_number} onChange={e => setForm(f => ({ ...f, vat_number: e.target.value }))} placeholder="N° TVA (si applicable)"
             className="w-full bg-[#101014]/5 border border-[#101014]/12 rounded-xl px-3 py-2.5 font-hanken text-sm" />

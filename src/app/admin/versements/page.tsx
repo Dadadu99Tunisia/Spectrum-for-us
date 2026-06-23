@@ -67,7 +67,13 @@ export default function VersementsPage() {
       {toast && <div className="fixed top-16 right-6 z-50 px-4 py-2 rounded-lg bg-[#FF2DA0] text-white font-hanken text-sm shadow-xl">{toast}</div>}
 
       <div>
-        <h1 className="font-fraunces text-2xl text-[#101014] flex items-center gap-2"><Globe size={20} /> Vendeur·ses hors Stripe 🇹🇳</h1>
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <h1 className="font-fraunces text-2xl text-[#101014] flex items-center gap-2"><Globe size={20} /> Vendeur·ses hors Stripe 🇹🇳</h1>
+          <a href={`/api/admin/dac7?year=${new Date().getFullYear()}`}
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] rounded-full px-3 py-2 bg-[#101014] text-white hover:brightness-125">
+            ⬇ Export DAC7 {new Date().getFullYear()}
+          </a>
+        </div>
         <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">Boutiques des pays où Stripe n&apos;existe pas (monde entier). Tu les paies à la main (Payoneer, Wise, virement…) — voici qui, combien, et leurs coordonnées.</p>
       </div>
       {!loading && rows.length > 0 && (
