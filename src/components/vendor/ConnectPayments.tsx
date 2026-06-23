@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CreditCard, Check, ArrowRight, AlertCircle } from "lucide-react";
+import { CreditCard, Check, ArrowRight, AlertCircle, Globe } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
+import { isStripeSupported } from "@/lib/stripeCountries";
 
 type Status = { connected: boolean; charges_enabled: boolean; payouts_enabled: boolean; details_submitted?: boolean } | null;
 
 const C = { ink: "#101014", soft: "#6B6258", line: "#ECE6DB", mag: "#FF2DA0", green: "#1B8155", amber: "#B5742A" };
 
 export function ConnectPayments() {
+  const { country } = useI18n();
+  const stripeOk = isStripeSupported(country);
   const [status, setStatus] = useState<Status>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -49,6 +53,14 @@ export function ConnectPayments() {
         <p className="text-[13px]" style={{ color: C.soft }}>Chargement…</p>
       ) : active ? (
         <p className="text-[13.5px]" style={{ color: C.soft }}>Ton compte Stripe est connecté. Tu seras payé·e directement à chaque vente, déduction faite de la commission.</p>
+      ) : (!stripeOk && !pending) ? (
+        // Pays sans Stripe Connect → on route vers le versement manuel (plan commission-seule).
+        <div className="flex items-start gap-2.5 rounded-xl p-3" style={{ background: `${C.mag}0D`, boxShadow: `inset 0 0 0 1px ${C.mag}26` }}>
+          <Globe size={15} style={{ color: C.mag }} className="mt-0.5 shrink-0" />
+          <p className="text-[13px]" style={{ color: C.soft }}>
+            Stripe n&apos;est pas disponible dans ton pays. Pas de souci — <strong style={{ color: C.ink }}>active le versement manuel ci-dessous</strong> : aucun abonnement, on te paie via Payoneer / Wise / virement.
+          </p>
+        </div>
       ) : (
         <>
           <p className="text-[13.5px] mb-3" style={{ color: C.soft }}>

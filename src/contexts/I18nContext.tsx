@@ -58,6 +58,7 @@ interface I18nContextType {
   formatPrice: (eurAmount: number) => string;
   dir: "ltr" | "rtl";
   geoDetected: boolean;
+  country: string | null;   // code pays ISO détecté (géo IP), ex "TN", "FR"
 }
 
 const I18nContext = createContext<I18nContextType | null>(null);
@@ -90,6 +91,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [locale,       setLocaleState]   = useState<Locale>("fr");
   const [currency,     setCurrencyState] = useState<Currency>("EUR");
   const [geoDetected,  setGeoDetected]   = useState(false);
+  const [country,      setCountry]       = useState<string | null>(null);
   const [rates,        setRates]         = useState<Record<Currency, number>>(RATES);
   const [,             forceRender]      = useState(0);
 
@@ -105,6 +107,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     const savedLocale    = localStorage.getItem("spectrum-locale") as Locale | null;
     const savedCurrency  = localStorage.getItem("spectrum-currency") as Currency | null;
     const hasPrefs       = savedLocale && VALID_LOCALES.includes(savedLocale);
+
+    const savedCountry = localStorage.getItem("spectrum-country");
+    if (savedCountry) setCountry(savedCountry);
 
     if (hasPrefs) {
       // User has explicit preferences · honour them
@@ -130,6 +135,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
           const geo  = await res.json() as { country_code?: string; currency?: string; languages?: string };
 
           const countryCode = geo.country_code ?? "";
+          if (countryCode) { setCountry(countryCode); localStorage.setItem("spectrum-country", countryCode); }
           const mapped = GEO_MAP[countryCode];
 
           if (mapped) {
@@ -205,7 +211,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <I18nContext.Provider value={{
-      locale, currency, setLocale, setCurrency, t, formatPrice, geoDetected,
+      locale, currency, setLocale, setCurrency, t, formatPrice, geoDetected, country,
       dir: locale === "ar" ? "rtl" : "ltr",
     }}>
       {children}
