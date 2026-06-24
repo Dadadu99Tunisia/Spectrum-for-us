@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
@@ -37,6 +37,8 @@ export default function RejoindrePage() {
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const [hp, setHp] = useState(""); // honeypot anti-bot (caché)
+  const loadedAt = useRef<number>(typeof performance !== "undefined" ? performance.now() : 0);
 
   const f = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(p => ({ ...p, [k]: e.target.value }));
@@ -50,7 +52,7 @@ export default function RejoindrePage() {
     const res = await fetch("/api/rejoindre", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, hp, elapsed: (typeof performance !== "undefined" ? performance.now() : 0) - loadedAt.current }),
     });
     const data = await res.json();
     setSending(false);
@@ -133,6 +135,10 @@ export default function RejoindrePage() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                {/* Honeypot anti-bot · invisible pour les humains, rempli par les bots */}
+                <input type="text" name="company_site" tabIndex={-1} autoComplete="off" value={hp}
+                  onChange={e => setHp(e.target.value)} aria-hidden="true"
+                  style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-mono text-[10px] tracking-wide text-[#101014]/35 mb-2">Prénom & Nom *</label>

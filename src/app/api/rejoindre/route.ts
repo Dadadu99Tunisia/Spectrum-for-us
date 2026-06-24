@@ -3,7 +3,16 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { name, email, activity_type, description, website, instagram, is_queer } = body;
+  const { name, email, activity_type, description, website, instagram, is_queer, hp, elapsed } = body;
+
+  // ── Anti-spam (bots) · réponse neutre 200 pour ne pas révéler la détection ──
+  // 1) Honeypot : champ caché que seuls les bots remplissent.
+  if (typeof hp === "string" && hp.trim() !== "") return NextResponse.json({ ok: true });
+  // 2) Piège temporel : un humain met > 2,5 s ; un bot soumet quasi instantanément.
+  if (typeof elapsed === "number" && elapsed >= 0 && elapsed < 2500) return NextResponse.json({ ok: true });
+  // 3) Gibberish : nom/description sans espace et > 14 car. avec casse mixte = signature de spam.
+  const looksRandom = (s: string) => s.length > 14 && !/\s/.test(s) && !/[À-ÿ]/.test(s) && /[A-Z].*[a-z].*[A-Z]/.test(s);
+  if (looksRandom(String(name ?? "")) || looksRandom(String(description ?? ""))) return NextResponse.json({ ok: true });
 
   if (!name?.trim() || !email?.trim() || !activity_type?.trim()) {
     return NextResponse.json({ error: "Champs obligatoires manquants." }, { status: 400 });
