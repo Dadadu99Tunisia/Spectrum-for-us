@@ -7,7 +7,7 @@ const EDITABLE = [
   "title_fr", "title_en", "title_ar",
   "excerpt_fr", "excerpt_en", "excerpt_ar",
   "content_fr", "content_en", "content_ar",
-  "cover_url", "category",
+  "cover_url", "cover_position", "category",
 ] as const;
 
 export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {

@@ -11,7 +11,7 @@ import DOMPurify from "isomorphic-dompurify";
 
 type Article = {
   id: string; slug: string; title_fr: string; title_en: string; title_ar: string;
-  content_fr: string; cover_url: string | null; category: string;
+  content_fr: string; cover_url: string | null; cover_position: string | null; category: string;
   published_at: string; tags: string[] | null; excerpt_fr: string;
 };
 
@@ -49,7 +49,8 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
 
         {article.cover_url && (
           <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden mb-8">
-            <Image src={article.cover_url} alt={article.title_fr} fill className="object-cover" />
+            <Image src={article.cover_url} alt={article.title_fr} fill className="object-cover"
+              style={{ objectPosition: `center ${article.cover_position ?? "50"}%` }} />
           </div>
         )}
 

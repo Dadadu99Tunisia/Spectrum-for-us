@@ -9,14 +9,14 @@ type Form = {
   title_fr: string; title_en: string; title_ar: string;
   excerpt_fr: string; excerpt_en: string; excerpt_ar: string;
   content_fr: string; content_en: string; content_ar: string;
-  cover_url: string; category: string; tags: string;
+  cover_url: string; cover_position: string; category: string; tags: string;
 };
 
 const EMPTY: Form = {
   title_fr: "", title_en: "", title_ar: "",
   excerpt_fr: "", excerpt_en: "", excerpt_ar: "",
   content_fr: "", content_en: "", content_ar: "",
-  cover_url: "", category: "editorial", tags: "",
+  cover_url: "", cover_position: "50", category: "editorial", tags: "",
 };
 
 export default function EditArticle({ params }: { params: Promise<{ id: string }> }) {
@@ -43,7 +43,7 @@ export default function EditArticle({ params }: { params: Promise<{ id: string }
           title_fr: d.title_fr ?? "", title_en: d.title_en ?? "", title_ar: d.title_ar ?? "",
           excerpt_fr: d.excerpt_fr ?? "", excerpt_en: d.excerpt_en ?? "", excerpt_ar: d.excerpt_ar ?? "",
           content_fr: d.content_fr ?? "", content_en: d.content_en ?? "", content_ar: d.content_ar ?? "",
-          cover_url: d.cover_url ?? "", category: d.category ?? "editorial",
+          cover_url: d.cover_url ?? "", cover_position: d.cover_position ?? "50", category: d.category ?? "editorial",
           tags: Array.isArray(d.tags) ? d.tags.join(", ") : "",
         });
       } catch { setErr("Erreur réseau"); } finally { setLoading(false); }
@@ -122,8 +122,19 @@ export default function EditArticle({ params }: { params: Promise<{ id: string }
         <div className="mb-8">
           <label className="font-mono text-[10px] text-[#101014]/40 uppercase tracking-widest block mb-2">Bannière de l’article</label>
           {form.cover_url && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={form.cover_url} alt="Bannière" className="w-full max-h-56 object-cover rounded-2xl mb-3" />
+            <>
+              {/* Aperçu au ratio réel de la page article (h-64 md:h-96) */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={form.cover_url} alt="Bannière" className="w-full h-64 object-cover rounded-2xl mb-3"
+                style={{ objectPosition: `center ${form.cover_position}%` }} />
+              <div className="flex items-center gap-3 mb-3">
+                <span className="font-mono text-[10px] text-[#101014]/40 uppercase tracking-widest whitespace-nowrap">Cadrage vertical</span>
+                <input type="range" min={0} max={100} value={form.cover_position}
+                  onChange={(e) => update("cover_position", e.target.value)}
+                  className="flex-1 accent-[#FF2DA0]" />
+                <span className="font-mono text-[11px] text-[#101014]/50 w-10 text-right">{form.cover_position}%</span>
+              </div>
+            </>
           )}
           <div className="flex flex-wrap gap-2">
             <input ref={fileInput} type="file" accept="image/*" className="hidden"
