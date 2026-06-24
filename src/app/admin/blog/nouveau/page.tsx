@@ -30,7 +30,20 @@ export default function NouvelArticle() {
   const [ideas, setIdeas] = useState<{ title: string; angle: string; category: string }[]>([]);
   const [loadingIdeas, setLoadingIdeas] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [coverLoading, setCoverLoading] = useState(false);
   const [aiErr, setAiErr] = useState("");
+
+  const genCover = async () => {
+    const subject = form.title_fr || topic;
+    if (!subject.trim()) { setAiErr("Génère d'abord l'article (ou saisis un sujet) pour la couverture."); return; }
+    setCoverLoading(true); setAiErr("");
+    try {
+      const res = await fetch("/api/admin/blog/cover", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: subject }) });
+      const j = await res.json();
+      if (!res.ok) { setAiErr(j.error ?? "Erreur"); return; }
+      setForm(f => ({ ...f, cover_url: j.data.cover_url }));
+    } catch { setAiErr("Erreur réseau"); } finally { setCoverLoading(false); }
+  };
 
   const runVeille = async () => {
     setLoadingIdeas(true); setAiErr("");
@@ -134,7 +147,15 @@ export default function NouvelArticle() {
               className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-hanken font-semibold text-sm text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg,#7A2BF0,#FF2DA0)" }}>
               {generating ? <><Loader2 size={15} className="animate-spin" /> Rédaction…</> : <><Wand2 size={15} /> Générer l'article</>}
             </button>
+            <button onClick={genCover} disabled={coverLoading}
+              className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 font-hanken font-semibold text-sm text-[#7A2BF0] bg-white disabled:opacity-50" style={{ boxShadow: "inset 0 0 0 1px rgba(122,43,240,.25)" }}>
+              {coverLoading ? <><Loader2 size={15} className="animate-spin" /> Couverture…</> : <><Sparkles size={15} /> Couverture IA</>}
+            </button>
           </div>
+          {form.cover_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={form.cover_url} alt="Couverture générée" className="mt-3 w-full max-h-48 object-cover rounded-xl" />
+          )}
           {aiErr && <p className="font-hanken text-xs text-red-500 mt-2">{aiErr}</p>}
           <p className="font-mono text-[10px] text-[#101014]/40 mt-2">L'IA remplit les 3 langues + le résumé + les tags. Tu relis/édites, puis « Brouillon » ou « Publier ».</p>
         </div>
