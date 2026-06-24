@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { legalFooterLines } from "@/lib/legal";
 
 // Lazy init · évite le crash au build si RESEND_API_KEY est absent
 let _resend: Resend | null = null;
@@ -79,23 +80,41 @@ export async function sendOrderConfirmation(params: {
 }) {
   const rows = params.items.map(i => itemRow(i.name, i.price, i.quantity)).join("");
 
+  const ref = params.orderRef.slice(0, 8).toUpperCase();
+  const paidAt = new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+  const legal = legalFooterLines()
+    .map(l => `<span style="display:block;">${l}</span>`).join("");
+
   const body = `
-    ${h2("Commande confirmée ✦")}
-    ${text(`${params.shippingName ? `Merci ${params.shippingName.split(" ")[0]}` : "Merci"} ✦ Ta commande a bien été enregistrée et ton paiement est validé.`)}
-    <p style="font-family:monospace;font-size:11px;color:rgba(16,16,20,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px;">Réf. #${params.orderRef.slice(0,8).toUpperCase()}</p>
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">${rows}
-      <tr><td colspan="2" style="padding:12px 0;font-size:15px;color:rgba(16,16,20,0.6);font-weight:600;">Total</td>
+    ${h2("Reçu de commande ✦")}
+    ${text(`${params.shippingName ? `Merci ${params.shippingName.split(" ")[0]}` : "Merci"} ✦ Ton paiement est validé. Voici ton reçu.`)}
+    <!-- bandeau récap -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;">
+      <tr>
+        <td style="font-family:monospace;font-size:11px;color:rgba(16,16,20,0.35);letter-spacing:2px;text-transform:uppercase;">Reçu&nbsp;#${ref}</td>
+        <td style="text-align:right;">
+          <span style="display:inline-block;font-size:11px;font-weight:700;color:#16A06A;background:rgba(22,160,106,0.12);border-radius:100px;padding:4px 12px;">✓ Payé · ${paidAt}</span>
+        </td>
+      </tr>
+    </table>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18px;">${rows}
+      <tr><td colspan="2" style="padding:12px 0;font-size:15px;color:rgba(16,16,20,0.6);font-weight:600;">Total payé</td>
       <td style="padding:12px 0;text-align:right;font-size:18px;color:#FF2DA0;font-weight:700;">${params.total.toFixed(2)} €</td></tr>
     </table>
     ${text("Les créateur·ices vont préparer ta commande. Tu recevras une notification dès l'expédition.")}
     ${cta("Voir ma commande", `${BASE}/compte`)}
+    <!-- pied légal (reçu) -->
+    <p style="font-size:10.5px;line-height:1.7;color:#9B9285;margin:24px 0 0;border-top:1px solid #ECE6DB;padding-top:16px;">
+      ${legal}
+      <span style="display:block;margin-top:6px;">Spectrum For Us agit en qualité d'intermédiaire ; la vente est conclue avec chaque boutique vendeuse.</span>
+    </p>
   `;
 
   return getResend().emails.send({
     from: FROM,
     to: params.to,
-    subject: `Commande confirmée #${params.orderRef.slice(0,8).toUpperCase()} ✦`,
-    html: baseLayout("Commande confirmée · Spectrum For Us", body),
+    subject: `Ton reçu Spectrum For Us · #${ref} ✦`,
+    html: baseLayout("Reçu de commande · Spectrum For Us", body),
   });
 }
 
