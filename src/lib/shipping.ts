@@ -7,10 +7,13 @@ export type ShipType = "relay" | "home" | "pickup";
 
 export const SHIPPING_TIERS: Record<ShipType, { maxKg: number; price: number }[]> = {
   relay: [
+    // Articles plats/légers (stickers, zines, pins, tirages) → lettre/petit colis suivi
+    { maxKg: 0.1, price: 2.5 }, { maxKg: 0.25, price: 3.9 },
     { maxKg: 1, price: 5.9 }, { maxKg: 2, price: 8.9 }, { maxKg: 5, price: 12.9 },
     { maxKg: 10, price: 18.9 }, { maxKg: 30, price: 27.9 },
   ],
   home: [
+    { maxKg: 0.1, price: 2.9 }, { maxKg: 0.25, price: 4.5 },
     { maxKg: 1, price: 6.9 }, { maxKg: 2, price: 9.9 }, { maxKg: 5, price: 14.9 },
     { maxKg: 10, price: 20.9 }, { maxKg: 30, price: 29.9 },
   ],
