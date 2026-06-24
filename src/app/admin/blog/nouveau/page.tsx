@@ -1,19 +1,11 @@
 "use client";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { ArrowLeft, Save, Eye, Sparkles, Wand2, Loader2, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
-function slugify(str: string) {
-  return str.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-}
-
 export default function NouvelArticle() {
-  const { user } = useAuth();
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -76,20 +68,25 @@ export default function NouvelArticle() {
 
   const update = (k: string, v: string | boolean) => setForm(f => ({ ...f, [k]: v }));
 
+  const [saveErr, setSaveErr] = useState("");
+
   const save = async (publish = false) => {
-    if (!form.title_fr) return;
-    setSaving(true);
-    const supabase = createClient();
-    const slug = slugify(form.title_fr);
-    const tags = form.tags.split(",").map(t => t.trim()).filter(Boolean);
-    const { error } = await supabase.from("articles").insert({
-      slug, ...form, tags,
-      published: publish,
-      published_at: publish ? new Date().toISOString() : null,
-      author_id: user?.id,
-    });
-    setSaving(false);
-    if (!error) router.push("/admin?tab=articles");
+    if (!form.title_fr.trim()) { setSaveErr("Le titre français est obligatoire."); return; }
+    setSaving(true); setSaveErr("");
+    try {
+      const res = await fetch("/api/admin/articles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, published: publish }),
+      });
+      const j = await res.json();
+      if (!res.ok) { setSaveErr(j.error ?? "Enregistrement échoué."); return; }
+      router.push("/admin?tab=articles");
+    } catch {
+      setSaveErr("Erreur réseau — réessaie.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const CATS = ["editorial", "lifestyle", "culture", "news", "guide"];
@@ -114,7 +111,10 @@ export default function NouvelArticle() {
           </div>
         </div>
 
-        <h1 className="font-fraunces text-3xl mb-6">Nouvel article</h1>
+        <h1 className="font-fraunces text-3xl mb-2">Nouvel article</h1>
+        {saveErr && (
+          <p className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-2.5 font-hanken text-sm text-red-600">{saveErr}</p>
+        )}
 
         {/* ── Générateur IA ── */}
         <div className="mb-8 rounded-2xl p-5" style={{ background: "linear-gradient(135deg,rgba(122,43,240,.06),rgba(255,45,160,.05))", boxShadow: "inset 0 0 0 1px rgba(122,43,240,.18)" }}>
