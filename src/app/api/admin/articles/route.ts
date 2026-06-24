@@ -27,6 +27,11 @@ export async function POST(req: NextRequest) {
     : String(rawTags ?? "").split(",").map(t => t.trim()).filter(Boolean);
 
   const admin = createAdminClient();
+  // author_id référence profiles(id) ; certains admins (allowlist email) n'ont
+  // pas de ligne profiles → on laisse author_id à null plutôt que de violer la FK.
+  const { data: prof } = await admin.from("profiles").select("id").eq("id", auth.user.id).maybeSingle();
+  const authorId = prof?.id ?? null;
+
   const row = {
     slug: slugify(title_fr) || `article-${Date.now()}`,
     title_fr,
@@ -43,7 +48,7 @@ export async function POST(req: NextRequest) {
     tags,
     published: publish,
     published_at: publish ? new Date().toISOString() : null,
-    author_id: auth.user.id,
+    author_id: authorId,
   };
 
   const { data, error } = await admin.from("articles").insert(row).select("id, slug").single();
