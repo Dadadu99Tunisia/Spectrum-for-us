@@ -142,7 +142,7 @@ function DecouvrirContent() {
     const supabase = createClient();
     let q = supabase
       .from("products")
-      .select("id,name,title,description,price,category,subcategory,slug,shop_id,quantity,images,image_url,type,is_adult,shops(name,slug,sellers(stripe_charges_enabled,payout_mode))")
+      .select("id,name,title,description,price,category,subcategory,slug,shop_id,quantity,images,image_url,type,is_adult,shops(name,slug,stripe_charges_enabled,payout_mode)")
       .eq("is_active", true);
 
     if (category !== "Toutes") q = q.eq("category", category);
@@ -409,7 +409,7 @@ function DecouvrirContent() {
                     </Link>
                     <div className="pb-4 mt-auto flex items-center justify-between">
                       <Price eur={p.price} className="font-mono text-sm font-bold text-[#101014]" />
-                      {(() => { const sl = (shop as { sellers?: { stripe_charges_enabled?: boolean; payout_mode?: string } | null } | null)?.sellers; return !!sl?.stripe_charges_enabled || sl?.payout_mode === "manual"; })() ? (
+                      {(() => { const sp = shop as { stripe_charges_enabled?: boolean; payout_mode?: string } | null; return !!sp?.stripe_charges_enabled || sp?.payout_mode === "manual"; })() ? (
                         <button
                           onClick={() => handleAdd(p)}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-hanken font-medium transition-all duration-200 ${

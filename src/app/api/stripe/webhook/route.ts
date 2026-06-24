@@ -449,8 +449,12 @@ export async function POST(req: Request) {
       stripe_payouts_enabled: !!account.payouts_enabled,
     };
     await supabase.from("sellers").update(flags).eq("stripe_account_id", account.id);
-    // Legacy : maj de l'activité primaire qui portait encore l'account id (sans effet sinon)
+    // Legacy : maj de l'activité primaire qui portait encore l'account id.
     await supabase.from("shops").update(flags).eq("stripe_account_id", account.id);
+    // Propage le flag à TOUTES les boutiques du seller (les colonnes shops.* sont
+    // la version publique lue par la fiche produit ; sellers est protégé par RLS).
+    const { data: sel } = await supabase.from("sellers").select("id").eq("stripe_account_id", account.id).maybeSingle();
+    if (sel?.id) await supabase.from("shops").update(flags).eq("seller_id", sel.id);
   }
 
   // ── Litiges carte (chargebacks) · protège le cash ──────────────────────────

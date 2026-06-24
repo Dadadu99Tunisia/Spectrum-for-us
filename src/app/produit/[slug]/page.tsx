@@ -103,7 +103,7 @@ export default function ProduitPage() {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
     supabase
       .from("products")
-      .select("*, shops(name, slug, sellers(stripe_charges_enabled, payout_mode))")
+      .select("*, shops(name, slug, stripe_charges_enabled, payout_mode)")
       .or(isUuid ? `slug.eq.${slug},id.eq.${slug}` : `slug.eq.${slug}`)
       .eq("is_active", true)
       .single()
@@ -211,8 +211,10 @@ export default function ProduitPage() {
   );
 
   const shop = getShop();
-  const sellerAny = (shop as { sellers?: { stripe_charges_enabled?: boolean; payout_mode?: string } | null } | null)?.sellers ?? null;
-  const payReady = !!sellerAny?.stripe_charges_enabled || sellerAny?.payout_mode === "manual";
+  // Statut paiement lu directement sur `shops` (public) — la table `sellers` est
+  // protégée par RLS et renverrait null pour un·e visiteur·se anonyme → faux « Bientôt en vente ».
+  const shopPay = shop as { stripe_charges_enabled?: boolean; payout_mode?: string } | null;
+  const payReady = !!shopPay?.stripe_charges_enabled || shopPay?.payout_mode === "manual";
 
   return (
     <>
