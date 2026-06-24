@@ -19,7 +19,7 @@ const CONTENT = {
     hero: { badge: "Deviens vendeur·euse", h1a: "Vends ce que tu es,", h1b: "sans compromis.",
       sub: "Spectrum For Us est la marketplace queer et inclusive pensée pour les créateur·ices qui méritent une audience qui comprend leur travail. Boutique en ligne, outils simples, communauté engagée.",
       cta1: "Ouvrir ma boutique gratuitement", cta2: "Voir comment ça marche",
-      notReady: "Pas encore prêt·e ?", leaveEmail: "Laisse ton email", notReadyEnd: ", on te recontacte avant le lancement." },
+      notReady: "Une question ?", leaveEmail: "Ouvre ta boutique en 10 min", notReadyEnd: " — c'est gratuit, tu publies quand tu veux." },
     studio: ["Plusieurs marques ? Le forfait ", "Studio à 19,90 €/mois", " débloque les activités illimitées — ", "offert aux fondateur·ices", "."],
     pillarsEyebrow: "Pourquoi Spectrum ?", pillarsH2a: "Pas juste une marketplace.", pillarsH2b: "Un espace.",
     stepsEyebrow: "Simple. Rapide. Efficace.", stepsH2a: "Lance-toi en", stepsH2b: "3 étapes", stepsCta: "Je commence maintenant",
@@ -81,7 +81,7 @@ const CONTENT = {
     hero: { badge: "Become a seller", h1a: "Sell who you are,", h1b: "no compromise.",
       sub: "Spectrum For Us is the queer & inclusive marketplace built for creators who deserve an audience that gets their work. Online shop, simple tools, a community that shows up.",
       cta1: "Open my shop for free", cta2: "See how it works",
-      notReady: "Not ready yet?", leaveEmail: "Leave your email", notReadyEnd: ", we'll reach out before launch." },
+      notReady: "A question?", leaveEmail: "Open your shop in 10 min", notReadyEnd: " — it's free, publish whenever you want." },
     studio: ["Multiple brands? The ", "Studio plan at €19.90/mo", " unlocks unlimited shops — ", "free for founders", "."],
     pillarsEyebrow: "Why Spectrum?", pillarsH2a: "Not just a marketplace.", pillarsH2b: "A home.",
     stepsEyebrow: "Simple. Fast. Effective.", stepsH2a: "Get started in", stepsH2b: "3 steps", stepsCta: "Start now",
@@ -241,7 +241,7 @@ export default function VendrePage() {
               </a>
             </div>
             <p className="font-hanken text-sm text-[#101014]/45 mt-4">
-              {C.hero.notReady} <Link href="/rejoindre" className="font-semibold underline text-[#FF2DA0]">{C.hero.leaveEmail}</Link>{C.hero.notReadyEnd}
+              {C.hero.notReady} <Link href="/vendeur/onboarding" className="font-semibold underline text-[#FF2DA0]">{C.hero.leaveEmail}</Link>{C.hero.notReadyEnd}
             </p>
           </FadeIn>
         </div>
