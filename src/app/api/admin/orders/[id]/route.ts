@@ -12,16 +12,16 @@ export async function GET(
   const { id } = await params;
   const supabase = createAdminClient();
 
+  // Colonnes réelles uniquement (cf. schéma orders).
   const { data: order, error } = await supabase
     .from("orders")
     .select(`
-      id, status, total_amount, created_at, updated_at,
+      id, status, total_amount, created_at,
       tracking_number, carrier,
-      dispute_status, dispute_reason,
-      refund_status, refund_amount, refund_reason, refunded_at,
-      shipping_address, billing_address,
-      stripe_payment_intent_id,
-      user_id
+      dispute_status, dispute_opened_at,
+      refund_status, refund_amount,
+      shipping_name, shipping_email, shipping_address, shipping_city, shipping_zip, shipping_country,
+      payment_intent_id, user_id
     `)
     .eq("id", id)
     .single();
@@ -33,17 +33,26 @@ export async function GET(
     .from("profiles")
     .select("id, full_name, pseudo, email")
     .eq("id", order.user_id)
-    .single();
+    .maybeSingle();
 
-  // Order items
-  const { data: items } = await supabase
+  // Order items (la colonne réelle est price_at_purchase ; titre/image via products, boutique via shops)
+  const { data: rawItems } = await supabase
     .from("order_items")
-    .select(`
-      id, quantity, unit_price, total_price,
-      product_id, product_title, product_image_url,
-      shop_id, shop_name
-    `)
+    .select("id, quantity, price_at_purchase, product_id, products(name, title, image_url, images, shops(name))")
     .eq("order_id", id);
+
+  const items = (rawItems ?? []).map(it => {
+    const p = (it as { products?: { name?: string; title?: string; image_url?: string; images?: string[]; shops?: { name?: string } | { name?: string }[] } | null }).products ?? null;
+    const shop = Array.isArray(p?.shops) ? p?.shops[0] : p?.shops;
+    const unit = Number(it.price_at_purchase || 0);
+    return {
+      id: it.id, quantity: it.quantity, product_id: it.product_id,
+      unit_price: unit, total_price: unit * Number(it.quantity || 1),
+      product_title: p?.name || p?.title || "Article",
+      product_image_url: p?.image_url || p?.images?.[0] || null,
+      shop_name: shop?.name ?? null,
+    };
+  });
 
   // Activity log for this order
   const { data: activity } = await supabase
@@ -56,8 +65,15 @@ export async function GET(
 
   return apiResponse({
     ...order,
+    // Alias pour la page (champs attendus mais nommés différemment / inexistants)
+    stripe_payment_intent_id: order.payment_intent_id,
+    updated_at: order.created_at,
+    shipping_address: {
+      name: order.shipping_name, address: order.shipping_address,
+      city: order.shipping_city, zip: order.shipping_zip, country: order.shipping_country,
+    },
     buyer: buyer ?? null,
-    items: items ?? [],
+    items,
     activity: activity ?? [],
   });
 }

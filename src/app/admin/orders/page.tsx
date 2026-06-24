@@ -7,7 +7,7 @@ import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 type Order = {
   id: string;
   status: string;
-  total: number;
+  total_amount: number;
   created_at: string;
   tracking_number: string | null;
   dispute_status: string | null;
@@ -160,7 +160,7 @@ export default function OrdersPage() {
                       </td>
                       <td className="px-4 py-3">
                         <span className="font-fraunces text-sm text-[#101014]">
-                          {Number(order.total).toFixed(2)} €
+                          {Number(order.total_amount).toFixed(2)} €
                         </span>
                       </td>
                       <td className="px-4 py-3">
