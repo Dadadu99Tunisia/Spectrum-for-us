@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendOrderConfirmation, trySend, sendBookingConfirmation, sendBookingVendorAlert, sendVendorNewOrder } from "@/lib/email";
 import { getCommissionRates, resolveCommissionRate } from "@/lib/commission";
+import { sendcloudConfig, pickCheapestMethod, createParcel } from "@/lib/sendcloud";
 
 /** current_period_end a migré au niveau de l'item d'abonnement (Stripe API récente). */
 function subPeriodEndISO(sub: Stripe.Subscription): string | null {
@@ -242,8 +243,44 @@ export async function POST(req: Request) {
         relay_point: s.relay_point ?? null,
         status: "pending",
       }));
-      const { error: shipErr } = await supabase.from("order_shipments").insert(shipmentRows);
+      const { data: insertedShipments, error: shipErr } = await supabase
+        .from("order_shipments").insert(shipmentRows).select("id, shop_id, method_type, relay_point");
       if (shipErr) console.error("[webhook] order_shipments insert", shipErr);
+
+      // ── Annonce auto du colis dans Sendcloud (non bloquant) ──────────────────
+      const cfg = sendcloudConfig();
+      if (cfg && insertedShipments?.length) {
+        const { data: ord } = await supabase.from("orders")
+          .select("shipping_name, shipping_address, shipping_city, shipping_zip, shipping_country, shipping_email")
+          .eq("id", order.id).maybeSingle();
+        if (ord) {
+          const toCountry = (ord.shipping_country || "FR").slice(0, 2).toUpperCase() === "FR" ? "FR" : (ord.shipping_country || "FR");
+          for (const sh of insertedShipments) {
+            try {
+              // Poids = somme des poids produits de cette boutique
+              const { data: items } = await supabase.from("order_items")
+                .select("quantity, products(weight_grams, shop_id)").eq("order_id", order.id);
+              const grams = (items ?? [])
+                .filter(it => (it.products as { shop_id?: string } | null)?.shop_id === sh.shop_id)
+                .reduce((s, it) => s + (Number((it.products as { weight_grams?: number } | null)?.weight_grams ?? 500) || 500) * (it.quantity ?? 1), 0);
+              const weightKg = Math.max(0.05, grams / 1000).toFixed(3);
+              const relay = sh.method_type === "relay";
+              const method = await pickCheapestMethod(cfg.auth, toCountry, relay);
+              if (!method) continue;
+              const res = await createParcel(cfg, {
+                recipient: { name: ord.shipping_name || "Client", address: ord.shipping_address || "", city: ord.shipping_city || "", zip: ord.shipping_zip || "", country: toCountry, email: ord.shipping_email || "" },
+                weightKg, methodId: method.id,
+                servicePointId: relay ? (sh.relay_point as { id?: string } | null)?.id ?? null : null,
+                requestLabel: false, // annonce seule : apparaît dans Sendcloud, étiquette achetée plus tard
+              });
+              await supabase.from("order_shipments").update({
+                sendcloud_parcel_id: res.parcelId, tracking_number: res.tracking,
+                carrier: "Sendcloud", updated_at: new Date().toISOString(),
+              }).eq("id", sh.id);
+            } catch (e) { console.error("[webhook] annonce Sendcloud (non bloquant)", e); }
+          }
+        }
+      }
     }
 
     // ── Reversements Connect aux vendeurs (separate charges & transfers) ──────

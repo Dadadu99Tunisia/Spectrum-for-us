@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendShippingNotification, trySend } from "@/lib/email";
+import { buyLabelOnParcel } from "@/lib/sendcloud";
 
 const API = "https://panel.sendcloud.sc/api/v2";
 
@@ -18,7 +19,7 @@ export async function POST(req: NextRequest) {
 
   // Colis + vérif propriété boutique
   const { data: ship } = await admin.from("order_shipments")
-    .select("id, order_id, shop_id, method_type, relay_point").eq("id", body.shipment_id).maybeSingle();
+    .select("id, order_id, shop_id, method_type, relay_point, sendcloud_parcel_id").eq("id", body.shipment_id).maybeSingle();
   if (!ship) return NextResponse.json({ error: "Colis introuvable" }, { status: 404 });
   const { data: shop } = await admin.from("shops").select("owner_id, name").eq("id", ship.shop_id).maybeSingle();
   if (shop?.owner_id !== user.id) return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
@@ -36,6 +37,25 @@ export async function POST(req: NextRequest) {
   if (!order) return NextResponse.json({ error: "Commande introuvable" }, { status: 404 });
 
   const auth = "Basic " + Buffer.from(`${pub}:${sec}`).toString("base64");
+
+  // Si le colis a déjà été ANNONCÉ (auto au paiement), on achète l'étiquette
+  // dessus au lieu d'en créer un doublon.
+  if (ship.sendcloud_parcel_id) {
+    try {
+      const r = await buyLabelOnParcel(auth, ship.sendcloud_parcel_id as string);
+      await admin.from("order_shipments").update({
+        carrier: "Sendcloud", tracking_number: r.tracking, status: "shipped",
+        shipped_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+      }).eq("id", ship.id);
+      try {
+        const { data: o } = await admin.from("orders").select("shipping_email").eq("id", ship.order_id).maybeSingle();
+        if (o?.shipping_email) await trySend(() => sendShippingNotification({ to: o.shipping_email as string, orderRef: ship.order_id, trackingNumber: r.tracking ?? undefined, carrier: "Sendcloud" }));
+      } catch {}
+      return NextResponse.json({ ok: true, tracking: r.tracking, label_url: r.labelUrl, reused: true });
+    } catch (e) {
+      return NextResponse.json({ error: e instanceof Error ? e.message : "Erreur Sendcloud" }, { status: 502 });
+    }
+  }
   const senderName = cred?.sender_name || process.env.SENDCLOUD_SENDER_NAME || shop?.name || "Spectrum";
   const senderAddr = cred?.sender_address || process.env.SENDCLOUD_SENDER_ADDRESS || "";
   const senderZip = cred?.sender_zip || process.env.SENDCLOUD_SENDER_ZIP || "";
