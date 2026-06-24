@@ -64,6 +64,7 @@ interface BoutiqueViewProps {
     is_adult: boolean | null;
     logo_url: string | null;
     banner_url: string | null;
+    sales_count?: number;
   };
   productList: Product[];
   isVerified: boolean;
@@ -174,6 +175,9 @@ export function BoutiqueView({
               <span className="flex items-center gap-1">
                 <Package size={10} />{productList.length} {productList.length !== 1 ? C.creationsCountPlural : C.creationsCountSingular}
               </span>
+              {(shop.sales_count ?? 0) > 0 && (
+                <span className="flex items-center gap-1" style={{ color: "#1B8155" }}>⭐ {shop.sales_count} {(shop.sales_count ?? 0) > 1 ? "ventes" : "vente"}</span>
+              )}
             </div>
           </div>
 

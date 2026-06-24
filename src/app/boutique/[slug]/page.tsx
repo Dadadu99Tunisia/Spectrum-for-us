@@ -96,6 +96,7 @@ export default async function BoutiquePage({ params }: { params: Promise<{ slug:
           is_adult: (shop.is_adult as boolean | null) ?? null,
           logo_url: (shop.logo_url as string | null) ?? null,
           banner_url: (shop.banner_url as string | null) ?? null,
+          sales_count: (shop.sales_count as number | null) ?? 0,
         }}
         productList={productList}
         isVerified={isVerified}
