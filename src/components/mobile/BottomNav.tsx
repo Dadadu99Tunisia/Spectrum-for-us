@@ -23,6 +23,7 @@ export function BottomNav() {
     pathname.startsWith("/auth") ||
     pathname.startsWith("/checkout") ||
     pathname.startsWith("/produit") ||   // la fiche a sa propre barre d'achat
+    pathname.startsWith("/panier") ||    // le panier a sa propre barre « Commander »
     pathname.startsWith("/vendeur")      // tout l'espace vendeur (drawer dédié)
   ) return null;
 

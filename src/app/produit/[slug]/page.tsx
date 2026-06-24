@@ -25,7 +25,7 @@ type Product = {
   price: number; category: string; subcategory: string | null;
   slug: string; shop_id: string; image_url: string | null;
   images: string[] | null; tags: string[] | null;
-  quantity: number; is_active: boolean; is_adult?: boolean; type: string | null;
+  quantity: number; is_active: boolean; is_adult?: boolean; type: string | null; sales_count?: number;
   event_date?: string | null; event_end?: string | null; event_location?: string | null; event_city?: string | null; event_capacity?: number | null;
   shops?: { name: string; slug: string } | { name: string; slug: string }[] | null;
 };
@@ -103,7 +103,7 @@ export default function ProduitPage() {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
     supabase
       .from("products")
-      .select("*, shops(name, slug, stripe_charges_enabled, payout_mode)")
+      .select("*, shops(name, slug, stripe_charges_enabled, payout_mode, sales_count)")
       .or(isUuid ? `slug.eq.${slug},id.eq.${slug}` : `slug.eq.${slug}`)
       .eq("is_active", true)
       .single()
@@ -322,10 +322,18 @@ export default function ProduitPage() {
               )}
 
               {shop && (
-                <Link href={`/boutique/${shop.slug || product.shop_id}`}
-                  className="font-mono text-sm text-[#101014]/40 hover:text-[#FF2DA0] transition-colors block mb-8">
-                  {TX.by} {shop.name}
-                </Link>
+                <div className="flex items-center flex-wrap gap-x-2 gap-y-1 mb-8">
+                  <Link href={`/boutique/${shop.slug || product.shop_id}`}
+                    className="font-mono text-sm text-[#101014]/40 hover:text-[#FF2DA0] transition-colors">
+                    {TX.by} {shop.name}
+                  </Link>
+                  {(() => { const sc = (shop as { sales_count?: number }).sales_count ?? 0; return sc > 0 ? (
+                    <span className="font-mono text-[11px] text-[#1B8155]">· ⭐ {sc} {sc > 1 ? "ventes" : "vente"}</span>
+                  ) : null; })()}
+                  {(product.sales_count ?? 0) > 0 && (
+                    <span className="font-mono text-[11px] text-[#101014]/35">· {product.sales_count} vendu{(product.sales_count ?? 0) > 1 ? "s" : ""}</span>
+                  )}
+                </div>
               )}
 
               <div className="text-4xl font-fraunces text-[#101014] mb-8">

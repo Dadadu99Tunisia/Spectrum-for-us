@@ -220,6 +220,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "order_items insert failed" }, { status: 500 });
     }
 
+    // Compteur de ventes (façon Etsy) · public, non bloquant
+    try {
+      const shopQty: Record<string, number> = {};
+      for (const item of cart) {
+        await supabase.rpc("increment_product_sales", { pid: item.id, qty: item.quantity });
+        const sid = productMap[item.id]?.shop_id;
+        if (sid) shopQty[sid] = (shopQty[sid] ?? 0) + item.quantity;
+      }
+      for (const [sid, qty] of Object.entries(shopQty)) {
+        await supabase.rpc("increment_shop_sales", { sid, qty });
+      }
+    } catch (e) { console.error("[webhook] sales_count (non bloquant)", e); }
+
     // Panier récupéré → plus de relance d'abandon
     try { await supabase.from("abandoned_carts").update({ recovered_at: new Date().toISOString() }).eq("user_id", user_id); } catch {}
 
