@@ -350,6 +350,23 @@ export async function sendActivatePayments(params: { to: string; pseudo: string 
   });
 }
 
+/** Relance · boutique créée mais aucun produit en ligne. */
+export async function sendAddFirstProduct(params: { to: string; shopName: string }) {
+  const body = `
+    ${h2(`${params.shopName}, ta boutique t'attend — ajoute ta 1ʳᵉ création ✦`)}
+    ${text("Ta boutique est créée, mais elle est <strong style=\"color:#101014;\">encore vide</strong> : aucune création en ligne, donc rien à vendre pour l'instant.")}
+    ${text("Ajoute ne serait-ce qu'<strong>un seul produit</strong> (une belle photo suffit pour commencer) et tu seras visible par toute la communauté dès le lancement.")}
+    ${cta("Ajouter ma première création", `${BASE}/vendeur/nouveau-produit`)}
+    ${text(`<span style="color:rgba(16,16,20,0.4);font-size:13px;">Besoin d'un coup de main ? Réponds à cet email, on t'accompagne.</span>`)}
+  `;
+  return getResend().emails.send({
+    from: FROM,
+    to: params.to,
+    subject: `${params.shopName} : ta boutique est vide, ajoute une création ✦`,
+    html: baseLayout("Ajoute ta première création · Spectrum For Us", body),
+  });
+}
+
 /** Notif créateur·ice · quelqu'un suit ta boutique. */
 export async function sendNewFollower(params: { to: string; shopName: string; followerName?: string }) {
   const who = params.followerName?.trim() || "Quelqu'un";

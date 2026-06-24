@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import { NudgeShopsButton } from "@/components/admin/NudgeShopsButton";
 import { Store, Search, CheckCircle, Clock, XCircle, AlertCircle, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
@@ -58,9 +59,12 @@ export default function VendorsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="font-fraunces text-2xl text-[#101014]">Vendeurs</h1>
-        <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">{total} boutique{total !== 1 ? "s" : ""} enregistrée{total !== 1 ? "s" : ""}</p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="font-fraunces text-2xl text-[#101014]">Vendeurs</h1>
+          <p className="font-hanken text-sm text-[#101014]/40 mt-0.5">{total} boutique{total !== 1 ? "s" : ""} enregistrée{total !== 1 ? "s" : ""}</p>
+        </div>
+        <NudgeShopsButton />
       </div>
 
       {/* Filters */}
