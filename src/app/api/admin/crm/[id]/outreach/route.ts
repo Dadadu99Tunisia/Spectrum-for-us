@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import OpenAI from "openai";
+import { claudeText, anthropicConfigured } from "@/lib/anthropic";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
@@ -16,8 +16,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const auth = await requireAdmin(["super_admin", "ceo", "marketing", "commercial"]);
   if ("error" in auth) return auth.error;
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return apiError("OPENAI_API_KEY manquant dans les variables d'environnement", 503);
+  if (!anthropicConfigured()) return apiError("ANTHROPIC_API_KEY manquant dans les variables d'environnement", 503);
 
   const { id } = await params;
   const supabase = await createClient();
@@ -38,17 +37,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
 
 Objectif : les inviter à rejoindre Spectrum For Us pour vendre leurs créations.`;
 
-  const client = new OpenAI({ apiKey });
-  const msg = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    max_tokens: 300,
-    messages: [
-      { role: "system", content: SYSTEM },
-      { role: "user",   content: userMsg },
-    ],
-  });
-
-  let message = msg.choices[0]?.message?.content?.trim() ?? "";
+  let message = await claudeText({ system: SYSTEM, user: userMsg, maxTokens: 600 });
   if (message.length > 600) message = message.slice(0, 600).trimEnd() + "…";
 
   const dateStr   = new Date().toLocaleDateString("fr-FR");

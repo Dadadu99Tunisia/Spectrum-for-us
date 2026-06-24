@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import OpenAI from "openai";
+import { claudeText, parseJsonLoose, anthropicConfigured } from "@/lib/anthropic";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
@@ -20,8 +20,7 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdmin(["super_admin", "ceo", "marketing"]);
   if ("error" in auth) return auth.error;
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return apiError("OPENAI_API_KEY manquant dans les variables d'environnement", 503);
+  if (!anthropicConfigured()) return apiError("ANTHROPIC_API_KEY manquant dans les variables d'environnement", 503);
 
   let body: { theme?: string } = {};
   try { body = await req.json(); } catch { /* optionnel */ }
@@ -48,18 +47,8 @@ ${eventsBlock}
 Propose 6 idées d'articles.`;
 
   try {
-    const client = new OpenAI({ apiKey });
-    const msg = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      max_tokens: 900,
-      temperature: 0.9,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: SYSTEM },
-        { role: "user", content: userMsg },
-      ],
-    });
-    const data = JSON.parse(msg.choices[0]?.message?.content ?? "{}");
+    const raw = await claudeText({ system: SYSTEM, user: userMsg, maxTokens: 1500, json: true });
+    const data = parseJsonLoose(raw);
     const ideas = Array.isArray(data.ideas) ? data.ideas.slice(0, 8).map((i: { title?: unknown; angle?: unknown; category?: unknown }) => ({
       title: String(i.title ?? ""), angle: String(i.angle ?? ""), category: String(i.category ?? "editorial"),
     })).filter((i: { title: string }) => i.title) : [];

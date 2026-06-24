@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import OpenAI from "openai";
+import { claudeText, parseJsonLoose, anthropicConfigured } from "@/lib/anthropic";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
 // Générateur d'article de blog trilingue (FR/EN/AR) pour Spectrum For Us.
@@ -28,8 +28,7 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdmin(["super_admin", "ceo", "marketing"]);
   if ("error" in auth) return auth.error;
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return apiError("OPENAI_API_KEY manquant dans les variables d'environnement", 503);
+  if (!anthropicConfigured()) return apiError("ANTHROPIC_API_KEY manquant dans les variables d'environnement", 503);
 
   let body: { topic?: string; category?: string; angle?: string };
   try { body = await req.json(); } catch { return apiError("Requête invalide"); }
@@ -42,20 +41,8 @@ Catégorie éditoriale : ${body.category ?? "editorial"}
 Rédige l'article complet dans les trois langues.`;
 
   try {
-    const client = new OpenAI({ apiKey });
-    const msg = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      max_tokens: 4096,
-      temperature: 0.8,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: SYSTEM },
-        { role: "user", content: userMsg },
-      ],
-    });
-
-    const raw = msg.choices[0]?.message?.content ?? "{}";
-    const data = JSON.parse(raw);
+    const raw = await claudeText({ system: SYSTEM, user: userMsg, maxTokens: 8192, json: true });
+    const data = parseJsonLoose(raw) as Record<string, unknown>;
     // Garde-fous minimaux
     const out = {
       title_fr: String(data.title_fr ?? ""), title_en: String(data.title_en ?? ""), title_ar: String(data.title_ar ?? ""),

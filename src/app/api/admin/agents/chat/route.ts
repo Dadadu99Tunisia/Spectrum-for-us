@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import OpenAI from "openai";
+import { claudeChat, anthropicConfigured } from "@/lib/anthropic";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, apiResponse, apiError } from "@/lib/admin/rbac";
 
@@ -190,8 +190,7 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdmin(["super_admin", "ceo", "cfo", "marketing", "commercial"]);
   if ("error" in auth) return auth.error;
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return apiError("OPENAI_API_KEY manquant", 503);
+  if (!anthropicConfigured()) return apiError("ANTHROPIC_API_KEY manquant", 503);
 
   const body = await req.json() as {
     agent: AgentId;
@@ -207,16 +206,12 @@ export async function POST(req: NextRequest) {
 
   const systemPrompt = `${agent.system}\n\n${context}`;
 
-  const client = new OpenAI({ apiKey });
-  const response = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    max_tokens: 600,
-    messages: [
-      { role: "system", content: systemPrompt },
-      ...messages.slice(-10), // last 10 messages for context
-    ],
-  });
+  // Derniers échanges, en s'assurant que l'historique commence par un message "user"
+  // (requis par l'API Claude).
+  const history = messages.slice(-10).filter(m => m.content?.trim());
+  while (history.length && history[0].role !== "user") history.shift();
 
-  const reply = response.choices[0]?.message?.content?.trim() ?? "Aucune réponse.";
+  const reply = (await claudeChat({ system: systemPrompt, messages: history, maxTokens: 1024 }))
+    || "Aucune réponse.";
   return apiResponse({ reply, agent: agentId });
 }
