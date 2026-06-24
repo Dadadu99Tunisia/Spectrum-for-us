@@ -59,9 +59,9 @@ export async function GET(req: NextRequest) {
 
   // Fetch owner profiles
   const ownerIds = [...new Set((shops ?? []).map(s => s.owner_id).filter(Boolean))];
-  let profileMap: Record<string, { full_name: string | null; pseudo: string | null }> = {};
+  const profileMap: Record<string, { full_name: string | null }> = {};
   if (ownerIds.length > 0) {
-    const { data: profiles } = await supabase.from("profiles").select("id, full_name, pseudo").in("id", ownerIds);
+    const { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", ownerIds);
     for (const p of profiles ?? []) profileMap[p.id] = p;
   }
 

@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
 
   const [profilesRes, shopsRes, countsRes] = await Promise.all([
     userIds.length > 0
-      ? supabase.from("profiles").select("id, full_name, pseudo").in("id", userIds)
+      ? supabase.from("profiles").select("id, full_name").in("id", userIds)
       : { data: [] },
     shopIds.length > 0
       ? supabase.from("shops").select("id, name, slug, is_active").in("id", shopIds)
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
   ]);
 
   const profileMap = Object.fromEntries(
-    (profilesRes.data ?? []).map((p: { id: string; full_name: string | null; pseudo: string | null }) => [p.id, p])
+    (profilesRes.data ?? []).map((p: { id: string; full_name: string | null }) => [p.id, p])
   );
   const shopMap = Object.fromEntries(
     (shopsRes.data ?? []).map((s: { id: string; name: string | null; slug: string | null; is_active: boolean }) => [s.id, s])
@@ -72,11 +72,10 @@ export async function GET(req: NextRequest) {
   if (search) {
     const q = search.toLowerCase();
     enriched = enriched.filter(r => {
-      const p = r.profiles as { full_name?: string | null; pseudo?: string | null } | null;
+      const p = r.profiles as { full_name?: string | null } | null;
       const s = r.shops    as { name?: string | null; slug?: string | null }        | null;
       return (
         p?.full_name?.toLowerCase().includes(q) ||
-        p?.pseudo?.toLowerCase().includes(q)    ||
         s?.name?.toLowerCase().includes(q)
       );
     });

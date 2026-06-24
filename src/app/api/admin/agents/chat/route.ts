@@ -149,7 +149,7 @@ Quand on te demande un rapport, tu structures avec : Résumé exécutif → Chif
         supabase.from("orders").select("total_amount").eq("status", "paid").gte("created_at", yearStart),
         supabase.from("crm_contacts").select("stage"),
         supabase.from("profiles").select("id").eq("role", "vendor"),
-        supabase.from("moderation_queue").select("status").eq("status", "pending"),
+        supabase.from("moderation_queue").select("mod_status").eq("mod_status", "pending"),
       ]);
 
       const sum = (rows: { total_amount: number }[] | null) =>

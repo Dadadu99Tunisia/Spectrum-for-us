@@ -35,9 +35,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   if (error) return apiError(error.message);
 
-  // Si approbation d'un produit, l'activer
+  // Si approbation d'un produit, l'activer (colonne réelle = listing_status)
   if (action === "approve" && data.target_type === "product") {
-    await supabase.from("products").update({ status: "active" }).eq("id", data.target_id);
+    await supabase.from("products").update({ listing_status: "approved", is_active: true }).eq("id", data.target_id);
   }
   // Si approbation d'un vendeur
   if (action === "approve" && data.target_type === "vendor") {
@@ -45,7 +45,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
   // Si rejet, désactiver
   if (action === "reject" && data.target_type === "product") {
-    await supabase.from("products").update({ status: "rejected" }).eq("id", data.target_id);
+    await supabase.from("products").update({ listing_status: "rejected", is_active: false }).eq("id", data.target_id);
   }
 
   await logActivity(auth.user.id, `moderation_${action}`, data.target_type, data.target_id, { notes });

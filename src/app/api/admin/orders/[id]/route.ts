@@ -31,7 +31,7 @@ export async function GET(
   // Buyer profile
   const { data: buyer } = await supabase
     .from("profiles")
-    .select("id, full_name, pseudo, email")
+    .select("id, full_name, email")
     .eq("id", order.user_id)
     .maybeSingle();
 
@@ -87,8 +87,9 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await req.json();
-  const allowed = ["status","tracking_number","carrier","dispute_status","dispute_reason"];
-  const update: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  // orders n'a PAS de colonne updated_at ni dispute_reason (cf. schéma réel).
+  const allowed = ["status","tracking_number","carrier","dispute_status"];
+  const update: Record<string, unknown> = {};
   for (const k of allowed) if (k in body) update[k] = body[k];
 
   const supabase = createAdminClient();

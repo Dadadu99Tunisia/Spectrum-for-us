@@ -12,7 +12,7 @@ export async function GET() {
     .select(`
       rank, status, subscription_free_until, commission_free_until,
       commission_rate_override, created_at,
-      profiles:user_id ( full_name, pseudo ),
+      profiles:user_id ( full_name ),
       shops:shop_id ( name, slug )
     `)
     .order("rank", { ascending: true });
@@ -22,7 +22,7 @@ export async function GET() {
   const rows = data ?? [];
   const header = "Rank,Statut,Nom,Pseudo,Boutique,Slug,Abonnement gratuit jusqu'au,Commission 0%% jusqu'au,Taux commission,Inscrit le\n";
   const csv = rows.map((r) => {
-    const p = r.profiles as { full_name?: string; pseudo?: string } | null;
+    const p = r.profiles as { full_name?: string } | null;
     const s = r.shops    as { name?: string; slug?: string }        | null;
     const commRate = r.commission_rate_override != null
       ? `${(Number(r.commission_rate_override) * 100).toFixed(1)}%`
@@ -31,7 +31,7 @@ export async function GET() {
       r.rank,
       r.status,
       p?.full_name ?? "",
-      p?.pseudo ?? "",
+      "",
       s?.name ?? "",
       s?.slug ?? "",
       r.subscription_free_until ?? "",

@@ -30,9 +30,9 @@ export async function GET(req: NextRequest) {
 
   // Enrichir avec les profils acheteurs
   const userIds = [...new Set((orders ?? []).map(o => o.user_id).filter(Boolean))];
-  const profileMap: Record<string, { id: string; full_name: string | null; pseudo: string | null }> = {};
+  const profileMap: Record<string, { id: string; full_name: string | null }> = {};
   if (userIds.length > 0) {
-    const { data: profiles } = await supabase.from("profiles").select("id, full_name, pseudo").in("id", userIds);
+    const { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", userIds);
     for (const p of profiles ?? []) profileMap[p.id] = p;
   }
 
