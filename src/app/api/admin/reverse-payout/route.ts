@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdmin(["super_admin", "ceo", "cfo"]);
   if ("error" in auth) return auth.error;
 
-  let body: { seller_id?: string; amount_eur?: number; reason?: string; order_id?: string };
+  let body: { seller_id?: string; amount_eur?: number; reason?: string; order_ref?: string };
   try { body = await req.json(); } catch { return apiError("Requête invalide"); }
 
   const amountCents = Math.round(Number(body.amount_eur) * 100);
@@ -70,16 +70,39 @@ export async function POST(req: NextRequest) {
   if (!seller?.stripe_account_id) return apiError("Compte Stripe du vendeur introuvable", 404);
   if (seller.payout_mode !== "stripe") return apiError("Ce vendeur n'est pas en mode Stripe");
 
+  const stripe = getStripeServer();
+
+  // Optionnel : adosser le transfert au paiement d'une commande (source_transaction).
+  // → puise directement dans la charge, même si les fonds sont encore « en attente » (zéro « insufficient funds »).
+  let sourceCharge: string | null = null;
+  let resolvedOrderId: string | null = null;
+  const ref = body.order_ref?.trim();
+  if (ref) {
+    const { data: ord } = await admin
+      .from("orders")
+      .select("id, payment_intent_id")
+      .ilike("id", `${ref.toLowerCase()}%`)
+      .limit(1)
+      .maybeSingle();
+    if (!ord?.payment_intent_id) return apiError(`Commande « ${ref} » ou son paiement introuvable.`, 404);
+    resolvedOrderId = ord.id;
+    try {
+      const pi = await stripe.paymentIntents.retrieve(ord.payment_intent_id);
+      sourceCharge = (typeof pi.latest_charge === "string" ? pi.latest_charge : pi.latest_charge?.id) ?? null;
+    } catch { /* on retombe sur un transfert classique si la charge est introuvable */ }
+    if (!sourceCharge) return apiError("Charge Stripe de cette commande introuvable.", 404);
+  }
+
   // Transfert Stripe vers le compte connecté
   let transferId: string;
   try {
-    const stripe = getStripeServer();
     const transfer = await stripe.transfers.create({
       amount: amountCents,
       currency: "eur",
       destination: seller.stripe_account_id,
+      ...(sourceCharge ? { source_transaction: sourceCharge } : {}),
       description: (body.reason || "Régularisation Spectrum For Us").slice(0, 200),
-      metadata: { reason: (body.reason || "").slice(0, 400), order_id: body.order_id ?? "", by: auth.user.id },
+      metadata: { reason: (body.reason || "").slice(0, 400), order_id: resolvedOrderId ?? "", by: auth.user.id },
     });
     transferId = transfer.id;
   } catch (e) {
@@ -93,7 +116,7 @@ export async function POST(req: NextRequest) {
     stripe_account_id: seller.stripe_account_id,
     amount_cents: amountCents,
     reason: body.reason ?? null,
-    order_id: body.order_id ?? null,
+    order_id: resolvedOrderId,
     stripe_transfer_id: transferId,
     created_by: auth.user.id,
   });

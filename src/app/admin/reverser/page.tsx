@@ -11,6 +11,7 @@ export default function ReverserPage() {
   const [sellerId, setSellerId] = useState("");
   const [amount, setAmount] = useState("");
   const [reason, setReason] = useState("");
+  const [orderRef, setOrderRef] = useState("");
   const [confirming, setConfirming] = useState(false);
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState<{ amount: number; id: string } | null>(null);
@@ -33,12 +34,12 @@ export default function ReverserPage() {
     try {
       const res = await fetch("/api/admin/reverse-payout", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ seller_id: sellerId, amount_eur: Number(amount), reason }),
+        body: JSON.stringify({ seller_id: sellerId, amount_eur: Number(amount), reason, order_ref: orderRef.trim() || undefined }),
       });
       const j = await res.json();
       if (!res.ok) { setErr(j.error ?? "Échec"); setConfirming(false); return; }
       setDone({ amount: j.data.amount_eur, id: j.data.transfer_id });
-      setConfirming(false); setAmount(""); setReason(""); setSellerId("");
+      setConfirming(false); setAmount(""); setReason(""); setSellerId(""); setOrderRef("");
       load();
     } catch { setErr("Erreur réseau"); setConfirming(false); } finally { setSending(false); }
   };
@@ -80,8 +81,15 @@ export default function ReverserPage() {
         <div>
           <label className="font-mono text-[10px] text-[#101014]/40 uppercase tracking-widest block mb-1.5">Motif (optionnel)</label>
           <input value={reason} onChange={(e) => setReason(e.target.value)}
-            placeholder="Ex. régularisation frais de port commandes #4F6D…/#C476…"
+            placeholder="Ex. régularisation frais de port commande #4F6D3691"
             className="w-full bg-[#101014]/5 border border-[#101014]/10 rounded-xl px-4 py-3 font-hanken text-sm outline-none" />
+        </div>
+        <div>
+          <label className="font-mono text-[10px] text-[#101014]/40 uppercase tracking-widest block mb-1.5">Réf. commande (optionnel — puise dans son paiement)</label>
+          <input value={orderRef} onChange={(e) => setOrderRef(e.target.value)}
+            placeholder="Ex. 4F6D3691"
+            className="w-full bg-[#101014]/5 border border-[#101014]/10 rounded-xl px-4 py-3 font-mono text-sm uppercase outline-none" />
+          <p className="font-hanken text-[11px] text-[#101014]/40 mt-1">Si renseigné, le transfert est adossé au paiement de la commande → fonctionne même si les fonds sont « en attente ».</p>
         </div>
 
         {err && <p className="font-hanken text-sm text-red-500">{err}</p>}
