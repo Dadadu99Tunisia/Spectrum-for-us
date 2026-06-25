@@ -151,7 +151,7 @@ export async function sendVendorNewOrder(params: {
         ${params.shippingMethod ? infoBox("Mode", params.shippingMethod) : ""}
         ${params.relayPoint?.name ? infoBox("Point relais", `${params.relayPoint.name}${params.relayPoint.address ? `<br/><span style="color:rgba(16,16,20,0.5);">${params.relayPoint.address}</span>` : ""}`) : ""}
         ${c?.email ? infoBox("Email", c.email) : ""}
-        ${typeof params.shippingFee === "number" ? infoBox("Frais de port", `${params.shippingFee.toFixed(2)} € <span style="color:rgba(16,16,20,0.4);">(encaissés par Spectrum · étiquette prépayée)</span>`) : ""}
+        ${typeof params.shippingFee === "number" ? infoBox("Frais de port", `${params.shippingFee.toFixed(2)} € <span style="color:rgba(16,16,20,0.4);">(reversés à toi · tu gères l'expédition)</span>`) : ""}
       </table>
     </div>` : "";
 
