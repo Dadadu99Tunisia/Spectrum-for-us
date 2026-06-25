@@ -405,7 +405,11 @@ export async function POST(req: Request) {
     }
 
     // Email vendeur(s) · groupé par boutique
-    const vendorItems = new Map<string, { shopName: string; email: string; items: typeof emailItems }>();
+    // Frais de port + méthode par boutique (depuis les colis choisis au checkout)
+    const shipByShop = new Map<string, { method_type?: string; method_label?: string; cost?: number; relay_point?: Record<string, string> | null }>();
+    for (const s of shipments) if (s.shop_id) shipByShop.set(s.shop_id, s);
+
+    const vendorItems = new Map<string, { shopName: string; shopId: string; email: string; items: typeof emailItems }>();
     for (const item of cart) {
       const p = productMap[item.id];
       if (!p) continue;
@@ -418,6 +422,7 @@ export async function POST(req: Request) {
       } else {
         vendorItems.set(shop.owner_id, {
           shopName: shop.name,
+          shopId: p.shop_id,
           email: "", // sera récupéré via auth admin
           items: [emailItem],
         });
@@ -430,12 +435,24 @@ export async function POST(req: Request) {
         const vendorEmail = vu?.user?.email;
         if (!vendorEmail) continue;
         const vendorTotal = entry.items.reduce((s, it) => s + it.price * it.quantity, 0);
+        const ship = shipByShop.get(entry.shopId);
+        const methodLabel = ship
+          ? (ship.method_label || (ship.method_type === "relay" ? "Point relais" : "Livraison à domicile"))
+          : null;
         await trySend(() => sendVendorNewOrder({
           to: vendorEmail,
           shopName: entry.shopName,
           orderRef: order.id,
           items: entry.items,
           total: vendorTotal,
+          customer: shipping ? {
+            name: shipping.name, address: shipping.address, city: shipping.city,
+            zip: shipping.zip, country: shipping.country, email: shipping.email ?? buyer_email,
+          } : null,
+          shippingMethod: methodLabel,
+          shippingFee: ship ? Number(ship.cost ?? 0) / 100 : null,
+          relayPoint: (ship?.method_type === "relay" && ship.relay_point)
+            ? { name: ship.relay_point.name, address: ship.relay_point.address } : null,
         }));
       } catch (e) { console.error("[webhook] email vendeur", e); }
     }

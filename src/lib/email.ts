@@ -124,18 +124,47 @@ export async function sendVendorNewOrder(params: {
   orderRef: string;
   items: OrderItem[];
   total: number;
+  customer?: { name?: string; address?: string; city?: string; zip?: string; country?: string; email?: string } | null;
+  shippingMethod?: string | null;   // ex. « Colissimo · domicile » ou « Mondial Relay · point relais »
+  shippingFee?: number | null;      // frais de port encaissés par la plateforme (pour info)
+  relayPoint?: { name?: string; address?: string } | null;
 }) {
   const rows = params.items.map(i => itemRow(i.name, i.price, i.quantity)).join("");
 
+  const c = params.customer;
+  const addrLines = c ? [
+    c.name,
+    c.address,
+    [c.zip, c.city].filter(Boolean).join(" "),
+    c.country,
+  ].filter(Boolean).map(l => `<span style="display:block;">${l}</span>`).join("") : "";
+
+  const infoBox = (label: string, value: string) => `
+    <tr><td style="padding:6px 0;font-size:13px;color:rgba(16,16,20,0.45);width:40%;vertical-align:top;">${label}</td>
+    <td style="padding:6px 0;font-size:13px;color:#101014;font-weight:500;">${value}</td></tr>`;
+
+  const deliveryBlock = (c || params.shippingMethod) ? `
+    <div style="background:#FBF7FB;border-radius:14px;padding:16px 18px;margin:0 0 20px;">
+      <p style="font-family:monospace;font-size:10px;color:#FF2DA0;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">📦 Expédition</p>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        ${addrLines ? infoBox("Client·e", addrLines) : ""}
+        ${params.shippingMethod ? infoBox("Mode", params.shippingMethod) : ""}
+        ${params.relayPoint?.name ? infoBox("Point relais", `${params.relayPoint.name}${params.relayPoint.address ? `<br/><span style="color:rgba(16,16,20,0.5);">${params.relayPoint.address}</span>` : ""}`) : ""}
+        ${c?.email ? infoBox("Email", c.email) : ""}
+        ${typeof params.shippingFee === "number" ? infoBox("Frais de port", `${params.shippingFee.toFixed(2)} € <span style="color:rgba(16,16,20,0.4);">(encaissés par Spectrum · étiquette prépayée)</span>`) : ""}
+      </table>
+    </div>` : "";
+
   const body = `
     ${h2(`Nouvelle commande sur ${params.shopName} ✦`)}
-    ${text(`Une nouvelle commande vient d'arriver ! Pense à préparer les articles et à mettre à jour le statut d'expédition.`)}
+    ${text(`Une nouvelle commande vient d'arriver ! Prépare les articles, puis imprime l'étiquette et marque la commande « expédiée » depuis ton tableau de bord.`)}
     <p style="font-family:monospace;font-size:11px;color:rgba(16,16,20,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px;">Réf. #${params.orderRef.slice(0,8).toUpperCase()}</p>
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">${rows}
-      <tr><td colspan="2" style="padding:12px 0;font-size:15px;color:rgba(16,16,20,0.6);font-weight:600;">Total</td>
+      <tr><td colspan="2" style="padding:12px 0;font-size:15px;color:rgba(16,16,20,0.6);font-weight:600;">Total articles</td>
       <td style="padding:12px 0;text-align:right;font-size:18px;color:#FF2DA0;font-weight:700;">${params.total.toFixed(2)} €</td></tr>
     </table>
-    ${cta("Gérer mes commandes", `${BASE}/vendeur`)}
+    ${deliveryBlock}
+    ${cta("Préparer & expédier", `${BASE}/vendeur`)}
   `;
 
   return getResend().emails.send({
