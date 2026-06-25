@@ -76,15 +76,17 @@ export async function POST(req: NextRequest) {
   // → puise directement dans la charge, même si les fonds sont encore « en attente » (zéro « insufficient funds »).
   let sourceCharge: string | null = null;
   let resolvedOrderId: string | null = null;
-  const ref = body.order_ref?.trim();
+  const ref = body.order_ref?.trim().toLowerCase();
   if (ref) {
-    const { data: ord } = await admin
+    // `id` est un uuid → pas de ilike. On récupère les commandes récentes et on matche le préfixe en JS.
+    const { data: candidates } = await admin
       .from("orders")
       .select("id, payment_intent_id")
-      .ilike("id", `${ref.toLowerCase()}%`)
-      .limit(1)
-      .maybeSingle();
-    if (!ord?.payment_intent_id) return apiError(`Commande « ${ref} » ou son paiement introuvable.`, 404);
+      .not("payment_intent_id", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(1000);
+    const ord = (candidates ?? []).find((o) => String(o.id).toLowerCase().startsWith(ref));
+    if (!ord?.payment_intent_id) return apiError(`Commande « ${body.order_ref} » ou son paiement introuvable.`, 404);
     resolvedOrderId = ord.id;
     try {
       const pi = await stripe.paymentIntents.retrieve(ord.payment_intent_id);
