@@ -65,6 +65,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { href: "/admin/finance",           label: "Finance",          icon: Coins },
       { href: "/admin/versements",        label: "Versements",       icon: Globe },
+      { href: "/admin/reverser",          label: "Reverser vendeur", icon: CreditCard },
       { href: "/admin/risque",            label: "Risque & fraude",  icon: ShieldAlert },
       { href: "/admin/promos",            label: "Codes promo",      icon: Tag },
       { href: "/admin/subscriptions",    label: "Abonnements",      icon: CreditCard },
@@ -108,6 +109,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "/admin/outreach":      "Outreach",
   "/admin/finance":       "Finance",
   "/admin/versements":    "Versements",
+  "/admin/reverser":      "Reverser à un vendeur",
   "/admin/risque":        "Risque & fraude",
   "/admin/promos":        "Codes promo",
   "/admin/crm":           "CRM Pipeline",
