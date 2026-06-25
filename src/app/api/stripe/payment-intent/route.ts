@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
   const admin = createAdminClient();
   const { data: shops } = await admin
     .from("shops")
-    .select("id, name, seller_id, owner_id, shipping_options")
+    .select("id, name, seller_id, owner_id, shipping_options, self_ship")
     .in("id", shopIds);
   const shopMap = Object.fromEntries((shops ?? []).map(s => [s.id, s]));
 
@@ -175,23 +175,30 @@ export async function POST(req: NextRequest) {
     totalCommissionStripe += commission;
   }
 
-  // Code PLATEFORME : la plateforme finance la remise depuis sa marge = commissions UNIQUEMENT
-  // (le port est désormais reversé au vendeur, donc il n'entre plus dans la marge plateforme).
-  // On plafonne pour que Σtransferts ne dépasse JAMAIS la charge encaissée (sinon Stripe refuse les transferts).
-  if (discountShopId === null && discountCents > 0) {
-    discountCents = Math.min(discountCents, totalCommissionStripe);
+  // self_ship = le vendeur gère sa livraison → on lui reverse le port. Sinon (Spectrum gère),
+  // le port reste à la plateforme (qui fournit l'étiquette prépayée).
+  const shipReversed = (sid: string) => (shopMap[sid]?.self_ship !== false ? (shipmentByShop[sid]?.cost ?? 0) : 0);
+  // Port gardé par la plateforme (boutiques NON self-ship) → entre dans la marge plateforme.
+  let platformKeptShippingStripe = 0;
+  for (const sid of shopIds) {
+    if (isManual(sid)) continue;
+    if (shopMap[sid]?.self_ship === false) platformKeptShippingStripe += (shipmentByShop[sid]?.cost ?? 0);
   }
 
-  // Reversement par vendeur·se Stripe = sous-total − commission + PORT − (remise boutique).
-  // Le vendeur expédie lui-même → il reçoit l'intégralité des frais de port (plateforme : 0 % sur le port).
+  // Code PLATEFORME : financé depuis la marge plateforme = commissions + port gardé (boutiques non self-ship).
+  // On plafonne pour que Σtransferts ne dépasse JAMAIS la charge encaissée (sinon Stripe refuse les transferts).
+  if (discountShopId === null && discountCents > 0) {
+    discountCents = Math.min(discountCents, totalCommissionStripe + platformKeptShippingStripe);
+  }
+
+  // Reversement par vendeur·se Stripe = sous-total − commission + PORT (si self-ship) − remise boutique.
   const transfers: { a: string; c: number; s: string }[] = [];
   for (const sid of shopIds) {
     if (isManual(sid)) continue;
     const sub = subtotalByShop[sid];
     const shopDiscount = discountShopId === sid ? discountCents : 0; // remise boutique : la boutique l'absorbe
-    const shipCost = shipmentByShop[sid]?.cost ?? 0; // port reversé au vendeur (il gère sa livraison)
     // Destination = compte Stripe du SELLER (partagé par toutes ses activités)
-    transfers.push({ a: sellerOf(sid)!.stripe_account_id as string, c: Math.max(0, sub - shopCommission[sid] - shopDiscount + shipCost), s: sid });
+    transfers.push({ a: sellerOf(sid)!.stripe_account_id as string, c: Math.max(0, sub - shopCommission[sid] - shopDiscount + shipReversed(sid)), s: sid });
   }
   const grandTotalCents = Math.max(50, totalCents + shippingCents - discountCents);
   const transferGroup = `sfu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;

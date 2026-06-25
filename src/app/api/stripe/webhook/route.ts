@@ -169,7 +169,7 @@ export async function POST(req: Request) {
     // Récupérer les shop owner_ids pour les notifications vendeurs
     const shopIds = [...new Set((products ?? []).map(p => p.shop_id).filter(Boolean))];
     const { data: shops } = shopIds.length > 0
-      ? await supabase.from("shops").select("id, name, owner_id").in("id", shopIds)
+      ? await supabase.from("shops").select("id, name, owner_id, self_ship").in("id", shopIds)
       : { data: [] };
     const shopMap = Object.fromEntries((shops ?? []).map(s => [s.id, s]));
 
@@ -472,6 +472,7 @@ export async function POST(req: Request) {
             zip: shipping.zip, country: shipping.country, email: shipping.email ?? buyer_email,
           } : null,
           shippingMethod: methodLabel,
+          shippingToVendor: (shopMap[entry.shopId] as { self_ship?: boolean } | undefined)?.self_ship !== false,
           shippingFee: ship ? Number(ship.cost ?? 0) / 100 : null,
           relayPoint: (ship?.method_type === "relay" && ship.relay_point)
             ? { name: ship.relay_point.name, address: ship.relay_point.address } : null,

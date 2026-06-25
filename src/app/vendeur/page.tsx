@@ -40,6 +40,7 @@ type Shop = {
   logo_url: string | null; banner_url: string | null; contact_email: string | null;
   description: string | null; subscription_status: string | null;
   shipping_options?: ShippingMethod[] | null;
+  self_ship?: boolean | null;
 };
 type Product = {
   id: string; name: string; title: string; price: number;
@@ -310,7 +311,7 @@ export default function VendeurDashboard() {
           {view === "orders" && <><Orders orders={orders} toPrepare={m.toPrepare} /><ShipmentsManager shopId={shop.id} /><ReturnsManager shopId={shop.id} /></>}
           {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} />}
           {view === "subscription" && <Subscription active={seller?.subscription_status === "active"} founderRank={founderRank} />}
-          {view === "livraison" && <ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} />}
+          {view === "livraison" && <ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} initialSelfShip={shop.self_ship !== false} />}
           {view === "agenda" && <ServiceAvailability shopId={shop.id} />}
           {view === "promos" && <PromoCodes shopId={shop.id} />}
           {view === "stats" && <Stats m={m} products={products} orders={orders} commissions={commissions} />}

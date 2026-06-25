@@ -126,7 +126,8 @@ export async function sendVendorNewOrder(params: {
   total: number;
   customer?: { name?: string; address?: string; city?: string; zip?: string; country?: string; email?: string } | null;
   shippingMethod?: string | null;   // ex. « Colissimo · domicile » ou « Mondial Relay · point relais »
-  shippingFee?: number | null;      // frais de port encaissés par la plateforme (pour info)
+  shippingFee?: number | null;      // frais de port
+  shippingToVendor?: boolean;       // true = port reversé au vendeur ; false = Spectrum gère
   relayPoint?: { name?: string; address?: string } | null;
 }) {
   const rows = params.items.map(i => itemRow(i.name, i.price, i.quantity)).join("");
@@ -151,7 +152,7 @@ export async function sendVendorNewOrder(params: {
         ${params.shippingMethod ? infoBox("Mode", params.shippingMethod) : ""}
         ${params.relayPoint?.name ? infoBox("Point relais", `${params.relayPoint.name}${params.relayPoint.address ? `<br/><span style="color:rgba(16,16,20,0.5);">${params.relayPoint.address}</span>` : ""}`) : ""}
         ${c?.email ? infoBox("Email", c.email) : ""}
-        ${typeof params.shippingFee === "number" ? infoBox("Frais de port", `${params.shippingFee.toFixed(2)} € <span style="color:rgba(16,16,20,0.4);">(reversés à toi · tu gères l'expédition)</span>`) : ""}
+        ${typeof params.shippingFee === "number" ? infoBox("Frais de port", `${params.shippingFee.toFixed(2)} € <span style="color:rgba(16,16,20,0.4);">${params.shippingToVendor === false ? "(gérés par Spectrum · étiquette prépayée)" : "(reversés à toi · tu gères l'expédition)"}</span>`) : ""}
       </table>
     </div>` : "";
 

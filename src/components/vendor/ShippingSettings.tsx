@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Truck, MapPin, Hand, Plus, Trash2, Check, Loader2 } from "lucide-react";
+import { Truck, MapPin, Hand, Plus, Trash2, Check, Loader2, PackageCheck, Sparkles } from "lucide-react";
 
 export type ShippingMethod = {
   id: string;
@@ -26,10 +26,11 @@ const PRESETS: Omit<ShippingMethod, "id">[] = [
 
 const uid = () => `m_${Math.random().toString(36).slice(2, 9)}`;
 
-export function ShippingSettings({ shopId, initial }: { shopId: string; initial: ShippingMethod[] }) {
+export function ShippingSettings({ shopId, initial, initialSelfShip = true }: { shopId: string; initial: ShippingMethod[]; initialSelfShip?: boolean }) {
   const [methods, setMethods] = useState<ShippingMethod[]>(
     initial.length ? initial : PRESETS.map(p => ({ ...p, id: uid() }))
   );
+  const [selfShip, setSelfShip] = useState<boolean>(initialSelfShip);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved]   = useState(false);
 
@@ -48,7 +49,7 @@ export function ShippingSettings({ shopId, initial }: { shopId: string; initial:
       label: m.label.trim() || TYPE_META[m.type].label,
     }));
     const supabase = createClient();
-    const { error } = await supabase.from("shops").update({ shipping_options: clean }).eq("id", shopId);
+    const { error } = await supabase.from("shops").update({ shipping_options: clean, self_ship: selfShip }).eq("id", shopId);
     setSaving(false);
     if (!error) { setMethods(clean); setSaved(true); setTimeout(() => setSaved(false), 2500); }
     else alert("Erreur : " + error.message);
@@ -64,6 +65,37 @@ export function ShippingSettings({ shopId, initial }: { shopId: string; initial:
         <div className="mt-3 rounded-xl border border-[#ECE6DB] bg-[#101014]/[0.02] p-3 font-mono text-[11px] text-[#101014]/55 space-y-0.5">
           <p className="text-[#101014]/40 mb-1">Grille point relais (domicile +1 €) :</p>
           <p>0–1 kg : 5,90 € · 1–2 kg : 8,90 € · 2–5 kg : 12,90 € · 5–10 kg : 18,90 €</p>
+        </div>
+      </div>
+
+      {/* Qui gère la livraison ? */}
+      <div className="mb-7">
+        <p className="font-bricolage font-semibold text-[15px] text-[#101014] mb-3">Qui gère l’expédition ?</p>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <button type="button" onClick={() => setSelfShip(true)}
+            className="text-left rounded-2xl border p-4 transition-all"
+            style={selfShip ? { borderColor: "#FF2DA0", boxShadow: "inset 0 0 0 1px #FF2DA0", background: "rgba(255,45,160,0.04)" } : { borderColor: "rgba(16,16,20,0.12)" }}>
+            <div className="flex items-center gap-2 mb-1.5">
+              <PackageCheck size={16} className="text-[#FF2DA0]" />
+              <span className="font-hanken text-sm font-semibold text-[#101014]">Je gère ma livraison</span>
+              {selfShip && <Check size={14} className="text-[#FF2DA0] ml-auto" />}
+            </div>
+            <p className="font-hanken text-[12.5px] text-[#101014]/55 leading-snug">
+              Tu expédies avec ton transporteur habituel (Mondial Relay, La Poste…). <strong>Tu reçois les frais de port</strong> avec ton versement. Tu saisis le n° de suivi à l’envoi.
+            </p>
+          </button>
+          <button type="button" onClick={() => setSelfShip(false)}
+            className="text-left rounded-2xl border p-4 transition-all"
+            style={!selfShip ? { borderColor: "#7A2BF0", boxShadow: "inset 0 0 0 1px #7A2BF0", background: "rgba(122,43,240,0.04)" } : { borderColor: "rgba(16,16,20,0.12)" }}>
+            <div className="flex items-center gap-2 mb-1.5">
+              <Sparkles size={16} className="text-[#7A2BF0]" />
+              <span className="font-hanken text-sm font-semibold text-[#101014]">Spectrum gère pour moi</span>
+              {!selfShip && <Check size={14} className="text-[#7A2BF0] ml-auto" />}
+            </div>
+            <p className="font-hanken text-[12.5px] text-[#101014]/55 leading-snug">
+              Spectrum fournit une <strong>étiquette prépayée</strong> : tu imprimes, tu déposes le colis, rien à avancer. La plateforme garde les frais de port.
+            </p>
+          </button>
         </div>
       </div>
 
@@ -129,8 +161,9 @@ export function ShippingSettings({ shopId, initial }: { shopId: string; initial:
       </div>
 
       <p className="font-mono text-[10px] text-[#101014]/30 mt-5 leading-relaxed">
-        À l'étape suivante : au paiement, l'acheteur·se choisira son point relais (carte Mondial&nbsp;Relay) et les frais
-        seront ajoutés à ton versement. Tu pourras saisir le n° de suivi à l'expédition.
+        {selfShip
+          ? "Au paiement, l'acheteur·se choisit son point relais (carte Mondial Relay) et les frais de port sont ajoutés à TON versement. Tu saisis le n° de suivi à l'expédition."
+          : "Spectrum gère l'expédition : une étiquette prépayée sera générée pour chaque commande, tu n'avances rien. (Nécessite que la plateforme ait activé Sendcloud.)"}
       </p>
     </div>
   );
