@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import { mutateOrAlert } from "@/lib/admin/mutate";
 import {
   Layout, Type, Image as ImageIcon, FileText, Globe, Search as SearchIcon,
   Save, RotateCcw, Eye, EyeOff, ChevronDown, Megaphone, Sparkles,
@@ -160,7 +161,7 @@ export default function ContenuPage() {
   const save = async () => {
     if (!Object.keys(dirty).length) return;
     setSaving(true);
-    await fetch("/api/admin/content", {
+    await mutateOrAlert("/api/admin/content", {
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(Object.entries(dirty).map(([key, value]) => ({ key, value }))),
     });
@@ -381,9 +382,9 @@ function PagesManager({ pages, onReload, showToast }: { pages: SitePage[]; onRel
   const save = async () => {
     setSaving(true);
     if (editing?.id) {
-      await fetch(`/api/admin/content/pages/${editing.id}`, { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
+      await mutateOrAlert(`/api/admin/content/pages/${editing.id}`, { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
     } else {
-      await fetch("/api/admin/content/pages", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
+      await mutateOrAlert("/api/admin/content/pages", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
     }
     setSaving(false); setEditing(null); onReload();
     showToast(editing?.id ? "Page mise à jour ✓" : "Page créée ✓");
@@ -391,12 +392,12 @@ function PagesManager({ pages, onReload, showToast }: { pages: SitePage[]; onRel
 
   const del = async (id: string) => {
     if (!confirm("Supprimer cette page ?")) return;
-    await fetch(`/api/admin/content/pages/${id}`, { method:"DELETE" });
+    await mutateOrAlert(`/api/admin/content/pages/${id}`, { method:"DELETE" });
     onReload(); showToast("Page supprimée");
   };
 
   const toggle = async (p: SitePage) => {
-    await fetch(`/api/admin/content/pages/${p.id}`, { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ is_published: !p.is_published }) });
+    await mutateOrAlert(`/api/admin/content/pages/${p.id}`, { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ is_published: !p.is_published }) });
     onReload();
   };
 
@@ -502,19 +503,19 @@ function NavManager({ items, onReload, showToast }: { items: NavItem[]; onReload
   const add = async () => {
     if (!form.label || !form.url) return;
     setSaving(true);
-    await fetch("/api/admin/content/navigation", { method:"POST", headers:{"Content-Type":"application/json"},
+    await mutateOrAlert("/api/admin/content/navigation", { method:"POST", headers:{"Content-Type":"application/json"},
       body: JSON.stringify({ ...form, location: activeTab, sort_order: filtered.length + 1 }) });
     setForm({ label:"", url:"", open_new_tab:false }); setAdding(false); setSaving(false); onReload();
     showToast("Lien ajouté ✓");
   };
 
   const del = async (id: string) => {
-    await fetch(`/api/admin/content/navigation/${id}`, { method:"DELETE" });
+    await mutateOrAlert(`/api/admin/content/navigation/${id}`, { method:"DELETE" });
     onReload(); showToast("Lien supprimé");
   };
 
   const toggleActive = async (item: NavItem) => {
-    await fetch("/api/admin/content/navigation", { method:"PATCH", headers:{"Content-Type":"application/json"},
+    await mutateOrAlert("/api/admin/content/navigation", { method:"PATCH", headers:{"Content-Type":"application/json"},
       body: JSON.stringify([{ id: item.id, is_active: !item.is_active }]) });
     onReload();
   };
@@ -601,9 +602,9 @@ function PopupsManager({ popups, onReload, showToast }: { popups: Popup[]; onRel
   const save = async () => {
     setSaving(true);
     if (editing?.id) {
-      await fetch("/api/admin/content/popups", { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id:editing.id, ...form }) });
+      await mutateOrAlert("/api/admin/content/popups", { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id:editing.id, ...form }) });
     } else {
-      await fetch("/api/admin/content/popups", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
+      await mutateOrAlert("/api/admin/content/popups", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
     }
     setSaving(false); setEditing(null); onReload();
     showToast(editing?.id ? "Popup mis à jour ✓" : "Popup créé ✓");
@@ -611,12 +612,12 @@ function PopupsManager({ popups, onReload, showToast }: { popups: Popup[]; onRel
 
   const del = async (id: string) => {
     if (!confirm("Supprimer ce popup ?")) return;
-    await fetch("/api/admin/content/popups", { method:"DELETE", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id }) });
+    await mutateOrAlert("/api/admin/content/popups", { method:"DELETE", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id }) });
     onReload(); showToast("Popup supprimé");
   };
 
   const toggleActive = async (p: Popup) => {
-    await fetch("/api/admin/content/popups", { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id:p.id, is_active:!p.is_active }) });
+    await mutateOrAlert("/api/admin/content/popups", { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id:p.id, is_active:!p.is_active }) });
     onReload();
   };
 
@@ -722,18 +723,18 @@ function TestimonialsManager({ items, onReload, showToast }: { items: Testimonia
 
   const add = async () => {
     setSaving(true);
-    await fetch("/api/admin/content/testimonials", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
+    await mutateOrAlert("/api/admin/content/testimonials", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
     setForm({ author:"", role:"", content:"", avatar_url:"", rating:5 }); setAdding(false); setSaving(false); onReload();
     showToast("Témoignage ajouté ✓");
   };
 
   const del = async (id: string) => {
-    await fetch("/api/admin/content/testimonials", { method:"DELETE", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id }) });
+    await mutateOrAlert("/api/admin/content/testimonials", { method:"DELETE", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id }) });
     onReload(); showToast("Témoignage supprimé");
   };
 
   const toggleActive = async (t: Testimonial) => {
-    await fetch("/api/admin/content/testimonials", { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id:t.id, is_active:!t.is_active }) });
+    await mutateOrAlert("/api/admin/content/testimonials", { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ id:t.id, is_active:!t.is_active }) });
     onReload();
   };
 

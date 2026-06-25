@@ -6,6 +6,7 @@ import {
   Star, RefreshCw, Minus,
 } from "lucide-react";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
+import { mutateOrAlert } from "@/lib/admin/mutate";
 import { FounderBadge, type FounderStatus } from "@/components/founder/FounderBadge";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -206,10 +207,11 @@ export default function FounderProgramPage() {
   });
 
   const patchMember = async (id: string, patch: { commission_rate_override: number | null; notes: string | null }) => {
-    await fetch(`/api/admin/founder-program/${id}`, {
+    const ok = await mutateOrAlert(`/api/admin/founder-program/${id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     });
+    if (!ok) return;
     setMembers(prev => prev.map(m => m.id === id ? { ...m, ...patch } : m));
   };
 

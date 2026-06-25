@@ -6,6 +6,7 @@ import {
   Star, EyeOff, Eye, RefreshCw, ExternalLink, ChevronDown,
 } from "lucide-react";
 import { ORGS, CATEGORIES, type OrgEntry } from "@/data/annuaire-orgs";
+import { mutateOrAlert } from "@/lib/admin/mutate";
 import { createClient } from "@/lib/supabase/client";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -330,20 +331,16 @@ export default function AdminAnnuairePage() {
   useEffect(() => { load(); }, []);
 
   const handleSave = async (data: Partial<Override>) => {
-    await fetch("/api/admin/annuaire", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    if (!await mutateOrAlert("/api/admin/annuaire", {
+      method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data),
+    })) return;
     await load();
   };
 
   const handleDelete = async (orgId: string) => {
-    await fetch("/api/admin/annuaire", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ org_id: orgId }),
-    });
+    if (!await mutateOrAlert("/api/admin/annuaire", {
+      method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ org_id: orgId }),
+    })) return;
     await load();
     setEditOrg(null);
   };
