@@ -16,7 +16,10 @@ const SELLER_SECTIONS: Section[] = [
     intro: "Tu crées, tu vends, on s'occupe du reste. Bienvenue chez toi 🌈",
     items: [
       { q: "Comment j'ouvre ma boutique ?", a: <>Va sur {L("/vendre", "Ouvrir ma boutique")}, crée ton compte, et c'est parti. Tu peux publier ta première création en quelques minutes — aucune validation à attendre pour démarrer.</> },
-      { q: "C'est payant ?", a: <>Non, <strong>pas d'abonnement</strong>. On prend une petite commission <strong>uniquement quand tu vends</strong> (5% sur tes produits). Et si tu fais partie des <strong>fondateur·ices</strong>, c'est <strong>0% pendant 6 mois</strong>.</> },
+      { q: "C'est payant ? Comment ça marche ?", a: <>Deux formules selon ta situation :<br/><br/>
+        • <strong>Avec Stripe</strong> (le plus courant) : un <strong>abonnement mensuel</strong> — <strong>Solo à 9,90 €/mois</strong>, ou <strong>Studio à 19,90 €/mois</strong> pour gérer plusieurs marques sous un seul compte — <strong>+ une petite commission de 5%</strong> sur tes ventes. <em>(Zéro commission les 3 premiers mois 🎁)</em><br/><br/>
+        • <strong>Sans Stripe</strong> (pays où Stripe n'est pas dispo) : <strong>aucun abonnement</strong>, juste une <strong>commission de 12%</strong> sur tes ventes.<br/><br/>
+        • <strong>Fondateur·ices</strong> 💕 : <strong>abonnement offert pendant 12 mois</strong> <strong>et 0% de commission pendant 6 mois</strong>.</> },
       { q: "Qui peut vendre sur Spectrum ?", a: <>La plateforme est <strong>par et pour</strong> les personnes queer, trans, racisé·es, et leurs allié·es. Créateur·ices, artisan·es, thérapeutes, coachs, asso… tu es chez toi ici. ✨</> },
     ],
   },
