@@ -45,6 +45,7 @@ export function Footer() {
       { label: t("footer.open_shop"), href: "/vendeur/onboarding" },
       { label: t("footer.founder_program"), href: "/programme-fondateur" },
       { label: t("footer.how_it_works"), href: "/comment-ca-marche" },
+      { label: "Aide vendeur·euses", href: "/aide" },
       { label: t("footer.contact"), href: "mailto:hello@spectrumforus.com" },
     ]},
     { title: t("footer.col_legal"), links: [
