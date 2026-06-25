@@ -19,7 +19,7 @@ import Link from "next/link";
 import { SpectrumLoader } from "@/components/ui/SpectrumLoader";
 import {
   Home, Package, Boxes, Store, CircleDollarSign, BarChart3, CreditCard,
-  Settings, Search, Bell, Plus, Menu, ExternalLink, Check, ArrowUpRight, Truck, CalendarClock, Tag,
+  Settings, Search, Bell, Plus, Menu, ExternalLink, Check, ArrowUpRight, Truck, CalendarClock, Tag, LifeBuoy,
 } from "lucide-react";
 import { ShippingSettings, type ShippingMethod } from "@/components/vendor/ShippingSettings";
 import { PromoCodes } from "@/components/vendor/PromoCodes";
@@ -250,6 +250,10 @@ export default function VendeurDashboard() {
         </nav>
 
         <div className="mt-auto space-y-2">
+          <a href="/aide" className="flex items-center gap-3 w-full px-2.5 py-2.5 rounded-[10px] text-[14.5px] font-medium transition-colors hover:bg-[#101014]/[0.04]" style={{ color: C.soft }}>
+            <LifeBuoy size={18} strokeWidth={1.7} className="shrink-0" />
+            <span className="flex-1">Aide & FAQ</span>
+          </a>
           {shops.length > 1 && (
             <div>
               <p className="font-mono text-[10px] tracking-[0.12em] uppercase px-0.5 pb-1" style={{ color: C.faint }}>Activité</p>
