@@ -3,14 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
-import { ChevronDown, Store, Package, Wallet, Truck, Bell, Sparkles, HeartHandshake, LifeBuoy } from "lucide-react";
+import { ChevronDown, Store, Package, Wallet, Truck, Bell, Sparkles, HeartHandshake, LifeBuoy, ShieldCheck, ShoppingBag, RotateCcw, Users } from "lucide-react";
 
 type QA = { q: string; a: React.ReactNode };
 type Section = { id: string; title: string; icon: React.ElementType; intro?: string; items: QA[] };
 
 const L = (href: string, label: string) => <Link href={href} className="font-semibold text-[#FF2DA0] underline underline-offset-2">{label}</Link>;
 
-const SECTIONS: Section[] = [
+const SELLER_SECTIONS: Section[] = [
   {
     id: "demarrer", title: "Démarrer ma boutique", icon: Store,
     intro: "Tu crées, tu vends, on s'occupe du reste. Bienvenue chez toi 🌈",
@@ -66,6 +66,51 @@ const SECTIONS: Section[] = [
   },
 ];
 
+const BUYER_SECTIONS: Section[] = [
+  {
+    id: "securite", title: "Acheter en confiance", icon: ShieldCheck,
+    intro: "Une marketplace queer, by us, for us — et un paiement carré.",
+    items: [
+      { q: "Le paiement est-il sécurisé ?", a: <>Oui. Les paiements passent par <strong>Stripe</strong> (le standard mondial) : ta carte est <strong>chiffrée</strong> et jamais stockée par nous, avec la <strong>vérification 3D Secure</strong> de ta banque. ✅</> },
+      { q: "C'est qui, les vendeur·euses ?", a: <>Des <strong>créateur·ices queer, trans, racisé·es et allié·es</strong>. Chaque boutique et chaque création passe par une <strong>modération</strong> pour garder l'espace sûr et bienveillant.</> },
+      { q: "Acheter ici, ça soutient qui ?", a: <>Directement les <strong>créateur·ices de la communauté</strong> : l'essentiel de ton paiement leur revient. <strong>B(u)y us, for us.</strong> 🌈</> },
+    ],
+  },
+  {
+    id: "livraison-acheteur", title: "Livraison & suivi", icon: Truck,
+    items: [
+      { q: "Comment je choisis ma livraison ?", a: <>Au moment du paiement : <strong>à domicile</strong> ou en <strong>point relais</strong> (carte Mondial Relay). Les frais s'ajustent au poids et à la boutique.</> },
+      { q: "Combien de temps pour recevoir ma commande ?", a: <>Ça dépend de la boutique et du transporteur choisi. Dès que c'est expédié, tu reçois un <strong>email + une notification</strong> avec le <strong>numéro de suivi</strong>.</> },
+      { q: "Où je suis ma commande ?", a: <>Dans {L("/compte/commandes", "Mon compte → Commandes")} : statut (payée, expédiée, livrée) et numéro de suivi dès qu'il est dispo. 🔔 La cloche te prévient à chaque étape.</> },
+      { q: "Je commande à plusieurs boutiques en une fois ?", a: <>Oui ! Chaque boutique prépare et expédie sa partie — tu peux donc recevoir <strong>plusieurs colis</strong>, chacun avec son suivi.</> },
+    ],
+  },
+  {
+    id: "compte-acheteur", title: "Mon compte & mes commandes", icon: ShoppingBag,
+    items: [
+      { q: "Où retrouver mes achats ?", a: <>Tout est dans {L("/compte/commandes", "Mon compte → Commandes")} : historique, reçus, suivi.</> },
+      { q: "Je reçois un reçu ?", a: <>Oui, un <strong>reçu à la charte Spectrum</strong> t'est envoyé par email à chaque achat (avec le détail et le total payé).</> },
+      { q: "Je peux suivre mes boutiques préférées ?", a: <>Bien sûr — clique <strong>« Suivre »</strong> sur une boutique. Tu retrouves tes coups de cœur dans {L("/favoris", "tes favoris")} et tu es prévenu·e de leurs nouveautés.</> },
+    ],
+  },
+  {
+    id: "retours", title: "Retours & soucis", icon: RotateCcw,
+    intro: "Un pépin ? On est là, on ne te laisse pas seul·e.",
+    items: [
+      { q: "Je peux retourner un article ?", a: <>Les conditions de retour dépendent de chaque boutique (un produit fait-main n'est pas une grande enseigne 💛). <strong>Contacte la boutique</strong> via la messagerie : la plupart trouvent une solution avec bienveillance.</> },
+      { q: "Ma commande a un problème (manquant, abîmé, jamais reçu) ?", a: <>Écris à la boutique en premier via la messagerie. Si ça reste bloqué, <strong>contacte l'équipe Spectrum</strong> (bouton ci-dessous) — on intervient.</> },
+      { q: "Comment contacter une boutique ?", a: <>Depuis la page de la boutique ou du produit, bouton <strong>« Contacter »</strong>. Vos échanges se passent dans {L("/messages", "ta messagerie")}.</> },
+    ],
+  },
+  {
+    id: "communaute", title: "La communauté", icon: Users,
+    items: [
+      { q: "C'est quoi Spectrum For Us ?", a: <>La <strong>première marketplace queer & inclusive</strong> : un espace pour acheter aux créateur·ices LGBTQIA+ et soutenir la communauté. <strong>B(u)y us, for us.</strong> ✦</> },
+      { q: "Je peux participer autrement qu'en achetant ?", a: <>Oui ! Suis les boutiques, partage tes coups de cœur, deviens <strong>ambassadeur·ice</strong>, ou ouvre {L("/vendre", "ta propre boutique")}. 🌈</> },
+    ],
+  },
+];
+
 function Item({ qa }: { qa: QA }) {
   const [open, setOpen] = useState(false);
   return (
@@ -80,6 +125,9 @@ function Item({ qa }: { qa: QA }) {
 }
 
 export default function AidePage() {
+  const [audience, setAudience] = useState<"seller" | "buyer">("seller");
+  const sections = audience === "seller" ? SELLER_SECTIONS : BUYER_SECTIONS;
+
   return (
     <div className="min-h-screen bg-[#FBFAF8] text-[#101014]">
       <Header />
@@ -88,22 +136,36 @@ export default function AidePage() {
       <div className="relative overflow-hidden">
         <div className="absolute bottom-0 left-0 right-0 h-[3px]"
           style={{ background: "linear-gradient(90deg,#2323C4,#7A2BF0,#FF2DA0,#F93C2C,#FFD400)" }} />
-        <div className="max-w-3xl mx-auto px-6 pt-28 pb-12 text-center">
+        <div className="max-w-3xl mx-auto px-6 pt-28 pb-10 text-center">
           <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-widest uppercase text-[#7A2BF0] mb-4">
             <LifeBuoy size={14} /> Centre d'aide
           </span>
-          <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] mb-3">Aide aux vendeur·euses ✦</h1>
+          <h1 className="font-fraunces text-4xl md:text-5xl text-[#101014] mb-3">Comment on peut t'aider ? ✦</h1>
           <p className="font-hanken text-[#101014]/55 text-lg leading-relaxed">
-            Tout pour vendre sereinement sur Spectrum : ta boutique, tes paiements, ta livraison, tes commandes.
-            Une question reste ? On est juste là 💌
+            {audience === "seller"
+              ? "Tout pour vendre sereinement : ta boutique, tes paiements, ta livraison, tes commandes."
+              : "Tout pour acheter en confiance : sécurité, livraison, suivi, retours."} On est juste là 💌
           </p>
+        </div>
+      </div>
+
+      {/* Toggle public */}
+      <div className="max-w-3xl mx-auto px-6 pb-8 flex justify-center">
+        <div className="inline-flex p-1 rounded-full bg-[#101014]/[0.05]">
+          {([["seller", "Je vends 🎨"], ["buyer", "J'achète 🛍"]] as const).map(([key, label]) => (
+            <button key={key} onClick={() => setAudience(key)}
+              className="px-5 py-2 rounded-full font-hanken text-sm font-semibold transition-all"
+              style={audience === key ? { background: "#101014", color: "#fff" } : { color: "rgba(16,16,20,0.55)" }}>
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Sommaire */}
       <div className="max-w-3xl mx-auto px-6 pb-8">
         <div className="flex flex-wrap gap-2 justify-center">
-          {SECTIONS.map((s) => (
+          {sections.map((s) => (
             <a key={s.id} href={`#${s.id}`}
               className="inline-flex items-center gap-1.5 rounded-full border border-[#101014]/12 px-3.5 py-1.5 font-hanken text-[13px] text-[#101014]/65 hover:border-[#FF2DA0]/50 hover:text-[#FF2DA0] transition-colors">
               <s.icon size={13} /> {s.title}
@@ -114,7 +176,7 @@ export default function AidePage() {
 
       {/* Sections */}
       <div className="max-w-3xl mx-auto px-6 pb-20 space-y-6">
-        {SECTIONS.map((s) => (
+        {sections.map((s) => (
           <section key={s.id} id={s.id} className="scroll-mt-24 rounded-3xl bg-white border border-[#101014]/8 p-6 md:p-8">
             <div className="flex items-center gap-3 mb-1">
               <div className="w-10 h-10 rounded-2xl bg-[#FF2DA0]/10 flex items-center justify-center shrink-0">
@@ -124,7 +186,7 @@ export default function AidePage() {
             </div>
             {s.intro && <p className="font-hanken text-[14px] text-[#101014]/45 mb-3 ml-[52px]">{s.intro}</p>}
             <div className="mt-2">
-              {s.items.map((qa, i) => <Item key={i} qa={qa} />)}
+              {s.items.map((qa, i) => <Item key={`${s.id}-${i}`} qa={qa} />)}
             </div>
           </section>
         ))}
