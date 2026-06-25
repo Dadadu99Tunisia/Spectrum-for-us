@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useCart } from "@/store/cart";
 import { useAuth } from "@/contexts/AuthContext";
+import { NotificationBell } from "@/components/NotificationBell";
 import { useI18n } from "@/contexts/I18nContext";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 import { useBanner } from "@/contexts/BannerContext";
@@ -129,6 +130,9 @@ export function Header() {
                   style={{ background: T.mag }}>{cartCount > 9 ? "9+" : cartCount}</span>
               )}
             </Link>
+
+            {/* Notifications */}
+            {!loading && user && <NotificationBell />}
 
             {/* Compte */}
             {!loading && (user ? (

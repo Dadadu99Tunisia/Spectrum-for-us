@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendOrderConfirmation, trySend, sendBookingConfirmation, sendBookingVendorAlert, sendVendorNewOrder } from "@/lib/email";
+import { notify } from "@/lib/notifications";
 import { getCommissionRates, resolveCommissionRate } from "@/lib/commission";
 import { sendcloudConfig, pickCheapestMethod, createParcel } from "@/lib/sendcloud";
 
@@ -403,6 +404,17 @@ export async function POST(req: Request) {
         shippingName: shipping?.name,
       }));
     }
+    // 🔔 Notification in-app acheteur·se
+    if (user_id) {
+      await notify({
+        userId: user_id,
+        type: "order_paid",
+        title: "Commande confirmée ✦",
+        body: `Ton paiement de ${serverTotal.toFixed(2)} € est validé. Merci !`,
+        href: "/compte/commandes",
+        metadata: { order_id: order.id },
+      });
+    }
 
     // Email vendeur(s) · groupé par boutique
     // Frais de port + méthode par boutique (depuis les colis choisis au checkout)
@@ -435,6 +447,16 @@ export async function POST(req: Request) {
         const vendorEmail = vu?.user?.email;
         if (!vendorEmail) continue;
         const vendorTotal = entry.items.reduce((s, it) => s + it.price * it.quantity, 0);
+        // 🔔 Notification in-app vendeur·se
+        const nItems = entry.items.reduce((s, it) => s + it.quantity, 0);
+        await notify({
+          userId: ownerId,
+          type: "new_order",
+          title: `Nouvelle commande sur ${entry.shopName} 🛍`,
+          body: `${nItems} article${nItems > 1 ? "s" : ""} · ${vendorTotal.toFixed(2)} € · à préparer`,
+          href: "/vendeur",
+          metadata: { order_id: order.id, shop_id: entry.shopId },
+        });
         const ship = shipByShop.get(entry.shopId);
         const methodLabel = ship
           ? (ship.method_label || (ship.method_type === "relay" ? "Point relais" : "Livraison à domicile"))

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendNewMessageNotification, trySend } from "@/lib/email";
+import { notify } from "@/lib/notifications";
 
 /**
  * Notifie le destinataire d'un nouveau message par e-mail (Resend).
@@ -46,6 +47,15 @@ export async function POST(req: Request) {
       "Un membre";
 
     await trySend(() => sendNewMessageNotification({ to, fromName, preview: recent.body }));
+    // 🔔 Notification in-app destinataire
+    await notify({
+      userId: recipientId,
+      type: "new_message",
+      title: `Nouveau message de ${fromName} 💬`,
+      body: String(recent.body ?? "").slice(0, 120),
+      href: "/messages",
+      metadata: { sender_id: sender.id },
+    });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ ok: false });

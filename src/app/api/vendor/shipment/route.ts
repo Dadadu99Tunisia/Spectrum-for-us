@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendShippingNotification, trySend } from "@/lib/email";
+import { notify } from "@/lib/notifications";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -53,6 +54,17 @@ export async function POST(req: NextRequest) {
         trackingNumber: tracking_number?.trim() || undefined,
         carrier: carrier?.trim() || undefined,
       }));
+    }
+    // 🔔 Notification in-app acheteur·se
+    if (order?.user_id) {
+      await notify({
+        userId: order.user_id,
+        type: newStatus === "delivered" ? "order_delivered" : "order_shipped",
+        title: newStatus === "delivered" ? "Commande livrée 📬" : "Ta commande est expédiée 🚚",
+        body: tracking_number?.trim() ? `Suivi : ${tracking_number.trim()}` : "Elle est en route !",
+        href: "/compte/commandes",
+        metadata: { order_id: updated.order_id },
+      });
     }
   } catch (e) {
     console.error("[shipment] email non bloquant", e);
