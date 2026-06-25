@@ -15,15 +15,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   const supabase = createAdminClient();
+
+  // reviewed_by / assigned_to référencent profiles(id). Les admins reconnus par
+  // email allowlist n'ont pas toujours de ligne profiles → on met null plutôt que
+  // de violer la FK (ce qui faisait échouer la validation en silence → item bloqué).
+  const { data: prof } = await supabase.from("profiles").select("id").eq("id", auth.user.id).maybeSingle();
+  const actorId = prof?.id ?? null;
+
   const update: Record<string, unknown> = { notes };
 
   if (action === "approve" || action === "reject") {
     update.mod_status  = action === "approve" ? "approved" : "rejected";
-    update.reviewed_by = auth.user.id;
+    update.reviewed_by = actorId;
     update.reviewed_at = new Date().toISOString();
   }
   if (action === "assign") {
-    update.assigned_to = auth.user.id;
+    update.assigned_to = actorId;
   }
 
   const { data, error } = await supabase

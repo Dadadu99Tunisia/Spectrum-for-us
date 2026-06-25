@@ -97,10 +97,16 @@ export default function ModerationPage() {
   // ── Actions ────────────────────────────────────────────────────────────────
   const handleAction = async (id: string, action: "approve" | "reject", notes?: string) => {
     setActionLoading(id + action);
-    await fetch(`/api/admin/moderation/${id}`, {
+    const res = await fetch(`/api/admin/moderation/${id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action, notes: notes ?? notesInput }),
     });
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      alert("Échec de la modération : " + (j.error ?? res.statusText));
+      setActionLoading(null);
+      return;
+    }
     setSelected(null);
     setNotesInput("");
     setActionLoading(null);
