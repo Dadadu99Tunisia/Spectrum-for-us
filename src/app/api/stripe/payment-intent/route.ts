@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getCommissionRate } from "@/lib/commission";
+import { getCommissionRate, getPlatformFees, applyCommissionFloor } from "@/lib/commission";
 import { limits, rateLimitResponse } from "@/lib/rate-limit";
 import { shippingPrice } from "@/lib/shipping";
 import { validateDiscount } from "@/lib/discount";
@@ -164,25 +164,32 @@ export async function POST(req: NextRequest) {
     if (dr.ok) { discountCents = dr.discount_cents; discountShopId = dr.shop_id; discountCode = dr.code; }
   }
 
-  // Commissions par boutique Stripe (calculées une fois)
+  // Garde-fous d'unit economics (paramétrables admin).
+  const fees = await getPlatformFees(admin);
+
+  // Commissions par boutique Stripe (avec plancher pour couvrir les frais Stripe sur petit panier).
   const shopCommission: Record<string, number> = {};
   let totalCommissionStripe = 0;
   for (const sid of shopIds) {
     if (isManual(sid)) continue;
     const rate = await getCommissionRate(admin, sid);
-    const commission = Math.round(subtotalByShop[sid] * (rate / 100));
+    const raw = Math.round(subtotalByShop[sid] * (rate / 100));
+    const commission = applyCommissionFloor(raw, rate, subtotalByShop[sid], fees.commissionFloorCents);
     shopCommission[sid] = commission;
     totalCommissionStripe += commission;
   }
 
-  // self_ship = le vendeur gère sa livraison → on lui reverse le port. Sinon (Spectrum gère),
-  // le port reste à la plateforme (qui fournit l'étiquette prépayée).
-  const shipReversed = (sid: string) => (shopMap[sid]?.self_ship !== false ? (shipmentByShop[sid]?.cost ?? 0) : 0);
-  // Port gardé par la plateforme (boutiques NON self-ship) → entre dans la marge plateforme.
+  // self_ship = le vendeur gère sa livraison → on lui reverse le port MOINS une mini-marge
+  // plateforme (couvre les frais Stripe sur le port). Sinon (Spectrum gère), la plateforme garde tout le port.
+  const shipReversed = (sid: string) => {
+    if (shopMap[sid]?.self_ship === false) return 0;                 // Spectrum gère → 0 reversé
+    return Math.max(0, (shipmentByShop[sid]?.cost ?? 0) - fees.shippingMarginCents);
+  };
+  // Port gardé par la plateforme (marge self-ship + port complet non self-ship) → marge plateforme.
   let platformKeptShippingStripe = 0;
   for (const sid of shopIds) {
     if (isManual(sid)) continue;
-    if (shopMap[sid]?.self_ship === false) platformKeptShippingStripe += (shipmentByShop[sid]?.cost ?? 0);
+    platformKeptShippingStripe += (shipmentByShop[sid]?.cost ?? 0) - shipReversed(sid);
   }
 
   // Code PLATEFORME : financé depuis la marge plateforme = commissions + port gardé (boutiques non self-ship).

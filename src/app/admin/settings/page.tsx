@@ -74,6 +74,8 @@ export default function SettingsPage() {
   // Payments
   const [commissionRate, setCommissionRate] = useState("15");
   const [stripeMode, setStripeMode]         = useState("live");
+  const [shipMarginCents, setShipMarginCents] = useState("30");
+  const [commissionFloorCents, setCommissionFloorCents] = useState("30");
 
   // Emails
   const [emailProvider, setEmailProvider] = useState("resend");
@@ -95,6 +97,8 @@ export default function SettingsPage() {
     if (data.locale_default)     setDefaultLocale(String(data.locale_default));
     if (data.commission_rate !== undefined) setCommissionRate(String(data.commission_rate));
     if (data.stripe_mode)        setStripeMode(String(data.stripe_mode));
+    if (data.shipping_platform_margin_cents !== undefined) setShipMarginCents(String(data.shipping_platform_margin_cents));
+    if (data.commission_floor_cents !== undefined) setCommissionFloorCents(String(data.commission_floor_cents));
     if (data.email_provider)     setEmailProvider(String(data.email_provider));
     if (data.smtp_host)          setSmtpHost(String(data.smtp_host));
     if (data.smtp_port)          setSmtpPort(String(data.smtp_port));
@@ -132,6 +136,8 @@ export default function SettingsPage() {
         locale_default:      defaultLocale,
         commission_rate:     Number(commissionRate),
         stripe_mode:         stripeMode,
+        shipping_platform_margin_cents: Number(shipMarginCents),
+        commission_floor_cents:         Number(commissionFloorCents),
         email_provider:      emailProvider,
         smtp_host:           smtpHost,
         smtp_port:           smtpPort,
@@ -325,6 +331,12 @@ export default function SettingsPage() {
               <p className="font-fraunces text-base text-[#101014] mb-4">Configuration paiements</p>
               <Field label="Commission plateforme (%)" description="Pourcentage prélevé sur chaque vente">
                 <Input value={commissionRate} onChange={setCommissionRate} placeholder="15" />
+              </Field>
+              <Field label="Plancher de commission (centimes)" description="Commission minimum par boutique/commande — évite que les frais Stripe mangent la commission sur petit panier (30 = 0,30 €). Ignoré pour les fondateur·ices (0%).">
+                <Input value={commissionFloorCents} onChange={setCommissionFloorCents} placeholder="30" />
+              </Field>
+              <Field label="Marge plateforme sur le port (centimes)" description="Montant gardé sur les frais de port quand le vendeur expédie lui-même (couvre les frais Stripe sur le port). Le reste lui est reversé (30 = 0,30 €).">
+                <Input value={shipMarginCents} onChange={setShipMarginCents} placeholder="30" />
               </Field>
               <Field label="Mode Stripe" description="live = production, test = sandbox">
                 <select value={stripeMode} onChange={e => setStripeMode(e.target.value)}

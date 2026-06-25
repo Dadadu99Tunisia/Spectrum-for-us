@@ -65,6 +65,41 @@ export async function getCommissionRates(supabase: SupabaseClient): Promise<Comm
   };
 }
 
+// ── Garde-fous d'unit economics (paramétrables admin_settings) ───────────────
+// 1) Marge de port plateforme : sur une boutique self-ship, la plateforme garde
+//    ce montant (couvre les frais Stripe sur le port) et reverse le reste.
+// 2) Plancher de commission : commission mini par boutique quand un taux > 0
+//    s'applique (évite que le 0,25 € fixe Stripe mange la commission sur petit panier).
+export const DEFAULT_SHIPPING_MARGIN_CENTS = 30;   // 0,30 €
+export const DEFAULT_COMMISSION_FLOOR_CENTS = 30;  // 0,30 €
+
+export interface PlatformFees {
+  shippingMarginCents: number;
+  commissionFloorCents: number;
+}
+
+export async function getPlatformFees(supabase: SupabaseClient): Promise<PlatformFees> {
+  const { data } = await supabase
+    .from("admin_settings")
+    .select("key, value")
+    .in("key", ["shipping_platform_margin_cents", "commission_floor_cents"]);
+  const m: Record<string, number> = {};
+  for (const r of (data ?? []) as { key: string; value: unknown }[]) {
+    const n = Number(r.value);
+    if (Number.isFinite(n) && n >= 0) m[r.key] = Math.round(n);
+  }
+  return {
+    shippingMarginCents: m.shipping_platform_margin_cents ?? DEFAULT_SHIPPING_MARGIN_CENTS,
+    commissionFloorCents: m.commission_floor_cents ?? DEFAULT_COMMISSION_FLOOR_CENTS,
+  };
+}
+
+/** Plancher de commission (centimes). Ignoré si taux 0 (fondateur·ice) ; jamais > sous-total. */
+export function applyCommissionFloor(commissionCents: number, rate: number, subtotalCents: number, floorCents: number): number {
+  if (rate <= 0 || subtotalCents <= 0) return commissionCents;
+  return Math.min(subtotalCents, Math.max(commissionCents, floorCents));
+}
+
 /**
  * Taux de commission (%) appliqué à une boutique à l'instant T.
  * Tient compte du rail de versement du seller (Stripe vs manuel).
