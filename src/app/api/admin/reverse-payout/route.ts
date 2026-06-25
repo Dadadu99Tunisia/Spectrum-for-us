@@ -24,10 +24,13 @@ export async function GET() {
   const { data: shops } = sellerIds.length
     ? await admin.from("shops").select("name, seller_id").in("seller_id", sellerIds)
     : { data: [] as { name: string; seller_id: string }[] };
-  const nameBySeller: Record<string, string> = {};
+  // Un·e vendeur·se (= 1 compte Stripe) peut avoir plusieurs boutiques → on les liste toutes.
+  const shopsBySeller: Record<string, string[]> = {};
   for (const sh of (shops ?? []) as { name: string; seller_id: string }[]) {
-    if (sh.seller_id && !nameBySeller[sh.seller_id]) nameBySeller[sh.seller_id] = sh.name;
+    if (sh.seller_id) (shopsBySeller[sh.seller_id] ??= []).push(sh.name);
   }
+  const nameBySeller: Record<string, string> = {};
+  for (const [sid, names] of Object.entries(shopsBySeller)) nameBySeller[sid] = names.join(" · ");
 
   const { data: recent } = await admin
     .from("vendor_reversals")
