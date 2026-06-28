@@ -1,16 +1,23 @@
+<div align="center">
+
+<img src="public/logo.png" alt="Spectrum for Us" height="96">
+
 # Spectrum for Us
 
-> A production e-commerce marketplace **by and for the LGBTQIA+ community** — gender-free fashion, art, beauty, wellness, services and events, plus a directory of LGBTQIA+ associations.
+**The e-commerce marketplace by and for the LGBTQIA+ community.**
+Gender-free fashion, art, beauty, wellness, services & events — plus a directory of LGBTQIA+ associations.
 
-[![Live](https://img.shields.io/badge/Live-spectrumforus.com-7C3AED?style=flat-square)](https://spectrumforus.com)
+[![Status](https://img.shields.io/badge/Status-LIVE%20IN%20PRODUCTION-3FCF8E?style=flat-square)](https://spectrumforus.com)
+[![Live](https://img.shields.io/badge/Visit-spectrumforus.com-7C3AED?style=flat-square)](https://spectrumforus.com)
+
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20Auth%20%2B%20RLS-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
 [![Stripe](https://img.shields.io/badge/Stripe-Connect%20%2B%20Webhooks-635BFF?style=flat-square&logo=stripe&logoColor=white)](https://stripe.com)
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com)
+[![Vercel](https://img.shields.io/badge/Deployed-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com)
 
-🔗 **Live:** [spectrumforus.com](https://spectrumforus.com)
+</div>
 
 ---
 
@@ -49,6 +56,64 @@ Spectrum for Us is a real, revenue-generating multi-vendor marketplace built to 
 - Installable Progressive Web App with a web manifest
 - Transactional email via Resend; interactive maps via Mapbox GL
 
+## 🏗 Architecture
+
+```mermaid
+flowchart TB
+    subgraph CLIENT["Clients"]
+        WEB["🌐 Storefront<br/>Next.js · PWA · FR/EN/AR"]
+        ADMIN["🛠 Admin back-office"]
+    end
+
+    subgraph EDGE["Vercel"]
+        APP["Next.js App Router<br/>Route Handlers (67)"]
+        CRON["⏱ Scheduled cron<br/>(abandoned-cart, jobs)"]
+    end
+
+    subgraph DATA["Supabase"]
+        DB[("PostgreSQL<br/>+ Row-Level Security")]
+        AUTH["Auth"]
+    end
+
+    subgraph EXT["External services"]
+        STRIPE["💳 Stripe<br/>Payments · Transfer groups · Subscriptions"]
+        SEND["📦 Sendcloud<br/>Shipping & labels"]
+        RESEND["✉️ Resend<br/>Email"]
+        AI["🤖 Anthropic + OpenAI<br/>Admin/CRM automation"]
+    end
+
+    WEB --> APP
+    ADMIN --> APP
+    APP --> DB
+    APP --> AUTH
+    APP -->|"create payment"| STRIPE
+    STRIPE -->|"signed webhook<br/>= source of truth"| APP
+    APP --> SEND
+    APP --> RESEND
+    APP --> AI
+    CRON --> DB
+
+    style DATA fill:#0d1117,stroke:#3FCF8E,color:#fff
+    style STRIPE fill:#1a1a2e,stroke:#635BFF,color:#fff
+```
+
+**Design principles**
+
+- **Single source of truth** — the public marketplace and the admin back-office run on the same Supabase schema and typed data layer, so there's no drift between what customers see and what operators manage.
+- **Webhook-driven orders** — orders are never created optimistically on the client. The signed Stripe webhook is the authority: payment captured → order materialized server-side, which keeps state consistent even on dropped connections or retries.
+- **Defense-in-depth with RLS** — Row-Level Security is the enforcement boundary. Privileged paths (webhook order creation, GDPR account deletion) run through the service-role key on the server only; the anon key never escapes the client.
+- **Multi-path payouts** — the payout system abstracts over Stripe transfers *and* a manual settlement workflow, so vendors in countries without Stripe payout support are first-class rather than excluded.
+- **Composable commerce primitives** — products, services, events and bookings share a coherent model with per-vendor fund splitting via Stripe transfer groups, making a true multi-vendor split-payment marketplace possible.
+- **Hardened by default** — CSP/HSTS headers, webhook signature checks and HTML sanitization are wired in at the framework level, not bolted on.
+
+## 📸 Screenshots
+
+> Live at **[spectrumforus.com](https://spectrumforus.com)**. Add captures to `docs/screenshots/` and they'll render below.
+
+| Storefront | Product / Vendor | Admin back-office |
+|---|---|---|
+| ![Storefront](docs/screenshots/storefront.png) | ![Product](docs/screenshots/product.png) | ![Admin](docs/screenshots/admin.png) |
+
 ## 🛠 Tech Stack
 
 **Frontend** — Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, Framer Motion, Zustand, Recharts, Lucide
@@ -60,15 +125,6 @@ Spectrum for Us is a real, revenue-generating multi-vendor marketplace built to 
 **AI** — Anthropic SDK + OpenAI SDK for admin and CRM automation
 
 **Security** — CSP & HSTS headers, Supabase RLS, Stripe webhook signature validation, DOMPurify sanitization
-
-## 🏗 Architecture
-
-- **Single source of truth** — the public marketplace and the admin back-office run on the same Supabase schema and typed data layer, so there's no drift between what customers see and what operators manage.
-- **Webhook-driven orders** — orders are never created optimistically on the client. The signed Stripe webhook is the authority: payment captured → order materialized server-side, which keeps state consistent even on dropped connections or retries.
-- **Defense-in-depth with RLS** — Row-Level Security is the enforcement boundary. Privileged paths (webhook order creation, GDPR account deletion) run through the service-role key on the server only; the anon key never escapes the client.
-- **Multi-path payouts** — the payout system abstracts over Stripe transfers *and* a manual settlement workflow, so vendors in countries without Stripe payout support are first-class rather than excluded.
-- **Composable commerce primitives** — products, services, events and bookings share a coherent model with per-vendor fund splitting via Stripe transfer groups, making a true multi-vendor split-payment marketplace possible.
-- **Hardened by default** — CSP/HSTS headers, webhook signature checks and HTML sanitization are wired in at the framework level, not bolted on.
 
 ## 📊 By the numbers
 
@@ -124,4 +180,12 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-Built by **Aicha Chennaoui** (*Dada Azouz*) · [LinkedIn](#)
+<div align="center">
+
+Built by **Aïcha Chennaoui** · AI Product Builder
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/aichachennaoui/)
+[![Email](https://img.shields.io/badge/Email-EA4335?style=flat-square&logo=gmail&logoColor=white)](mailto:chennaoui.aicha@gmail.com)
+[![Malt](https://img.shields.io/badge/Hire_on-Malt-FC5757?style=flat-square&logo=malt&logoColor=white)](https://www.malt.fr/profile/aichachennaoui)
+
+</div>
