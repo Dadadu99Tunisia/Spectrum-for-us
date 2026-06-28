@@ -15,8 +15,8 @@ depuis l'app en local sur les vraies données du catalogue (Supabase).
 | 2 | `02-decouvrir-marketplace.png` | **La marketplace** — grille produits, filtres, panier |
 | 3 | `03-produit-detail.png` | Fiche produit — prix, panier, badges confiance, avis |
 | 4 | `04-annuaire-carte.png` | Annuaire — 100 assos LGBTQIA+ dans 36 pays |
-| 5 | `09-home-desktop-ar-rtl.png` | **i18n** — version arabe en RTL complet (devise TND) |
-| 6 | `08-home-desktop-en.png` | Version anglaise (devise USD) |
+| 5 | `08-home-desktop-en.png` | **i18n** — version anglaise (devise USD) |
+| 6 | `14-panier-mobile.png` | Panier mobile — checkout Stripe |
 
 ## Toutes les captures
 
@@ -29,8 +29,6 @@ depuis l'app en local sur les vraies données du catalogue (Supabase).
 - `06-comment-ca-marche.png` — comment ça marche
 - `07-programme-fondateur.png` — programme fondateur
 - `08-home-desktop-en.png` — accueil EN (USD)
-- `09-home-desktop-ar-rtl.png` — accueil AR (RTL, TND)
-- `10-decouvrir-ar-rtl.png` — marketplace AR (RTL)
 
 **Mobile / PWA (iPhone 390×844, ×3)**
 - `11-home-mobile-fr.png` — accueil mobile
