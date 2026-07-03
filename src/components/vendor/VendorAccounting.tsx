@@ -11,7 +11,7 @@ type Data = { payouts: Payout[]; sales: Sale[]; totals: { gross: number; commiss
 const eur = (n: number) => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n);
 const dt = (s: string) => new Date(s).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
 
-export function VendorAccounting() {
+export function VendorAccounting({ stripeAuto = false }: { stripeAuto?: boolean }) {
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -47,7 +47,7 @@ export function VendorAccounting() {
 
       {/* Totaux */}
       <div className="grid grid-cols-4 gap-2 mb-4">
-        {([["Brut", data.totals.gross, C.ink], ["Commission", data.totals.commission, C.soft], ["Net", data.totals.net, C.green], ["Versé", data.totals.paid, C.soft]] as const).map(([l, v, col]) => (
+        {([["Brut", data.totals.gross, C.ink], ["Commission", data.totals.commission, C.soft], ["Net", data.totals.net, C.green], ["Versé", stripeAuto ? data.totals.net : data.totals.paid, stripeAuto ? C.green : C.soft]] as const).map(([l, v, col]) => (
           <div key={l}><p className="font-mono text-[9px] uppercase" style={{ color: C.soft }}>{l}</p><p className="font-fraunces text-[15px]" style={{ color: col }}>{eur(v)}</p></div>
         ))}
       </div>
@@ -55,7 +55,9 @@ export function VendorAccounting() {
       {/* Historique des versements reçus */}
       <p className="font-mono text-[10px] uppercase tracking-wider mb-1.5" style={{ color: C.soft }}>Versements reçus</p>
       {data.payouts.length === 0 ? (
-        <p className="font-hanken text-[12px] italic" style={{ color: C.soft }}>Aucun versement pour l&apos;instant.</p>
+        <p className="font-hanken text-[12px] italic" style={{ color: C.soft }}>
+          {stripeAuto ? "Versé automatiquement sur ton compte Stripe à chaque vente 💸" : "Aucun versement pour l'instant."}
+        </p>
       ) : (
         <div className="space-y-1 max-h-40 overflow-y-auto">
           {data.payouts.map((p, i) => (

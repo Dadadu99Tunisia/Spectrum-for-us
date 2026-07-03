@@ -310,10 +310,10 @@ export default function VendeurDashboard() {
         </div>
 
         <div className="px-5 lg:px-8 py-6 pb-16 w-full max-w-[1180px]">
-          {view === "overview" && <Overview m={m} shop={shop} products={products} activeCount={activeCount} founderRank={founderRank} checklist={checklist} go={setView} activities={activityStats} activeId={activeShopId} onPick={selectActivity} />}
+          {view === "overview" && <Overview m={m} shop={shop} products={products} activeCount={activeCount} founderRank={founderRank} checklist={checklist} go={setView} activities={activityStats} activeId={activeShopId} onPick={selectActivity} stripeAuto={seller?.payout_mode !== "manual" && !!seller?.stripe_charges_enabled} />}
           {view === "products" && <Products products={query ? products.filter(p => `${p.name ?? ""} ${p.title ?? ""}`.toLowerCase().includes(query.toLowerCase())) : products} />}
           {view === "orders" && <><Orders orders={orders} toPrepare={m.toPrepare} /><ShipmentsManager shopId={shop.id} /><ReturnsManager shopId={shop.id} /></>}
-          {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} />}
+          {view === "revenue" && <Revenue total={m.totalRevenue} commissions={commissions} stripeAuto={seller?.payout_mode !== "manual" && !!seller?.stripe_charges_enabled} />}
           {view === "subscription" && <Subscription active={seller?.subscription_status === "active"} founderRank={founderRank} />}
           {view === "livraison" && <ShippingSettings shopId={shop.id} initial={(shop.shipping_options as ShippingMethod[]) ?? []} initialSelfShip={shop.self_ship !== false} />}
           {view === "agenda" && <ServiceAvailability shopId={shop.id} />}
@@ -348,10 +348,10 @@ const TH = "font-mono text-[10.5px] tracking-[0.06em] uppercase text-left pb-3 p
 const TD = "px-3 py-3.5 text-sm align-middle";
 
 // ── Overview ───────────────────────────────────────────────────────────────
-function Overview({ m, shop, products, activeCount, founderRank, checklist, go, activities, activeId, onPick }: {
+function Overview({ m, shop, products, activeCount, founderRank, checklist, go, activities, activeId, onPick, stripeAuto }: {
   m: Metrics; shop: Shop; products: Product[]; activeCount: number;
   founderRank: number | null; checklist: { label: string; done: boolean; href: string }[]; go: (v: View) => void;
-  activities: { id: string; name: string; revenue: number; orders: number }[]; activeId: string | null; onPick: (id: string) => void;
+  activities: { id: string; name: string; revenue: number; orders: number }[]; activeId: string | null; onPick: (id: string) => void; stripeAuto: boolean;
 }) {
   void shop;
   const maxRev = Math.max(1, ...activities.map(a => a.revenue));
@@ -395,7 +395,7 @@ function Overview({ m, shop, products, activeCount, founderRank, checklist, go, 
         <ConnectPayments />
         <ManualPayout shopId={shop.id} />
         <VendorKyc />
-        <VendorAccounting />
+        <VendorAccounting stripeAuto={stripeAuto} />
       </div>
 
       <div className="grid lg:grid-cols-[1.7fr_1fr] gap-4">
@@ -600,7 +600,7 @@ function Orders({ orders, toPrepare }: { orders: VendorOrder[]; toPrepare: Set<s
   );
 }
 
-function Revenue({ total, commissions }: { total: number; commissions: { gross_amount: number; commission_amount: number; status: string }[] }) {
+function Revenue({ total, commissions, stripeAuto }: { total: number; commissions: { gross_amount: number; commission_amount: number; status: string }[]; stripeAuto: boolean }) {
   const gross = commissions.reduce((s, c) => s + Number(c.gross_amount || 0), 0) || total;
   const commission = commissions.reduce((s, c) => s + Number(c.commission_amount || 0), 0);
   const net = gross - commission;
@@ -611,7 +611,7 @@ function Revenue({ total, commissions }: { total: number; commissions: { gross_a
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <Kpi tint="#DCF0E5" label="Brut encaissé" value={eur(gross)} delta="commandes payées" deltaColor={C.grn} />
         <Kpi tint="#FCEAD2" label="Commission plateforme" value={eur(commission)} delta={commission === 0 ? "0 % · fondateur·ice ✦" : `${rate} % effectif`} deltaColor={commission === 0 ? C.grn : C.amb} />
-        <Kpi tint="#EAE0FB" label="Net pour toi" value={eur(net)} delta={`${eur(pending)} à verser`} deltaColor={C.faint} />
+        <Kpi tint="#EAE0FB" label="Net pour toi" value={eur(net)} delta={stripeAuto ? "versé via Stripe ✓" : `${eur(pending)} à verser`} deltaColor={stripeAuto ? C.grn : C.faint} />
       </div>
       <Panel>
         <PanelHead title="Versements" />
@@ -626,12 +626,20 @@ function Revenue({ total, commissions }: { total: number; commissions: { gross_a
                 <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}>{eur(gross)}</td>
                 <td className={TD} style={{ borderTop: `1px solid ${C.line}`, color: C.soft }}>{eur(commission)}</td>
                 <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><b>{eur(net)}</b></td>
-                <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}><span className="font-mono text-[10.5px] font-bold uppercase px-2.5 py-1 rounded-full" style={{ background: "#FCEAD2", color: "#9A6516" }}>{eur(pending)} en attente</span></td>
+                <td className={TD} style={{ borderTop: `1px solid ${C.line}` }}>
+                  {stripeAuto
+                    ? <span className="font-mono text-[10.5px] font-bold uppercase px-2.5 py-1 rounded-full" style={{ background: "#DCF0E5", color: "#1B8155" }}>versé ✓</span>
+                    : <span className="font-mono text-[10.5px] font-bold uppercase px-2.5 py-1 rounded-full" style={{ background: "#FCEAD2", color: "#9A6516" }}>{eur(pending)} en attente</span>}
+                </td>
               </tr>
             </tbody>
           </table></div>
         )}
-        <p className="text-[11px] mt-4" style={{ color: C.faint }}>Versements manuels pour l&apos;instant · contacte le support. Commission 0 % pendant l&apos;avantage fondateur·ice.</p>
+        <p className="text-[11px] mt-4" style={{ color: C.faint }}>
+          {stripeAuto
+            ? "Versé automatiquement sur ton compte Stripe à chaque vente (produits − commission + frais de port si tu gères ta livraison). Les fonds arrivent sous quelques jours côté Stripe."
+            : "Versement manuel pour l'instant · contacte le support. Commission réduite pendant l'avantage fondateur·ice."}
+        </p>
       </Panel>
     </>
   );
