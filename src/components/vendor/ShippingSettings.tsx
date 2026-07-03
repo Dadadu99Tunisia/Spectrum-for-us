@@ -63,8 +63,9 @@ export function ShippingSettings({ shopId, initial, initialSelfShip = true }: { 
           Choisis les modes que tu proposes. Les <strong>tarifs sont calculés automatiquement selon le poids du colis</strong> (grille plateforme) — tu n&apos;as rien à fixer.
         </p>
         <div className="mt-3 rounded-xl border border-[#ECE6DB] bg-[#101014]/[0.02] p-3 font-mono text-[11px] text-[#101014]/55 space-y-0.5">
-          <p className="text-[#101014]/40 mb-1">Grille point relais (domicile +1 €) :</p>
-          <p>0–1 kg : 5,90 € · 1–2 kg : 8,90 € · 2–5 kg : 12,90 € · 5–10 kg : 18,90 €</p>
+          <p className="text-[#101014]/40 mb-1">Grille point relais (domicile un peu plus cher) — s'ajuste au poids :</p>
+          <p>✉️ enveloppe ≤50 g : <strong>1,90 €</strong> · ≤100 g : 2,50 € · ≤250 g : 3,90 € · 0–1 kg : 5,90 € · 1–2 kg : 8,90 € · 2–5 kg : 12,90 €</p>
+          <p className="text-[#101014]/40 mt-1.5">💡 Renseigne bien le <strong>poids</strong> de chaque produit : un sticker à 5 g part au tarif lettre (1,90 €), pas au tarif colis.</p>
         </div>
       </div>
 
