@@ -183,6 +183,7 @@ export async function POST(req: Request) {
         payment_intent_id: pi.id,
         shipping_name:    shipping?.name    ?? null,
         shipping_email:   shipping?.email   ?? buyer_email ?? null,
+        shipping_phone:   shipping?.phone   ?? null,
         shipping_address: shipping?.address ?? null,
         shipping_city:    shipping?.city    ?? null,
         shipping_zip:     shipping?.zip     ?? null,
@@ -469,7 +470,8 @@ export async function POST(req: Request) {
           total: vendorTotal,
           customer: shipping ? {
             name: shipping.name, address: shipping.address, city: shipping.city,
-            zip: shipping.zip, country: shipping.country, email: shipping.email ?? buyer_email,
+            zip: shipping.zip, country: shipping.country,
+            email: shipping.email ?? buyer_email, phone: shipping.phone,
           } : null,
           shippingMethod: methodLabel,
           shippingToVendor: (shopMap[entry.shopId] as { self_ship?: boolean } | undefined)?.self_ship !== false,

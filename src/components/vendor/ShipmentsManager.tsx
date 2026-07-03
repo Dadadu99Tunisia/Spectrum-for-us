@@ -7,7 +7,7 @@ type Shipment = {
   id: string; order_id: string; method_type: "relay" | "home" | "pickup"; method_label: string | null;
   shipping_cost: number; relay_point: { name?: string; address?: string; zip?: string; city?: string } | null;
   carrier: string | null; tracking_number: string | null; status: string; created_at: string;
-  orders: { shipping_name: string | null; shipping_address: string | null; shipping_zip: string | null; shipping_city: string | null; shipping_country: string | null; created_at: string } | null;
+  orders: { shipping_name: string | null; shipping_email: string | null; shipping_phone: string | null; shipping_address: string | null; shipping_zip: string | null; shipping_city: string | null; shipping_country: string | null; created_at: string } | null;
 };
 
 const STATUS: Record<string, { label: string; cls: string }> = {
@@ -27,7 +27,7 @@ export function ShipmentsManager({ shopId }: { shopId: string }) {
     const supabase = createClient();
     const { data } = await supabase
       .from("order_shipments")
-      .select("*, orders(shipping_name, shipping_address, shipping_zip, shipping_city, shipping_country, created_at)")
+      .select("*, orders(shipping_name, shipping_email, shipping_phone, shipping_address, shipping_zip, shipping_city, shipping_country, created_at)")
       .eq("shop_id", shopId)
       .order("created_at", { ascending: false });
     setItems((data ?? []) as unknown as Shipment[]);
@@ -90,6 +90,18 @@ export function ShipmentsManager({ shopId }: { shopId: string }) {
                   <p className="font-hanken text-xs text-[#101014]/55 break-words">{dest || "—"}</p>
                 </div>
               </div>
+
+              {/* Contact acheteur·se — nécessaire pour créer l'expédition (Mondial Relay, Colissimo…) */}
+              {(o?.shipping_name || o?.shipping_email || o?.shipping_phone) && (
+                <div className="mb-3 rounded-xl bg-[#101014]/[0.03] px-3 py-2 space-y-0.5">
+                  <p className="font-mono text-[9px] uppercase tracking-wider text-[#101014]/35">Contact acheteur·se</p>
+                  {o?.shipping_name && <p className="font-hanken text-[12.5px] text-[#101014]">{o.shipping_name}</p>}
+                  <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                    {o?.shipping_email && <a href={`mailto:${o.shipping_email}`} className="font-hanken text-[12px] text-[#FF2DA0] break-all">✉️ {o.shipping_email}</a>}
+                    {o?.shipping_phone && <a href={`tel:${o.shipping_phone}`} className="font-hanken text-[12px] text-[#FF2DA0]">📞 {o.shipping_phone}</a>}
+                  </div>
+                </div>
+              )}
 
               {s.status === "pending" ? (
                 <div className="flex flex-wrap items-center gap-2">

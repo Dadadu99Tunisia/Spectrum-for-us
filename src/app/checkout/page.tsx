@@ -35,7 +35,7 @@ const CHECKOUT_TX = {
     editShipping: "← Modifier la livraison",
     checkout: "Commander", checkoutEyebrow: "Checkout",
     savedAddresses: "Adresses enregistrées", manage: "Gérer",
-    fName: "Nom / Pseudo", phName: "Ton nom ou pseudo", fEmail: "E-mail", fAddress: "Adresse", phAddress: "1 rue de la Lumière",
+    fName: "Nom / Pseudo", phName: "Ton nom ou pseudo", fEmail: "E-mail", fPhone: "Téléphone", fAddress: "Adresse", phAddress: "1 rue de la Lumière",
     fCity: "Ville", phCity: "Paris", fZip: "Code postal", phZip: "75001", fCountry: "Pays",
     discrete: "Colis discret · aucune mention Spectrum à l'extérieur",
     loginToPay: "Connecte-toi pour payer.", cantPrepare: "Impossible de préparer le paiement.", netError: "Erreur réseau. Réessaie.",
@@ -59,7 +59,7 @@ const CHECKOUT_TX = {
     editShipping: "← Edit shipping",
     checkout: "Checkout", checkoutEyebrow: "Checkout",
     savedAddresses: "Saved addresses", manage: "Manage",
-    fName: "Name / Username", phName: "Your name or username", fEmail: "Email", fAddress: "Address", phAddress: "1 Light Street",
+    fName: "Name / Username", phName: "Your name or username", fEmail: "Email", fPhone: "Phone", fAddress: "Address", phAddress: "1 Light Street",
     fCity: "City", phCity: "Paris", fZip: "Postal code", phZip: "75001", fCountry: "Country",
     discrete: "Discreet parcel · no Spectrum mention on the outside",
     loginToPay: "Log in to pay.", cantPrepare: "Could not prepare the payment.", netError: "Network error. Try again.",
@@ -165,7 +165,7 @@ export default function CheckoutPage() {
   const TX = CHECKOUT_TX[L];
   const [step, setStep] = useState<Step>("Livraison");
   const [form, setForm] = useState({
-    name: "", email: "", address: "", city: "", zip: "", country: "France", discrete: false,
+    name: "", email: "", phone: "", address: "", city: "", zip: "", country: "France", discrete: false,
   });
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [customerSession, setCustomerSession] = useState<string | null>(null);
@@ -244,7 +244,7 @@ export default function CheckoutPage() {
           cart: items.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, type: i.type })),
           currency: "eur",
           shipping: form.name ? {
-            name: form.name, email: form.email,
+            name: form.name, email: form.email, phone: form.phone,
             address: form.address, city: form.city,
             zip: form.zip, country: form.country,
           } : undefined,
@@ -301,7 +301,7 @@ export default function CheckoutPage() {
   };
 
   const set = (k: keyof typeof form, v: string | boolean) => setForm((f) => ({ ...f, [k]: v }));
-  const deliveryComplete = form.name && form.email && form.address && form.city && form.zip;
+  const deliveryComplete = form.name && form.email && form.phone && form.address && form.city && form.zip;
   const totalCents = Math.round(total() * 100);
 
   // ─ Confirmation screen
@@ -395,6 +395,7 @@ export default function CheckoutPage() {
                   {[
                     { k: "name" as const, label: TX.fName, ph: TX.phName, type: "text" },
                     { k: "email" as const, label: TX.fEmail, ph: "ton@email.com", type: "email" },
+                    { k: "phone" as const, label: TX.fPhone, ph: "06 12 34 56 78", type: "tel" },
                     { k: "address" as const, label: TX.fAddress, ph: TX.phAddress, type: "text" },
                   ].map(({ k, label, ph, type }) => (
                     <div key={k}>
