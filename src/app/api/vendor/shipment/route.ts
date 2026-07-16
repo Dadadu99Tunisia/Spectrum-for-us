@@ -34,9 +34,23 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!updated) return NextResponse.json({ error: "Colis introuvable ou non autorisé" }, { status: 403 });
 
+  const admin = createAdminClient();
+
+  // Synchronise le statut de la commande : si TOUS les colis de la commande sont
+  // expédiés/livrés, la commande passe au même statut → elle sort de « à préparer ».
+  try {
+    const { data: allShip } = await admin.from("order_shipments").select("status").eq("order_id", updated.order_id);
+    const list = (allShip ?? []) as { status: string }[];
+    if (list.length) {
+      const allDelivered = list.every(s => s.status === "delivered");
+      const allShipped = list.every(s => s.status === "shipped" || s.status === "delivered");
+      const orderStatus = allDelivered ? "delivered" : allShipped ? "shipped" : null;
+      if (orderStatus) await admin.from("orders").update({ status: orderStatus }).eq("id", updated.order_id);
+    }
+  } catch (e) { console.error("[shipment] sync order status", e); }
+
   // E-mail acheteur·se (best-effort, non bloquant)
   try {
-    const admin = createAdminClient();
     const { data: order } = await admin
       .from("orders")
       .select("id, shipping_email, user_id")
