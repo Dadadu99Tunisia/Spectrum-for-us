@@ -28,13 +28,12 @@ export async function updateSession(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
 
-  // ── Auth-only routes ─────────────────────────────────────────────────
-  if (path.startsWith("/vendeur") && !user) {
-    return NextResponse.redirect(new URL("/auth?redirect=/vendeur", request.url));
-  }
-  if (path.startsWith("/compte") && !user) {
-    return NextResponse.redirect(new URL("/auth?redirect=/compte", request.url));
-  }
+  // ── /vendeur & /compte : PAS de redirection serveur ──────────────────
+  // Ces pages redirigent déjà les visiteur·euses anonymes côté client (router.push
+  // vers /auth), et leurs données sont protégées par la RLS. Rediriger ici en plus
+  // provoquait une BOUCLE sur iOS Safari : après login, le cookie de session n'est
+  // pas relu à temps par le middleware → redirect /auth → /auth revoit la session
+  // → /vendeur → … → « This page couldn't load ». On laisse donc passer.
 
   // ── Admin routes · require auth + admin role ─────────────────────────
   if (path.startsWith("/admin") || path.startsWith("/api/admin")) {
