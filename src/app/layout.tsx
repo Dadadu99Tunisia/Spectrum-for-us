@@ -44,8 +44,11 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://spectrumforus.com"),
   manifest: "/manifest.webmanifest",
+  // capable:false → sur iOS, l'icône « écran d'accueil » s'ouvre dans Safari
+  // (fiable, se met à jour tout seul) plutôt qu'en mode standalone qui restait
+  // figé sur une ancienne version cassée après un déploiement (« page couldn't load »).
   appleWebApp: {
-    capable: true,
+    capable: false,
     statusBarStyle: "default",
     title: "Spectrum",
   },

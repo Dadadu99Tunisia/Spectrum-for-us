@@ -4,7 +4,7 @@
   "description": "La marketplace queer · créations, services et événements par et pour la communauté LGBTQIA+.",
   "start_url": "/",
   "scope": "/",
-  "display": "standalone",
+  "display": "browser",
   "orientation": "portrait",
   "background_color": "#FBFAF8",
   "theme_color": "#FBFAF8",
