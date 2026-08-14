@@ -186,19 +186,15 @@ export function MobileHomeView() {
     setLoading(true);
     if (isDefault) {
       // Accueil propre : une carte par boutique (dernière création en visuel).
-      supabase.from("products")
-        .select("id,images,image_url,shops(id,name,slug,banner_url)")
-        .eq("is_active", true).order("created_at", { ascending: false }).limit(60)
+      // Vue « home_boutiques » → chaque boutique ressort toujours, indépendamment
+      // du nombre d'articles récents des autres.
+      supabase.from("home_boutiques")
+        .select("id,name,slug,banner_url,last_images,last_image_url,count")
+        .order("last_created_at", { ascending: false })
         .then(({ data }) => {
-          const byShop = new Map<string, { id: string; name: string; slug: string; img: string | null; count: number }>();
-          for (const p of (data ?? []) as unknown as { images?: string[] | null; image_url?: string | null; shops?: { id: string; name: string; slug: string; banner_url?: string | null } | { id: string; name: string; slug: string; banner_url?: string | null }[] | null }[]) {
-            const shop = Array.isArray(p.shops) ? p.shops[0] : p.shops;
-            if (!shop?.slug) continue;
-            const ex = byShop.get(shop.id);
-            if (ex) { ex.count++; continue; }
-            byShop.set(shop.id, { id: shop.id, name: shop.name, slug: shop.slug, img: p.images?.[0] ?? p.image_url ?? shop.banner_url ?? null, count: 1 });
-          }
-          setBoutiques([...byShop.values()]);
+          setBoutiques(((data ?? []) as unknown as { id: string; name: string; slug: string; banner_url: string | null; last_images: string[] | null; last_image_url: string | null; count: number }[])
+            .filter(b => b.slug)
+            .map(b => ({ id: b.id, name: b.name, slug: b.slug, img: b.last_images?.[0] ?? b.last_image_url ?? b.banner_url ?? null, count: b.count })));
           setLoading(false);
         });
       return;
