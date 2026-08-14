@@ -11,7 +11,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowRight, ShoppingCart, Briefcase, Heart, CalendarDays, Truck, RefreshCw, ShieldCheck } from "lucide-react";
 import { Header } from "@/components/Header";
-import { Price } from "@/components/ui/Price";
 import { ScatterText } from "@/components/ui/ScatterText";
 import { FounderBanner } from "@/components/founder/FounderBanner";
 import { useI18n } from "@/contexts/I18nContext";
@@ -32,7 +31,7 @@ const CONTENT = {
     heroSub: "Créations, prestataires, associations et événements · un seul endroit, tenu pour tout le spectre.",
     founder: ["Tu crées ? ", "Ouvre ta boutique fondateur·ice", " — abonnement offert 12 mois, 0 % de commission 6 mois."],
     reassure: ["Livraison suivie", "Retours 14 jours", "Paiement sécurisé · Stripe", "Vendeur·ses vérifié·es"],
-    collectionsTitle: "Collections", newTitle: "Nouveautés", seeAll: "Voir tout",
+    collectionsTitle: "Collections", newTitle: "Les boutiques", seeAll: "Voir tout",
     emptyTitle: "Les premières créations arrivent",
     emptyDesc: "Spectrum se construit avec ses premier·es créateur·ices. Prends ta place de fondateur·ice avant tout le monde.",
     becomeFounder: "Devenir fondateur·ice", openShop: "Ouvrir ma boutique",
@@ -56,7 +55,7 @@ const CONTENT = {
     heroSub: "Creations, providers, associations and events · one place, held for the whole spectrum.",
     founder: ["You create? ", "Open your founder shop", " — 12 months subscription free, 0% commission for 6 months."],
     reassure: ["Tracked shipping", "14-day returns", "Secure payment · Stripe", "Verified sellers"],
-    collectionsTitle: "Collections", newTitle: "New in", seeAll: "See all",
+    collectionsTitle: "Collections", newTitle: "Shops", seeAll: "See all",
     emptyTitle: "The first creations are coming",
     emptyDesc: "Spectrum is being built with its first creators. Take your founder spot before everyone else.",
     becomeFounder: "Become a founder", openShop: "Open my shop",
@@ -78,17 +77,33 @@ const CONTENT = {
 } as const;
 
 export function LightHome() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [boutiques, setBoutiques] = useState<{ id: string; name: string; slug: string; img: string | null; count: number }[]>([]);
   const { locale } = useI18n();
   const C = CONTENT[locale === "en" ? "en" : "fr"];
   const VERTICALS = C.verticals;
   const COLLECTIONS = C.collections;
 
   useEffect(() => {
+    // Une carte par boutique : sa dernière création sert de visuel (évite de noyer
+    // l'accueil sous tous les articles dès qu'un·e vendeur·se ajoute).
     createClient().from("products")
-      .select("id,name,title,price,images,image_url,slug,category,shops(name)")
-      .eq("is_active", true).order("created_at", { ascending: false }).limit(8)
-      .then(({ data }) => setProducts((data ?? []) as unknown as Product[]));
+      .select("id,images,image_url,created_at,shops(id,name,slug,banner_url)")
+      .eq("is_active", true).order("created_at", { ascending: false }).limit(60)
+      .then(({ data }) => {
+        const byShop = new Map<string, { id: string; name: string; slug: string; img: string | null; count: number }>();
+        for (const p of (data ?? []) as unknown as { images?: string[] | null; image_url?: string | null; shops?: { id: string; name: string; slug: string; banner_url?: string | null } | { id: string; name: string; slug: string; banner_url?: string | null }[] | null }[]) {
+          const shop = Array.isArray(p.shops) ? p.shops[0] : p.shops;
+          if (!shop?.slug) continue;
+          const existing = byShop.get(shop.id);
+          if (existing) { existing.count++; continue; }
+          byShop.set(shop.id, {
+            id: shop.id, name: shop.name, slug: shop.slug,
+            img: p.images?.[0] ?? p.image_url ?? shop.banner_url ?? null,
+            count: 1,
+          });
+        }
+        setBoutiques([...byShop.values()].slice(0, 8));
+      });
   }, []);
 
   return (
@@ -162,7 +177,7 @@ export function LightHome() {
           <h2 className="font-fraunces text-[26px]">{C.newTitle}</h2>
           <Link href="/decouvrir" className="text-[14px] font-semibold flex items-center gap-1" style={{ color: T.mag }}>{C.seeAll} <ArrowRight size={14} /></Link>
         </div>
-        {products.length === 0 ? (
+        {boutiques.length === 0 ? (
           <div className="rounded-3xl px-8 py-12 text-center" style={{ background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }}>
             <span className="text-3xl">🚀</span>
             <h3 className="font-fraunces text-[24px] mt-3 mb-2" style={{ color: T.ink }}>{C.emptyTitle}</h3>
@@ -174,21 +189,20 @@ export function LightHome() {
           </div>
         ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          {products.map(p => {
-            const img = p.images?.[0] ?? p.image_url; const t = tintFor(p.category);
-            const shop = !Array.isArray(p.shops) ? p.shops?.name : null;
-            return (
-              <Link key={p.id} href={`/produit/${p.slug}`} className="group">
-                <div className="rounded-2xl overflow-hidden aspect-square" style={{ background: t.tint }}>
-                  {img ? <img src={img} alt={p.name || p.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-                    : <div className="w-full h-full flex items-center justify-center p-8"><img src="/logo-dark.png" alt="Spectrum For Us" className="w-full h-full object-contain opacity-25" /></div>}
-                </div>
-                <p className="font-bricolage font-semibold text-[15px] mt-2.5 leading-tight">{p.name || p.title}</p>
-                {shop && <p className="text-[12.5px]" style={{ color: T.faint }}>{shop}</p>}
-                <Price eur={p.price} className="font-mono font-bold text-[15px] mt-1 block" />
-              </Link>
-            );
-          })}
+          {boutiques.map(b => (
+            <Link key={b.id} href={`/boutique/${b.slug}`} className="group">
+              <div className="rounded-2xl overflow-hidden aspect-square relative" style={{ background: "#F1ECE3" }}>
+                {b.img
+                  ? <img src={b.img} alt={b.name} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+                  : <div className="w-full h-full flex items-center justify-center p-8"><img src="/logo-dark.png" alt="Spectrum For Us" className="w-full h-full object-contain opacity-25" /></div>}
+                <span className="absolute bottom-2 left-2 font-mono text-[10px] px-2 py-0.5 rounded-full text-white" style={{ background: "rgba(16,16,20,.55)", backdropFilter: "blur(4px)" }}>
+                  {b.count} création{b.count > 1 ? "s" : ""}
+                </span>
+              </div>
+              <p className="font-bricolage font-semibold text-[15px] mt-2.5 leading-tight">{b.name}</p>
+              <p className="text-[12.5px] flex items-center gap-1" style={{ color: T.mag }}>Voir la boutique <ArrowRight size={12} /></p>
+            </Link>
+          ))}
         </div>
         )}
       </section>

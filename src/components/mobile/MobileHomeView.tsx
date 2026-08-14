@@ -174,6 +174,7 @@ export function MobileHomeView() {
   const cartCount = items.reduce((s, i) => s + i.quantity, 0);
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [boutiques, setBoutiques] = useState<{ id: string; name: string; slug: string; img: string | null; count: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [cat, setCat] = useState("Tout");
   const [search, setSearch] = useState("");
@@ -181,6 +182,28 @@ export function MobileHomeView() {
 
   useEffect(() => {
     const supabase = createClient();
+    const isDefault = cat === "Tout" && !search.trim();
+    setLoading(true);
+    if (isDefault) {
+      // Accueil propre : une carte par boutique (dernière création en visuel).
+      supabase.from("products")
+        .select("id,images,image_url,shops(id,name,slug,banner_url)")
+        .eq("is_active", true).order("created_at", { ascending: false }).limit(60)
+        .then(({ data }) => {
+          const byShop = new Map<string, { id: string; name: string; slug: string; img: string | null; count: number }>();
+          for (const p of (data ?? []) as unknown as { images?: string[] | null; image_url?: string | null; shops?: { id: string; name: string; slug: string; banner_url?: string | null } | { id: string; name: string; slug: string; banner_url?: string | null }[] | null }[]) {
+            const shop = Array.isArray(p.shops) ? p.shops[0] : p.shops;
+            if (!shop?.slug) continue;
+            const ex = byShop.get(shop.id);
+            if (ex) { ex.count++; continue; }
+            byShop.set(shop.id, { id: shop.id, name: shop.name, slug: shop.slug, img: p.images?.[0] ?? p.image_url ?? shop.banner_url ?? null, count: 1 });
+          }
+          setBoutiques([...byShop.values()]);
+          setLoading(false);
+        });
+      return;
+    }
+    // Recherche / filtre : on montre les produits.
     let q = supabase
       .from("products")
       .select("id,name,title,price,images,image_url,slug,category,is_adult,shops(name,slug)")
@@ -191,6 +214,7 @@ export function MobileHomeView() {
   }, [cat, search]);
 
   const searching = search.trim().length > 0;
+  const showBoutiques = cat === "Tout" && !searching;
   const showExtras = !searching && cat === "Tout";
 
   return (
@@ -342,15 +366,35 @@ export function MobileHomeView() {
             <div key={i} className="mb-[18px] rounded-2xl animate-pulse" style={{ height: i % 2 ? 220 : 160, background: "#fff", boxShadow: `inset 0 0 0 1px ${T.line}` }} />
           ))}
         </div>
+      ) : showBoutiques ? (
+        boutiques.length === 0 ? (
+          <div className="px-6 py-8 text-center">
+            <p className="font-bricolage font-bold text-[17px] mb-1.5">{C.emptyTitle}</p>
+            <p className="text-[13.5px] mb-5" style={{ color: T.soft }}>{C.emptySub}</p>
+            <Link href="/vendeur/onboarding" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-[14px] text-white" style={{ background: T.mag }}>
+              {C.openShop} <ArrowRight size={15} />
+            </Link>
+          </div>
+        ) : (
+          <div className="px-4 pb-6 grid grid-cols-2 gap-3">
+            {boutiques.map(b => (
+              <Link key={b.id} href={`/boutique/${b.slug}`} className="block active:scale-[0.98] transition-transform">
+                <div className="rounded-2xl overflow-hidden aspect-square relative" style={{ background: "#F1ECE3" }}>
+                  {b.img
+                    ? <img src={b.img} alt={b.name} className="w-full h-full object-cover" />
+                    : <div className="w-full h-full flex items-center justify-center p-8"><img src="/logo-dark.png" alt="" className="w-full h-full object-contain opacity-25" /></div>}
+                  <span className="absolute bottom-2 left-2 font-mono text-[9px] px-1.5 py-0.5 rounded-full text-white" style={{ background: "rgba(16,16,20,.55)" }}>{b.count} création{b.count > 1 ? "s" : ""}</span>
+                </div>
+                <p className="font-bricolage font-semibold text-[14px] mt-2 leading-tight">{b.name}</p>
+                <p className="text-[11.5px] flex items-center gap-0.5" style={{ color: T.mag }}>Voir la boutique <ArrowRight size={11} /></p>
+              </Link>
+            ))}
+          </div>
+        )
       ) : products.length === 0 ? (
         <div className="px-6 py-8 text-center">
           <p className="font-bricolage font-bold text-[17px] mb-1.5">{searching ? C.emptySearch : C.emptyTitle}</p>
           <p className="text-[13.5px] mb-5" style={{ color: T.soft }}>{searching ? C.emptySearchSub : C.emptySub}</p>
-          {!searching && (
-            <Link href="/vendeur/onboarding" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-[14px] text-white" style={{ background: T.mag }}>
-              {C.openShop} <ArrowRight size={15} />
-            </Link>
-          )}
         </div>
       ) : (
         <div className="px-4 pb-6" style={{ columnCount: 2, columnGap: 12 }}>
